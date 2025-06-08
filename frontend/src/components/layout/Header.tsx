@@ -40,20 +40,21 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => (
                 <Box as="span" color="orange.500">Challenge</Box>Me
             </Heading>
             <HStack spacing={6} display={{ base: 'none', md: 'flex' }}>
-                 <Link onClick={() => onNavigate('home')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Home</Link>
-                 <Link onClick={() => onNavigate('dashboard')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Dashboard</Link>
-                 <Link onClick={() => onNavigate('profile')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Profile</Link>
+                <Link onClick={() => onNavigate('home')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Home</Link>
+                <Link onClick={() => onNavigate('dashboard')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Dashboard</Link>
+                <Link onClick={() => onNavigate('profile')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Profile</Link>
+                <Link onClick={() => onNavigate('groups')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Groups</Link>
             </HStack>
             <HStack spacing={4}>
-                 <Button
+                <Button
                     onClick={() => onNavigate('create')}
                     colorScheme="orange"
                     display={{ base: 'none', md: 'inline-flex' }}
                     leftIcon={<PlusIcon className="w-4 h-4" />}
-                 >
-                     New Challenge
-                 </Button>
-                 <Avatar
+                >
+                    New Challenge
+                </Button>
+                <Avatar
                     src={mockUser.avatar}
                     name="User Avatar"
                     size="md"

@@ -6,10 +6,11 @@ import ChallengeDashboardPage from './pages/ChallengeDashboardPage';
 import CreateChallengePage from './pages/CreateChallengePage';
 import EditChallengePage from './pages/EditChallengePage';
 import ProfilePage from './pages/ProfilePage';
+import GroupsPage from './pages/GroupsPage';
 import theme from './theme'; // Import the custom theme
 
 export default function App() {
-    const [currentPage, setCurrentPage] = useState<string>('edit');
+    const [currentPage, setCurrentPage] = useState<string>('home');
 
     const handleNavigate = (page: string) => {
         setCurrentPage(page);
@@ -28,6 +29,8 @@ export default function App() {
                  return <ProfilePage onNavigate={handleNavigate} />;
             case 'edit':
                 return <EditChallengePage />;
+            case 'groups':
+                return <GroupsPage onNavigate={handleNavigate} />;
             default:
                 return <HomePage onNavigate={handleNavigate} />;
         }

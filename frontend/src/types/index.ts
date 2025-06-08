@@ -1,4 +1,53 @@
-// frontend/src/types/index.ts
+export type ChallengeType = 'individual' | 'group';
+export type GroupRole = 'admin' | 'member';
+export type ActivityAction = 'logged' | 'updated' | 'joined' | 'commented';
+
+export interface Challenge {
+  id: number;
+  title: string;
+  type: string;
+  challengeType: ChallengeType; // New field
+  participants: number; // Can represent individuals or groups
+  maxParticipants?: number;
+  endDate: string;
+  progress: number;
+  isPublic: boolean;
+  milestones: Milestone[];
+  rules?: RuleSet;
+}
+
+export interface Group {
+  id: string;
+  name: string;
+  description: string;
+  avatarUrl: string;
+  memberCount: number;
+  isPublic: boolean;
+}
+
+export interface GroupMembership {
+    userId: string;
+    groupId: string;
+    role: GroupRole;
+    user: {
+        name: string;
+        avatar: string;
+    }
+}
+
+export interface Activity {
+  id: number;
+  userId: string;
+  user: string;
+  challengeId: number;
+  action: string;
+  distance?: number; // in km
+  duration?: number; // in minutes
+  notes?: string;
+  timestamp: string;
+  time: string;
+  avatar: string;
+}
 
 export interface Challenge {
   id: number;
@@ -34,12 +83,7 @@ export interface LeaderboardEntry {
   avatar: string;
 }
 
-export interface Activity {
-  user: string;
-  action: string;
-  time: string;
-  avatar: string;
-}
+
 
 export interface Comment {
   id: number;

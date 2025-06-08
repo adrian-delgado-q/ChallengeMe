@@ -4,7 +4,7 @@ import {
   Text, Textarea, VStack, Select, InputGroup, InputRightAddon, IconButton,
 } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
-import { Challenge, Milestone } from '../../types';
+import { Challenge, Milestone, ChallengeType } from '../../types';
 
 interface ChallengeFormProps {
     challengeToEdit?: Challenge; // If provided, the form is in "edit" mode
@@ -20,15 +20,15 @@ const activityOptions = [
 export const ChallengeForm: React.FC<ChallengeFormProps> = ({ challengeToEdit, onSubmit, isEditing }) => {
     // Local state to manage form fields, pre-populated if editing
     const [title, setTitle] = useState(challengeToEdit?.title || '');
-    const [description, setDescription] = useState(''); // Assuming description is not in the type yet
+    const [description, setDescription] = useState(''); // Assuming description will be added to the Challenge type
     const [milestones, setMilestones] = useState<Partial<Milestone>[]>(
         challengeToEdit?.milestones || [{ name: 'Bronze', value: undefined }]
     );
+    const [challengeType, setChallengeType] = useState<ChallengeType>(challengeToEdit?.challengeType || 'individual');
 
     // Populate description when editing data is available
     useEffect(() => {
       if(challengeToEdit) {
-        // You would likely have a description field on your Challenge type
         // setDescription(challengeToEdit.description || ''); 
       }
     }, [challengeToEdit]);
@@ -43,25 +43,45 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({ challengeToEdit, o
         }
         setMilestones(newMilestones);
     };
+    
 
     const addMilestone = () => {
         setMilestones([...milestones, { name: '', value: undefined }]);
     };
 
     const removeMilestone = (index: number) => {
-        const newMilestones = milestones.filter((_, i) => i !== index);
-        setMilestones(newMilestones);
+        if (milestones.length > 1) {
+            const newMilestones = milestones.filter((_, i) => i !== index);
+            setMilestones(newMilestones);
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // Construct form data object to pass up
-        const formData = { title, description, milestones /* ...other fields */ };
+        const formData = { title, description, milestones, challengeType /* ...other fields */ };
         onSubmit(formData);
     };
     
     return (
         <VStack as="form" spacing={6} w="full" align="stretch" onSubmit={handleSubmit}>
+            
+            <FormControl as="fieldset" isRequired>
+                <FormLabel as="legend">Challenge Type</FormLabel>
+                <RadioGroup onChange={(val: ChallengeType) => setChallengeType(val)} value={challengeType}>
+                    <HStack spacing={4}>
+                        <Radio value="individual" colorScheme="orange">Individual Challenge</Radio>
+                        <Radio value="group" colorScheme="orange">Group Challenge</Radio>
+                    </HStack>
+                </RadioGroup>
+                <Text fontSize="xs" color="gray.500" mt={1}>
+                    {challengeType === 'individual' 
+                        ? "Only individual users can join this challenge."
+                        : "Only groups can join this challenge."
+                    }
+                </Text>
+            </FormControl>
+
             <FormControl isRequired>
                 <FormLabel>Challenge Title</FormLabel>
                 <Input 
@@ -86,7 +106,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({ challengeToEdit, o
                     </Select>
                 </FormControl>
                  <FormControl>
-                    <FormLabel>Max Participants (Optional)</FormLabel>
+                    <FormLabel>Max {challengeType === 'group' ? 'Groups' : 'Participants'} (Optional)</FormLabel>
                     <Input type="number" placeholder="e.g., 50" defaultValue={isEditing ? challengeToEdit?.maxParticipants : ''} />
                 </FormControl>
             </Grid>

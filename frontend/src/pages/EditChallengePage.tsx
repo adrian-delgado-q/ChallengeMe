@@ -5,28 +5,8 @@ import {
 } from '@chakra-ui/react';
 import { Card } from '../components/common/Card';
 import { ChallengeForm } from '../components/challenges/ChallengeForm';
-import { Challenge } from '../types';
+import { existingChallengeData } from '../assets/fake_data/mockChallenges';
 
-// Mock data for an existing challenge
-const existingChallengeData: Challenge = {
-    id: 1,
-    title: "June Running Challenge",
-    type: "Running",
-    goal: "Run 100 miles in June",
-    participants: 42,
-    maxParticipants: 50,
-    endDate: "2025-06-30",
-    progress: 75,
-    isPublic: true,
-    milestones: [
-        { name: 'Warm-up', value: 25 },
-        { name: 'Halfway', value: 50 },
-        { name: 'Finish Line', value: 100 },
-    ],
-    rules: {
-        minDuration: 20
-    }
-};
 
 const EditChallengePage: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();

@@ -33,7 +33,8 @@ const mockChallenge: Challenge & { rules: RuleSet } = {
     rules: {
         minDuration: 20,
         minRepetitions: 1
-    }
+    },
+    challengeType: 'individual', // Assuming this is a new field in Challenge
 };
 const mockComments: Comment[] = [
     { id: 1, user: { name: 'Sarah', avatar: 'https://placehold.co/40x40/db2777/ffffff?text=S' }, content: 'Anyone have tips for running in the heat? Finding it tough this week!', timestamp: '3h ago' },
@@ -45,8 +46,8 @@ const mockLeaderboard: LeaderboardEntry[] = [
     { rank: 3, name: 'You', value: '71 km', avatar: 'https://placehold.co/40x40/3b82f6/ffffff?text=Y' },
 ];
 const mockActivityFeed: Activity[] = [
-    { user: 'Alice', action: 'logged a 10km run.', time: '2h ago', avatar: 'https://placehold.co/40x40/f97316/ffffff?text=A' },
-    { user: 'You', action: 'added 7km to your progress.', time: '5h ago', avatar: 'https://placehold.co/40x40/3b82f6/ffffff?text=Y' },
+    { user: 'Alice', action: 'logged a 10km run.', time: '2h ago', avatar: 'https://placehold.co/40x40/f97316/ffffff?text=A', userId: "1", challengeId:1, id: 1, distance: 10, duration: 50, notes: '', timestamp: '2025-06-01T10:00:00Z' },
+    { user: 'You', action: 'added 7km to your progress.', time: '5h ago', avatar: 'https://placehold.co/40x40/3b82f6/ffffff?text=Y', userId: "2", challengeId:1, id: 2, distance: 7, duration: 35, notes: '', timestamp: '2025-06-01T12:00:00Z' },
 ];
 
 
