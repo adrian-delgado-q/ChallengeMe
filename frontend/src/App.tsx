@@ -6,7 +6,7 @@ import ChallengeDashboardPage from './pages/ChallengeDashboardPage';
 import CreateChallengePage from './pages/CreateChallengePage';
 import EditChallengePage from './pages/EditChallengePage';
 import ProfilePage from './pages/ProfilePage';
-import GroupsPage from './pages/GroupsPage';
+import GroupsPage from './pages/TeamsPage';
 import theme from './theme'; // Import the custom theme
 
 export default function App() {

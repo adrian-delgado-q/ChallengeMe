@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar, Box, Button, Grid, Heading, Text, VStack, HStack } from '@chakra-ui/react';
 import { ChallengeCard } from '../components/challenges/ChallengeCard';
-import { User, Challenge } from '../types';
+import { User } from '../types';
 import { Card } from '../components/common/Card';
 import { mockChallenges } from '../assets/fake_data/mockChallenges';
 

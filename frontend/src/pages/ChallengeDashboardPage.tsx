@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Grid, Heading, Text, VStack, Button, Flex, useDisclosure } from '@chakra-ui/react';
 import { CommentsForum } from '../components/dashboard/CommentsForum'; 
 import { Card } from '../components/common/Card';
-import { TrophyIcon, UserGroupIcon, CalendarIcon } from '../components/common/Icons';
+import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../components/common/Icons';
 import { Challenge, Comment, LeaderboardEntry, Activity, RuleSet } from '../types';
 import { Icon, HStack } from '@chakra-ui/react';
 import { Leaderboard } from '../components/dashboard/Leaderboard';
@@ -29,7 +29,6 @@ const mockChallenge: Challenge & { rules: RuleSet } = {
     endDate: '2025-06-30', 
     progress: 75, 
     isPublic: true,
-    goal: '100 km', 
     rules: {
         minDuration: 20,
         minRepetitions: 1
@@ -79,7 +78,7 @@ const ChallengeDashboardPage: React.FC = () => {
                             <Heading as="h3" size="md" mb={4}>Details</Heading>
                             <VStack spacing={3} align="stretch">
                                 <HStack><Icon as={TrophyIcon} w={6} h={6} color="orange.500" /> <Text>Goal: <Box as="span" fontWeight="bold">100 km</Box></Text></HStack>
-                                <HStack><Icon as={UserGroupIcon} w={6} h={6} color="blue.500" /> <Text><Box as="span" fontWeight="bold">{mockChallenge.participants}</Box> Participants</Text></HStack>
+                                <HStack><Icon as={UserTeamIcon} w={6} h={6} color="blue.500" /> <Text><Box as="span" fontWeight="bold">{mockChallenge.participants}</Box> Participants</Text></HStack>
                                 <HStack><Icon as={CalendarIcon} w={6} h={6} color="red.500" /> <Text>Ends: <Box as="span" fontWeight="bold">{mockChallenge.endDate}</Box></Text></HStack>
                             </VStack>
                         </Card>

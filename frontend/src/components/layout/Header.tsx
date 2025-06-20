@@ -43,7 +43,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => (
                 <Link onClick={() => onNavigate('home')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Home</Link>
                 <Link onClick={() => onNavigate('dashboard')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Dashboard</Link>
                 <Link onClick={() => onNavigate('profile')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Profile</Link>
-                <Link onClick={() => onNavigate('groups')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Groups</Link>
+                <Link onClick={() => onNavigate('teams')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Teams</Link>
             </HStack>
             <HStack spacing={4}>
                 <Button

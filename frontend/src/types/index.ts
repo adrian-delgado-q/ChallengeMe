@@ -1,13 +1,27 @@
-export type ChallengeType = 'individual' | 'group';
-export type GroupRole = 'admin' | 'member';
-export type ActivityAction = 'logged' | 'updated' | 'joined' | 'commented';
+// frontend/src/types/index.ts
+
+// --- Core Enums ---
+export type ChallengeType = 'individual' | 'team';
+export type TeamRole = 'admin' | 'member';
+
+// --- Challenge & Team Structures ---
+export interface Milestone {
+  name: string;
+  value: number;
+}
+
+export interface RuleSet {
+  minDuration?: number; 
+  minRepetitions?: number;
+}
 
 export interface Challenge {
   id: number;
   title: string;
+  description?: string;
   type: string;
-  challengeType: ChallengeType; // New field
-  participants: number; // Can represent individuals or groups
+  challengeType: ChallengeType;
+  participants: number; 
   maxParticipants?: number;
   endDate: string;
   progress: number;
@@ -16,7 +30,7 @@ export interface Challenge {
   rules?: RuleSet;
 }
 
-export interface Group {
+export interface Team {
   id: string;
   name: string;
   description: string;
@@ -25,50 +39,7 @@ export interface Group {
   isPublic: boolean;
 }
 
-export interface GroupMembership {
-    userId: string;
-    groupId: string;
-    role: GroupRole;
-    user: {
-        name: string;
-        avatar: string;
-    }
-}
-
-export interface Activity {
-  id: number;
-  userId: string;
-  user: string;
-  challengeId: number;
-  action: string;
-  distance?: number; // in km
-  duration?: number; // in minutes
-  notes?: string;
-  timestamp: string;
-  time: string;
-  avatar: string;
-}
-
-export interface Challenge {
-  id: number;
-  title: string;
-  type: string;
-  goal: string;
-  participants: number;
-  maxParticipants?: number; // New field
-  endDate: string;
-  progress: number; // This would now represent progress towards the final milestone
-  isPublic: boolean;
-  milestones: Milestone[];
-  rules?: RuleSet;
-}
-
-export interface ActivityType {
-  name: string;
-  description: string;
-  icon: string; // URL or icon name
-}
-
+// --- User & Membership ---
 export interface User {
   name: string;
   email: string;
@@ -76,43 +47,45 @@ export interface User {
   bio: string;
 }
 
-export interface LeaderboardEntry {
-  rank: number;
-  name: string;
-  value: string;
-  avatar: string;
+export interface TeamMembership {
+    userId: string;
+    teamId: string; // Corrected from groupId
+    role: TeamRole;
+    user: {
+        name: string;
+        avatar: string;
+    }
 }
 
-
+// --- Activity & Social ---
+export interface Activity {
+  id: number;
+  userId: string;
+  user: string; // User's display name
+  challengeId: number;
+  action: string; // e.g., "logged a 10km run"
+  distance?: number; // in km
+  duration?: number; // in minutes
+  notes?: string;
+  timestamp: string; // ISO 8601 timestamp
+  time: string; // User-friendly time, e.g., "2h ago"
+  avatar: string;
+}
 
 export interface Comment {
   id: number;
   user: {
-    name: string;
+    name:string;
     avatar: string;
   };
   content: string;
   timestamp: string;
 }
 
-export interface Milestone {
+// --- UI & Other ---
+export interface LeaderboardEntry {
+  rank: number;
   name: string;
-  value: number;
+  value: string;
+  avatar: string;
 }
-
-export interface RuleSet {
-  minDuration?: number; // in minutes
-  minRepetitions?: number;
-}
-
-export interface ChallengeRulesProps {
-  rules: RuleSet;
-}
-
-
-
-
-
-
-
-

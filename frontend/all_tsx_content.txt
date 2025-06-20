@@ -1,0 +1,1191 @@
+Processing: ./src/pages/EditChallengePage.tsx
+------------------------
+import React from 'react';
+import {
+  Box, Heading, Text, VStack, Divider, HStack, Button,
+  AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, useDisclosure
+} from '@chakra-ui/react';
+import { Card } from '../components/common/Card';
+import { ChallengeForm } from '../components/challenges/ChallengeForm';
+import { existingChallengeData } from '../assets/fake_data/mockChallenges';
+
+
+const EditChallengePage: React.FC = () => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = React.useRef<HTMLButtonElement>(null);
+
+    const handleUpdateChallenge = (formData: any) => {
+        console.log(`Updating challenge ${existingChallengeData.id} with data:`, formData);
+        alert("Challenge updated successfully! (See console for data)");
+    };
+
+    return (
+        <Box maxW="4xl" mx="auto">
+            <Card p={8}>
+                <VStack spacing={8} align="stretch">
+                    <VStack textAlign="center">
+                        <Heading as="h2" size="xl">Challenge Settings</Heading>
+                        <Text color="gray.600">Update the details for your challenge.</Text>
+                    </VStack>
+                    
+                    <ChallengeForm 
+                        onSubmit={handleUpdateChallenge}
+                        isEditing={true}
+                        challengeToEdit={existingChallengeData}
+                    />
+
+                    <Divider />
+
+                    {/* Danger Zone */}
+                    <VStack align="stretch" spacing={4}>
+                        <Heading size="md" color="red.600">Danger Zone</Heading>
+                        <HStack justify="space-between" align="center">
+                            <Box>
+                                <Text fontWeight="bold">Delete this challenge</Text>
+                                <Text fontSize="sm" color="gray.600">Once deleted, it cannot be recovered.</Text>
+                            </Box>
+                            <Button colorScheme="red" variant="outline" onClick={onOpen}>
+                                Delete Challenge
+                            </Button>
+                        </HStack>
+                    </VStack>
+                </VStack>
+            </Card>
+
+            {/* Delete Confirmation Dialog */}
+            <AlertDialog
+                isOpen={isOpen}
+                leastDestructiveRef={cancelRef}
+                onClose={onClose}
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Delete Challenge
+                        </AlertDialogHeader>
+                        <AlertDialogBody>
+                            Are you sure? You can't undo this action afterwards. This will permanently delete the challenge and all its associated data.
+                        </AlertDialogBody>
+                        <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={onClose}>
+                                Cancel
+                            </Button>
+                            <Button colorScheme="red" onClick={onClose} ml={3}>
+                                Delete
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+        </Box>
+    );
+};
+export default EditChallengePage;
+
+
+
+Processing: ./src/pages/CreateChallengePage.tsx
+------------------------
+import React from 'react';
+import { Box, Heading, Text, VStack } from '@chakra-ui/react';
+import { Card } from '../components/common/Card';
+import { ChallengeForm } from '../components/challenges/ChallengeForm'; // Import the new reusable form
+
+const CreateChallengePage: React.FC = () => {
+    
+    const handleCreateChallenge = (formData: any) => {
+        // In a real app, you would send this data to your backend API
+        console.log("Creating new challenge with data:", formData);
+        alert("Challenge created successfully! (See console for data)");
+    };
+    
+    return (
+        <Box maxW="4xl" mx="auto">
+            <Card p={8}>
+                <VStack spacing={8}>
+                    <VStack textAlign="center">
+                        <Heading as="h2" size="xl">Create a New Challenge</Heading>
+                        <Text color="gray.600">Define the rules, set the goal, and invite others to join.</Text>
+                    </VStack>
+                    <ChallengeForm 
+                        onSubmit={handleCreateChallenge}
+                        isEditing={false} 
+                    />
+                </VStack>
+            </Card>
+        </Box>
+    );
+};
+export default CreateChallengePage;
+
+
+
+Processing: ./src/pages/ProfilePage.tsx
+------------------------
+import React from 'react';
+import { Avatar, Box, Button, Grid, Heading, Text, VStack, HStack } from '@chakra-ui/react';
+import { ChallengeCard } from '../components/challenges/ChallengeCard';
+import { User } from '../types';
+import { Card } from '../components/common/Card';
+import { mockChallenges } from '../assets/fake_data/mockChallenges';
+
+interface ProfilePageProps { onNavigate: (page: string) => void; }
+const mockUser: User = { name: "Alex Doe", email: "alex.doe@example.com", avatar: "https://placehold.co/128x128/3b82f6/ffffff?text=A", bio: "Fitness enthusiast turning goals into reality. Join me on a challenge!" };
+
+const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => (
+    <VStack spacing={8} align="stretch">
+        <Card p={6}>
+            <HStack spacing={6} align={{ base: 'center', md: 'flex-start' }} flexDir={{ base: 'column', md: 'row' }}>
+                <Avatar size="2xl" name={mockUser.name} src={mockUser.avatar} />
+                <VStack align={{ base: 'center', md: 'flex-start' }} flex="1">
+                    <Heading as="h2" size="lg">{mockUser.name}</Heading>
+                    <Text color="gray.600">{mockUser.email}</Text>
+                    <Text color="gray.700" maxW="lg" textAlign={{ base: 'center', md: 'left' }}>{mockUser.bio}</Text>
+                </VStack>
+                <Button colorScheme="gray" variant="outline">Edit Profile</Button>
+            </HStack>
+        </Card>
+        <Box>
+            <Heading as="h3" size="lg" mb={6}>Your Challenges</Heading>
+            <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={6}>
+                 {mockChallenges.map(challenge => (
+                    <ChallengeCard key={challenge.id} challenge={challenge} onSelect={() => onNavigate('dashboard')} />
+                ))}
+            </Grid>
+        </Box>
+    </VStack>
+);
+export default ProfilePage;
+
+
+
+Processing: ./src/pages/TeamsPage.tsx
+------------------------
+import React from 'react';
+import { Box, Button, Grid, Heading, Input, Text, VStack, HStack, Tag, Avatar, TagLabel } from '@chakra-ui/react';
+import { Card } from '../components/common/Card';
+import { Team } from '../types';
+import { UserTeamIcon } from '../components/common/Icons'; // Assuming LockClosedIcon exists
+
+interface TeamCardProps {
+    team: Team;
+    onSelect: (id: string) => void;
+}
+
+const TeamCard: React.FC<TeamCardProps> = ({ team, onSelect }) => (
+    <Card 
+        p={6} 
+        h="full"
+        display="flex"
+        flexDirection="column"
+        cursor="pointer"
+        transition="all 0.2s ease-in-out"
+        _hover={{ transform: 'translateY(-4px)', shadow: 'lg' }}
+        onClick={() => onSelect(team.id)}
+    >
+        <VStack spacing={3} align="stretch" flex="1">
+            <HStack justify="space-between">
+                <Avatar src={team.avatarUrl} name={team.name} />
+                <Tag size="sm" colorScheme={team.isPublic ? 'green' : 'gray'}>
+                    {team.isPublic ? 'Public' : 'Private'}
+                </Tag>
+            </HStack>
+            <Heading as="h3" size="md">{team.name}</Heading>
+            <Text fontSize="sm" color="gray.600" noOfLines={3}>{team.description}</Text>
+        </VStack>
+        <HStack mt={4} justify="space-between" color="gray.500" fontSize="sm">
+            <HStack>
+                <UserTeamIcon className="w-4 h-4" />
+                <Text>{team.memberCount} Members</Text>
+            </HStack>
+            <Button size="sm" variant="outline" colorScheme="orange">View</Button>
+        </HStack>
+    </Card>
+);
+
+const mockTeams: Team[] = [
+    { id: '1', name: 'Weekend Warriors', description: 'A casual team for weekend runners and cyclists aiming to stay active.', avatarUrl: 'https://placehold.co/64x64/34d399/ffffff?text=W', memberCount: 12, isPublic: true },
+    { id: '2', name: 'Trail Blazers Hiking Club', description: 'Exploring local trails every Saturday morning. All levels welcome!', avatarUrl: 'https://placehold.co/64x64/fb923c/ffffff?text=T', memberCount: 25, isPublic: true },
+    { id: '3', name: 'Office Step Challenge Crew', description: 'A private team for the annual Q3 step challenge at work.', avatarUrl: 'https://placehold.co/64x64/60a5fa/ffffff?text=O', memberCount: 8, isPublic: false },
+];
+
+const TeamsPage: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigate }) => {
+    return (
+        <VStack spacing={12} align="stretch">
+            <VStack spacing={2} textAlign="center">
+                <Heading as="h2" size="2xl" fontWeight="extrabold">Find Your Team</Heading>
+                <Text fontSize="lg" color="gray.600" maxW="2xl">Join a team to participate in team challenges or create your own to invite friends.</Text>
+            </VStack>
+            <HStack maxW="2xl" w="full" mx="auto">
+                <Input placeholder="Search for Teams..." />
+                <Button colorScheme="orange">Search</Button>
+                <Button colorScheme="green" onClick={() => onNavigate('createTeam')}>Create Team</Button>
+            </HStack>
+            <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={6}>
+                {mockTeams.map(team => (
+                    <TeamCard key={team.id} team={team} onSelect={() => onNavigate('teamDetails')} />
+                ))}
+            </Grid>
+        </VStack>
+    );
+};
+
+export default TeamsPage;
+
+
+
+Processing: ./src/pages/ChallengeDashboardPage.tsx
+------------------------
+import React from 'react';
+import { Box, Grid, Heading, Text, VStack, Button, Flex, useDisclosure } from '@chakra-ui/react';
+import { CommentsForum } from '../components/dashboard/CommentsForum'; 
+import { Card } from '../components/common/Card';
+import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../components/common/Icons';
+import { Challenge, Comment, LeaderboardEntry, Activity, RuleSet } from '../types';
+import { Icon, HStack } from '@chakra-ui/react';
+import { Leaderboard } from '../components/dashboard/Leaderboard';
+import { ProgressChart } from '../components/dashboard/ProgressChart';
+import { ActivityFeed } from '../components/dashboard/ActivityFeed'; 
+import { ChallengeRules } from '../components/dashboard/ChallengeRules';
+import { LogActivityModal } from '../components/dashboard/LogActivityModal'; // Import the new modal
+
+// Icon for the new button
+const LogActivityIcon: React.FC<{className?: string}> = ({ className }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </svg>
+);
+
+
+// Mock Data
+const mockChallenge: Challenge & { rules: RuleSet } = { 
+    id: 1, 
+    title: 'June Running Challenge', 
+    type: 'Running', 
+    participants: 42,
+    milestones: [], 
+    endDate: '2025-06-30', 
+    progress: 75, 
+    isPublic: true,
+    goal: '100 km', 
+    rules: {
+        minDuration: 20,
+        minRepetitions: 1
+    },
+    challengeType: 'individual', // Assuming this is a new field in Challenge
+};
+const mockComments: Comment[] = [
+    { id: 1, user: { name: 'Sarah', avatar: 'https://placehold.co/40x40/db2777/ffffff?text=S' }, content: 'Anyone have tips for running in the heat? Finding it tough this week!', timestamp: '3h ago' },
+    { id: 2, user: { name: 'Bob', avatar: 'https://placehold.co/40x40/14b8a6/ffffff?text=B' }, content: 'Early mornings are key for me! Also, electrolytes are a life-saver.', timestamp: '2h ago' },
+];
+const mockLeaderboard: LeaderboardEntry[] = [
+    { rank: 1, name: 'Alice', value: '82 km', avatar: 'https://placehold.co/40x40/f97316/ffffff?text=A' },
+    { rank: 2, name: 'Bob', value: '75 km', avatar: 'https://placehold.co/40x40/14b8a6/ffffff?text=B' },
+    { rank: 3, name: 'You', value: '71 km', avatar: 'https://placehold.co/40x40/3b82f6/ffffff?text=Y' },
+];
+const mockActivityFeed: Activity[] = [
+    { user: 'Alice', action: 'logged a 10km run.', time: '2h ago', avatar: 'https://placehold.co/40x40/f97316/ffffff?text=A', userId: "1", challengeId:1, id: 1, distance: 10, duration: 50, notes: '', timestamp: '2025-06-01T10:00:00Z' },
+    { user: 'You', action: 'added 7km to your progress.', time: '5h ago', avatar: 'https://placehold.co/40x40/3b82f6/ffffff?text=Y', userId: "2", challengeId:1, id: 2, distance: 7, duration: 35, notes: '', timestamp: '2025-06-01T12:00:00Z' },
+];
+
+
+const ChallengeDashboardPage: React.FC = () => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
+    return (
+        <>
+            <VStack spacing={8} align="stretch">
+                <Flex justify="space-between" align="center" wrap="wrap" gap={4}>
+                    <Box>
+                        <Heading as="h2" size="xl">{mockChallenge.title}</Heading>
+                        <Text color="gray.600">Push your limits and climb the leaderboard!</Text>
+                    </Box>
+                    <Button
+                        colorScheme="orange"
+                        leftIcon={<Icon as={LogActivityIcon} w={5} h={5} />}
+                        onClick={onOpen}
+                    >
+                        Log an Activity
+                    </Button>
+                </Flex>
+
+                <ChallengeRules rules={mockChallenge.rules} />
+
+                <Grid templateColumns={{ base: '1fr', lg: '1fr 2fr' }} gap={8} alignItems="start">
+                    <VStack spacing={8} align="stretch">
+                        <Card p={6}>
+                            <Heading as="h3" size="md" mb={4}>Details</Heading>
+                            <VStack spacing={3} align="stretch">
+                                <HStack><Icon as={TrophyIcon} w={6} h={6} color="orange.500" /> <Text>Goal: <Box as="span" fontWeight="bold">100 km</Box></Text></HStack>
+                                <HStack><Icon as={UserTeamIcon} w={6} h={6} color="blue.500" /> <Text><Box as="span" fontWeight="bold">{mockChallenge.participants}</Box> Participants</Text></HStack>
+                                <HStack><Icon as={CalendarIcon} w={6} h={6} color="red.500" /> <Text>Ends: <Box as="span" fontWeight="bold">{mockChallenge.endDate}</Box></Text></HStack>
+                            </VStack>
+                        </Card>
+                        <Leaderboard entries={mockLeaderboard} />
+                        <ActivityFeed activities={mockActivityFeed} />
+                    </VStack>
+                    <VStack spacing={8} align="stretch">
+                        <ProgressChart />
+                        <CommentsForum comments={mockComments} />
+                    </VStack>
+                </Grid>
+            </VStack>
+
+            {/* The Modal component is rendered here */}
+            <LogActivityModal isOpen={isOpen} onClose={onClose} />
+        </>
+    );
+};
+export default ChallengeDashboardPage;
+
+
+
+Processing: ./src/pages/HomePage.tsx
+------------------------
+import React from 'react';
+import { Box, Button, Grid, Heading, Input, Text, VStack, HStack } from '@chakra-ui/react';
+import { ChallengeCard } from '../components/challenges/ChallengeCard';
+import { mockChallenges } from '../assets/fake_data/mockChallenges';
+
+
+interface HomePageProps { onNavigate: (page: string) => void; }
+
+
+const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => (
+    <VStack spacing={12} align="stretch">
+        <VStack spacing={2} textAlign="center">
+            <Heading as="h2" size="2xl" fontWeight="extrabold">Find Your Next Challenge</Heading>
+            <Text fontSize="lg" color="gray.600" maxW="2xl">Join thousands of others in community-driven fitness challenges. Stay motivated, track progress, and achieve your goals together.</Text>
+        </VStack>
+        <HStack maxW="2xl" w="full" mx="auto">
+            <Input placeholder="Search challenges (e.g., 'Marathon Prep')" />
+            <Button colorScheme="orange">Search</Button>
+        </HStack>
+        <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }} gap={6}>
+            {mockChallenges.map(challenge => (
+                <ChallengeCard key={challenge.id} challenge={challenge} onSelect={() => onNavigate('dashboard')} />
+            ))}
+        </Grid>
+    </VStack>
+);
+export default HomePage;
+
+
+
+Processing: ./src/App.tsx
+------------------------
+import React, { useState } from 'react';
+import { ChakraProvider } from '@chakra-ui/react';
+import { AppLayout } from './components/layout/AppLayout';
+import HomePage from './pages/HomePage';
+import ChallengeDashboardPage from './pages/ChallengeDashboardPage';
+import CreateChallengePage from './pages/CreateChallengePage';
+import EditChallengePage from './pages/EditChallengePage';
+import ProfilePage from './pages/ProfilePage';
+import GroupsPage from './pages/TeamsPage';
+import theme from './theme'; // Import the custom theme
+
+export default function App() {
+    const [currentPage, setCurrentPage] = useState<string>('home');
+
+    const handleNavigate = (page: string) => {
+        setCurrentPage(page);
+        window.scrollTo(0, 0);
+    };
+
+    const renderPage = () => {
+        switch (currentPage) {
+            case 'home':
+                return <HomePage onNavigate={handleNavigate} />;
+            case 'dashboard':
+                return <ChallengeDashboardPage />;
+            case 'create':
+                return <CreateChallengePage />;
+            case 'profile':
+                 return <ProfilePage onNavigate={handleNavigate} />;
+            case 'edit':
+                return <EditChallengePage />;
+            case 'groups':
+                return <GroupsPage onNavigate={handleNavigate} />;
+            default:
+                return <HomePage onNavigate={handleNavigate} />;
+        }
+    };
+
+    return (
+        <ChakraProvider theme={theme}>
+            <AppLayout onNavigate={handleNavigate}>
+                {renderPage()}
+            </AppLayout>
+        </ChakraProvider>
+    );
+}
+
+
+
+Processing: ./src/assets/fake_data/mockChallenges.tsx
+------------------------
+import { Challenge } from '../../types/index';
+
+export const mockChallenges: Challenge[] = [
+    { id: 1, title: 'June Running Challenge', type: 'Running', goal: '100 km', participants: 42, endDate: '2025-06-30', progress: 75, isPublic: true, milestones: [{ name: "M1", value: 50 }], rules: { minDuration: 30, minRepetitions: 5 }, challengeType: 'individual' },
+    { id: 2, title: 'Community Stair Climb', type: 'Stair Climbing', goal: '2000 floors', participants: 18, endDate: '2025-07-15', progress: 40, isPublic: true, milestones: [{ name: "M1", value: 1000 }], rules: { minDuration: 20, minRepetitions: 10 }, challengeType: 'individual' },
+    { id: 3, title: 'Summer Biking Club', type: 'Biking', goal: '500 km', participants: 89, endDate: '2025-08-31', progress: 60, isPublic: true, milestones: [{ name: "M1", value: 250 }], rules: { minDuration: 60, minRepetitions: 3 }, challengeType: 'individual' },
+    { id: 4, title: 'Private: Team Wellness', type: 'Walking', goal: '1,000,000 steps', participants: 5, endDate: '2025-06-20', progress: 90, isPublic: false, milestones: [{ name: "M1", value: 500000 }], rules: { minDuration: 15, minRepetitions: 20 }, challengeType: 'individual' },
+    { id: 5, title: 'Yoga for Beginners', type: 'Yoga', goal: '30 sessions in 30 days', participants: 25, endDate: '2025-07-01', progress: 20, isPublic: true, milestones: [{ name: "M1", value: 15 }], rules: { minDuration: 10, minRepetitions: 1 }, challengeType: 'team' },
+];
+
+export const existingChallengeData: Challenge = {
+    id: 1,
+    title: "June Running Challenge",
+    type: "Running",
+    goal: "Run 100 miles in June",
+    participants: 42,
+    maxParticipants: 50,
+    endDate: "2025-06-30",
+    progress: 75,
+    isPublic: true,
+    milestones: [
+        { name: 'Warm-up', value: 25 },
+        { name: 'Halfway', value: 50 },
+        { name: 'Finish Line', value: 100 },
+    ],
+    rules: {
+        minDuration: 20
+    },
+    challengeType: 'individual' // Assuming this is a new field in Challenge
+};
+
+
+Processing: ./src/App.test.tsx
+------------------------
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import App from './App';
+
+test('renders learn react link', () => {
+  render(<App />);
+  const linkElement = screen.getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+
+
+
+Processing: ./src/index.tsx
+------------------------
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+// import './styles/main.css'; // Global styles can be added here if needed
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+
+
+Processing: ./src/components/dashboard/CommentsForum.tsx
+------------------------
+import React from 'react';
+import { Avatar, Button, Textarea, VStack, HStack, Text, Box, Heading } from '@chakra-ui/react';
+import { Comment } from '../../types';
+import { Card } from '../common/Card';
+
+interface CommentsForumProps {
+    comments: Comment[];
+}
+const mockUser = { avatar: "https://placehold.co/128x128/3b82f6/ffffff?text=A" };
+
+export const CommentsForum: React.FC<CommentsForumProps> = ({ comments }) => (
+    <Card p={6}>
+        <Heading as="h3" size="lg" mb={4}>Challenge Discussion</Heading>
+        <VStack spacing={6} align="stretch">
+            <HStack spacing={4} align="flex-start">
+                <Avatar src={mockUser.avatar} />
+                <VStack spacing={2} align="stretch" flex="1">
+                    <Textarea placeholder="Ask a question or share a tip..." />
+                    <Button colorScheme="orange" alignSelf="flex-end">Post Comment</Button>
+                </VStack>
+            </HStack>
+            <VStack spacing={4} pt={4} borderTopWidth="1px" borderColor="gray.200" align="stretch">
+                {comments.map((comment) => (
+                    <HStack key={comment.id} spacing={4} align="flex-start">
+                        <Avatar src={comment.user.avatar} name={comment.user.name} />
+                        <Box>
+                            <HStack>
+                                <Text fontWeight="semibold" fontSize="sm">{comment.user.name}</Text>
+                                <Text fontSize="xs" color="gray.500">{comment.timestamp}</Text>
+                            </HStack>
+                            <Text fontSize="sm" mt={1}>{comment.content}</Text>
+                        </Box>
+                    </HStack>
+                ))}
+            </VStack>
+        </VStack>
+    </Card>
+);
+
+
+
+Processing: ./src/components/dashboard/ProgressChart.tsx
+------------------------
+import React from 'react';
+import { Box, Heading } from '@chakra-ui/react';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js';
+import { Card } from '../common/Card';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
+
+const data = {
+    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+    datasets: [{
+        label: 'Your Progress (km)',
+        data: [15, 25, 40, 55, 71],
+        borderColor: '#f97316', // orange-500
+        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+        fill: true,
+        tension: 0.4,
+    },
+    {
+        label: 'Average Progress (km)',
+        data: [12, 22, 35, 50, 65],
+        borderColor: '#78716c', // stone-500
+        backgroundColor: 'rgba(120, 113, 108, 0.1)',
+        fill: true,
+        tension: 0.4,
+    }]
+};
+
+const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        y: { beginAtZero: true }
+    },
+    plugins: {
+        legend: {
+            position: 'top' as const,
+        },
+    },
+};
+
+export const ProgressChart: React.FC = () => (
+    <Card p={6}>
+        <Heading as="h3" size="lg" mb={4}>Progress Over Time</Heading>
+        <Box h={{ base: '250px', md: '320px' }}>
+            <Line data={data} options={options} />
+        </Box>
+    </Card>
+);
+
+
+
+Processing: ./src/components/dashboard/Leaderboard.tsx
+------------------------
+import React from 'react';
+import { Avatar, Box, Heading, HStack, Text, VStack } from '@chakra-ui/react';
+import { LeaderboardEntry } from '../../types';
+import { Card } from '../common/Card';
+
+interface LeaderboardProps {
+    entries: LeaderboardEntry[];
+}
+
+export const Leaderboard: React.FC<LeaderboardProps> = ({ entries }) => (
+    <Card p={6}>
+        <Heading as="h3" size="lg" mb={4}>Leaderboard</Heading>
+        <VStack spacing={4} align="stretch">
+            {entries.map((entry) => (
+                <HStack
+                    key={entry.rank}
+                    p={2}
+                    rounded="lg"
+                    bg={entry.name === 'You' ? 'orange.50' : 'transparent'}
+                    borderWidth={entry.name === 'You' ? '2px' : '0px'}
+                    borderColor="orange.200"
+                >
+                    <Text fontWeight="bold" color="gray.500" w={8}>{entry.rank}</Text>
+                    <Avatar src={entry.avatar} name={entry.name} size="sm" />
+                    <Text fontWeight="semibold" flex="1">{entry.name}</Text>
+                    <Text fontWeight="bold" color="orange.600">{entry.value}</Text>
+                </HStack>
+            ))}
+        </VStack>
+    </Card>
+);
+
+
+
+Processing: ./src/components/dashboard/ActivityFeed.tsx
+------------------------
+import React from 'react';
+import { Avatar, Box, Heading, HStack, Text, VStack } from '@chakra-ui/react';
+import { Activity } from '../../types';
+import { Card } from '../common/Card';
+
+interface ActivityFeedProps {
+    activities: Activity[];
+}
+
+export const ActivityFeed: React.FC<ActivityFeedProps> = ({ activities }) => (
+    <Card p={6}>
+        <Heading as="h3" size="lg" mb={4}>Latest Updates</Heading>
+        <VStack spacing={4} align="stretch">
+            {activities.map((activity, index) => (
+                <HStack key={index} spacing={4} align="flex-start">
+                    <Avatar src={activity.avatar} name={activity.user} size="sm" />
+                    <Box>
+                        <Text fontSize="sm">
+                            <Text as="span" fontWeight="bold">{activity.user}</Text>
+                            {' '}{activity.action}
+                        </Text>
+                        <Text fontSize="xs" color="gray.500">{activity.time}</Text>
+                    </Box>
+                </HStack>
+            ))}
+        </VStack>
+    </Card>
+);
+
+
+Processing: ./src/components/dashboard/LogActivityModal.tsx
+------------------------
+import React from 'react';
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightAddon,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  VStack,
+  Textarea
+} from '@chakra-ui/react';
+
+interface LogActivityModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export const LogActivityModal: React.FC<LogActivityModalProps> = ({ isOpen, onClose }) => {
+  const initialRef = React.useRef(null);
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} initialFocusRef={initialRef} isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Log Your Activity</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <VStack spacing={4}>
+            <FormControl isRequired>
+              <FormLabel>Distance</FormLabel>
+              <InputGroup>
+                <Input ref={initialRef} type="number" placeholder="e.g., 5.5" />
+                <InputRightAddon>km</InputRightAddon>
+              </InputGroup>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Duration (Optional)</FormLabel>
+               <InputGroup>
+                <Input type="number" placeholder="e.g., 30" />
+                <InputRightAddon>minutes</InputRightAddon>
+              </InputGroup>
+            </FormControl>
+             <FormControl>
+              <FormLabel>Notes (Optional)</FormLabel>
+              <Textarea placeholder="How did it go?" />
+            </FormControl>
+          </VStack>
+        </ModalBody>
+        <ModalFooter>
+          <Button variant="ghost" mr={3} onClick={onClose}>
+            Cancel
+          </Button>
+          <Button colorScheme="orange" onClick={onClose}>
+            Log Activity
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
+
+
+
+Processing: ./src/components/dashboard/ChallengeRules.tsx
+------------------------
+import React from 'react';
+import { Box, Heading, Text, HStack, Icon } from '@chakra-ui/react';
+import { Card } from '../common/Card';
+import { ChallengeRulesProps} from '../../types';
+import { ClipboardListIcon } from '../common/Icons'; // Importing Heroicons for the clipboard icon
+
+
+export const ChallengeRules: React.FC<ChallengeRulesProps> = ({ rules }) => {
+    // Determine if there are any rules to display
+    const hasRules = rules.minDuration || rules.minRepetitions;
+
+    if (!hasRules) {
+        return null; // Don't render anything if there are no rules
+    }
+
+    return (
+        <Card p={6}>
+            <HStack spacing={4}>
+                <Icon as={ClipboardListIcon} w={8} h={8} color="orange.500" />
+                <Box>
+                    <Heading as="h3" size="md">Challenge Rules</Heading>
+                    <HStack spacing={6} mt={1} color="gray.700" flexWrap="wrap">
+                        {rules.minDuration && (
+                            <Text fontSize="sm">Minimum Duration: <strong>{rules.minDuration} mins</strong> per activity</Text>
+                        )}
+                        {rules.minRepetitions && (
+                            <Text fontSize="sm">Minimum Reps: <strong>{rules.minRepetitions}</strong> per activity</Text>
+                        )}
+                    </HStack>
+                </Box>
+            </HStack>
+        </Card>
+    );
+};
+
+
+
+Processing: ./src/components/layout/AppLayout.tsx
+------------------------
+import React from 'react';
+import { Box, Container } from '@chakra-ui/react';
+import { Header } from './Header';
+
+interface AppLayoutProps {
+    children: React.ReactNode;
+    onNavigate: (page: string) => void;
+}
+
+export const AppLayout: React.FC<AppLayoutProps> = ({ children, onNavigate }) => (
+    <Box minH="100vh" display="flex" flexDirection="column" bg="gray.50" color="gray.800">
+        <Header onNavigate={onNavigate} />
+        <Container as="main" maxW="container.xl" py={{ base: 4, md: 8 }} flex="1">
+            {children}
+        </Container>
+    </Box>
+);
+
+
+
+Processing: ./src/components/layout/Header.tsx
+------------------------
+import React from 'react';
+import { Box, Flex, Heading, Link, Button, Avatar, HStack } from '@chakra-ui/react';
+import { PlusIcon } from '../common/Icons';
+
+interface HeaderProps {
+    onNavigate: (page: string) => void;
+}
+
+const mockUser = {
+    avatar: "https://placehold.co/128x128/3b82f6/ffffff?text=A",
+};
+
+export const Header: React.FC<HeaderProps> = ({ onNavigate }) => (
+    <Box
+        as="header"
+        bg="whiteAlpha.900"
+        backdropFilter="blur(10px)"
+        position="sticky"
+        top="0"
+        zIndex="sticky"
+        boxShadow="sm"
+        flexShrink={0}
+    >
+        <Flex
+            as="nav"
+            maxW="container.xl"
+            mx="auto"
+            px={6}
+            py={3}
+            justify="space-between"
+            align="center"
+        >
+            <Heading
+                as="h1"
+                size="md"
+                cursor="pointer"
+                onClick={() => onNavigate('home')}
+                _hover={{ color: 'orange.500' }}
+            >
+                <Box as="span" color="orange.500">Challenge</Box>Me
+            </Heading>
+            <HStack spacing={6} display={{ base: 'none', md: 'flex' }}>
+                <Link onClick={() => onNavigate('home')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Home</Link>
+                <Link onClick={() => onNavigate('dashboard')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Dashboard</Link>
+                <Link onClick={() => onNavigate('profile')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Profile</Link>
+                <Link onClick={() => onNavigate('teams')} fontWeight="semibold" _hover={{ color: 'orange.500' }}>Teams</Link>
+            </HStack>
+            <HStack spacing={4}>
+                <Button
+                    onClick={() => onNavigate('create')}
+                    colorScheme="orange"
+                    display={{ base: 'none', md: 'inline-flex' }}
+                    leftIcon={<PlusIcon className="w-4 h-4" />}
+                >
+                    New Challenge
+                </Button>
+                <Avatar
+                    src={mockUser.avatar}
+                    name="User Avatar"
+                    size="md"
+                    cursor="pointer"
+                    borderWidth="2px"
+                    borderColor="transparent"
+                    _hover={{ borderColor: 'orange.500' }}
+                    onClick={() => onNavigate('profile')}
+                />
+            </HStack>
+        </Flex>
+    </Box>
+);
+
+
+
+Processing: ./src/components/common/Icons.tsx
+------------------------
+import React from 'react';
+export const PlusIcon: React.FC<{className?: string}> = ({ className }) => (
+     <svg className={className} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </svg>
+);
+export const TrophyIcon: React.FC<{className?: string}> = ({ className }) => (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
+);
+export const UserTeamIcon: React.FC<{className?: string}> = ({ className }) => (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.962a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5zM10.5 1.5a9 9 0 105.672 16.342M10.5 1.5a9 9 0 00-5.672 16.342m11.344 0a3 3 0 10-5.672-1.634m5.672 1.634l-3.372-2.162M10.5 16.5a7.5 7.5 0 100-15 7.5 7.5 0 000 15z" /></svg>
+);
+export const CalendarIcon: React.FC<{className?: string}> = ({ className }) => (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M-4.5 12h22.5" /></svg>
+);
+
+export const ClipboardListIcon: React.FC<{className?: string}> = ({ className }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h.01M15 12h.01M10.5 16.5h.01M10.5 18h.01M15 16.5h.01M15 18h.01M4.5 21V5.25A2.25 2.25 0 016.75 3h10.5a2.25 2.25 0 012.25 2.25V21M4.5 21H19.5" />
+    </svg>
+);
+
+
+
+Processing: ./src/components/common/Card.tsx
+------------------------
+import React from 'react';
+import { Box, BoxProps } from '@chakra-ui/react';
+
+export const Card: React.FC<BoxProps> = ({ children, ...props }) => (
+    <Box bg="white" rounded="xl" shadow="sm" {...props}>
+        {children}
+    </Box>
+);
+
+
+
+Processing: ./src/components/challenges/ChallengeForm.tsx
+------------------------
+import React, { useState, useEffect } from 'react';
+import {
+  Box, Button, FormControl, FormLabel, Grid, Heading, Input, Radio, RadioGroup, HStack,
+  Text, Textarea, VStack, Select, InputGroup, InputRightAddon, IconButton,
+} from '@chakra-ui/react';
+import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
+import { Challenge, Milestone, ChallengeType } from '../../types';
+
+interface ChallengeFormProps {
+    challengeToEdit?: Challenge; // If provided, the form is in "edit" mode
+    onSubmit: (formData: any) => void;
+    isEditing: boolean;
+}
+
+const activityOptions = [
+  "Running", "Walking", "Cycling", "Swimming", "Stair Climbing", 
+  "Strength Training", "Yoga", "Hiking", "Rowing", "Meditation"
+];
+
+export const ChallengeForm: React.FC<ChallengeFormProps> = ({ challengeToEdit, onSubmit, isEditing }) => {
+    // Local state to manage form fields, pre-populated if editing
+    const [title, setTitle] = useState(challengeToEdit?.title || '');
+    const [description, setDescription] = useState(''); // Assuming description will be added to the Challenge type
+    const [milestones, setMilestones] = useState<Partial<Milestone>[]>(
+        challengeToEdit?.milestones || [{ name: 'Bronze', value: undefined }]
+    );
+    const [challengeType, setChallengeType] = useState<ChallengeType>(challengeToEdit?.challengeType || 'individual');
+
+    // Populate description when editing data is available
+    useEffect(() => {
+      if(challengeToEdit) {
+        // setDescription(challengeToEdit.description || ''); 
+      }
+    }, [challengeToEdit]);
+
+
+    const handleMilestoneChange = (index: number, field: keyof Milestone, value: string | number) => {
+        const newMilestones = [...milestones];
+        if (field === 'value') {
+            newMilestones[index][field] = Number(value) as any; // Explicitly cast to avoid type mismatch
+        } else {
+            newMilestones[index][field] = value as any; // Explicitly cast to avoid type mismatch
+        }
+        setMilestones(newMilestones);
+    };
+    
+
+    const addMilestone = () => {
+        setMilestones([...milestones, { name: '', value: undefined }]);
+    };
+
+    const removeMilestone = (index: number) => {
+        if (milestones.length > 1) {
+            const newMilestones = milestones.filter((_, i) => i !== index);
+            setMilestones(newMilestones);
+        }
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        // Construct form data object to pass up
+        const formData = { title, description, milestones, challengeType /* ...other fields */ };
+        onSubmit(formData);
+    };
+    
+    return (
+        <VStack as="form" spacing={6} w="full" align="stretch" onSubmit={handleSubmit}>
+            
+            <FormControl as="fieldset" isRequired>
+                <FormLabel as="legend">Challenge Type</FormLabel>
+                <RadioGroup onChange={(val: ChallengeType) => setChallengeType(val)} value={challengeType}>
+                    <HStack spacing={4}>
+                        <Radio value="individual" colorScheme="orange">Individual Challenge</Radio>
+                        <Radio value="team" colorScheme="orange">Group Challenge</Radio>
+                    </HStack>
+                </RadioGroup>
+                <Text fontSize="xs" color="gray.500" mt={1}>
+                    {challengeType === 'individual' 
+                        ? "Only individual users can join this challenge."
+                        : "Only teams can join this challenge."
+                    }
+                </Text>
+            </FormControl>
+
+            <FormControl isRequired>
+                <FormLabel>Challenge Title</FormLabel>
+                <Input 
+                    placeholder="e.g., August 30-Day Plank Challenge" 
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                />
+            </FormControl>
+            <FormControl>
+                <FormLabel>Description</FormLabel>
+                <Textarea 
+                    placeholder="Briefly describe your challenge, its rules, and what makes it special."
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)} 
+                />
+            </FormControl>
+            <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={6}>
+                <FormControl isRequired>
+                    <FormLabel>Activity Type</FormLabel>
+                    <Select placeholder="Select activity" defaultValue={isEditing ? challengeToEdit?.type : ''}>
+                        {activityOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </Select>
+                </FormControl>
+                 <FormControl>
+                    <FormLabel>Max {challengeType === 'team' ? 'Groups' : 'Participants'} (Optional)</FormLabel>
+                    <Input type="number" placeholder="e.g., 50" defaultValue={isEditing ? challengeToEdit?.maxParticipants : ''} />
+                </FormControl>
+            </Grid>
+
+            <FormControl isRequired>
+                <FormLabel>End Date</FormLabel>
+                <Input type="date" defaultValue={isEditing ? challengeToEdit?.endDate : ''} />
+            </FormControl>
+
+            <FormControl>
+                <FormLabel>Challenge Rules (Optional)</FormLabel>
+                <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={6}>
+                    <InputGroup>
+                        <Input type="number" placeholder="Minimum Duration" defaultValue={isEditing ? challengeToEdit?.rules?.minDuration : ''} />
+                        <InputRightAddon>minutes</InputRightAddon>
+                    </InputGroup>
+                    <InputGroup>
+                        <Input type="number" placeholder="Minimum Repetitions" defaultValue={isEditing ? challengeToEdit?.rules?.minRepetitions : ''} />
+                        <InputRightAddon>reps</InputRightAddon>
+                    </InputGroup>
+                </Grid>
+            </FormControl>
+            
+            <FormControl isRequired>
+                <FormLabel>Milestone Goals</FormLabel>
+                 <VStack spacing={4} align="stretch">
+                    {milestones.map((milestone, index) => (
+                        <HStack key={index} spacing={2}>
+                            <Input 
+                                placeholder={`Milestone ${index + 1} Name`} 
+                                value={milestone.name}
+                                onChange={(e) => handleMilestoneChange(index, 'name', e.target.value)}
+                            />
+                            <Input 
+                                type="number" 
+                                placeholder="Goal Value (e.g., 100)" 
+                                value={milestone.value || ''}
+                                onChange={(e) => handleMilestoneChange(index, 'value', e.target.value)}
+                            />
+                            <IconButton 
+                                aria-label="Remove milestone" 
+                                icon={<DeleteIcon />} 
+                                colorScheme="red"
+                                variant="ghost"
+                                onClick={() => removeMilestone(index)}
+                                isDisabled={milestones.length <= 1}
+                            />
+                        </HStack>
+                    ))}
+                    <Button
+                        leftIcon={<AddIcon />}
+                        size="sm"
+                        variant="outline"
+                        colorScheme="orange"
+                        onClick={addMilestone}
+                    >
+                        Add Milestone
+                    </Button>
+                </VStack>
+            </FormControl>
+
+            <FormControl as="fieldset">
+                <FormLabel as="legend">Visibility</FormLabel>
+                <RadioGroup defaultValue={isEditing ? (challengeToEdit?.isPublic ? 'public' : 'private') : 'public'}>
+                    <HStack spacing={4}>
+                        <Radio value="public" colorScheme="orange">Public</Radio>
+                        <Radio value="private" colorScheme="orange">Private</Radio>
+                    </HStack>
+                </RadioGroup>
+            </FormControl>
+            <HStack justify="flex-end" pt={4}>
+                <Button type="submit" colorScheme="orange" size="lg">
+                    {isEditing ? 'Update Challenge' : 'Create Challenge'}
+                </Button>
+            </HStack>
+        </VStack>
+    );
+};
+
+
+
+Processing: ./src/components/challenges/ChallengeCard.tsx
+------------------------
+import React from 'react';
+import { Badge, Box, Heading, Progress, Text, VStack, HStack, Icon, Tag } from '@chakra-ui/react';
+import { Challenge, ChallengeType } from '../../types'; // Ensure ChallengeType is imported
+import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../common/Icons';
+
+// A new icon for the Individual type
+const UserIcon: React.FC<{className?: string}> = ({ className }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+    </svg>
+);
+
+
+interface ChallengeCardProps {
+    challenge: Challenge;
+    onSelect: (id: number) => void;
+}
+
+export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelect }) => (
+    <Box
+      as="div"
+      onClick={() => onSelect(challenge.id)}
+      cursor="pointer"
+      bg="white"
+      rounded="xl"
+      shadow="sm"
+      p={6}
+      h="full"
+      display="flex"
+      flexDirection="column"
+      transition="all 0.2s ease-in-out"
+      _hover={{ transform: 'translateY(-4px)', shadow: 'lg' }}
+    >
+      <VStack spacing={3} align="stretch" flex="1">
+        <HStack justify="space-between">
+          <Badge colorScheme={challenge.isPublic ? 'teal' : 'gray'}>{challenge.type}</Badge>
+          
+          {/* New Tag for Challenge Type */}
+          <Tag size="sm" variant="subtle" colorScheme={challenge.challengeType === 'team' ? 'purple' : 'blue'}>
+             <HStack spacing={1}>
+                <Icon 
+                    as={challenge.challengeType === 'team' ? UserTeamIcon : UserIcon} 
+                    w={4} h={4}
+                />
+                <Text>{challenge.challengeType === 'team' ? 'Team' : 'Individual'}</Text>
+             </HStack>
+          </Tag>
+        </HStack>
+        <Heading as="h3" size="sm">{challenge.title}</Heading>
+        <VStack spacing={2} align="stretch" fontSize="sm" color="gray.600">
+          <HStack>
+            <Icon as={TrophyIcon} w={5} h={5} color="orange.400" /> 
+            {/* Logic would need to find the final milestone goal */}
+            <Text>Final Goal: {challenge.milestones[challenge.milestones.length - 1]?.value} points</Text>
+          </HStack>
+          <HStack>
+            <Icon as={UserTeamIcon} w={5} h={5} color="blue.400" /> 
+            <Text>{challenge.participants} {challenge.challengeType === 'team' ? 'Teams' : 'Participants'}</Text>
+          </HStack>
+          <HStack>
+            <Icon as={CalendarIcon} w={5} h={5} color="red.400" /> 
+            <Text>Ends: {challenge.endDate}</Text>
+          </HStack>
+        </VStack>
+      </VStack>
+      <Box mt={4}>
+        <Progress value={challenge.progress} colorScheme="orange" size="sm" rounded="full" />
+        <Text textAlign="right" fontSize="xs" color="gray.500" mt={1}>{challenge.progress}% complete</Text>
+      </Box>
+    </Box>
+);
+
+
+

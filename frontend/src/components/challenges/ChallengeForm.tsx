@@ -7,7 +7,7 @@ import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import { Challenge, Milestone, ChallengeType } from '../../types';
 
 interface ChallengeFormProps {
-    challengeToEdit?: Challenge; // If provided, the form is in "edit" mode
+    challengeToEdit?: Challenge;
     onSubmit: (formData: any) => void;
     isEditing: boolean;
 }
@@ -18,47 +18,39 @@ const activityOptions = [
 ];
 
 export const ChallengeForm: React.FC<ChallengeFormProps> = ({ challengeToEdit, onSubmit, isEditing }) => {
-    // Local state to manage form fields, pre-populated if editing
+    // Form state, pre-populated if editing
     const [title, setTitle] = useState(challengeToEdit?.title || '');
-    const [description, setDescription] = useState(''); // Assuming description will be added to the Challenge type
+    const [description, setDescription] = useState(challengeToEdit?.description || '');
     const [milestones, setMilestones] = useState<Partial<Milestone>[]>(
         challengeToEdit?.milestones || [{ name: 'Bronze', value: undefined }]
     );
     const [challengeType, setChallengeType] = useState<ChallengeType>(challengeToEdit?.challengeType || 'individual');
 
-    // Populate description when editing data is available
-    useEffect(() => {
-      if(challengeToEdit) {
-        // setDescription(challengeToEdit.description || ''); 
-      }
-    }, [challengeToEdit]);
-
-
     const handleMilestoneChange = (index: number, field: keyof Milestone, value: string | number) => {
         const newMilestones = [...milestones];
+        const milestone = { ...newMilestones[index] };
+
         if (field === 'value') {
-            newMilestones[index][field] = Number(value) as any; // Explicitly cast to avoid type mismatch
+            milestone.value = Number(value);
         } else {
-            newMilestones[index][field] = value as any; // Explicitly cast to avoid type mismatch
+            milestone.name = String(value);
         }
+        newMilestones[index] = milestone;
         setMilestones(newMilestones);
     };
     
-
     const addMilestone = () => {
         setMilestones([...milestones, { name: '', value: undefined }]);
     };
 
     const removeMilestone = (index: number) => {
         if (milestones.length > 1) {
-            const newMilestones = milestones.filter((_, i) => i !== index);
-            setMilestones(newMilestones);
+            setMilestones(milestones.filter((_, i) => i !== index));
         }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Construct form data object to pass up
         const formData = { title, description, milestones, challengeType /* ...other fields */ };
         onSubmit(formData);
     };
@@ -71,13 +63,13 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({ challengeToEdit, o
                 <RadioGroup onChange={(val: ChallengeType) => setChallengeType(val)} value={challengeType}>
                     <HStack spacing={4}>
                         <Radio value="individual" colorScheme="orange">Individual Challenge</Radio>
-                        <Radio value="group" colorScheme="orange">Group Challenge</Radio>
+                        <Radio value="team" colorScheme="orange">Team Challenge</Radio>
                     </HStack>
                 </RadioGroup>
                 <Text fontSize="xs" color="gray.500" mt={1}>
                     {challengeType === 'individual' 
                         ? "Only individual users can join this challenge."
-                        : "Only groups can join this challenge."
+                        : "Only teams can join this challenge."
                     }
                 </Text>
             </FormControl>
@@ -106,7 +98,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({ challengeToEdit, o
                     </Select>
                 </FormControl>
                  <FormControl>
-                    <FormLabel>Max {challengeType === 'group' ? 'Groups' : 'Participants'} (Optional)</FormLabel>
+                    <FormLabel>Max {challengeType === 'team' ? 'Teams' : 'Participants'} (Optional)</FormLabel>
                     <Input type="number" placeholder="e.g., 50" defaultValue={isEditing ? challengeToEdit?.maxParticipants : ''} />
                 </FormControl>
             </Grid>
@@ -137,7 +129,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({ challengeToEdit, o
                         <HStack key={index} spacing={2}>
                             <Input 
                                 placeholder={`Milestone ${index + 1} Name`} 
-                                value={milestone.name}
+                                value={milestone.name || ''}
                                 onChange={(e) => handleMilestoneChange(index, 'name', e.target.value)}
                             />
                             <Input 

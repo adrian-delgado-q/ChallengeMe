@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge, Box, Heading, Progress, Text, VStack, HStack, Icon, Tag } from '@chakra-ui/react';
 import { Challenge, ChallengeType } from '../../types'; // Ensure ChallengeType is imported
-import { TrophyIcon, UserGroupIcon, CalendarIcon } from '../common/Icons';
+import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../common/Icons';
 
 // A new icon for the Individual type
 const UserIcon: React.FC<{className?: string}> = ({ className }) => (
@@ -36,13 +36,13 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
           <Badge colorScheme={challenge.isPublic ? 'teal' : 'gray'}>{challenge.type}</Badge>
           
           {/* New Tag for Challenge Type */}
-          <Tag size="sm" variant="subtle" colorScheme={challenge.challengeType === 'group' ? 'purple' : 'blue'}>
+          <Tag size="sm" variant="subtle" colorScheme={challenge.challengeType === 'team' ? 'purple' : 'blue'}>
              <HStack spacing={1}>
                 <Icon 
-                    as={challenge.challengeType === 'group' ? UserGroupIcon : UserIcon} 
+                    as={challenge.challengeType === 'team' ? UserTeamIcon : UserIcon} 
                     w={4} h={4}
                 />
-                <Text>{challenge.challengeType === 'group' ? 'Group' : 'Individual'}</Text>
+                <Text>{challenge.challengeType === 'team' ? 'Team' : 'Individual'}</Text>
              </HStack>
           </Tag>
         </HStack>
@@ -54,8 +54,8 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
             <Text>Final Goal: {challenge.milestones[challenge.milestones.length - 1]?.value} points</Text>
           </HStack>
           <HStack>
-            <Icon as={UserGroupIcon} w={5} h={5} color="blue.400" /> 
-            <Text>{challenge.participants} {challenge.challengeType === 'group' ? 'Groups' : 'Participants'}</Text>
+            <Icon as={UserTeamIcon} w={5} h={5} color="blue.400" /> 
+            <Text>{challenge.participants} {challenge.challengeType === 'team' ? 'Teams' : 'Participants'}</Text>
           </HStack>
           <HStack>
             <Icon as={CalendarIcon} w={5} h={5} color="red.400" /> 
