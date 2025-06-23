@@ -1,22 +1,28 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../prisma-generated-client"
+  provider        = "prisma-client-js"
+  output          = "../prisma-generated-client"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("SUPABASE_DB_URL")
+  schemas  = ["public", "auth"]
 }
 
 // --- Enums ---
 enum TeamRole {
   ADMIN
   MEMBER
+
+  @@schema("public")
 }
 
 enum ChallengeParticipantType {
   INDIVIDUAL
   TEAM
+
+  @@schema("public")
 }
 
 // --- Models ---
@@ -24,6 +30,7 @@ enum ChallengeParticipantType {
 // NOTE: This model is a representation of your external `auth.users` table.
 // Defining it here allows Prisma to create explicit, type-safe relationships
 // with the rest of your schema.
+
 model User {
   id String @id @db.Uuid
 
@@ -35,6 +42,9 @@ model User {
   activities        Activity[]
   posts             Post[]
   comments          Comment[]
+
+  @@map("users")
+  @@schema("auth")
 }
 
 model Team {
@@ -53,6 +63,8 @@ model Team {
   teamMemberships  TeamMembership[]
   // A team can participate in multiple challenges
   challengeEntries ChallengeParticipant[]
+
+  @@schema("public")
 }
 
 model TeamMembership {
@@ -69,6 +81,7 @@ model TeamMembership {
 
   // This unique constraint is excellent for preventing duplicate memberships.
   @@unique([teamId, userId])
+  @@schema("public")
 }
 
 model Challenge {
@@ -89,6 +102,8 @@ model Challenge {
   participants ChallengeParticipant[]
   activities   Activity[]
   posts        Post[]
+
+  @@schema("public")
 }
 
 // CORE Refactored to remove the ambiguous polymorphic relation.
@@ -113,6 +128,7 @@ model ChallengeParticipant {
   // Ensures a user or team can't join the same challenge twice.
   @@unique([challengeId, userId])
   @@unique([challengeId, teamId])
+  @@schema("public")
 }
 
 model Activity {
@@ -129,6 +145,8 @@ model Activity {
   userId      String?              @db.Uuid
   Challenge   Challenge?           @relation(fields: [challengeId], references: [id])
   challengeId String?              @db.Uuid
+
+  @@schema("public")
 }
 
 model Post {
@@ -146,6 +164,8 @@ model Post {
   userId      String?              @db.Uuid
   Challenge   Challenge?           @relation(fields: [challengeId], references: [id])
   challengeId String?              @db.Uuid
+
+  @@schema("public")
 }
 
 model Comment {
@@ -159,4 +179,6 @@ model Comment {
   // Explicit relations
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
   post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@schema("public")
 }
