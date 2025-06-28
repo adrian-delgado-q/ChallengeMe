@@ -7,8 +7,9 @@ This document outlines our hybrid approach to managing the PostgreSQL database s
 ## Prerequisites
 
 - **Node.js and npm**: Required for Prisma commands.
-- **Atlas CLI**: Install the command-line tool (v0.35.0 or newer) from [atlasgo.io](https://atlasgo.io).
-- **.env File**: A `.env` file must exist in the project root (`backend/`) containing the `SUPABASE_DB_URL`.
+- **Atlas CLI**: Install the command-line tool from [atlasgo.io](https://atlasgo.io).
+- **Docker**: Required for the development database environment specified in the Atlas configuration.
+- **A `.database.env` file**: This file must exist in the project root containing the `SUPABASE_DB_URL`.
 
 ---
 
@@ -19,95 +20,81 @@ Our database's desired state is defined by merging two sources using `atlas/atla
 - `prisma/schema.prisma`: Contains our primary application tables, columns, and relations.
 - `atlas/trigger_schema.hcl`: Contains custom functions and triggers that Prisma cannot manage.
 
-The main configuration file, `atlas/atlas.hcl`, orchestrates this merge:
+The main configuration file, `atlas/atlas.hcl`, orchestrates this.
 
-```hcl
-// atlas/atlas.hcl - Final Working Version
-
-data "external_schema" "prisma" {
-  program = [
-    "npx", "prisma", "migrate", "diff",
-    "--from-empty", "--to-schema-datamodel",
-    "prisma/schema.prisma", "--script"
-  ]
-}
-
-data "hcl_schema" "triggers" {
-  path = "atlas/trigger_schema.hcl"
-}
-
-env "supabase" {
-  url = getenv("SUPABASE_DB_URL")
-  dev = "docker://postgres/16/dev?search_path=public,auth"
-
-  schema {
-    src = [
-      data.external_schema.prisma.url,
-      data.hcl_schema.triggers.url
-    ]
-  }
-
-  migration {
-    dir     = "file://atlas/migrations"
-    exclude = ["_prisma_migrations"]
-  }
-}
-```
-
----
 ## Workflow & Commands
 
-All commands must be run from the project root (`backend/`) directory.
+All commands must be run from the `backend/atlas` directory.
 
-### Step 1: Load Environment Variables (Crucial)
+### Step 1: Navigate to the Atlas Directory and Load Environment Variables
 
-Atlas reads the database URL from your shell's environment. Run this command once per terminal session:
+Atlas reads the database URL from your shell's environment. This must be done once per terminal session.
 
 ```bash
-# This command loads variables from your .env file into the current session
-export $(grep -v '^#' .database.env | xargs)
+# Navigate to the atlas directory from the project root
+cd atlas
+
+# Load variables from your .database.env file (located in the parent directory)
+export $(grep -v '^#' ../.database.env | xargs)
 ```
 
 > **Troubleshooting:**
-> The error `required flag(s) "url" not set` means you forgot to run this `export` command.
+> If you see an error like `required flag(s) "url" not set`, it means you have not successfully run the `export` command in your current terminal session.
 
----
+### Step 2: Generate a New Migration File
 
-### Step 2: Inspect Changes (Dry Run)
-
-To safely preview the differences between your local schema files and the live database without making changes, use `--dry-run`:
+After modifying `prisma/schema.prisma` or `atlas/trigger_schema.hcl`, generate a versioned migration file. Atlas compares the desired state (defined in `atlas.hcl`) against the current state of the migrations directory and generates the necessary SQL.
 
 ```bash
-# This shows the SQL plan to make the database match your local schema.
-atlas schema apply --env supabase --dry-run -c "file://atlas/atlas.hcl"
+# Generate a new migration file with a descriptive name.
+# Replace "add_user_bio" with a meaningful description of your changes.
+atlas migrate diff --env supabase "add_user_bio"
 ```
 
----
+This will create a new `.sql` file inside the `atlas/migrations/` directory. It is crucial to review this file for correctness before committing it to version control.
 
-### Step 3: Generating and Applying Migrations
+### Step 3: Apply Migrations to the Supabase Database
 
-We use a versioned workflow for all schema changes intended for production.
-
-#### 3.A: Generate a New Migration File
-
-After modifying `schema.prisma` or `trigger_schema.hcl`, generate a migration file. Atlas calculates the required SQL changes:
+To apply any pending (newly created) migration files to the live Supabase database, use the `apply` command.
 
 ```bash
-# Generate a new migration file with a descriptive name
-atlas migrate diff --env supabase "add_new_feature_description"
-```
-
-This creates a new `.sql` file in `atlas/migrations/`. Review this file and commit it to version control.
-
-#### 3.B: Apply Migrations
-
-To apply pending migrations to the database, run:
-
-```bash
-# Connects to the database and runs any new migration files.
+# Connects to the Supabase database and executes any new migration files.
 atlas migrate apply --env supabase
 ```
 
-This is the standard command for updating staging and production environments.
+This is the standard and safe command for updating your database. It relies on the `atlas_schema_revisions` table to determine which migrations have already been applied.
 
+### Step 4 (Optional): Handling Baselines for Existing Databases
 
+If you are initializing Atlas on a pre-existing database that already has a schema, you may need to set a "baseline" migration. This tells Atlas to assume all migrations up to a certain version have already been applied, preventing errors from trying to re-create existing tables.
+
+```bash
+# This command applies migrations from the specified directory,
+# but marks the version '20250627044037' as the baseline.
+# Atlas will not attempt to run this migration or any before it.
+atlas migrate apply --env supabase --dir file://migrations/1.0.0 --baseline 20250627044037
+```
+
+**Note:** The `--baseline` flag is typically a one-time operation during setup. For all subsequent updates, use the standard `atlas migrate apply` command.
+
+### Utility Commands
+
+#### Recalculate Migration Directory Hash
+
+If you manually edit or reorder migration files, the checksum file (`atlas.sum`) will become invalid. You must re-calculate the hash for the directory.
+
+```bash
+# Re-computes the checksum for a specific migration directory.
+atlas migrate hash --dir file://migrations/1.0.0
+```
+
+#### Formatting Atlas Files
+
+To ensure consistent formatting of your `.hcl` files:
+
+```bash
+# Formats all .hcl files in the current directory.
+atlas format
+```
+
+```

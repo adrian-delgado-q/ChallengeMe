@@ -1,5 +1,6 @@
-data "hcl_schema" "triggers" {
-  path = "atlas/trigger_schema.hcl"
+variable "semver" {
+  type    = string
+  default = "1.0.0"
 }
 
 data "external_schema" "prisma" {
@@ -10,26 +11,35 @@ data "external_schema" "prisma" {
     "diff",
     "--from-empty",
     "--to-schema-datamodel",
-    "prisma/schema.prisma",
+    "../prisma/schema.prisma",
     "--script"
   ]
 }
 
-data "composite_schema" "merged" {
-  schema "public" {
+data "composite_schema" "prisma-extended" {
+  schema {
     url = data.external_schema.prisma.url
   }
-  schema "public" {
-    url = data.hcl_schema.triggers.url
+  schema {
+    url = "file://triggers_and_functions.sql"
   }
 }
 
 env "supabase" {
+
   url = getenv("SUPABASE_DB_URL")
-  dev = "docker://postgres/16/dev?search_path=public,auth"
-  src = data.composite_schema.merged.url
+  # For local development in Supabase
+  # dev = "postgresql://postgres:postgres@localhost:54322/postgres?sslmode=disable"
+  dev = "docker://postgres/16/dev"
+  src = data.composite_schema.prisma-extended.url
   migration {
-    dir     = "file://atlas/migrations"
+    dir     = "file://migrations/${var.semver}"
     exclude = ["_prisma_migrations"]
+  }
+  lint {
+    review = ALWAYS
+    destructive {
+      error = false
+    }
   }
 }
