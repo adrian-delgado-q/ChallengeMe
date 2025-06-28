@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-ts"
-  output          = "./database/prisma-generated-client"
+  output          = "./prisma-generated-client"
   previewFeatures = ["multiSchema"]
 }
 
@@ -100,22 +100,25 @@ model Challenge {
 }
 
 model ChallengeParticipant {
-  id          String   @id @default(uuid()) @db.Uuid
-  challengeId String   @db.Uuid
-  userId      String?  @db.Uuid
-  teamId      String?  @db.Uuid
-  joinedAt    DateTime @default(now()) @db.Timestamptz(6)
+  id          String    @id @default(uuid()) @db.Uuid
+  challengeId String    @db.Uuid
+  userId      String?   @db.Uuid
+  teamId      String?   @db.Uuid
+  joinedAt    DateTime  @default(now()) @db.Timestamptz(6)
 
-  challenge  Challenge  @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  user       Profile?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  team       Team?      @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  activities Activity[]
-  posts      Post[]
+  challenge   Challenge  @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  user        Profile?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team        Team?      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  activities  Activity[]
+  posts       Post[]
 
-  // NOTE: The unique constraints have been removed from here.
-  // They are now defined as proper partial unique indexes in trigger_schema.hcl
-  // to correctly handle NULL values for userId or teamId.
   @@schema("public")
+
+  // While Prisma won't explicitly show the `WHERE` clause for partial indexes,
+  // it's good practice to reflect the *existence* of these indexes using `@@index`.
+  // Atlas handles the actual creation of the partial indexes.
+  @@index([challengeId, userId], name: "idx_challengeparticipant_challengeid_userid_unique")
+  @@index([challengeId, teamId], name: "idx_challengeparticipant_challengeid_teamid_unique")
 }
 
 model Activity {
