@@ -11,8 +11,12 @@ export interface Milestone {
 }
 
 export interface RuleSet {
-  minDuration?: number; 
+  minDuration?: number;
   minRepetitions?: number;
+}
+
+export interface ChallengeRulesProps {
+  rules: RuleSet;
 }
 
 export interface Challenge {
@@ -21,7 +25,7 @@ export interface Challenge {
   description?: string;
   type: string;
   challengeType: ChallengeType;
-  participants: number; 
+  participants: number;
   maxParticipants?: number;
   endDate: string;
   progress: number;
@@ -48,13 +52,13 @@ export interface User {
 }
 
 export interface TeamMembership {
-    userId: string;
-    teamId: string; // Corrected from groupId
-    role: TeamRole;
-    user: {
-        name: string;
-        avatar: string;
-    }
+  userId: string;
+  teamId: string; // Corrected from groupId
+  role: TeamRole;
+  user: {
+    name: string;
+    avatar: string;
+  }
 }
 
 // --- Activity & Social ---
@@ -75,7 +79,7 @@ export interface Activity {
 export interface Comment {
   id: number;
   user: {
-    name:string;
+    name: string;
     avatar: string;
   };
   content: string;
@@ -88,4 +92,14 @@ export interface LeaderboardEntry {
   name: string;
   value: string;
   avatar: string;
+}
+
+
+// --- GraphQL Query Responses ---
+export interface TeamsQueryResponse {
+  teamCollection: {
+    edges: {
+      node: Team;
+    }[];
+  };
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
+import { AuthProvider } from './contexts/AuthContext';
 import { AppLayout } from './components/layout/AppLayout';
 import HomePage from './pages/HomePage';
 import ChallengeDashboardPage from './pages/ChallengeDashboardPage';
@@ -38,9 +39,11 @@ export default function App() {
 
     return (
         <ChakraProvider theme={theme}>
-            <AppLayout onNavigate={handleNavigate}>
-                {renderPage()}
-            </AppLayout>
+            <AuthProvider>
+                <AppLayout onNavigate={handleNavigate}>
+                    {renderPage()}
+                </AppLayout>
+            </AuthProvider>
         </ChakraProvider>
     );
 }
