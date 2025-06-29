@@ -1,4 +1,4 @@
-import { PrismaClient, TeamRole, ChallengeParticipantType } from '../prisma-generated-client';
+import { PrismaClient, TeamRole, ChallengeParticipantType } from '../../prisma/prisma-generated-client/client';
 import { faker } from '@faker-js/faker';
 import dotenv from 'dotenv';
 

@@ -16,14 +16,22 @@ data "external_schema" "prisma" {
   ]
 }
 
+data "hcl_schema" "triggers_and_functions" {
+  path = "hcl/triggers_and_functions.hcl"
+}
+
 data "composite_schema" "prisma-extended" {
   schema {
     url = data.external_schema.prisma.url
   }
   schema {
-    url = "file://triggers_and_functions.sql"
+    url = data.hcl_schema.triggers_and_functions.url
+  }
+  schema {
+    url = "file://sql/partial_unique_indexes.sql"
   }
 }
+
 
 env "supabase" {
 

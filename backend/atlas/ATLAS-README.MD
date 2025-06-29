@@ -77,6 +77,13 @@ atlas migrate apply --env supabase --dir file://migrations/1.0.0 --baseline 2025
 
 **Note:** The `--baseline` flag is typically a one-time operation during setup. For all subsequent updates, use the standard `atlas migrate apply` command.
 
+### Step 5 (Optional): Inspect current infrastructure applied.
+Inspecting will give you the current table applied in the data base with all the different functions related. 
+
+```bash
+atlas schema inspect -u "${SUPABASE_DB_URL}" --schema "public" > existing_schema.hcl
+```
+
 ### Utility Commands
 
 #### Recalculate Migration Directory Hash
