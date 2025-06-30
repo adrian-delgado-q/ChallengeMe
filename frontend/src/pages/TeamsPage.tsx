@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Box, Button, Grid, Heading, Input, Text, VStack, HStack, Tag, Avatar, TagLabel, Spinner, Center, Alert, AlertIcon } from '@chakra-ui/react';
 import { Card } from '../components/common/Card';
 
@@ -6,9 +6,12 @@ import { UserTeamIcon } from '../components/common/Icons';
 import { useUser } from '../contexts/AuthContext';
 import { executeQuery } from '../graphql/gqlClient'
 import { teamsQuery } from '../graphql/queries';
+import { AuthPrompt } from '../components/common/AuthPrompt'; 
+import { LoadTeamsError } from '../components/common/LoadTeamsError'; 
+import { GenericError } from '../components/common/GenericError'; 
 
-// Import Types
-import { Team, TeamsQueryResponse } from '../types';
+
+import type { Team, TeamsQueryResponse } from '../types';
 
 
 interface TeamCardProps {
@@ -57,73 +60,50 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onSelect }) => (
 
 const TeamsPage: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigate }) => {
 
-    const { user, isLoading } = useUser(); // <-- Use the new hook!
+    const { user, isLoading: isAuthLoading } = useUser(); // <-- USE the hook
     const [teams, setTeams] = useState<Team[]>([]);
     const [isFetching, setIsFetching] = useState(true);
     const [fetchError, setFetchError] = useState<string | null>(null);
 
-    useEffect(() => {
-        // This effect runs when the component mounts or the user state changes
-        if (isLoading) {
-            // If auth state is still being determined, do nothing yet
-            return;
-        }
+    const fetchTeams = useCallback(async () => {
+        if (!user) return; // Guard clause
 
-        if (!user) {
-            // If there's no user, we can stop fetching and show a message
+        setIsFetching(true);
+        setFetchError(null);
+        try {
+            const data = await executeQuery<TeamsQueryResponse>(teamsQuery);
+            const fetchedTeams = data.teamCollection.edges.map((edge: any) => edge.node);
+            setTeams(fetchedTeams);
+        } catch (error: any) {
+            console.error("Failed to fetch teams:", error);
+            setFetchError(error.message || 'An unexpected error occurred.');
+        } finally {
             setIsFetching(false);
-            console.log("No authenticated user, can't fetch teams.");
-            return;
         }
+    }, [user]);
 
-        const fetchTeams = async () => {
-            setIsFetching(true);
-            setFetchError(null);
+    useEffect(() => {
+        if (!isAuthLoading && user) {
+            fetchTeams();
+        } else if (!isAuthLoading && !user) {
+            setIsFetching(false);
+        }
+    }, [user, isAuthLoading, fetchTeams]);
 
-
-            try {
-                const data = await executeQuery<TeamsQueryResponse>(teamsQuery);
-                const fetchedTeams = data.teamCollection.edges.map((edge: any) => edge.node);
-                setTeams(fetchedTeams);
-            } catch (error: any) {
-                console.error("Failed to fetch teams:", error);
-                setFetchError(error.message || 'An unexpected error occurred.');
-            } finally {
-                setIsFetching(false);
-            }
-        };
-
-        fetchTeams();
-
-    }, [user, isLoading]); // Re-run effect if user or isLoading changes
-
-    // Render a loading spinner during initial auth check or data fetching
-    if (isLoading || isFetching) {
-        return <Center h="50vh"><Spinner size="xl" /></Center>;
+    if (isAuthLoading || isFetching) {
+        return <Center h="50vh"><Spinner size="xl" color="orange.500" /></Center>;
     }
 
-    // Render a message if the user is not logged in
     if (!user) {
-        return (
-            <Center h="50vh">
-                <Alert status="warning">
-                    <AlertIcon />
-                    Please log in to view and join teams.
-                </Alert>
-            </Center>
-        );
+        return <AuthPrompt onLogin={() => onNavigate('login')} />;
     }
 
-    // Render an error message if fetching failed
     if (fetchError) {
-        return (
-            <Center h="50vh">
-                <Alert status="error">
-                    <AlertIcon />
-                    Could not load teams. Please try again later.
-                </Alert>
-            </Center>
-        );
+        return <LoadTeamsError onRetry={fetchTeams} />;
+    }
+
+    if (!teams) {
+        return <GenericError message="Could not find any team data." />;
     }
 
     return (
@@ -143,7 +123,7 @@ const TeamsPage: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigat
                         <TeamCard key={team.id} team={team} onSelect={() => onNavigate('teamDetails')} />
                     ))
                 ) : (
-                    <Text>No teams found. Why not create one?</Text>
+                    <GenericError message="No teams found. Why not create one?" />
                 )}
             </Grid>
         </VStack>

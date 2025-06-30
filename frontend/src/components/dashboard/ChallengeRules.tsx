@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Heading, Text, HStack, Icon } from '@chakra-ui/react';
 import { Card } from '../common/Card';
-import { ChallengeRulesProps} from '../../types';
+import type { ChallengeRulesProps} from '../../types';
 import { ClipboardListIcon } from '../common/Icons'; // Importing Heroicons for the clipboard icon
 
 

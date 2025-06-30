@@ -1,4 +1,4 @@
-import { Challenge } from '../../types/index';
+import type { Challenge } from '../../types/index';
 
 export const mockChallenges: Challenge[] = [
     { id: 1, title: 'June Running Challenge', type: 'Running', participants: 42, endDate: '2025-06-30', progress: 75, isPublic: true, milestones: [{ name: "M1", value: 50 }], rules: { minDuration: 30, minRepetitions: 5 }, challengeType: 'individual' },

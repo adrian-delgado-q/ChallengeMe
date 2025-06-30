@@ -1,4 +1,3 @@
-// frontend/src/theme.ts
 import { extendTheme } from '@chakra-ui/react';
 
 // Define a custom theme to match the 'stone' and 'orange' palette

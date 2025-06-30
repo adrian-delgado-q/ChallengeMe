@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar, Box, Heading, HStack, Text, VStack } from '@chakra-ui/react';
-import { LeaderboardEntry } from '../../types';
+import type { LeaderboardEntry } from '../../types';
 import { Card } from '../common/Card';
 
 interface LeaderboardProps {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar, Box, Heading, HStack, Text, VStack } from '@chakra-ui/react';
-import { Activity } from '../../types';
+import type { Activity } from '../../types';
 import { Card } from '../common/Card';
 
 interface ActivityFeedProps {

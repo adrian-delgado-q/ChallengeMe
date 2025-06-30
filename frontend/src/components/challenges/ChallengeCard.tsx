@@ -1,6 +1,6 @@
 import React from 'react';
 import { Badge, Box, Heading, Progress, Text, VStack, HStack, Icon, Tag } from '@chakra-ui/react';
-import { Challenge, ChallengeType } from '../../types'; // Ensure ChallengeType is imported
+import type { Challenge, ChallengeType } from '../../types'; 
 import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../common/Icons';
 
 // A new icon for the Individual type

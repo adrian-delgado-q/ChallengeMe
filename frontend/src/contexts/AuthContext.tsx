@@ -1,12 +1,14 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
-import { supabase } from '../supabase/client';
-import { User, Session } from '@supabase/supabase-js';
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import type { ReactNode } from 'react';
+import { supabase } from '../supabase/client'; 
+import type { User, Session } from '@supabase/supabase-js';
 
 // 1. Define the shape of your context's value
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
+  signOut: () => Promise<void>;
 }
 
 // 2. Create the context with a default undefined value
@@ -23,36 +25,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Start with a loading state
     setIsLoading(true);
 
-    // Try to get the initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
     });
 
-    // This is the key: Supabase's auth listener
-    // It will fire on SIGNED_IN, SIGNED_OUT, TOKEN_REFRESHED, etc.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        // No need to set loading here, as this is for subsequent changes
       }
     );
 
-    // Cleanup the subscription when the component unmounts
     return () => {
       subscription?.unsubscribe();
     };
-  }, []); // The empty dependency array ensures this effect runs only once
+  }, []);
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+  };
 
   const value = {
     user,
     session,
     isLoading,
+    signOut, 
   };
 
   // We only render the children after the initial loading is complete
@@ -63,6 +64,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 };
 
+// Your useUser hook remains perfectly valid.
+// Components can now access signOut via: const { user, signOut } = useUser();
 export const useUser = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

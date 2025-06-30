@@ -3,7 +3,7 @@ import { Box, Grid, Heading, Text, VStack, Button, Flex, useDisclosure } from '@
 import { CommentsForum } from '../components/dashboard/CommentsForum'; 
 import { Card } from '../components/common/Card';
 import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../components/common/Icons';
-import { Challenge, Comment, LeaderboardEntry, Activity, RuleSet } from '../types';
+import type  { Challenge, Comment, LeaderboardEntry, Activity, RuleSet } from '../types';
 import { Icon, HStack } from '@chakra-ui/react';
 import { Leaderboard } from '../components/dashboard/Leaderboard';
 import { ProgressChart } from '../components/dashboard/ProgressChart';

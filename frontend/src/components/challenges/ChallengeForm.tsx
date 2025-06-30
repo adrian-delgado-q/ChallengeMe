@@ -4,7 +4,7 @@ import {
   Text, Textarea, VStack, Select, InputGroup, InputRightAddon, IconButton,
 } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
-import { Challenge, Milestone, ChallengeType } from '../../types';
+import type { Challenge, Milestone, ChallengeType } from '../../types';
 
 interface ChallengeFormProps {
     challengeToEdit?: Challenge;

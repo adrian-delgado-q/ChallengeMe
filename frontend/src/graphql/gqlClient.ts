@@ -1,11 +1,8 @@
 import { GraphQLClient } from 'graphql-request';
 import { getAccessToken } from '../supabase/client';
-import dotenv from 'dotenv';
 
-dotenv.config({ path: '.env' });
-
-const supabaseUrl = process.env.SUPABASE_API_URL;
-const supabaseKey = process.env.SUPABASE_API_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_API_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_API_KEY;
 
 export const graphQLClient = async () => {
     const accessToken = await getAccessToken();

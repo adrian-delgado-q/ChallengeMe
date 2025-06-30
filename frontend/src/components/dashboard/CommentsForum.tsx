@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar, Button, Textarea, VStack, HStack, Text, Box, Heading } from '@chakra-ui/react';
-import { Comment } from '../../types';
+import type { Comment } from '../../types';
 import { Card } from '../common/Card';
 
 interface CommentsForumProps {

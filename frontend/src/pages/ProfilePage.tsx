@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar, Box, Button, Grid, Heading, Text, VStack, HStack } from '@chakra-ui/react';
 import { ChallengeCard } from '../components/challenges/ChallengeCard';
-import { User } from '../types';
+import type { User } from '../types';
 import { Card } from '../components/common/Card';
 import { mockChallenges } from '../assets/fake_data/mockChallenges';
 
@@ -24,7 +24,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => (
         <Box>
             <Heading as="h3" size="lg" mb={6}>Your Challenges</Heading>
             <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={6}>
-                 {mockChallenges.map(challenge => (
+                {mockChallenges.map(challenge => (
                     <ChallengeCard key={challenge.id} challenge={challenge} onSelect={() => onNavigate('dashboard')} />
                 ))}
             </Grid>
