@@ -9,6 +9,7 @@ import { ProgressChart } from '../components/dashboard/ProgressChart';
 import { ActivityFeed } from '../components/dashboard/ActivityFeed';
 import { ChallengeRules } from '../components/dashboard/ChallengeRules';
 import { LogActivityModal } from '../components/dashboard/LogActivityModal';
+import { MilestonesDisplay } from '../components/dashboard/MilestonesDisplay';
 import { useChallengeDetails, usePosts } from '../hooks/useData';
 import { useParams } from 'react-router-dom';
 
@@ -69,9 +70,16 @@ const ChallengeDashboardPage: React.FC = () => {
                             <VStack spacing={3} align="stretch">
                                 <HStack><Icon as={TrophyIcon} w={6} h={6} color="orange.500" /> <Text>Type: <Box as="span" fontWeight="bold">{challenge.type || 'General'}</Box></Text></HStack>
                                 <HStack><Icon as={UserTeamIcon} w={6} h={6} color="blue.500" /> <Text><Box as="span" fontWeight="bold">{challenge.participantCount || 0}</Box> Participants</Text></HStack>
-                                <HStack><Icon as={CalendarIcon} w={6} h={6} color="red.500" /> <Text>Ends: <Box as="span" fontWeight="bold">{challenge.endDate}</Box></Text></HStack>
+                                <HStack><Icon as={CalendarIcon} w={6} h={6} color="red.500" /> <Text>Ends: <Box as="span" fontWeight="bold">{new Date(challenge.endDate).toLocaleDateString()}</Box></Text></HStack>
                             </VStack>
                         </Card>
+                        
+                        {/* Milestones Display */}
+                        <MilestonesDisplay 
+                          milestones={challenge.milestones} 
+                          currentProgress={challenge.progress || 0}
+                        />
+                        
                         {challengeId ? (
                             <Leaderboard challengeId={challengeId} />
                         ) : (

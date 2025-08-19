@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { 
-    Box, Grid, Heading, Text, VStack, Button, Flex, HStack, 
-    Spinner, Center, Alert, AlertIcon, Avatar, Badge, Tag, Icon, useToast 
+import {
+    Box, Grid, Heading, Text, VStack, Button, Flex, HStack,
+    Spinner, Center, Alert, AlertIcon, Avatar, Badge, Tag, Icon, useToast
 } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { Card } from '../components/common/Card';
@@ -16,12 +16,12 @@ const TeamDashboardPage: React.FC = () => {
     const toast = useToast();
     const [isJoining, setIsJoining] = useState(false);
     const [isLeaving, setIsLeaving] = useState(false);
-    
+
     const { team, loading: teamLoading, error: teamError, refetch } = useTeamDetails(teamId || '');
 
     const handleJoinTeam = async () => {
         if (!teamId) return;
-        
+
         setIsJoining(true);
         try {
             await TeamService.joinTeam(teamId);
@@ -48,7 +48,7 @@ const TeamDashboardPage: React.FC = () => {
 
     const handleLeaveTeam = async () => {
         if (!teamId) return;
-        
+
         setIsLeaving(true);
         try {
             await TeamService.leaveTeam(teamId);
@@ -99,10 +99,10 @@ const TeamDashboardPage: React.FC = () => {
             <Flex justify="space-between" align="center" wrap="wrap" gap={4}>
                 <Box>
                     <HStack spacing={4} align="center" mb={2}>
-                        <Avatar 
-                            size="lg" 
-                            name={team.name} 
-                            src={team.avatarUrl} 
+                        <Avatar
+                            size="lg"
+                            name={team.name}
+                            src={team.avatarUrl}
                         />
                         <Box>
                             <HStack spacing={3} align="center">
@@ -119,8 +119,8 @@ const TeamDashboardPage: React.FC = () => {
                 </Box>
                 <HStack spacing={3}>
                     {!isTeamMember && !isTeamCreator && team.isPublic && (
-                        <Button 
-                            colorScheme="orange" 
+                        <Button
+                            colorScheme="orange"
                             size="md"
                             onClick={handleJoinTeam}
                             isLoading={isJoining}
@@ -135,9 +135,9 @@ const TeamDashboardPage: React.FC = () => {
                         </Button>
                     )}
                     {isTeamMember && !isTeamCreator && (
-                        <Button 
-                            variant="outline" 
-                            colorScheme="red" 
+                        <Button
+                            variant="outline"
+                            colorScheme="red"
                             size="md"
                             onClick={handleLeaveTeam}
                             isLoading={isLeaving}
@@ -188,10 +188,10 @@ const TeamDashboardPage: React.FC = () => {
                                 team.memberList.map((member: any) => (
                                     <HStack key={member.id} spacing={4} justify="space-between">
                                         <HStack spacing={3}>
-                                            <Avatar 
-                                                size="sm" 
-                                                src={member.user?.avatarUrl} 
-                                                name={member.user?.username || 'Unknown User'} 
+                                            <Avatar
+                                                size="sm"
+                                                src={member.user?.avatarUrl}
+                                                name={member.user?.username || 'Unknown User'}
                                             />
                                             <Box>
                                                 <Text fontWeight="semibold">
@@ -202,7 +202,7 @@ const TeamDashboardPage: React.FC = () => {
                                                 </Text>
                                             </Box>
                                         </HStack>
-                                        <Badge 
+                                        <Badge
                                             colorScheme={member.role === 'ADMIN' ? 'purple' : 'gray'}
                                             size="sm"
                                         >

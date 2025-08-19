@@ -73,12 +73,20 @@ async function main() {
 
   // --- 4. Create Challenges ---
   const challenges = [];
+  const challengeTitles = [
+    'Daily Running Challenge',
+    'Cycling Adventure Quest',
+    'Swimming Endurance Test',
+    'Strength Training Bootcamp',
+    'Walking Wellness Journey'
+  ];
+  
   for (let i = 0; i < 5; i++) {
     const startDate = faker.date.soon();
     const challenge = await prisma.challenge.create({
       data: {
         creatorId: faker.helpers.arrayElement(profiles).id,
-        title: faker.lorem.words(3),
+        title: challengeTitles[i] || faker.lorem.words(3),
         description: faker.lorem.sentence(),
         challengeType: faker.helpers.arrayElement(Object.values(ChallengeParticipantType)),
         maxParticipants: faker.number.int({ min: 10, max: 100 }),
