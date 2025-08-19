@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     Box,
     Button,
@@ -9,7 +9,6 @@ import {
     Avatar,
     Badge,
     Select,
-    useToast,
     Spinner,
     Center,
     AlertDialog,
@@ -26,6 +25,8 @@ import {
 } from '@chakra-ui/react';
 import { TeamService } from '../../graphql/services';
 import { useUser } from '../../contexts/AuthContext';
+import { useNotifications } from '../../utils/notifications';
+import { useMultipleLoadingStates } from '../../hooks/useAsyncState';
 
 interface TeamMemberManagementProps {
     teamId: string;
@@ -54,38 +55,32 @@ export const TeamMemberManagement: React.FC<TeamMemberManagementProps> = ({
 }) => {
     const [members, setMembers] = useState<TeamMember[]>([]);
     const [loading, setLoading] = useState(true);
-    const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [searchUsername, setSearchUsername] = useState('');
     const [searchResults, setSearchResults] = useState<any[]>([]);
     const [searchLoading, setSearchLoading] = useState(false);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [memberToRemove, setMemberToRemove] = useState<TeamMember | null>(null);
     const cancelRef = React.useRef<HTMLButtonElement>(null);
-    const toast = useToast();
+    const notifications = useNotifications();
     const { user: currentUser } = useUser();
+    const { isLoading: actionLoading, executeWithKey } = useMultipleLoadingStates();
 
     // Fetch team members
-    const fetchMembers = async () => {
+    const fetchMembers = useCallback(async () => {
         try {
             setLoading(true);
             const data = await TeamService.getAvailableAdmins(teamId);
             setMembers(data);
-        } catch (error: any) {
-            toast({
-                title: 'Error',
-                description: error.message || 'Failed to fetch team members',
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
+        } catch {
+            notifications.error('Error', 'Failed to fetch team members');
         } finally {
             setLoading(false);
         }
-    };
+    }, [teamId, notifications]);
 
     useEffect(() => {
         fetchMembers();
-    }, [teamId]);
+    }, [teamId, fetchMembers]);
 
     // Search for users to add
     const searchUsers = async (username: string) => {
@@ -98,14 +93,8 @@ export const TeamMemberManagement: React.FC<TeamMemberManagementProps> = ({
             setSearchLoading(true);
             const results = await TeamService.searchUsers(username, teamId);
             setSearchResults(results);
-        } catch (error: any) {
-            toast({
-                title: 'Error',
-                description: error.message || 'Failed to search users',
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
+        } catch {
+            notifications.error('Error', 'Failed to search users');
         } finally {
             setSearchLoading(false);
         }
@@ -115,35 +104,21 @@ export const TeamMemberManagement: React.FC<TeamMemberManagementProps> = ({
     const handleRoleChange = async (memberId: string, userId: string, newRole: 'ADMIN' | 'MEMBER') => {
         if (!isTeamCreator && !isTeamAdmin) return;
 
-        try {
-            setActionLoading(memberId);
+        const result = await executeWithKey(`role-${memberId}`, async () => {
             await TeamService.updateMemberRole(teamId, userId, newRole);
             await fetchMembers();
             onMembershipChange?.();
-            toast({
-                title: 'Success',
-                description: `Member role updated to ${newRole}`,
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
-        } catch (error: any) {
-            toast({
-                title: 'Error',
-                description: error.message || 'Failed to update member role',
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
-        } finally {
-            setActionLoading(null);
+            return true;
+        });
+
+        if (result) {
+            notifications.success('Success', `Member role updated to ${newRole}`);
         }
     };
 
     // Add new member
     const handleAddMember = async (userId: string, role: 'ADMIN' | 'MEMBER' = 'MEMBER') => {
-        try {
-            setActionLoading(`add-${userId}`);
+        const result = await executeWithKey(`add-${userId}`, async () => {
             await TeamService.addMemberToTeam(teamId, userId, role);
             await fetchMembers();
             onMembershipChange?.();
@@ -151,24 +126,11 @@ export const TeamMemberManagement: React.FC<TeamMemberManagementProps> = ({
             // Clear search results and input
             setSearchResults([]);
             setSearchUsername('');
+            return true;
+        });
 
-            toast({
-                title: 'Success',
-                description: 'Member added to team',
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
-        } catch (error: any) {
-            toast({
-                title: 'Error',
-                description: error.message || 'Failed to add member',
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
-        } finally {
-            setActionLoading(null);
+        if (result) {
+            notifications.success('Success', 'Member added to team');
         }
     };
 
@@ -181,29 +143,16 @@ export const TeamMemberManagement: React.FC<TeamMemberManagementProps> = ({
     const confirmRemoveMember = async () => {
         if (!memberToRemove) return;
 
-        try {
-            setActionLoading(memberToRemove.id);
+        const result = await executeWithKey(`remove-${memberToRemove.id}`, async () => {
             await TeamService.removeMemberFromTeam(teamId, memberToRemove.userId);
             await fetchMembers();
             onMembershipChange?.();
-            toast({
-                title: 'Success',
-                description: 'Member removed from team',
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
+            return true;
+        });
+
+        if (result) {
+            notifications.success('Success', 'Member removed from team');
             onClose();
-        } catch (error: any) {
-            toast({
-                title: 'Error',
-                description: error.message || 'Failed to remove member',
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
-        } finally {
-            setActionLoading(null);
             setMemberToRemove(null);
         }
     };
@@ -256,12 +205,11 @@ export const TeamMemberManagement: React.FC<TeamMemberManagementProps> = ({
                                         <HStack spacing={3}>
                                             <Avatar size="sm" src={user.avatarUrl} name={user.username} />
                                             <Text>{user.username}</Text>
-                                        </HStack>
-                                        <Button
+                                        </HStack>                                    <Button
                                             size="sm"
                                             colorScheme="green"
                                             onClick={() => handleAddMember(user.id, 'MEMBER')}
-                                            isLoading={actionLoading === `add-${user.id}`}
+                                            isLoading={actionLoading(`add-${user.id}`)}
                                         >
                                             Add
                                         </Button>
@@ -309,7 +257,7 @@ export const TeamMemberManagement: React.FC<TeamMemberManagementProps> = ({
                                         onChange={(e) => handleRoleChange(member.id, member.userId, e.target.value as 'ADMIN' | 'MEMBER')}
                                         size="sm"
                                         width="120px"
-                                        isDisabled={actionLoading === member.id}
+                                        isDisabled={actionLoading(`role-${member.id}`)}
                                     >
                                         <option value="MEMBER">Member</option>
                                         <option value="ADMIN">Admin</option>
@@ -330,7 +278,7 @@ export const TeamMemberManagement: React.FC<TeamMemberManagementProps> = ({
                                         colorScheme="red"
                                         variant="outline"
                                         onClick={() => handleRemoveMember(member)}
-                                        isLoading={actionLoading === member.id}
+                                        isLoading={actionLoading(`remove-${member.id}`)}
                                         isDisabled={!isTeamCreator && member.role === 'ADMIN'}
                                     >
                                         Remove
@@ -365,7 +313,7 @@ export const TeamMemberManagement: React.FC<TeamMemberManagementProps> = ({
                                 colorScheme="red"
                                 onClick={confirmRemoveMember}
                                 ml={3}
-                                isLoading={actionLoading === memberToRemove?.id}
+                                isLoading={memberToRemove ? actionLoading(`remove-${memberToRemove.id}`) : false}
                             >
                                 Remove Member
                             </Button>

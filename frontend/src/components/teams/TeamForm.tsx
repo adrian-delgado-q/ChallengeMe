@@ -8,7 +8,6 @@ import {
     VStack,
     HStack,
     Switch,
-    useToast,
     FormHelperText,
     Avatar,
     Box,
@@ -21,6 +20,9 @@ import {
 } from '@chakra-ui/react';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { TeamService } from '../../graphql/services';
+import { useNotifications } from '../../utils/notifications';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { ValidationUtils, CommonValidationSchemas } from '../../utils/validation';
 
 // Available sports/activity types matching the platform
 const SPORTS_TYPES = [
@@ -53,18 +55,17 @@ export const TeamForm: React.FC<TeamFormProps> = ({
         maxMembers: initialData?.maxMembers || '',
         sportsTypes: initialData?.sportsTypes || []
     });
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string>(initialData?.avatarUrl || '');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Admin selection states (only for new teams)
-    const [adminSearchQuery, setAdminSearchQuery] = useState('');
-    const [adminSearchResults, setAdminSearchResults] = useState<any[]>([]);
-    const [isSearchingAdmins, setIsSearchingAdmins] = useState(false);
-    const [selectedAdmins, setSelectedAdmins] = useState<any[]>([]);
+    // Note: Admin management is handled separately in TeamMemberManagement component
 
-    const toast = useToast();
+    const notifications = useNotifications();
+    const { execute: executeSubmit, isLoading: isSubmitting } = useAsyncState({
+        showErrorNotifications: !hideButtons, // Only show notifications for standalone usage
+        errorContext: 'Team form submission'
+    });
 
     const handleInputChange = (field: string, value: any) => {
         setFormData(prev => ({
@@ -78,25 +79,13 @@ export const TeamForm: React.FC<TeamFormProps> = ({
         if (file) {
             // Validate file type
             if (!file.type.startsWith('image/')) {
-                toast({
-                    title: 'Invalid File Type',
-                    description: 'Please select an image file.',
-                    status: 'error',
-                    duration: 3000,
-                    isClosable: true,
-                });
+                notifications.validationError('Please select an image file.');
                 return;
             }
 
             // Validate file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
-                toast({
-                    title: 'File Too Large',
-                    description: 'Please select an image smaller than 5MB.',
-                    status: 'error',
-                    duration: 3000,
-                    isClosable: true,
-                });
+                notifications.validationError('Please select an image smaller than 5MB.');
                 return;
             }
 
@@ -120,43 +109,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
         }
     };
 
-    // Admin search functionality
-    const handleAdminSearch = async () => {
-        if (!adminSearchQuery.trim()) {
-            setAdminSearchResults([]);
-            return;
-        }
-
-        setIsSearchingAdmins(true);
-        try {
-            const results = await TeamService.searchUsers(adminSearchQuery);
-            // Filter out already selected admins
-            const filteredResults = results.filter(user =>
-                !selectedAdmins.some(admin => admin.id === user.id)
-            );
-            setAdminSearchResults(filteredResults);
-        } catch (error: any) {
-            toast({
-                title: 'Search Error',
-                description: error.message || 'Failed to search users',
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
-        } finally {
-            setIsSearchingAdmins(false);
-        }
-    };
-
-    const handleAddAdmin = (user: any) => {
-        setSelectedAdmins(prev => [...prev, user]);
-        setAdminSearchResults(prev => prev.filter(u => u.id !== user.id));
-        setAdminSearchQuery('');
-    };
-
-    const handleRemoveAdmin = (userId: string) => {
-        setSelectedAdmins(prev => prev.filter(admin => admin.id !== userId));
-    };
+    // Note: Admin search functionality removed - handled in TeamMemberManagement component
 
     const uploadAvatarFile = async (file: File): Promise<string> => {
         // Note: This is a placeholder for file upload functionality
@@ -174,33 +127,33 @@ export const TeamForm: React.FC<TeamFormProps> = ({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.name.trim()) {
-            toast({
-                title: 'Validation Error',
-                description: 'Team name is required',
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
+        // Validation using ValidationUtils
+        const nameValidation = CommonValidationSchemas.teamName(formData.name);
+        if (!nameValidation.isValid) {
+            notifications.validationError(nameValidation.error!);
             return;
+        }
+
+        if (formData.description) {
+            const descriptionValidation = CommonValidationSchemas.description(formData.description);
+            if (!descriptionValidation.isValid) {
+                notifications.validationError(descriptionValidation.error!);
+                return;
+            }
         }
 
         // Validate max members if provided
-        if (formData.maxMembers && (Number(formData.maxMembers) < 2 || Number(formData.maxMembers) > 1000)) {
-            toast({
-                title: 'Validation Error',
-                description: 'Maximum members must be between 2 and 1000',
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
-            return;
+        if (formData.maxMembers) {
+            const maxMembersValidation = ValidationUtils.numeric(formData.maxMembers, 2, 1000, 'Maximum members');
+            if (!maxMembersValidation.isValid) {
+                notifications.validationError(maxMembersValidation.error!);
+                return;
+            }
         }
 
-        setIsSubmitting(true);
         onLoadingChange?.(true);
 
-        try {
+        const result = await executeSubmit(async () => {
             let avatarUrl = formData.avatarUrl;
 
             // Upload avatar file if one was selected
@@ -220,42 +173,23 @@ export const TeamForm: React.FC<TeamFormProps> = ({
                 sportsTypes: formData.sportsTypes.length > 0 ? formData.sportsTypes : undefined
             };
 
-            let result;
             if (isEditing && initialData?.id) {
-                result = await TeamService.updateTeam(initialData.id, teamData);
+                return await TeamService.updateTeam(initialData.id, teamData);
             } else {
-                result = await TeamService.createTeam(teamData);
+                return await TeamService.createTeam(teamData);
             }
+        }, {
+            successMessage: `Team ${isEditing ? 'updated' : 'created'} successfully`,
+            showSuccess: !hideButtons // Only show notifications for standalone usage
+        });
 
-            // Only show toast notification if hideButtons is false (parent component not handling notifications)
-            if (!hideButtons) {
-                toast({
-                    title: 'Success!',
-                    description: `Team ${isEditing ? 'updated' : 'created'} successfully`,
-                    status: 'success',
-                    duration: 3000,
-                    isClosable: true,
-                });
-            }
+        onLoadingChange?.(false);
 
+        if (result) {
             onSubmit(result);
-        } catch (error: any) {
-            // If hideButtons is true, let parent component handle the error
-            if (hideButtons) {
-                throw error;
-            } else {
-                // Show error toast for standalone usage
-                toast({
-                    title: 'Error',
-                    description: error.message || `Failed to ${isEditing ? 'update' : 'create'} team`,
-                    status: 'error',
-                    duration: 5000,
-                    isClosable: true,
-                });
-            }
-        } finally {
-            setIsSubmitting(false);
-            onLoadingChange?.(false);
+        } else if (hideButtons) {
+            // If hideButtons is true, let parent component handle the error by throwing
+            throw new Error(`Failed to ${isEditing ? 'update' : 'create'} team`);
         }
     };
 

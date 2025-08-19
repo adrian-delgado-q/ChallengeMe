@@ -414,7 +414,7 @@ export class TeamService {
         const { data: memberships, error } = await supabase
             .from('TeamMembership')
             .select(`
-                id, userId, role,
+                id, userId, role, joinedAt,
                 user:profiles(id, username, avatar_url)
             `)
             .eq('teamId', teamId);

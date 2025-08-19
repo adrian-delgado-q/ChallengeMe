@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import {
     Button, FormControl, FormLabel, Grid, Input, Radio, RadioGroup, HStack,
-    Text, Textarea, VStack, Select, InputGroup, InputRightAddon, IconButton, useToast
+    Text, Textarea, VStack, Select, InputGroup, InputRightAddon, IconButton
 } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import { useChallenges } from '../../hooks/useData';
+import { useNotifications } from '../../utils/notifications';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { CommonValidationSchemas } from '../../utils/validation';
 import type { Challenge, Milestone, ChallengeType } from '../../types';
 
 interface ChallengeFormProps {
@@ -45,10 +48,13 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
     const [milestones, setMilestones] = useState<Partial<Milestone>[]>(
         challengeToEdit?.milestones || [{ name: 'Bronze', value: undefined }]
     );
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { createChallenge } = useChallenges();
-    const toast = useToast();
+    const notifications = useNotifications();
+    const { isLoading: isSubmitting, execute } = useAsyncState({
+        showSuccessNotifications: true,
+        successMessage: `Challenge ${isEditing ? 'updated' : 'created'} successfully!`
+    });
 
     const handleMilestoneChange = (index: number, field: keyof Milestone, value: string | number) => {
         const newMilestones = [...milestones];
@@ -76,31 +82,28 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!title.trim()) {
-            toast({
-                title: 'Error',
-                description: 'Challenge title is required',
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
+        // Validation using ValidationUtils
+        const titleValidation = CommonValidationSchemas.challengeTitle(title);
+        if (!titleValidation.isValid) {
+            notifications.validationError(titleValidation.error!);
             return;
         }
 
-        if (!endDate) {
-            toast({
-                title: 'Error',
-                description: 'End date is required',
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
+        const endDateValidation = CommonValidationSchemas.endDate(endDate);
+        if (!endDateValidation.isValid) {
+            notifications.validationError(endDateValidation.error!);
             return;
         }
 
-        setIsSubmitting(true);
+        if (maxParticipants) {
+            const maxParticipantsValidation = CommonValidationSchemas.maxParticipants(maxParticipants);
+            if (!maxParticipantsValidation.isValid) {
+                notifications.validationError(maxParticipantsValidation.error!);
+                return;
+            }
+        }
 
-        try {
+        const result = await execute(async () => {
             // Filter out incomplete milestones
             const validMilestones = milestones
                 .filter(m => m.name && m.value && m.value > 0)
@@ -117,42 +120,18 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                 milestones: validMilestones // Include milestones
             };
 
-            let result;
             if (isEditing && challengeToEdit) {
                 // Update challenge - would need to implement updateChallenge in the hook
-                toast({
-                    title: 'Info',
-                    description: 'Challenge update not yet implemented',
-                    status: 'info',
-                    duration: 3000,
-                    isClosable: true,
-                });
-                return;
+                notifications.info('Info', 'Challenge update not yet implemented');
+                return null;
             } else {
-                result = await createChallenge(challengeData);
+                return await createChallenge(challengeData);
             }
+        });
 
-            toast({
-                title: 'Success',
-                description: `Challenge ${isEditing ? 'updated' : 'created'} successfully!`,
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
-
+        if (result) {
             // Call parent callback
             onSubmit?.(result);
-
-        } catch (error: any) {
-            toast({
-                title: 'Error',
-                description: error.message || `Failed to ${isEditing ? 'update' : 'create'} challenge`,
-                status: 'error',
-                duration: 5000,
-                isClosable: true,
-            });
-        } finally {
-            setIsSubmitting(false);
         }
     };
 

@@ -1,5 +1,8 @@
 // frontend/src/types/index.ts
 
+// Import and re-export common patterns for easier access
+export * from './commonPatterns';
+
 // --- Core Enums ---
 export type ChallengeType = 'individual' | 'team';
 export type TeamRole = 'ADMIN' | 'MEMBER';

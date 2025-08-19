@@ -79,13 +79,13 @@ export class ActivityService {
 
     // Get activities for a specific user
     static async getActivitiesForUser(userId?: string) {
-        const user = userId ? { id: userId } : await getCurrentUser();
-        if (!user) throw new Error('User not authenticated');
+        const currentUser = userId ? { id: userId } : await getCurrentUser();
+        if (!currentUser) throw new Error('User not authenticated');
 
         const { data: activities, error } = await supabase
             .from('Activity')
             .select('*')
-            .eq('profileId', user.id);
+            .eq('profileId', currentUser.id);
 
         if (error) throw new Error(error.message);
 
@@ -122,12 +122,27 @@ export class ActivityService {
                     }
                 }
 
+                // Get user profile info for display
+                const { data: userProfile } = await supabase
+                    .from('profiles')
+                    .select('id, username, avatar_url')
+                    .eq('id', currentUser.id)
+                    .single();
+
                 return {
                     id: activity.id,
                     notes: activity.notes,
                     date: activity.date,
                     uploadedAt: activity.uploadedAt,
-                    user: { id: user.id, username: '', avatar_url: '' }, // Basic user info
+                    user: userProfile ? {
+                        id: userProfile.id,
+                        username: userProfile.username || 'Unknown User',
+                        avatarUrl: userProfile.avatar_url
+                    } : {
+                        id: currentUser.id,
+                        username: 'Unknown User',
+                        avatarUrl: null
+                    },
                     challenge,
                     team
                 };
@@ -236,9 +251,11 @@ export class ActivityService {
 
         // Group activities by user and calculate totals
         const userStats = activities.reduce((acc: any, activity: any) => {
+            if (!activity.user) return acc; // Skip activities without user data
+            
             const userId = activity.user.id;
-            const userName = activity.user.username || activity.user.id;
-            const userAvatar = activity.user.avatar_url || '';
+            const userName = activity.user.username || 'Unknown User';
+            const userAvatar = activity.user.avatarUrl || '';
 
             if (!acc[userId]) {
                 acc[userId] = {

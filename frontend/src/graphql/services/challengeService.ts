@@ -162,7 +162,7 @@ export class ChallengeService {
             const currentUser = await getCurrentUser();
 
             // Batch fetch user progress if user is authenticated
-            let userProgressMap = new Map();
+            const userProgressMap = new Map();
             if (currentUser) {
                 const { data: userParticipants } = await supabase
                     .from('ChallengeParticipant')

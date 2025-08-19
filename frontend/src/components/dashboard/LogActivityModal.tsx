@@ -14,11 +14,13 @@ import {
   ModalBody,
   ModalCloseButton,
   VStack,
-  Textarea,
-  useToast
+  Textarea
 } from '@chakra-ui/react';
 import { useActivities } from '../../hooks/useData';
 import { ChallengeService } from '../../graphql/services';
+import { useNotifications } from '../../utils/notifications';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { ValidationUtils } from '../../utils/validation';
 
 interface LogActivityModalProps {
   isOpen: boolean;
@@ -36,38 +38,40 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
   const [distance, setDistance] = useState('');
   const [duration, setDuration] = useState('');
   const [notes, setNotes] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { createActivity } = useActivities();
-  const toast = useToast();
+  const notifications = useNotifications();
+  const { isLoading: isSubmitting, execute } = useAsyncState({
+    showSuccessNotifications: true,
+    successMessage: 'Activity logged successfully!'
+  });
   const initialRef = React.useRef(null);
 
   const handleSubmit = async () => {
+    // Validation using ValidationUtils
     if (!challengeId) {
-      toast({
-        title: 'Error',
-        description: 'No challenge ID provided',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
+      notifications.error('Error', 'No challenge ID provided');
       return;
     }
 
-    if (!distance.trim()) {
-      toast({
-        title: 'Error',
-        description: 'Distance is required',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
+    const distanceValidation = ValidationUtils.combine(
+      ValidationUtils.required(distance, 'Distance'),
+      ValidationUtils.numeric(distance, 0.1, 1000, 'Distance')
+    );
+    if (!distanceValidation.isValid) {
+      notifications.validationError(distanceValidation.error!);
       return;
     }
 
-    setIsSubmitting(true);
+    if (duration) {
+      const durationValidation = ValidationUtils.numeric(duration, 1, 1440, 'Duration');
+      if (!durationValidation.isValid) {
+        notifications.validationError(durationValidation.error!);
+        return;
+      }
+    }
 
-    try {
+    const result = await execute(async () => {
       // Get the user's participant ID for this challenge
       const participantId = await ChallengeService.getMyParticipantId(challengeId);
 
@@ -105,33 +109,16 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
         });
       }
 
-      toast({
-        title: 'Success',
-        description: 'Activity logged successfully!',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      });
+      return true;
+    });
 
-      // Reset form
+    if (result) {
+      // Reset form and close modal
       setDistance('');
       setDuration('');
       setNotes('');
-
-      // Call callback and close modal
       onActivityLogged?.();
       onClose();
-
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to log activity',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

@@ -3,7 +3,7 @@ import {
     Box, Heading, Text, VStack, Divider, HStack, Button,
     AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader,
     AlertDialogContent, AlertDialogOverlay, useDisclosure,
-    Spinner, Center, Alert, AlertIcon, Avatar, Flex, Tag, useToast
+    Spinner, Center, Alert, AlertIcon, Avatar, Flex, Tag
 } from '@chakra-ui/react';
 import { Card } from '../components/common/Card';
 import { TeamForm } from '../components/teams/TeamForm';
@@ -12,6 +12,8 @@ import { useTeamDetails } from '../hooks/useData';
 import { useParams, useNavigate } from 'react-router-dom';
 import { TeamService } from '../graphql/services';
 import { useUser } from '../contexts/AuthContext';
+import { useNotifications } from '../utils/notifications';
+import { useAsyncState } from '../hooks/useAsyncState';
 
 const EditTeamPage: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -19,10 +21,10 @@ const EditTeamPage: React.FC = () => {
     const navigate = useNavigate();
     const { id: teamId } = useParams<{ id: string }>();
     const { user } = useUser();
-    const toast = useToast();
+    const notifications = useNotifications();
 
     const { team, loading, error, refetch } = useTeamDetails(teamId || '');
-    const [deleting, setDeleting] = useState(false);
+    const { isLoading: deleting, execute: executeDelete } = useAsyncState();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Determine user's role in the team
@@ -30,31 +32,14 @@ const EditTeamPage: React.FC = () => {
     const currentUserMembership = team?.members?.find((m: any) => m.userId === user?.id);
     const isTeamAdmin = currentUserMembership?.role === 'ADMIN';
 
-    const handleUpdateTeam = async (_result: any) => {
+    const handleUpdateTeam = async () => {
         if (!teamId) return;
 
-        try {
-            // The TeamService call will be handled by the TeamForm
-            // This function will be called only on success when hideButtons={true}
-            toast({
-                title: 'Success!',
-                description: 'Team updated successfully!',
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
-            // Navigate back to team dashboard after successful update
-            navigate(`/teams/${teamId}`);
-        } catch (err: any) {
-            // This should not happen when hideButtons={true} since TeamForm handles errors
-            toast({
-                title: 'Error',
-                description: err.message || 'Failed to update team',
-                status: 'error',
-                duration: 5000,
-                isClosable: true,
-            });
-        }
+        // The TeamService call will be handled by the TeamForm
+        // This function will be called only on success when hideButtons={true}
+        notifications.success('Success!', 'Team updated successfully!');
+        // Navigate back to team dashboard after successful update
+        navigate(`/teams/${teamId}`);
     };
 
     const handleFormSubmit = () => {
@@ -65,28 +50,14 @@ const EditTeamPage: React.FC = () => {
     const handleDeleteTeam = async () => {
         if (!teamId) return;
 
-        setDeleting(true);
-        try {
+        const result = await executeDelete(async () => {
             await TeamService.deleteTeam(teamId);
-            toast({
-                title: 'Team Deleted',
-                description: 'Team deleted successfully!',
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
+            return true;
+        });
+
+        if (result) {
+            notifications.success('Team Deleted', 'Team deleted successfully!');
             navigate('/teams');
-        } catch (err: any) {
-            toast({
-                title: 'Error',
-                description: err.message || 'Failed to delete team',
-                status: 'error',
-                duration: 5000,
-                isClosable: true,
-            });
-        } finally {
-            setDeleting(false);
-            onClose();
         }
     };
 
