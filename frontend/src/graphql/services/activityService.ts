@@ -40,7 +40,11 @@ export class ActivityService {
                             .select('id, username, avatar_url')
                             .eq('id', participant.userId)
                             .single();
-                        user = userData;
+                        user = userData ? {
+                            id: userData.id,
+                            username: userData.username || 'Unknown User',
+                            avatarUrl: userData.avatar_url
+                        } : null;
                     }
 
                     // Get team info
@@ -373,7 +377,11 @@ export class ActivityService {
                             .select('id, username, avatar_url')
                             .eq('id', participant.userId)
                             .single();
-                        user = userData;
+                        user = userData ? {
+                            id: userData.id,
+                            username: userData.username || 'Unknown User',
+                            avatarUrl: userData.avatar_url
+                        } : null;
                     }
 
                     // Get team info

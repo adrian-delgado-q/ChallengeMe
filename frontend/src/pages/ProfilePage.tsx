@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Avatar, Box, Button, Grid, Heading, Text, VStack, HStack, Spinner, Center, Alert, AlertIcon } from '@chakra-ui/react';
+import { Avatar, Box, Button, Grid, Heading, Text, VStack, HStack, Spinner, Center, Alert, AlertIcon, useDisclosure } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { ChallengeCard } from '../components/challenges/ChallengeCard';
 import { Card } from '../components/common/Card';
+import { EditProfileModal } from '../components/common/EditProfileModal';
 import { useChallenges } from '../hooks/useData';
 import { useUser } from '../contexts/AuthContext';
 import { ProfileService } from '../graphql/services';
@@ -13,6 +14,7 @@ const ProfilePage: React.FC = () => {
     const { challenges, loading: challengesLoading, error: challengesError } = useChallenges();
     const [profile, setProfile] = useState<any>(null);
     const [profileLoading, setProfileLoading] = useState(true);
+    const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
 
     // Fetch user profile
     useEffect(() => {
@@ -23,6 +25,14 @@ const ProfilePage: React.FC = () => {
                 .finally(() => setProfileLoading(false));
         }
     }, [user]);
+
+    // Handle profile update
+    const handleProfileUpdate = (updatedProfile: any) => {
+        setProfile((prevProfile: any) => ({
+            ...prevProfile,
+            ...updatedProfile
+        }));
+    };
 
     if (!user) {
         return (
@@ -77,7 +87,9 @@ const ProfilePage: React.FC = () => {
                             </VStack>
                         )}
                     </VStack>
-                    <Button colorScheme="gray" variant="outline">Edit Profile</Button>
+                    <Button colorScheme="orange" variant="outline" onClick={onEditOpen}>
+                        Edit Profile
+                    </Button>
                 </HStack>
             </Card>
 
@@ -108,6 +120,14 @@ const ProfilePage: React.FC = () => {
                     </Grid>
                 )}
             </Box>
+
+            {/* Edit Profile Modal */}
+            <EditProfileModal
+                isOpen={isEditOpen}
+                onClose={onEditClose}
+                profile={userProfile}
+                onProfileUpdate={handleProfileUpdate}
+            />
         </VStack>
     );
 };

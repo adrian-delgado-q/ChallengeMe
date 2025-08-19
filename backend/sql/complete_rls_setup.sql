@@ -1,7 +1,7 @@
 -- Complete Row Level Security (RLS) Setup for ChallengeMe
 -- This file sets up RLS policies for all tables in the Prisma schema
 -- First, drop any existing policies to avoid conflicts
-DO $ $ DECLARE r RECORD;
+DO $$ DECLARE r RECORD;
 
 BEGIN -- Drop all existing policies on all tables
 FOR r IN (
@@ -17,7 +17,7 @@ FOR r IN (
 
 END LOOP;
 
-END $ $;
+END $$;
 
 -- Disable RLS temporarily on profiles to allow trigger functions to work
 ALTER TABLE

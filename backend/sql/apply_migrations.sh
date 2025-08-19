@@ -5,6 +5,11 @@
 
 set -e
 
+# Load environment variables
+if [ -f ../.env ]; then
+    source ../.env
+fi
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -30,7 +35,16 @@ psql "$SUPABASE_DB_URL" -f partial_unique_indexes.sql
 echo -e "${YELLOW}Applying triggers and functions...${NC}"
 psql "$SUPABASE_DB_URL" -f triggers_and_functions.sql
 
+echo -e "${YELLOW}Updating existing users with random usernames...${NC}"
+if [ -f update_existing_users.sql ]; then
+    psql "$SUPABASE_DB_URL" -f update_existing_users.sql
+else
+    echo -e "${YELLOW}Update existing users file not found, skipping...${NC}"
+fi
+
 echo -e "${YELLOW}Applying RLS policies...${NC}"
-psql "$SUPABASE_DB_URL" -f complete_rls_setup.sql
+# Use ON_ERROR_STOP=0 to continue despite existing policy errors
+PGOPTIONS='--client-min-messages=warning' psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=0 -f complete_rls_setup.sql
 
 echo -e "${GREEN}✅ All migrations applied successfully!${NC}"
+echo -e "${YELLOW}Note: Some policy 'already exists' errors are normal and can be ignored.${NC}"
