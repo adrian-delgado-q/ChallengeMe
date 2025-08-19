@@ -186,6 +186,7 @@ export type ChallengeParticipantWhereInput = {
   team?: Prisma.XOR<Prisma.TeamNullableScalarRelationFilter, Prisma.TeamWhereInput> | null
   activities?: Prisma.ActivityListRelationFilter
   posts?: Prisma.PostListRelationFilter
+  milestoneProgress?: Prisma.MilestoneProgressListRelationFilter
 }
 
 export type ChallengeParticipantOrderByWithRelationInput = {
@@ -199,6 +200,7 @@ export type ChallengeParticipantOrderByWithRelationInput = {
   team?: Prisma.TeamOrderByWithRelationInput
   activities?: Prisma.ActivityOrderByRelationAggregateInput
   posts?: Prisma.PostOrderByRelationAggregateInput
+  milestoneProgress?: Prisma.MilestoneProgressOrderByRelationAggregateInput
 }
 
 export type ChallengeParticipantWhereUniqueInput = Prisma.AtLeast<{
@@ -215,6 +217,7 @@ export type ChallengeParticipantWhereUniqueInput = Prisma.AtLeast<{
   team?: Prisma.XOR<Prisma.TeamNullableScalarRelationFilter, Prisma.TeamWhereInput> | null
   activities?: Prisma.ActivityListRelationFilter
   posts?: Prisma.PostListRelationFilter
+  milestoneProgress?: Prisma.MilestoneProgressListRelationFilter
 }, "id">
 
 export type ChallengeParticipantOrderByWithAggregationInput = {
@@ -247,6 +250,7 @@ export type ChallengeParticipantCreateInput = {
   team?: Prisma.TeamCreateNestedOneWithoutChallengeEntriesInput
   activities?: Prisma.ActivityCreateNestedManyWithoutParticipantInput
   posts?: Prisma.PostCreateNestedManyWithoutParticipantInput
+  milestoneProgress?: Prisma.MilestoneProgressCreateNestedManyWithoutParticipantInput
 }
 
 export type ChallengeParticipantUncheckedCreateInput = {
@@ -257,6 +261,7 @@ export type ChallengeParticipantUncheckedCreateInput = {
   joinedAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutParticipantInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutParticipantInput
+  milestoneProgress?: Prisma.MilestoneProgressUncheckedCreateNestedManyWithoutParticipantInput
 }
 
 export type ChallengeParticipantUpdateInput = {
@@ -267,6 +272,7 @@ export type ChallengeParticipantUpdateInput = {
   team?: Prisma.TeamUpdateOneWithoutChallengeEntriesNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutParticipantNestedInput
   posts?: Prisma.PostUpdateManyWithoutParticipantNestedInput
+  milestoneProgress?: Prisma.MilestoneProgressUpdateManyWithoutParticipantNestedInput
 }
 
 export type ChallengeParticipantUncheckedUpdateInput = {
@@ -277,6 +283,7 @@ export type ChallengeParticipantUncheckedUpdateInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutParticipantNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutParticipantNestedInput
+  milestoneProgress?: Prisma.MilestoneProgressUncheckedUpdateManyWithoutParticipantNestedInput
 }
 
 export type ChallengeParticipantCreateManyInput = {
@@ -310,6 +317,11 @@ export type ChallengeParticipantOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type ChallengeParticipantScalarRelationFilter = {
+  is?: Prisma.ChallengeParticipantWhereInput
+  isNot?: Prisma.ChallengeParticipantWhereInput
+}
+
 export type ChallengeParticipantCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   challengeId?: Prisma.SortOrder
@@ -332,11 +344,6 @@ export type ChallengeParticipantMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   teamId?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
-}
-
-export type ChallengeParticipantScalarRelationFilter = {
-  is?: Prisma.ChallengeParticipantWhereInput
-  isNot?: Prisma.ChallengeParticipantWhereInput
 }
 
 export type ChallengeParticipantCreateNestedManyWithoutUserInput = {
@@ -465,6 +472,20 @@ export type ChallengeParticipantUncheckedUpdateManyWithoutChallengeNestedInput =
   deleteMany?: Prisma.ChallengeParticipantScalarWhereInput | Prisma.ChallengeParticipantScalarWhereInput[]
 }
 
+export type ChallengeParticipantCreateNestedOneWithoutMilestoneProgressInput = {
+  create?: Prisma.XOR<Prisma.ChallengeParticipantCreateWithoutMilestoneProgressInput, Prisma.ChallengeParticipantUncheckedCreateWithoutMilestoneProgressInput>
+  connectOrCreate?: Prisma.ChallengeParticipantCreateOrConnectWithoutMilestoneProgressInput
+  connect?: Prisma.ChallengeParticipantWhereUniqueInput
+}
+
+export type ChallengeParticipantUpdateOneRequiredWithoutMilestoneProgressNestedInput = {
+  create?: Prisma.XOR<Prisma.ChallengeParticipantCreateWithoutMilestoneProgressInput, Prisma.ChallengeParticipantUncheckedCreateWithoutMilestoneProgressInput>
+  connectOrCreate?: Prisma.ChallengeParticipantCreateOrConnectWithoutMilestoneProgressInput
+  upsert?: Prisma.ChallengeParticipantUpsertWithoutMilestoneProgressInput
+  connect?: Prisma.ChallengeParticipantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ChallengeParticipantUpdateToOneWithWhereWithoutMilestoneProgressInput, Prisma.ChallengeParticipantUpdateWithoutMilestoneProgressInput>, Prisma.ChallengeParticipantUncheckedUpdateWithoutMilestoneProgressInput>
+}
+
 export type ChallengeParticipantCreateNestedOneWithoutActivitiesInput = {
   create?: Prisma.XOR<Prisma.ChallengeParticipantCreateWithoutActivitiesInput, Prisma.ChallengeParticipantUncheckedCreateWithoutActivitiesInput>
   connectOrCreate?: Prisma.ChallengeParticipantCreateOrConnectWithoutActivitiesInput
@@ -500,6 +521,7 @@ export type ChallengeParticipantCreateWithoutUserInput = {
   team?: Prisma.TeamCreateNestedOneWithoutChallengeEntriesInput
   activities?: Prisma.ActivityCreateNestedManyWithoutParticipantInput
   posts?: Prisma.PostCreateNestedManyWithoutParticipantInput
+  milestoneProgress?: Prisma.MilestoneProgressCreateNestedManyWithoutParticipantInput
 }
 
 export type ChallengeParticipantUncheckedCreateWithoutUserInput = {
@@ -509,6 +531,7 @@ export type ChallengeParticipantUncheckedCreateWithoutUserInput = {
   joinedAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutParticipantInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutParticipantInput
+  milestoneProgress?: Prisma.MilestoneProgressUncheckedCreateNestedManyWithoutParticipantInput
 }
 
 export type ChallengeParticipantCreateOrConnectWithoutUserInput = {
@@ -555,6 +578,7 @@ export type ChallengeParticipantCreateWithoutTeamInput = {
   user?: Prisma.ProfileCreateNestedOneWithoutChallengeEntriesInput
   activities?: Prisma.ActivityCreateNestedManyWithoutParticipantInput
   posts?: Prisma.PostCreateNestedManyWithoutParticipantInput
+  milestoneProgress?: Prisma.MilestoneProgressCreateNestedManyWithoutParticipantInput
 }
 
 export type ChallengeParticipantUncheckedCreateWithoutTeamInput = {
@@ -564,6 +588,7 @@ export type ChallengeParticipantUncheckedCreateWithoutTeamInput = {
   joinedAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutParticipantInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutParticipantInput
+  milestoneProgress?: Prisma.MilestoneProgressUncheckedCreateNestedManyWithoutParticipantInput
 }
 
 export type ChallengeParticipantCreateOrConnectWithoutTeamInput = {
@@ -599,6 +624,7 @@ export type ChallengeParticipantCreateWithoutChallengeInput = {
   team?: Prisma.TeamCreateNestedOneWithoutChallengeEntriesInput
   activities?: Prisma.ActivityCreateNestedManyWithoutParticipantInput
   posts?: Prisma.PostCreateNestedManyWithoutParticipantInput
+  milestoneProgress?: Prisma.MilestoneProgressCreateNestedManyWithoutParticipantInput
 }
 
 export type ChallengeParticipantUncheckedCreateWithoutChallengeInput = {
@@ -608,6 +634,7 @@ export type ChallengeParticipantUncheckedCreateWithoutChallengeInput = {
   joinedAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutParticipantInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutParticipantInput
+  milestoneProgress?: Prisma.MilestoneProgressUncheckedCreateNestedManyWithoutParticipantInput
 }
 
 export type ChallengeParticipantCreateOrConnectWithoutChallengeInput = {
@@ -636,6 +663,62 @@ export type ChallengeParticipantUpdateManyWithWhereWithoutChallengeInput = {
   data: Prisma.XOR<Prisma.ChallengeParticipantUpdateManyMutationInput, Prisma.ChallengeParticipantUncheckedUpdateManyWithoutChallengeInput>
 }
 
+export type ChallengeParticipantCreateWithoutMilestoneProgressInput = {
+  id?: string
+  joinedAt?: Date | string
+  challenge: Prisma.ChallengeCreateNestedOneWithoutParticipantsInput
+  user?: Prisma.ProfileCreateNestedOneWithoutChallengeEntriesInput
+  team?: Prisma.TeamCreateNestedOneWithoutChallengeEntriesInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutParticipantInput
+  posts?: Prisma.PostCreateNestedManyWithoutParticipantInput
+}
+
+export type ChallengeParticipantUncheckedCreateWithoutMilestoneProgressInput = {
+  id?: string
+  challengeId: string
+  userId?: string | null
+  teamId?: string | null
+  joinedAt?: Date | string
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutParticipantInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutParticipantInput
+}
+
+export type ChallengeParticipantCreateOrConnectWithoutMilestoneProgressInput = {
+  where: Prisma.ChallengeParticipantWhereUniqueInput
+  create: Prisma.XOR<Prisma.ChallengeParticipantCreateWithoutMilestoneProgressInput, Prisma.ChallengeParticipantUncheckedCreateWithoutMilestoneProgressInput>
+}
+
+export type ChallengeParticipantUpsertWithoutMilestoneProgressInput = {
+  update: Prisma.XOR<Prisma.ChallengeParticipantUpdateWithoutMilestoneProgressInput, Prisma.ChallengeParticipantUncheckedUpdateWithoutMilestoneProgressInput>
+  create: Prisma.XOR<Prisma.ChallengeParticipantCreateWithoutMilestoneProgressInput, Prisma.ChallengeParticipantUncheckedCreateWithoutMilestoneProgressInput>
+  where?: Prisma.ChallengeParticipantWhereInput
+}
+
+export type ChallengeParticipantUpdateToOneWithWhereWithoutMilestoneProgressInput = {
+  where?: Prisma.ChallengeParticipantWhereInput
+  data: Prisma.XOR<Prisma.ChallengeParticipantUpdateWithoutMilestoneProgressInput, Prisma.ChallengeParticipantUncheckedUpdateWithoutMilestoneProgressInput>
+}
+
+export type ChallengeParticipantUpdateWithoutMilestoneProgressInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  challenge?: Prisma.ChallengeUpdateOneRequiredWithoutParticipantsNestedInput
+  user?: Prisma.ProfileUpdateOneWithoutChallengeEntriesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutChallengeEntriesNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutParticipantNestedInput
+  posts?: Prisma.PostUpdateManyWithoutParticipantNestedInput
+}
+
+export type ChallengeParticipantUncheckedUpdateWithoutMilestoneProgressInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  challengeId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutParticipantNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutParticipantNestedInput
+}
+
 export type ChallengeParticipantCreateWithoutActivitiesInput = {
   id?: string
   joinedAt?: Date | string
@@ -643,6 +726,7 @@ export type ChallengeParticipantCreateWithoutActivitiesInput = {
   user?: Prisma.ProfileCreateNestedOneWithoutChallengeEntriesInput
   team?: Prisma.TeamCreateNestedOneWithoutChallengeEntriesInput
   posts?: Prisma.PostCreateNestedManyWithoutParticipantInput
+  milestoneProgress?: Prisma.MilestoneProgressCreateNestedManyWithoutParticipantInput
 }
 
 export type ChallengeParticipantUncheckedCreateWithoutActivitiesInput = {
@@ -652,6 +736,7 @@ export type ChallengeParticipantUncheckedCreateWithoutActivitiesInput = {
   teamId?: string | null
   joinedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutParticipantInput
+  milestoneProgress?: Prisma.MilestoneProgressUncheckedCreateNestedManyWithoutParticipantInput
 }
 
 export type ChallengeParticipantCreateOrConnectWithoutActivitiesInput = {
@@ -677,6 +762,7 @@ export type ChallengeParticipantUpdateWithoutActivitiesInput = {
   user?: Prisma.ProfileUpdateOneWithoutChallengeEntriesNestedInput
   team?: Prisma.TeamUpdateOneWithoutChallengeEntriesNestedInput
   posts?: Prisma.PostUpdateManyWithoutParticipantNestedInput
+  milestoneProgress?: Prisma.MilestoneProgressUpdateManyWithoutParticipantNestedInput
 }
 
 export type ChallengeParticipantUncheckedUpdateWithoutActivitiesInput = {
@@ -686,6 +772,7 @@ export type ChallengeParticipantUncheckedUpdateWithoutActivitiesInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutParticipantNestedInput
+  milestoneProgress?: Prisma.MilestoneProgressUncheckedUpdateManyWithoutParticipantNestedInput
 }
 
 export type ChallengeParticipantCreateWithoutPostsInput = {
@@ -695,6 +782,7 @@ export type ChallengeParticipantCreateWithoutPostsInput = {
   user?: Prisma.ProfileCreateNestedOneWithoutChallengeEntriesInput
   team?: Prisma.TeamCreateNestedOneWithoutChallengeEntriesInput
   activities?: Prisma.ActivityCreateNestedManyWithoutParticipantInput
+  milestoneProgress?: Prisma.MilestoneProgressCreateNestedManyWithoutParticipantInput
 }
 
 export type ChallengeParticipantUncheckedCreateWithoutPostsInput = {
@@ -704,6 +792,7 @@ export type ChallengeParticipantUncheckedCreateWithoutPostsInput = {
   teamId?: string | null
   joinedAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutParticipantInput
+  milestoneProgress?: Prisma.MilestoneProgressUncheckedCreateNestedManyWithoutParticipantInput
 }
 
 export type ChallengeParticipantCreateOrConnectWithoutPostsInput = {
@@ -729,6 +818,7 @@ export type ChallengeParticipantUpdateWithoutPostsInput = {
   user?: Prisma.ProfileUpdateOneWithoutChallengeEntriesNestedInput
   team?: Prisma.TeamUpdateOneWithoutChallengeEntriesNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutParticipantNestedInput
+  milestoneProgress?: Prisma.MilestoneProgressUpdateManyWithoutParticipantNestedInput
 }
 
 export type ChallengeParticipantUncheckedUpdateWithoutPostsInput = {
@@ -738,6 +828,7 @@ export type ChallengeParticipantUncheckedUpdateWithoutPostsInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutParticipantNestedInput
+  milestoneProgress?: Prisma.MilestoneProgressUncheckedUpdateManyWithoutParticipantNestedInput
 }
 
 export type ChallengeParticipantCreateManyUserInput = {
@@ -754,6 +845,7 @@ export type ChallengeParticipantUpdateWithoutUserInput = {
   team?: Prisma.TeamUpdateOneWithoutChallengeEntriesNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutParticipantNestedInput
   posts?: Prisma.PostUpdateManyWithoutParticipantNestedInput
+  milestoneProgress?: Prisma.MilestoneProgressUpdateManyWithoutParticipantNestedInput
 }
 
 export type ChallengeParticipantUncheckedUpdateWithoutUserInput = {
@@ -763,6 +855,7 @@ export type ChallengeParticipantUncheckedUpdateWithoutUserInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutParticipantNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutParticipantNestedInput
+  milestoneProgress?: Prisma.MilestoneProgressUncheckedUpdateManyWithoutParticipantNestedInput
 }
 
 export type ChallengeParticipantUncheckedUpdateManyWithoutUserInput = {
@@ -786,6 +879,7 @@ export type ChallengeParticipantUpdateWithoutTeamInput = {
   user?: Prisma.ProfileUpdateOneWithoutChallengeEntriesNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutParticipantNestedInput
   posts?: Prisma.PostUpdateManyWithoutParticipantNestedInput
+  milestoneProgress?: Prisma.MilestoneProgressUpdateManyWithoutParticipantNestedInput
 }
 
 export type ChallengeParticipantUncheckedUpdateWithoutTeamInput = {
@@ -795,6 +889,7 @@ export type ChallengeParticipantUncheckedUpdateWithoutTeamInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutParticipantNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutParticipantNestedInput
+  milestoneProgress?: Prisma.MilestoneProgressUncheckedUpdateManyWithoutParticipantNestedInput
 }
 
 export type ChallengeParticipantUncheckedUpdateManyWithoutTeamInput = {
@@ -818,6 +913,7 @@ export type ChallengeParticipantUpdateWithoutChallengeInput = {
   team?: Prisma.TeamUpdateOneWithoutChallengeEntriesNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutParticipantNestedInput
   posts?: Prisma.PostUpdateManyWithoutParticipantNestedInput
+  milestoneProgress?: Prisma.MilestoneProgressUpdateManyWithoutParticipantNestedInput
 }
 
 export type ChallengeParticipantUncheckedUpdateWithoutChallengeInput = {
@@ -827,6 +923,7 @@ export type ChallengeParticipantUncheckedUpdateWithoutChallengeInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutParticipantNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutParticipantNestedInput
+  milestoneProgress?: Prisma.MilestoneProgressUncheckedUpdateManyWithoutParticipantNestedInput
 }
 
 export type ChallengeParticipantUncheckedUpdateManyWithoutChallengeInput = {
@@ -844,11 +941,13 @@ export type ChallengeParticipantUncheckedUpdateManyWithoutChallengeInput = {
 export type ChallengeParticipantCountOutputType = {
   activities: number
   posts: number
+  milestoneProgress: number
 }
 
 export type ChallengeParticipantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | ChallengeParticipantCountOutputTypeCountActivitiesArgs
   posts?: boolean | ChallengeParticipantCountOutputTypeCountPostsArgs
+  milestoneProgress?: boolean | ChallengeParticipantCountOutputTypeCountMilestoneProgressArgs
 }
 
 /**
@@ -875,6 +974,13 @@ export type ChallengeParticipantCountOutputTypeCountPostsArgs<ExtArgs extends ru
   where?: Prisma.PostWhereInput
 }
 
+/**
+ * ChallengeParticipantCountOutputType without action
+ */
+export type ChallengeParticipantCountOutputTypeCountMilestoneProgressArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MilestoneProgressWhereInput
+}
+
 
 export type ChallengeParticipantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -887,6 +993,7 @@ export type ChallengeParticipantSelect<ExtArgs extends runtime.Types.Extensions.
   team?: boolean | Prisma.ChallengeParticipant$teamArgs<ExtArgs>
   activities?: boolean | Prisma.ChallengeParticipant$activitiesArgs<ExtArgs>
   posts?: boolean | Prisma.ChallengeParticipant$postsArgs<ExtArgs>
+  milestoneProgress?: boolean | Prisma.ChallengeParticipant$milestoneProgressArgs<ExtArgs>
   _count?: boolean | Prisma.ChallengeParticipantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["challengeParticipant"]>
 
@@ -927,6 +1034,7 @@ export type ChallengeParticipantInclude<ExtArgs extends runtime.Types.Extensions
   team?: boolean | Prisma.ChallengeParticipant$teamArgs<ExtArgs>
   activities?: boolean | Prisma.ChallengeParticipant$activitiesArgs<ExtArgs>
   posts?: boolean | Prisma.ChallengeParticipant$postsArgs<ExtArgs>
+  milestoneProgress?: boolean | Prisma.ChallengeParticipant$milestoneProgressArgs<ExtArgs>
   _count?: boolean | Prisma.ChallengeParticipantCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ChallengeParticipantIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -948,6 +1056,7 @@ export type $ChallengeParticipantPayload<ExtArgs extends runtime.Types.Extension
     team: Prisma.$TeamPayload<ExtArgs> | null
     activities: Prisma.$ActivityPayload<ExtArgs>[]
     posts: Prisma.$PostPayload<ExtArgs>[]
+    milestoneProgress: Prisma.$MilestoneProgressPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1354,6 +1463,7 @@ export interface Prisma__ChallengeParticipantClient<T, Null = never, ExtArgs ext
   team<T extends Prisma.ChallengeParticipant$teamArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChallengeParticipant$teamArgs<ExtArgs>>): Prisma.Prisma__TeamClient<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   activities<T extends Prisma.ChallengeParticipant$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChallengeParticipant$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   posts<T extends Prisma.ChallengeParticipant$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChallengeParticipant$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  milestoneProgress<T extends Prisma.ChallengeParticipant$milestoneProgressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChallengeParticipant$milestoneProgressArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MilestoneProgressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1867,6 +1977,30 @@ export type ChallengeParticipant$postsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
+}
+
+/**
+ * ChallengeParticipant.milestoneProgress
+ */
+export type ChallengeParticipant$milestoneProgressArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MilestoneProgress
+   */
+  select?: Prisma.MilestoneProgressSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MilestoneProgress
+   */
+  omit?: Prisma.MilestoneProgressOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MilestoneProgressInclude<ExtArgs> | null
+  where?: Prisma.MilestoneProgressWhereInput
+  orderBy?: Prisma.MilestoneProgressOrderByWithRelationInput | Prisma.MilestoneProgressOrderByWithRelationInput[]
+  cursor?: Prisma.MilestoneProgressWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MilestoneProgressScalarFieldEnum | Prisma.MilestoneProgressScalarFieldEnum[]
 }
 
 /**

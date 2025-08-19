@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node index.ts"
+    "start": "ts-node index.ts",
+    "seed": "ts-node database/seeder/fakeData.ts",
+    "migrate:sql": "cd sql && ./apply_migrations.sh",
+    "validate:db": "psql $SUPABASE_DB_URL -f sql/validate_database.sql"
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",

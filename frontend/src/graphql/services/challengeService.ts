@@ -81,12 +81,26 @@ export class ChallengeService {
                     .select('*', { count: 'exact', head: true })
                     .eq('challengeId', challenge.id);
 
-                    // Generate sample milestone data based on challenge title
-                    const sampleMilestones = this.generateSampleMilestones(challenge.title);
-                    const sampleActivityType = this.generateSampleActivityType(challenge.title);
-                    const sampleProgress = Math.floor(Math.random() * 150); // Random progress for demo
+                // Get real milestones from database
+                const { data: milestones } = await supabase
+                    .from('Milestone')
+                    .select('*')
+                    .eq('challengeId', challenge.id)
+                    .order('order', { ascending: true });
 
-                    return {
+                // Convert database milestones to frontend format
+                const formattedMilestones = (milestones || []).map((milestone: any) => ({
+                    name: milestone.name,
+                    value: milestone.targetValue
+                }));
+
+                // Generate activity type from challenge title
+                const activityType = this.generateSampleActivityType(challenge.title);
+                
+                // Calculate actual progress for current user
+                const userProgress = await this.calculateUserProgress(challenge.id);
+
+                return {
                     ...challenge,
                     challengeType: challenge.challengeType?.toLowerCase() as 'individual' | 'team', // Convert to lowercase
                     creator: creator ? {
@@ -94,9 +108,9 @@ export class ChallengeService {
                         avatarUrl: creator.avatar_url // Map database column to frontend expectation
                     } : null,
                     participants: count || 0,
-                    milestones: sampleMilestones,
-                    progress: sampleProgress,
-                    type: sampleActivityType // Add activity type
+                    milestones: formattedMilestones,
+                    progress: userProgress,
+                    type: activityType // Add activity type
                 };
             })
         );
@@ -164,10 +178,24 @@ export class ChallengeService {
                 })
             );
 
-            // Generate sample milestone data and activity type
-            const sampleMilestones = this.generateSampleMilestones(data.title);
-            const sampleActivityType = this.generateSampleActivityType(data.title);
-            const sampleProgress = Math.floor(Math.random() * 150); // Random progress for demo
+            // Get real milestones from database
+            const { data: milestones } = await supabase
+                .from('Milestone')
+                .select('*')
+                .eq('challengeId', id)
+                .order('order', { ascending: true });
+
+            // Convert database milestones to frontend format
+            const formattedMilestones = (milestones || []).map((milestone: any) => ({
+                name: milestone.name,
+                value: milestone.targetValue
+            }));
+
+            // Generate activity type from challenge title
+            const activityType = this.generateSampleActivityType(data.title);
+            
+            // Calculate actual progress for current user
+            const userProgress = await this.calculateUserProgress(id);
 
             return {
                 ...data,
@@ -178,9 +206,9 @@ export class ChallengeService {
                 } : null,
                 participantCount: participants?.length || 0,
                 participantList,
-                milestones: sampleMilestones,
-                progress: sampleProgress,
-                type: sampleActivityType,
+                milestones: formattedMilestones,
+                progress: userProgress,
+                type: activityType,
                 activityFeed: [] // We'll load this separately if needed
             };
         } catch (error) {
@@ -382,19 +410,33 @@ export class ChallengeService {
                         .select('*', { count: 'exact', head: true })
                         .eq('challengeId', challenge?.id);
 
-                    // Generate sample milestone data and activity type
-                    const sampleMilestones = this.generateSampleMilestones(challenge?.title || '');
-                    const sampleActivityType = this.generateSampleActivityType(challenge?.title || '');
-                    const sampleProgress = Math.floor(Math.random() * 150); // Random progress for demo
+                    // Get real milestones from database
+                    const { data: milestones } = await supabase
+                        .from('Milestone')
+                        .select('*')
+                        .eq('challengeId', challenge?.id || '')
+                        .order('order', { ascending: true });
+
+                    // Convert database milestones to frontend format
+                    const formattedMilestones = (milestones || []).map((milestone: any) => ({
+                        name: milestone.name,
+                        value: milestone.targetValue
+                    }));
+
+                    // Generate activity type from challenge title
+                    const activityType = this.generateSampleActivityType(challenge?.title || '');
+                    
+                    // Calculate actual progress for current user
+                    const userProgress = await this.calculateUserProgress(challenge?.id || '');
 
                     return {
                         ...challenge,
                         challengeType: challenge?.challengeType?.toLowerCase() as 'individual' | 'team', // Convert to lowercase
                         creator,
                         participants: count || 0,
-                        milestones: sampleMilestones,
-                        progress: sampleProgress,
-                        type: sampleActivityType
+                        milestones: formattedMilestones,
+                        progress: userProgress,
+                        type: activityType
                     };
                 })
             );
@@ -425,50 +467,32 @@ export class ChallengeService {
         }
     }
 
-    // Helper method to generate sample milestones based on challenge title
-    private static generateSampleMilestones(title: string): Array<{name: string, value: number}> {
-        const titleLower = title.toLowerCase();
-        
-        // Generate milestones based on keywords in the title
-        if (titleLower.includes('run') || titleLower.includes('jog')) {
-            return [
-                { name: 'First Steps', value: 10 },
-                { name: 'Bronze Runner', value: 50 },
-                { name: 'Silver Sprinter', value: 100 },
-                { name: 'Gold Marathon', value: 200 }
-            ];
-        } else if (titleLower.includes('walk') || titleLower.includes('step')) {
-            return [
-                { name: 'Walker', value: 25 },
-                { name: 'Strider', value: 75 },
-                { name: 'Trekker', value: 150 }
-            ];
-        } else if (titleLower.includes('bike') || titleLower.includes('cycle')) {
-            return [
-                { name: 'Cyclist', value: 30 },
-                { name: 'Road Rider', value: 80 },
-                { name: 'Tour Champion', value: 160 }
-            ];
-        } else if (titleLower.includes('swim')) {
-            return [
-                { name: 'Paddler', value: 20 },
-                { name: 'Swimmer', value: 60 },
-                { name: 'Aquatic Ace', value: 120 }
-            ];
-        } else if (titleLower.includes('strength') || titleLower.includes('lift') || titleLower.includes('gym')) {
-            return [
-                { name: 'Beginner', value: 15 },
-                { name: 'Lifter', value: 45 },
-                { name: 'Strong', value: 90 },
-                { name: 'Beast Mode', value: 180 }
-            ];
-        } else {
-            // Generic milestones
-            return [
-                { name: 'Starter', value: 20 },
-                { name: 'Achiever', value: 60 },
-                { name: 'Champion', value: 120 }
-            ];
+    // Helper method to calculate user progress based on logged activities
+    private static async calculateUserProgress(challengeId: string): Promise<number> {
+        try {
+            const user = await getCurrentUser();
+            if (!user) return 0;
+
+            // Get user's participant ID for this challenge
+            const { data: participant } = await supabase
+                .from('ChallengeParticipant')
+                .select('id')
+                .eq('challengeId', challengeId)
+                .eq('userId', user.id)
+                .maybeSingle();
+
+            if (!participant) return 0;
+
+            // Count user's activities for this challenge
+            const { count } = await supabase
+                .from('Activity')
+                .select('*', { count: 'exact', head: true })
+                .eq('participantId', participant.id);
+
+            return count || 0;
+        } catch (error) {
+            console.error('Error calculating user progress:', error);
+            return 0;
         }
     }
 

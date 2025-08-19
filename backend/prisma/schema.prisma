@@ -95,7 +95,41 @@ model Challenge {
   participants ChallengeParticipant[]
   activities   Activity[]
   posts        Post[]
+  milestones   Milestone[]
 
+  @@schema("public")
+}
+
+model Milestone {
+  id          String   @id @default(uuid()) @db.Uuid
+  challengeId String   @db.Uuid
+  name        String
+  description String?
+  targetValue Int      // The target value to achieve (e.g., 100 points, 10 activities, etc.)
+  valueType   String   // Type of value: "activities", "points", "distance", "duration", etc.
+  order       Int      // Display order of milestones
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  challenge          Challenge            @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  participantProgress MilestoneProgress[]
+
+  @@schema("public")
+}
+
+model MilestoneProgress {
+  id            String   @id @default(uuid()) @db.Uuid
+  milestoneId   String   @db.Uuid
+  participantId String   @db.Uuid
+  currentValue  Int      @default(0) // Current progress value
+  isAchieved    Boolean  @default(false)
+  achievedAt    DateTime? @db.Timestamptz(6)
+  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime @updatedAt @db.Timestamptz(6)
+
+  milestone   Milestone            @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  participant ChallengeParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([milestoneId, participantId])
   @@schema("public")
 }
 
@@ -106,11 +140,12 @@ model ChallengeParticipant {
   teamId      String?   @db.Uuid
   joinedAt    DateTime  @default(now()) @db.Timestamptz(6)
 
-  challenge   Challenge  @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  user        Profile?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  team        Team?      @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  activities  Activity[]
-  posts       Post[]
+  challenge          Challenge           @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  user               Profile?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team               Team?               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  activities         Activity[]
+  posts              Post[]
+  milestoneProgress  MilestoneProgress[]
 
   @@schema("public")
 

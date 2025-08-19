@@ -16,19 +16,32 @@ async function main() {
     "2ff8dc27-4efa-4477-8bd9-490b7030b282"
   ];
 
-  // --- 1. Update Profiles with Usernames and Avatars ---
+  // --- 1. Create or Update Profiles with Usernames and Avatars ---
   const profiles = [];
   for (const userId of userIds) {
-    const updatedProfile = await prisma.profile.update({
-      where: { id: userId },
-      data: {
-        username: faker.internet.username(),
-        avatarUrl: faker.image.avatar(),
-      },
-    });
-    profiles.push(updatedProfile);
+    try {
+      // Try to update existing profile
+      const updatedProfile = await prisma.profile.update({
+        where: { id: userId },
+        data: {
+          username: faker.internet.username(),
+          avatarUrl: faker.image.avatar(),
+        },
+      });
+      profiles.push(updatedProfile);
+    } catch (error) {
+      // If profile doesn't exist, create it
+      const newProfile = await prisma.profile.create({
+        data: {
+          id: userId,
+          username: faker.internet.username(),
+          avatarUrl: faker.image.avatar(),
+        },
+      });
+      profiles.push(newProfile);
+    }
   }
-  console.log(`Updated ${profiles.length} profiles.`);
+  console.log(`Created/Updated ${profiles.length} profiles.`);
 
 
   // --- 2. Create Teams ---
@@ -187,6 +200,84 @@ async function main() {
     }
   console.log(`Created ${comments.length} comments.`);
 
+  // --- 9. Create Milestones ---
+  const milestones = [];
+  const milestoneTemplates: Record<string, Array<{ name: string; targetValue: number; valueType: string; order: number }>> = {
+    'Daily Running Challenge': [
+      { name: 'First Steps', targetValue: 10, valueType: 'activities', order: 1 },
+      { name: 'Bronze Runner', targetValue: 50, valueType: 'activities', order: 2 },
+      { name: 'Silver Sprinter', targetValue: 100, valueType: 'activities', order: 3 },
+      { name: 'Gold Marathon', targetValue: 200, valueType: 'activities', order: 4 }
+    ],
+    'Cycling Adventure Quest': [
+      { name: 'Cyclist', targetValue: 30, valueType: 'activities', order: 1 },
+      { name: 'Road Rider', targetValue: 80, valueType: 'activities', order: 2 },
+      { name: 'Tour Champion', targetValue: 160, valueType: 'activities', order: 3 }
+    ],
+    'Swimming Endurance Test': [
+      { name: 'Paddler', targetValue: 20, valueType: 'activities', order: 1 },
+      { name: 'Swimmer', targetValue: 60, valueType: 'activities', order: 2 },
+      { name: 'Aquatic Ace', targetValue: 120, valueType: 'activities', order: 3 }
+    ],
+    'Strength Training Bootcamp': [
+      { name: 'Beginner', targetValue: 15, valueType: 'activities', order: 1 },
+      { name: 'Lifter', targetValue: 45, valueType: 'activities', order: 2 },
+      { name: 'Strong', targetValue: 90, valueType: 'activities', order: 3 },
+      { name: 'Beast Mode', targetValue: 180, valueType: 'activities', order: 4 }
+    ],
+    'Walking Wellness Journey': [
+      { name: 'Walker', targetValue: 25, valueType: 'activities', order: 1 },
+      { name: 'Strider', targetValue: 75, valueType: 'activities', order: 2 },
+      { name: 'Trekker', targetValue: 150, valueType: 'activities', order: 3 }
+    ]
+  };
+
+  for (const challenge of challenges) {
+    const milestoneTemplate = milestoneTemplates[challenge.title];
+    if (milestoneTemplate) {
+      for (const template of milestoneTemplate) {
+        const milestone = await prisma.milestone.create({
+          data: {
+            challengeId: challenge.id,
+            name: template.name,
+            description: `Achieve ${template.targetValue} ${template.valueType} in this challenge`,
+            targetValue: template.targetValue,
+            valueType: template.valueType,
+            order: template.order
+          }
+        });
+        milestones.push(milestone);
+      }
+    }
+  }
+  console.log(`Created ${milestones.length} milestones.`);
+
+  // --- 10. Create Milestone Progress ---
+  const milestoneProgress = [];
+  for (const milestone of milestones) {
+    // Find participants for this challenge
+    const challengeParticipantsForMilestone = challengeParticipants.filter(
+      p => p.challengeId === milestone.challengeId
+    );
+    
+    for (const participant of challengeParticipantsForMilestone) {
+      // Generate some random progress
+      const currentValue = Math.floor(Math.random() * (milestone.targetValue + 20));
+      const isAchieved = currentValue >= milestone.targetValue;
+      
+      const progress = await prisma.milestoneProgress.create({
+        data: {
+          milestoneId: milestone.id,
+          participantId: participant.id,
+          currentValue: currentValue,
+          isAchieved: isAchieved,
+          achievedAt: isAchieved ? faker.date.recent() : null
+        }
+      });
+      milestoneProgress.push(progress);
+    }
+  }
+  console.log(`Created ${milestoneProgress.length} milestone progress records.`);
 
   console.log('Seeding finished.');
 }
