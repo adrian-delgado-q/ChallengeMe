@@ -1,29 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Avatar, Box, Button, Grid, Heading, Text, VStack, HStack, Spinner, Center, Alert, AlertIcon } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 import { ChallengeCard } from '../components/challenges/ChallengeCard';
-import type { User } from '../types';
 import { Card } from '../components/common/Card';
 import { useChallenges } from '../hooks/useData';
 import { useUser } from '../contexts/AuthContext';
 import { ProfileService } from '../graphql/services';
 
-interface ProfilePageProps {
-    onNavigate: (page: string) => void;
-}
-
-const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
+const ProfilePage: React.FC = () => {
+    const navigate = useNavigate();
     const { user } = useUser();
     const { challenges, loading: challengesLoading, error: challengesError } = useChallenges();
     const [profile, setProfile] = useState<any>(null);
     const [profileLoading, setProfileLoading] = useState(true);
-    const [profileError, setProfileError] = useState<string | null>(null);
 
     // Fetch user profile
     useEffect(() => {
         if (user) {
             ProfileService.getCurrentProfile()
                 .then(setProfile)
-                .catch((err) => setProfileError(err.message))
+                .catch(() => { }) // Ignore errors for now
                 .finally(() => setProfileLoading(false));
         }
     }, [user]);
@@ -106,7 +102,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
                             <ChallengeCard
                                 key={challenge.id}
                                 challenge={challenge}
-                                onSelect={() => onNavigate(`dashboard/${challenge.id}`)}
+                                onSelect={() => navigate(`/challenges/${challenge.id}`)}
                             />
                         ))}
                     </Grid>

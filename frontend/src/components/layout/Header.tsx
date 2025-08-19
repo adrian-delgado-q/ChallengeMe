@@ -15,14 +15,12 @@ import {
     Text,
     Spinner
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 import { PlusIcon } from '../common/Icons';
 import { useUser } from '../../contexts/AuthContext'; // Using your 'useUser' hook
 
-interface HeaderProps {
-    onNavigate: (page: string) => void;
-}
-
-export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
+export const Header: React.FC = () => {
+    const navigate = useNavigate();
     // Get the complete auth state, including the new signOut function
     const { user, signOut, isLoading } = useUser();
 
@@ -38,7 +36,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
             return (
                 <HStack spacing={4}>
                     <Button
-                        onClick={() => onNavigate('create')}
+                        onClick={() => navigate('/create')}
                         colorScheme="orange"
                         display={{ base: 'none', md: 'inline-flex' }}
                         leftIcon={<PlusIcon className="w-4 h-4" />}
@@ -73,7 +71,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
                                 </Text>
                             </Box>
                             <MenuDivider />
-                            <MenuItem onClick={() => onNavigate('profile')}>
+                            <MenuItem onClick={() => navigate('/profile')}>
                                 My Profile
                             </MenuItem>
                             <MenuDivider />
@@ -91,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
             <Button
                 colorScheme="orange"
                 variant="solid"
-                onClick={() => onNavigate('login')}
+                onClick={() => navigate('/auth')}
             >
                 Login / Sign Up
             </Button>
@@ -123,7 +121,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
                     as="h1"
                     size="md"
                     cursor="pointer"
-                    onClick={() => onNavigate('home')}
+                    onClick={() => navigate('/')}
                     _hover={{ color: 'orange.500' }}
                     transition="color 0.2s"
                 >
@@ -133,8 +131,8 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
                 {/* Center: Navigation Links (only for logged-in users) */}
                 {user && (
                     <HStack spacing={6} display={{ base: 'none', md: 'flex' }}>
-                        <Link onClick={() => onNavigate('home')} fontWeight="bold" _hover={{ color: 'orange.500' }}>Challenges</Link>
-                        <Link onClick={() => onNavigate('teams')} fontWeight="bold" _hover={{ color: 'orange.500' }}>Teams</Link>
+                        <Link onClick={() => navigate('/challenges')} fontWeight="bold" _hover={{ color: 'orange.500' }}>Challenges</Link>
+                        <Link onClick={() => navigate('/teams')} fontWeight="bold" _hover={{ color: 'orange.500' }}>Teams</Link>
                     </HStack>
                 )}
 

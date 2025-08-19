@@ -1,6 +1,6 @@
 import React from 'react';
 import { Badge, Box, Heading, Progress, Text, VStack, HStack, Icon, Tag } from '@chakra-ui/react';
-import type { Challenge, ChallengeType } from '../../types';
+import type { Challenge } from '../../types';
 import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../common/Icons';
 
 // A new icon for the Individual type
@@ -13,13 +13,13 @@ const UserIcon: React.FC<{ className?: string }> = ({ className }) => (
 
 interface ChallengeCardProps {
   challenge: Challenge;
-  onSelect: (id: number) => void;
+  onSelect: (id: string) => void;
 }
 
 export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelect }) => (
   <Box
     as="div"
-    onClick={() => onSelect(parseInt(challenge.id))}
+    onClick={() => onSelect(challenge.id)}
     cursor="pointer"
     bg="white"
     rounded="xl"

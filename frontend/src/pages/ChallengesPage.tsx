@@ -1,16 +1,14 @@
 import React from 'react';
 import { Button, Grid, Heading, Input, Text, VStack, HStack, Spinner, Center } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 import { ChallengeCard } from '../components/challenges/ChallengeCard';
 import { useChallenges } from '../hooks/useData';
 import { useUser } from '../contexts/AuthContext';
 import { AuthPrompt } from '../components/common/AuthPrompt';
 import { GenericError } from '../components/common/GenericError';
 
-interface ChallengesPageProps {
-    onNavigate: (page: string) => void;
-}
-
-const ChallengesPage: React.FC<ChallengesPageProps> = ({ onNavigate }) => {
+const ChallengesPage: React.FC = () => {
+    const navigate = useNavigate();
     const { user, isLoading: isAuthLoading } = useUser();
     const { challenges, loading: isFetching, error } = useChallenges();
 
@@ -19,7 +17,7 @@ const ChallengesPage: React.FC<ChallengesPageProps> = ({ onNavigate }) => {
     }
 
     if (!user) {
-        return <AuthPrompt onLogin={() => onNavigate('login')} />;
+        return <AuthPrompt onLogin={() => navigate('/auth')} />;
     }
 
     if (error) {
@@ -39,7 +37,11 @@ const ChallengesPage: React.FC<ChallengesPageProps> = ({ onNavigate }) => {
             <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }} gap={6}>
                 {challenges.length > 0 ? (
                     challenges.map(challenge => (
-                        <ChallengeCard key={challenge.id} challenge={challenge} onSelect={() => onNavigate('dashboard')} />
+                        <ChallengeCard
+                            key={challenge.id}
+                            challenge={challenge}
+                            onSelect={(id) => navigate(`/challenges/${id}`)}
+                        />
                     ))
                 ) : (
                     <GenericError message="No challenges found. Why not create one?" />

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Grid, Heading, Input, Text, VStack, HStack, Tag, Avatar, Spinner, Center } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/common/Card';
 
 import { UserTeamIcon } from '../components/common/Icons';
@@ -48,7 +49,8 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onSelect }) => (
     </Card>
 );
 
-const TeamsPage: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigate }) => {
+const TeamsPage: React.FC = () => {
+    const navigate = useNavigate();
     const { user, isLoading: isAuthLoading } = useUser();
     const { teams, loading: isFetching, error: fetchError, refetch: fetchTeams } = useTeams();
 
@@ -57,7 +59,7 @@ const TeamsPage: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigat
     }
 
     if (!user) {
-        return <AuthPrompt onLogin={() => onNavigate('login')} />;
+        return <AuthPrompt onLogin={() => navigate('/auth')} />;
     }
 
     if (fetchError) {
@@ -77,12 +79,12 @@ const TeamsPage: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigat
             <HStack maxW="2xl" w="full" mx="auto">
                 <Input placeholder="Search for Teams..." />
                 <Button colorScheme="orange">Search</Button>
-                <Button colorScheme="green" onClick={() => onNavigate('createTeam')}>Create Team</Button>
+                <Button colorScheme="green" onClick={() => navigate('/create-team')}>Create Team</Button>
             </HStack>
             <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={6}>
                 {teams.length > 0 ? (
                     teams.map(team => (
-                        <TeamCard key={team.id} team={team} onSelect={() => onNavigate('teamDetails')} />
+                        <TeamCard key={team.id} team={team} onSelect={() => navigate(`/teams/${team.id}`)} />
                     ))
                 ) : (
                     <GenericError message="No teams found. Why not create one?" />

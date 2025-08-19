@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useUser } from './contexts/AuthContext';
 import { AppLayout } from './components/layout/AppLayout';
 import AuthPage from './pages/AuthPage';
@@ -8,14 +9,44 @@ import ProfilePage from './pages/ProfilePage';
 import CreateChallengePage from './pages/CreateChallengePage';
 import EditChallengePage from './pages/EditChallengePage';
 import ChallengeDashboardPage from './pages/ChallengeDashboardPage';
-import { GenericError } from './components/common/GenericError';
 import { DebugPanel } from './components/common/DebugPanel';
 import { isSupabaseConfigured } from './supabase/client';
 
-const App: React.FC = () => {
-    const { session } = useUser();
-    const [currentPage, setCurrentPage] = useState('home');
+// Protected route wrapper that requires authentication
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const { session, isLoading } = useUser();
+    const location = useLocation();
 
+    // Show loading state while checking authentication
+    if (isLoading) {
+        return (
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh',
+                fontSize: '18px',
+                color: '#666'
+            }}>
+                Loading...
+            </div>
+        );
+    }
+
+    return session ? <>{children}</> : <Navigate to="/auth" state={{ from: location }} replace />;
+};
+
+// Layout wrapper for authenticated pages
+const AuthenticatedLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    return (
+        <AppLayout>
+            {children}
+            <DebugPanel />
+        </AppLayout>
+    );
+};
+
+const App: React.FC = () => {
     // Show configuration warning if Supabase is not configured
     if (!isSupabaseConfigured) {
         return (
@@ -34,57 +65,73 @@ const App: React.FC = () => {
         );
     }
 
-    const handleNavigate = (page: string) => {
-        // Allow navigation to the login page even if not authenticated
-        if (page === 'login') {
-            setCurrentPage('login');
-            return;
-        }
-
-        // If the user tries to navigate somewhere else without a session,
-        // force them to the login page.
-        if (!session) {
-            setCurrentPage('login');
-            return;
-        }
-
-        setCurrentPage(page);
-    };
-
-    if (!session) {
-        // If there's no session, always show the AuthPage
-        return <AuthPage />;
-    }
-
-    const renderPage = () => {
-        switch (currentPage) {
-            case 'home':
-                return <ChallengesPage onNavigate={handleNavigate} />;
-            case 'dashboard':
-                return <ChallengeDashboardPage />;
-            case 'profile':
-                return <ProfilePage onNavigate={handleNavigate} />;
-            case 'teams':
-                return <TeamsPage onNavigate={handleNavigate} />;
-            case 'create':
-                return <CreateChallengePage />;
-            case 'edit':
-                return <EditChallengePage />;
-            case 'login':
-                // This case should ideally not be hit if a session exists,
-                // but as a fallback, we redirect to home.
-                setCurrentPage('home');
-                return <ChallengesPage onNavigate={handleNavigate} />;
-            default:
-                return <GenericError message="Page Not Found" />;
-        }
-    };
-
     return (
-        <AppLayout onNavigate={handleNavigate}>
-            {renderPage()}
-            <DebugPanel />
-        </AppLayout>
+        <Router>
+            <Routes>
+                {/* Public routes */}
+                <Route path="/auth" element={<AuthPage />} />
+
+                {/* Protected routes - each wrapped individually */}
+                <Route path="/" element={
+                    <ProtectedRoute>
+                        <AuthenticatedLayout>
+                            <ChallengesPage />
+                        </AuthenticatedLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/challenges" element={
+                    <ProtectedRoute>
+                        <AuthenticatedLayout>
+                            <ChallengesPage />
+                        </AuthenticatedLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/challenges/:id" element={
+                    <ProtectedRoute>
+                        <AuthenticatedLayout>
+                            <ChallengeDashboardPage />
+                        </AuthenticatedLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/teams" element={
+                    <ProtectedRoute>
+                        <AuthenticatedLayout>
+                            <TeamsPage />
+                        </AuthenticatedLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/profile" element={
+                    <ProtectedRoute>
+                        <AuthenticatedLayout>
+                            <ProfilePage />
+                        </AuthenticatedLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/create" element={
+                    <ProtectedRoute>
+                        <AuthenticatedLayout>
+                            <CreateChallengePage />
+                        </AuthenticatedLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/edit/:id" element={
+                    <ProtectedRoute>
+                        <AuthenticatedLayout>
+                            <EditChallengePage />
+                        </AuthenticatedLayout>
+                    </ProtectedRoute>
+                } />
+
+                {/* Catch all route - redirect to home */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </Router>
     );
 };
 
