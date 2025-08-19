@@ -1,7 +1,9 @@
-import React from 'react';
-import { Button, Grid, Heading, Input, Text, VStack, HStack, Tag, Avatar, Spinner, Center } from '@chakra-ui/react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { Grid, Heading, Input, Text, VStack, HStack, Tag, Avatar, Spinner, Center, Select, Box } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/common/Card';
+import { TeamSkeletonGrid } from '../components/teams/TeamCardSkeleton';
+import { Pagination } from '../components/common/Pagination';
 
 import { UserTeamIcon } from '../components/common/Icons';
 import { useUser } from '../contexts/AuthContext';
@@ -11,7 +13,6 @@ import { LoadTeamsError } from '../components/common/LoadTeamsError';
 import { GenericError } from '../components/common/GenericError';
 
 import type { Team } from '../types';
-
 
 interface TeamCardProps {
     team: Team;
@@ -38,13 +39,30 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onSelect }) => (
             </HStack>
             <Heading as="h3" size="md">{team.name}</Heading>
             <Text fontSize="sm" color="gray.600" noOfLines={3}>{team.description}</Text>
+
+            {/* Sports Types Tags */}
+            {team.sportsTypes && team.sportsTypes.length > 0 && (
+                <HStack wrap="wrap" spacing={1}>
+                    {team.sportsTypes.slice(0, 3).map((sport) => (
+                        <Tag key={sport} size="sm" colorScheme="orange" variant="subtle">
+                            {sport}
+                        </Tag>
+                    ))}
+                    {team.sportsTypes.length > 3 && (
+                        <Tag size="sm" colorScheme="gray" variant="subtle">
+                            +{team.sportsTypes.length - 3}
+                        </Tag>
+                    )}
+                </HStack>
+            )}
         </VStack>
         <HStack mt={4} justify="space-between" color="gray.500" fontSize="sm">
             <HStack>
                 <UserTeamIcon className="w-4 h-4" />
-                <Text>{team.memberCount} Members</Text>
+                <Text>
+                    {team.memberCount}{team.maxMembers ? `/${team.maxMembers}` : ''} Members
+                </Text>
             </HStack>
-            <Button size="sm" variant="outline" colorScheme="orange">View</Button>
         </HStack>
     </Card>
 );
@@ -52,9 +70,89 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onSelect }) => (
 const TeamsPage: React.FC = () => {
     const navigate = useNavigate();
     const { user, isLoading: isAuthLoading } = useUser();
-    const { teams, loading: isFetching, error: fetchError, refetch: fetchTeams } = useTeams();
 
-    if (isAuthLoading || isFetching) {
+    // Pagination and filter states
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(12);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+    const [visibilityFilter, setVisibilityFilter] = useState<'all' | 'public' | 'private'>('all');
+    const [memberCountFilter, setMemberCountFilter] = useState<'all' | '1-5' | '6-15' | '16+'>('all');
+
+    // Debounce search term
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+            setCurrentPage(1); // Reset to first page on search
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
+    // Prepare filter options for the hook
+    const filterOptions = useMemo(() => {
+        const options: any = {
+            page: currentPage,
+            limit: itemsPerPage,
+            search: debouncedSearchTerm || undefined,
+        };
+
+        // Apply visibility filter
+        if (visibilityFilter !== 'all') {
+            options.isPublic = visibilityFilter === 'public';
+        }
+
+        // Apply member count filter
+        if (memberCountFilter !== 'all') {
+            switch (memberCountFilter) {
+                case '1-5':
+                    options.minMembers = 1;
+                    options.maxMembers = 5;
+                    break;
+                case '6-15':
+                    options.minMembers = 6;
+                    options.maxMembers = 15;
+                    break;
+                case '16+':
+                    options.minMembers = 16;
+                    break;
+            }
+        }
+
+        return options;
+    }, [currentPage, itemsPerPage, debouncedSearchTerm, visibilityFilter, memberCountFilter]);
+
+    const {
+        teams,
+        loading: isFetching,
+        error: fetchError,
+        totalCount,
+        refetch: fetchTeams
+    } = useTeams(filterOptions);
+
+    // Reset to first page when filters change
+    const handleFilterChange = useCallback((filterType: string, value: any) => {
+        switch (filterType) {
+            case 'visibility':
+                setVisibilityFilter(value);
+                break;
+            case 'memberCount':
+                setMemberCountFilter(value);
+                break;
+        }
+        setCurrentPage(1);
+    }, []);
+
+    const handlePageChange = useCallback((page: number) => {
+        setCurrentPage(page);
+    }, []);
+
+    const handleItemsPerPageChange = useCallback((newItemsPerPage: number) => {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1); // Reset to first page
+    }, []);
+
+    if (isAuthLoading) {
         return <Center h="50vh"><Spinner size="xl" color="orange.500" /></Center>;
     }
 
@@ -66,30 +164,99 @@ const TeamsPage: React.FC = () => {
         return <LoadTeamsError onRetry={fetchTeams} />;
     }
 
-    if (!teams) {
-        return <GenericError message="Could not find any team data." />;
-    }
-
     return (
         <VStack spacing={12} align="stretch">
             <VStack spacing={2} textAlign="center">
                 <Heading as="h2" size="2xl" fontWeight="extrabold">Find Your Team</Heading>
-                <Text fontSize="lg" color="gray.600" maxW="2xl">Join a team to participate in team challenges or create your own to invite friends.</Text>
+                <Text fontSize="lg" color="gray.600" maxW="2xl">
+                    Join a team to participate in team challenges or create your own to invite friends.
+                </Text>
             </VStack>
-            <HStack maxW="2xl" w="full" mx="auto">
-                <Input placeholder="Search for Teams..." />
-                <Button colorScheme="orange">Search</Button>
-                <Button colorScheme="green" onClick={() => navigate('/create-team')}>Create Team</Button>
-            </HStack>
-            <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={6}>
-                {teams.length > 0 ? (
-                    teams.map(team => (
-                        <TeamCard key={team.id} team={team} onSelect={() => navigate(`/teams/${team.id}`)} />
-                    ))
-                ) : (
-                    <GenericError message="No teams found. Why not create one?" />
-                )}
-            </Grid>
+
+            {/* Enhanced Filter Bar */}
+            <VStack spacing={4} maxW="4xl" w="full" mx="auto">
+                {/* Search bar */}
+                <HStack w="full">
+                    <Input
+                        placeholder="Search teams by name or description..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        size="lg"
+                        bg="white"
+                        borderColor="gray.200"
+                        _focus={{ borderColor: 'orange.400', boxShadow: '0 0 0 1px orange.400' }}
+                    />
+                </HStack>
+
+                {/* Filter Controls */}
+                <HStack spacing={4} w="full" flexWrap="wrap">
+                    {/* Visibility Filter */}
+                    <Box minW="120px">
+                        <Text fontSize="sm" fontWeight="medium" mb={1}>Visibility</Text>
+                        <Select
+                            value={visibilityFilter}
+                            onChange={(e) => handleFilterChange('visibility', e.target.value as any)}
+                            size="sm"
+                        >
+                            <option value="all">All Teams</option>
+                            <option value="public">Public Only</option>
+                            <option value="private">Private Only</option>
+                        </Select>
+                    </Box>
+
+                    {/* Member Count Filter */}
+                    <Box minW="120px">
+                        <Text fontSize="sm" fontWeight="medium" mb={1}>Team Size</Text>
+                        <Select
+                            value={memberCountFilter}
+                            onChange={(e) => handleFilterChange('memberCount', e.target.value as any)}
+                            size="sm"
+                        >
+                            <option value="all">Any Size</option>
+                            <option value="1-5">1-5 Members</option>
+                            <option value="6-15">6-15 Members</option>
+                            <option value="16+">16+ Members</option>
+                        </Select>
+                    </Box>
+
+                    {/* Results Summary */}
+                    <Box flex="1" textAlign="right">
+                        <Text fontSize="sm" color="gray.600">
+                            {isFetching ? 'Loading...' : `${totalCount} team${totalCount !== 1 ? 's' : ''} found`}
+                        </Text>
+                    </Box>
+                </HStack>
+            </VStack>
+
+            {/* Teams Grid with Loading States */}
+            {isFetching ? (
+                <TeamSkeletonGrid count={itemsPerPage} />
+            ) : teams.length > 0 ? (
+                <VStack spacing={8} align="stretch">
+                    <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={6}>
+                        {teams.map(team => (
+                            <TeamCard key={team.id} team={team} onSelect={() => navigate(`/teams/${team.id}`)} />
+                        ))}
+                    </Grid>
+
+                    {/* Pagination */}
+                    <Pagination
+                        currentPage={currentPage}
+                        totalItems={totalCount}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={handlePageChange}
+                        onItemsPerPageChange={handleItemsPerPageChange}
+                    />
+                </VStack>
+            ) : (
+                <GenericError
+                    message={
+                        debouncedSearchTerm || visibilityFilter !== 'all' || memberCountFilter !== 'all'
+                            ? "No teams match your current filters. Try adjusting your search criteria."
+                            : "No teams found. Why not create one?"
+                    }
+                />
+            )}
         </VStack>
     );
 };

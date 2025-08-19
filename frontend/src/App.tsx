@@ -8,7 +8,9 @@ import TeamsPage from './pages/TeamsPage';
 import TeamDashboardPage from './pages/TeamDashboardPage';
 import ProfilePage from './pages/ProfilePage';
 import CreateChallengePage from './pages/CreateChallengePage';
+import CreateTeamPage from './pages/CreateTeamPage';
 import EditChallengePage from './pages/EditChallengePage';
+import EditTeamPage from './pages/EditTeamPage';
 import ChallengeDashboardPage from './pages/ChallengeDashboardPage';
 import { DebugPanel } from './components/common/DebugPanel';
 import { isSupabaseConfigured } from './supabase/client';
@@ -129,10 +131,26 @@ const App: React.FC = () => {
                     </ProtectedRoute>
                 } />
 
+                <Route path="/create-team" element={
+                    <ProtectedRoute>
+                        <AuthenticatedLayout>
+                            <CreateTeamPage />
+                        </AuthenticatedLayout>
+                    </ProtectedRoute>
+                } />
+
                 <Route path="/edit/:id" element={
                     <ProtectedRoute>
                         <AuthenticatedLayout>
                             <EditChallengePage />
+                        </AuthenticatedLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/teams/:id/edit" element={
+                    <ProtectedRoute>
+                        <AuthenticatedLayout>
+                            <EditTeamPage />
                         </AuthenticatedLayout>
                     </ProtectedRoute>
                 } />

@@ -10,6 +10,7 @@ export interface ChallengeInput {
     startDate: string; // ISO date string
     endDate: string;   // ISO date string
     isPublic?: boolean;
+    milestones?: Array<{name: string, value: number}>; // Add milestones support
 }
 
 export interface ChallengeParticipantInput {
@@ -48,76 +49,178 @@ export class ChallengeService {
         throw new Error(error.message || `Failed to ${operation}`);
     }
 
-    // Get all public challenges
-    static async getChallenges(isPublic?: boolean) {
+    // Get all public challenges with pagination support
+    static async getChallenges(options?: {
+        isPublic?: boolean;
+        page?: number;
+        limit?: number;
+        search?: string;
+        activityType?: string;
+        challengeType?: string;
+    }) {
         try {
+            const {
+                isPublic,
+                page = 1,
+                limit = 12,
+                search,
+                challengeType
+            } = options || {};
+
+            // Calculate offset for pagination
+            const offset = (page - 1) * limit;
+
+            // Build the main query with pagination
             let query = supabase
                 .from('Challenge')
-                .select('*');
+                .select('*', { count: 'exact' })
+                .order('createdAt', { ascending: false });
 
+            // Apply filters
             if (isPublic !== undefined) {
                 query = query.eq('isPublic', isPublic);
             }
 
-            const { data: challenges, error } = await query;
+            if (search) {
+                query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
+            }
 
-        if (error) {
-            this.handleError(error, 'getChallenges');
-        }
+            if (challengeType && challengeType !== 'all') {
+                query = query.eq('challengeType', challengeType.toUpperCase());
+            }
 
-        // Get creators and participant counts separately
-        const challengesWithDetails = await Promise.all(
-            (challenges || []).map(async (challenge: any) => {
-                // Get creator info
-                const { data: creator } = await supabase
-                    .from('profiles')
-                    .select('id, username, avatar_url')
-                    .eq('id', challenge.creatorId)
-                    .single();
+            // Apply pagination
+            query = query.range(offset, offset + limit - 1);
 
-                // Get participant count
-                const { count } = await supabase
-                    .from('ChallengeParticipant')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('challengeId', challenge.id);
+            const { data: challenges, error, count: totalCount } = await query;
 
-                // Get real milestones from database
-                const { data: milestones } = await supabase
-                    .from('Milestone')
-                    .select('*')
-                    .eq('challengeId', challenge.id)
-                    .order('order', { ascending: true });
+            if (error) {
+                this.handleError(error, 'getChallenges');
+                return { challenges: [], totalCount: 0 };
+            }
 
-                // Convert database milestones to frontend format
-                const formattedMilestones = (milestones || []).map((milestone: any) => ({
+            if (!challenges || challenges.length === 0) {
+                return {
+                    challenges: [],
+                    totalCount: totalCount || 0,
+                    totalPages: Math.ceil((totalCount || 0) / limit),
+                    currentPage: page,
+                    itemsPerPage: limit
+                };
+            }
+
+            // Extract all unique creator IDs and challenge IDs for batch fetching
+            const creatorIds = [...new Set(challenges.map(c => c.creatorId))];
+            const challengeIds = challenges.map(c => c.id);
+
+            // Batch fetch all creators at once
+            const { data: creators } = await supabase
+                .from('profiles')
+                .select('id, username, avatar_url')
+                .in('id', creatorIds);
+
+            // Batch fetch all participant counts at once
+            const { data: allParticipants } = await supabase
+                .from('ChallengeParticipant')
+                .select('challengeId')
+                .in('challengeId', challengeIds);
+
+            // Batch fetch all milestones at once
+            const { data: allMilestones } = await supabase
+                .from('Milestone')
+                .select('challengeId, name, targetValue, order')
+                .in('challengeId', challengeIds)
+                .order('order', { ascending: true });
+
+            // Create lookup maps for efficient data access
+            const creatorMap = new Map();
+            (creators || []).forEach(creator => {
+                creatorMap.set(creator.id, {
+                    ...creator,
+                    avatarUrl: creator.avatar_url
+                });
+            });
+
+            const participantCountMap = new Map();
+            (allParticipants || []).forEach(participant => {
+                const count = participantCountMap.get(participant.challengeId) || 0;
+                participantCountMap.set(participant.challengeId, count + 1);
+            });
+
+            const milestonesMap = new Map();
+            (allMilestones || []).forEach(milestone => {
+                if (!milestonesMap.has(milestone.challengeId)) {
+                    milestonesMap.set(milestone.challengeId, []);
+                }
+                milestonesMap.get(milestone.challengeId).push({
                     name: milestone.name,
                     value: milestone.targetValue
-                }));
+                });
+            });
 
-                // Generate activity type from challenge title
+            // Get current user for progress calculation (batch this too if needed)
+            const currentUser = await getCurrentUser();
+
+            // Batch fetch user progress if user is authenticated
+            let userProgressMap = new Map();
+            if (currentUser) {
+                const { data: userParticipants } = await supabase
+                    .from('ChallengeParticipant')
+                    .select('id, challengeId')
+                    .eq('userId', currentUser.id)
+                    .in('challengeId', challengeIds);
+
+                if (userParticipants && userParticipants.length > 0) {
+                    const participantIds = userParticipants.map(p => p.id);
+                    const { data: userActivities } = await supabase
+                        .from('Activity')
+                        .select('participantId')
+                        .in('participantId', participantIds);
+
+                    // Count activities per participant/challenge
+                    const activityCountMap = new Map();
+                    (userActivities || []).forEach(activity => {
+                        const count = activityCountMap.get(activity.participantId) || 0;
+                        activityCountMap.set(activity.participantId, count + 1);
+                    });
+
+                    // Map back to challenges
+                    userParticipants.forEach(participant => {
+                        const activityCount = activityCountMap.get(participant.id) || 0;
+                        userProgressMap.set(participant.challengeId, activityCount);
+                    });
+                }
+            }
+
+            // Now process all challenges with pre-fetched data
+            const challengesWithDetails = challenges.map((challenge: any) => {
+                const creator = creatorMap.get(challenge.creatorId) || null;
+                const participantCount = participantCountMap.get(challenge.id) || 0;
+                const milestones = milestonesMap.get(challenge.id) || [];
+                const userProgress = userProgressMap.get(challenge.id) || 0;
                 const activityType = this.generateSampleActivityType(challenge.title);
-                
-                // Calculate actual progress for current user
-                const userProgress = await this.calculateUserProgress(challenge.id);
 
                 return {
                     ...challenge,
-                    challengeType: challenge.challengeType?.toLowerCase() as 'individual' | 'team', // Convert to lowercase
-                    creator: creator ? {
-                        ...creator,
-                        avatarUrl: creator.avatar_url // Map database column to frontend expectation
-                    } : null,
-                    participants: count || 0,
-                    milestones: formattedMilestones,
+                    challengeType: challenge.challengeType?.toLowerCase() as 'individual' | 'team',
+                    creator,
+                    participants: participantCount,
+                    milestones,
                     progress: userProgress,
-                    type: activityType // Add activity type
+                    type: activityType
                 };
-            })
-        );
+            });
 
-        return challengesWithDetails;
+            return {
+                challenges: challengesWithDetails,
+                totalCount: totalCount || 0,
+                totalPages: Math.ceil((totalCount || 0) / limit),
+                currentPage: page,
+                itemsPerPage: limit
+            };
         } catch (error) {
             this.handleError(error, 'getChallenges');
+            return { challenges: [], totalCount: 0 };
         }
     }
 
@@ -242,6 +345,33 @@ export class ChallengeService {
                 .single();
 
             if (error) throw error;
+
+            // Create milestones if provided
+            if (challengeData.milestones && challengeData.milestones.length > 0) {
+                const milestonesToCreate = challengeData.milestones
+                    .filter(m => m.name && m.value) // Only include valid milestones
+                    .map((milestone, index) => ({
+                        id: crypto.randomUUID(),
+                        challengeId: challengeId,
+                        name: milestone.name,
+                        description: `Achieve ${milestone.value} activities in this challenge`,
+                        targetValue: milestone.value,
+                        valueType: 'activities',
+                        order: index + 1
+                    }));
+
+                if (milestonesToCreate.length > 0) {
+                    const { error: milestoneError } = await supabase
+                        .from('Milestone')
+                        .insert(milestonesToCreate);
+
+                    if (milestoneError) {
+                        console.error('Failed to create milestones:', milestoneError);
+                        // Don't fail the whole operation, just log the error
+                    }
+                }
+            }
+
             return data;
         } catch (error) {
             this.handleError(error, 'createChallenge');
@@ -300,6 +430,28 @@ export class ChallengeService {
         try {
             const user = await getCurrentUser();
             if (!user) throw new Error('User not authenticated');
+
+            // First, ensure the user has a profile
+            const { data: profile, error: profileError } = await supabase
+                .from('profiles')
+                .select('id')
+                .eq('id', user.id)
+                .maybeSingle();
+
+            if (profileError) throw profileError;
+
+            if (!profile) {
+                // Create profile if it doesn't exist
+                const { error: createProfileError } = await supabase
+                    .from('profiles')
+                    .insert({
+                        id: user.id,
+                        username: user.email?.split('@')[0] || 'user',
+                        avatarUrl: null
+                    });
+
+                if (createProfileError) throw createProfileError;
+            }
 
             // Generate UUID for the participant
             const participantId = crypto.randomUUID();

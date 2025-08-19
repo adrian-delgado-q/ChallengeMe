@@ -1,7 +1,9 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Button, Grid, Heading, Input, Text, VStack, HStack, Spinner, Center, Select, Box } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { ChallengeCard } from '../components/challenges/ChallengeCard';
+import { ChallengeSkeletonGrid } from '../components/challenges/ChallengeCardSkeleton';
+import { Pagination } from '../components/common/Pagination';
 import { useChallenges } from '../hooks/useData';
 import { useUser } from '../contexts/AuthContext';
 import { AuthPrompt } from '../components/common/AuthPrompt';
@@ -10,47 +12,46 @@ import { GenericError } from '../components/common/GenericError';
 const ChallengesPage: React.FC = () => {
     const navigate = useNavigate();
     const { user, isLoading: isAuthLoading } = useUser();
-    const { challenges, loading: isFetching, error } = useChallenges();
 
-    // Filter states
+    // Pagination and filter states
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(12);
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
     const [activityTypeFilter, setActivityTypeFilter] = useState('all');
     const [challengeTypeFilter, setChallengeTypeFilter] = useState('all');
 
+    // Use the updated hook with pagination
+    const {
+        challenges,
+        loading: isFetching,
+        error,
+        pagination
+    } = useChallenges({
+        page: currentPage,
+        limit: itemsPerPage,
+        search: debouncedSearchTerm || undefined,
+        activityType: activityTypeFilter !== 'all' ? activityTypeFilter : undefined,
+        challengeType: challengeTypeFilter !== 'all' ? challengeTypeFilter : undefined
+    });
+
     // Debounce search term for better performance
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
+            // Reset to first page when search changes
+            setCurrentPage(1);
         }, 300);
 
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    // Filtered challenges
-    const filteredChallenges = useMemo(() => {
-        if (!challenges) return [];
+    // Reset to first page when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activityTypeFilter, challengeTypeFilter]);
 
-        return challenges.filter(challenge => {
-            // Search filter (using debounced search term)
-            const matchesSearch = debouncedSearchTerm === '' ||
-                challenge.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-                challenge.description?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-                challenge.type?.toLowerCase().includes(debouncedSearchTerm.toLowerCase());
-
-            // Activity type filter
-            const matchesActivityType = activityTypeFilter === 'all' ||
-                challenge.type === activityTypeFilter;
-
-            // Challenge type filter (individual vs team)
-            const matchesChallengeType = challengeTypeFilter === 'all' ||
-                challenge.challengeType === challengeTypeFilter;
-
-            return matchesSearch && matchesActivityType && matchesChallengeType;
-        });
-    }, [challenges, debouncedSearchTerm, activityTypeFilter, challengeTypeFilter]);
-
-    // Get unique activity types for filter dropdown
+    // Get unique activity types for filter dropdown from current challenges
     const activityTypes = useMemo(() => {
         if (!challenges) return [];
         const types = [...new Set(challenges.map(c => c.type).filter(Boolean))];
@@ -58,21 +59,35 @@ const ChallengesPage: React.FC = () => {
     }, [challenges]);
 
     // Clear all filters function
-    const clearAllFilters = () => {
+    const clearAllFilters = useCallback(() => {
         setSearchTerm('');
         setDebouncedSearchTerm('');
         setActivityTypeFilter('all');
         setChallengeTypeFilter('all');
-    };
+        setCurrentPage(1);
+    }, []);
 
     // Clear search function
-    const clearSearch = () => {
+    const clearSearch = useCallback(() => {
         setSearchTerm('');
         setDebouncedSearchTerm('');
-    };
+        setCurrentPage(1);
+    }, []);
 
     // Check if any filters are active
     const hasActiveFilters = debouncedSearchTerm !== '' || activityTypeFilter !== 'all' || challengeTypeFilter !== 'all';
+
+    // Handle pagination changes
+    const handlePageChange = useCallback((page: number) => {
+        setCurrentPage(page);
+        // Smooth scroll to top when page changes
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, []);
+
+    const handleItemsPerPageChange = useCallback((newItemsPerPage: number) => {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1);
+    }, []);
 
     // Add keyboard shortcuts
     useEffect(() => {
@@ -91,9 +106,9 @@ const ChallengesPage: React.FC = () => {
 
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
-    }, []);
+    }, [clearAllFilters, clearSearch]);
 
-    if (isAuthLoading || isFetching) {
+    if (isAuthLoading) {
         return <Center h="50vh"><Spinner size="xl" color="orange.500" /></Center>;
     }
 
@@ -179,15 +194,22 @@ const ChallengesPage: React.FC = () => {
                 {/* Results count and active filters indicator */}
                 <HStack w="full" justify="space-between" align="center">
                     <Text fontSize="sm" color="gray.600">
-                        Showing {filteredChallenges.length} of {challenges?.length || 0} challenges
-                        {searchTerm !== debouncedSearchTerm && (
-                            <Text as="span" fontSize="xs" color="orange.500" ml={2}>
-                                (filtering...)
-                            </Text>
+                        {isFetching ? (
+                            'Loading challenges...'
+                        ) : (
+                            <>
+                                Showing {pagination.totalCount > 0 ? ((currentPage - 1) * itemsPerPage + 1) : 0}-
+                                {Math.min(currentPage * itemsPerPage, pagination.totalCount)} of {pagination.totalCount} challenges
+                                {searchTerm !== debouncedSearchTerm && (
+                                    <Text as="span" fontSize="xs" color="orange.500" ml={2}>
+                                        (filtering...)
+                                    </Text>
+                                )}
+                            </>
                         )}
                     </Text>
 
-                    {hasActiveFilters && (
+                    {hasActiveFilters && !isFetching && (
                         <Text fontSize="xs" color="orange.600" fontWeight="medium">
                             Filters active: {[
                                 debouncedSearchTerm && 'Search',
@@ -199,9 +221,14 @@ const ChallengesPage: React.FC = () => {
                 </HStack>
             </VStack>
 
+            {/* Challenges Grid with Loading States */}
             <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }} gap={6}>
-                {filteredChallenges.length > 0 ? (
-                    filteredChallenges.map(challenge => (
+                {isFetching ? (
+                    // Show skeleton loading cards
+                    <ChallengeSkeletonGrid count={itemsPerPage} />
+                ) : challenges && challenges.length > 0 ? (
+                    // Show actual challenges
+                    challenges.map(challenge => (
                         <ChallengeCard
                             key={challenge.id}
                             challenge={challenge}
@@ -209,14 +236,15 @@ const ChallengesPage: React.FC = () => {
                         />
                     ))
                 ) : (
-                    <VStack gridColumn="1 / -1" py={8}>
-                        <Text fontSize="lg" color="gray.500">
+                    // Show empty state
+                    <VStack gridColumn="1 / -1" py={12} spacing={4}>
+                        <Text fontSize="lg" color="gray.500" textAlign="center">
                             {hasActiveFilters
                                 ? 'No challenges match your filters. Try adjusting your search criteria.'
                                 : 'No challenges found. Why not create one?'
                             }
                         </Text>
-                        {hasActiveFilters && (
+                        {hasActiveFilters ? (
                             <Button
                                 variant="outline"
                                 colorScheme="orange"
@@ -225,10 +253,29 @@ const ChallengesPage: React.FC = () => {
                             >
                                 Clear All Filters
                             </Button>
+                        ) : (
+                            <Button
+                                colorScheme="orange"
+                                onClick={() => navigate('/challenges/create')}
+                            >
+                                Create Your First Challenge
+                            </Button>
                         )}
                     </VStack>
                 )}
             </Grid>
+
+            {/* Pagination */}
+            {!isFetching && challenges && challenges.length > 0 && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalItems={pagination.totalCount}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={handlePageChange}
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                    showPageSizeSelector={true}
+                />
+            )}
         </VStack>
     );
 };

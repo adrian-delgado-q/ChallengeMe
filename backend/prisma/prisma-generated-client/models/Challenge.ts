@@ -576,14 +576,6 @@ export type EnumChallengeParticipantTypeFieldUpdateOperationsInput = {
   set?: $Enums.ChallengeParticipantType
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type ChallengeCreateNestedOneWithoutMilestonesInput = {
   create?: Prisma.XOR<Prisma.ChallengeCreateWithoutMilestonesInput, Prisma.ChallengeUncheckedCreateWithoutMilestonesInput>
   connectOrCreate?: Prisma.ChallengeCreateOrConnectWithoutMilestonesInput

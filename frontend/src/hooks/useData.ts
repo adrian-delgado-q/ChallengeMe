@@ -2,12 +2,26 @@ import { useState, useEffect, useCallback } from 'react';
 import { TeamService, ChallengeService, ActivityService, PostService } from '../graphql/services';
 import { useUser } from '../contexts/AuthContext';
 
-// Custom hook for teams
-export const useTeams = (myTeamsOnly = false) => {
+// Custom hook for teams with pagination
+export const useTeams = (options?: {
+    myTeamsOnly?: boolean;
+    page?: number;
+    limit?: number;
+    search?: string;
+    isPublic?: boolean;
+    minMembers?: number;
+    maxMembers?: number;
+}) => {
     const { user } = useUser();
     const [teams, setTeams] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [totalCount, setTotalCount] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(12);
+
+    const { myTeamsOnly = false, ...filterOptions } = options || {};
 
     const fetchTeams = useCallback(async () => {
         if (!user) {
@@ -19,21 +33,33 @@ export const useTeams = (myTeamsOnly = false) => {
         setError(null);
 
         try {
-            const data = myTeamsOnly
-                ? await TeamService.getMyTeams()
-                : await TeamService.getTeams();
-            setTeams(data);
+            if (myTeamsOnly) {
+                const data = await TeamService.getMyTeams();
+                setTeams(data);
+                setTotalCount(data.length);
+                setTotalPages(1);
+                setCurrentPage(1);
+                setItemsPerPage(data.length || 12);
+            } else {
+                const response = await TeamService.getTeams(filterOptions);
+                setTeams(response.teams);
+                setTotalCount(response.totalCount);
+                setTotalPages(response.totalPages);
+                setCurrentPage(response.currentPage);
+                setItemsPerPage(response.itemsPerPage);
+            }
         } catch (err: any) {
             setError(err.message || 'Failed to fetch teams');
         } finally {
             setLoading(false);
         }
-    }, [user, myTeamsOnly]);
+    }, [user, myTeamsOnly, JSON.stringify(filterOptions)]);
 
     const createTeam = useCallback(async (teamData: any) => {
         try {
             const newTeam = await TeamService.createTeam(teamData);
-            setTeams(prev => [...prev, newTeam]);
+            setTeams(prev => [newTeam, ...prev]);
+            setTotalCount(prev => prev + 1);
             return newTeam;
         } catch (err: any) {
             throw new Error(err.message || 'Failed to create team');
@@ -68,6 +94,10 @@ export const useTeams = (myTeamsOnly = false) => {
         teams,
         loading,
         error,
+        totalCount,
+        totalPages,
+        currentPage,
+        itemsPerPage,
         refetch: fetchTeams,
         createTeam,
         joinTeam,
@@ -112,12 +142,24 @@ export const useTeamDetails = (teamId: string) => {
     };
 };
 
-// Custom hook for challenges
-export const useChallenges = () => {
+// Custom hook for challenges with pagination
+export const useChallenges = (options?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    activityType?: string;
+    challengeType?: string;
+}) => {
     const { user } = useUser();
     const [challenges, setChallenges] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [pagination, setPagination] = useState({
+        totalCount: 0,
+        totalPages: 0,
+        currentPage: 1,
+        itemsPerPage: 12
+    });
 
     const fetchChallenges = useCallback(async () => {
         if (!user) {
@@ -127,26 +169,39 @@ export const useChallenges = () => {
 
         setLoading(true);
         setError(null);
+        
+        // Clear challenges immediately to show skeleton
+        setChallenges([]);
 
         try {
-            const data = await ChallengeService.getChallenges();
-            setChallenges(data || []);
+            const result = await ChallengeService.getChallenges(options);
+            
+            // Only update state when we have complete data
+            setChallenges(result.challenges || []);
+            setPagination({
+                totalCount: result.totalCount || 0,
+                totalPages: result.totalPages || 0,
+                currentPage: result.currentPage || 1,
+                itemsPerPage: result.itemsPerPage || 12
+            });
         } catch (err: any) {
             setError(err.message || 'Failed to fetch challenges');
+            setChallenges([]); // Clear challenges on error
         } finally {
             setLoading(false);
         }
-    }, [user]);
+    }, [user, options?.page, options?.limit, options?.search, options?.activityType, options?.challengeType]);
 
     const createChallenge = useCallback(async (challengeData: any) => {
         try {
             const newChallenge = await ChallengeService.createChallenge(challengeData);
-            setChallenges(prev => [...prev, newChallenge]);
+            // Refresh challenges after creation
+            await fetchChallenges();
             return newChallenge;
         } catch (err: any) {
             throw new Error(err.message || 'Failed to create challenge');
         }
-    }, []);
+    }, [fetchChallenges]);
 
     const joinChallenge = useCallback(async (challengeId: string, asTeam?: string) => {
         try {
@@ -170,6 +225,7 @@ export const useChallenges = () => {
         challenges,
         loading,
         error,
+        pagination,
         refetch: fetchChallenges,
         createChallenge,
         joinChallenge

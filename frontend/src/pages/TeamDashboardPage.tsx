@@ -3,7 +3,7 @@ import {
     Box, Grid, Heading, Text, VStack, Button, Flex, HStack,
     Spinner, Center, Alert, AlertIcon, Avatar, Badge, Tag, Icon, useToast
 } from '@chakra-ui/react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '../components/common/Card';
 import { UserTeamIcon, CalendarIcon } from '../components/common/Icons';
 import { useTeamDetails } from '../hooks/useData';
@@ -13,6 +13,7 @@ import { TeamService } from '../graphql/services';
 const TeamDashboardPage: React.FC = () => {
     const { id: teamId } = useParams<{ id: string }>();
     const { user } = useUser();
+    const navigate = useNavigate();
     const toast = useToast();
     const [isJoining, setIsJoining] = useState(false);
     const [isLeaving, setIsLeaving] = useState(false);
@@ -125,12 +126,17 @@ const TeamDashboardPage: React.FC = () => {
                             onClick={handleJoinTeam}
                             isLoading={isJoining}
                             loadingText="Joining..."
+                            isDisabled={team.maxMembers && team.memberCount >= team.maxMembers}
                         >
-                            Join Team
+                            {team.maxMembers && team.memberCount >= team.maxMembers ? 'Team Full' : 'Join Team'}
                         </Button>
                     )}
                     {isTeamCreator && (
-                        <Button variant="outline" size="md">
+                        <Button
+                            variant="outline"
+                            size="md"
+                            onClick={() => navigate(`/teams/${teamId}/edit`)}
+                        >
                             Manage Team
                         </Button>
                     )}
@@ -158,7 +164,13 @@ const TeamDashboardPage: React.FC = () => {
                             <HStack>
                                 <Icon as={UserTeamIcon} w={6} h={6} color="blue.500" />
                                 <Text>
-                                    <Box as="span" fontWeight="bold">{team.memberCount || 0}</Box> Members
+                                    <Box as="span" fontWeight="bold">
+                                        {team.memberCount || 0}
+                                        {team.maxMembers ? `/${team.maxMembers}` : ''}
+                                    </Box> Members
+                                    {team.maxMembers && team.memberCount >= team.maxMembers && (
+                                        <Tag size="sm" colorScheme="red" ml={2}>Full</Tag>
+                                    )}
                                 </Text>
                             </HStack>
                             <HStack>
@@ -176,6 +188,18 @@ const TeamDashboardPage: React.FC = () => {
                                         Creator: <Box as="span" fontWeight="bold">{team.creator.username}</Box>
                                     </Text>
                                 </HStack>
+                            )}
+                            {team.sportsTypes && team.sportsTypes.length > 0 && (
+                                <VStack align="stretch" spacing={2}>
+                                    <Text fontWeight="medium" fontSize="sm">Focus Areas:</Text>
+                                    <HStack wrap="wrap" spacing={1}>
+                                        {team.sportsTypes.map((sport: string) => (
+                                            <Tag key={sport} size="sm" colorScheme="orange" variant="subtle">
+                                                {sport}
+                                            </Tag>
+                                        ))}
+                                    </HStack>
+                                </VStack>
                             )}
                         </VStack>
                     </Card>

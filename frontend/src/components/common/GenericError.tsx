@@ -1,5 +1,5 @@
 import React from 'react';
-import { Center, Alert, AlertIcon, AlertTitle, AlertDescription, Box } from '@chakra-ui/react';
+import { Center, Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
 
 interface GenericErrorProps {
     message?: string;

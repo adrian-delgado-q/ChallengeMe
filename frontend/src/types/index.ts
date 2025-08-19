@@ -50,6 +50,8 @@ export interface Team {
   avatarUrl?: string;
   memberCount: number;
   isPublic: boolean;
+  maxMembers?: number;
+  sportsTypes?: string[];
   createdAt?: string;
   expiresAt?: string;
   creator?: {

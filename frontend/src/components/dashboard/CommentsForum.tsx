@@ -9,7 +9,7 @@ interface CommentsForumProps {
     challengeId?: string;
 }
 
-export const CommentsForum: React.FC<CommentsForumProps> = ({ comments, challengeId }) => {
+export const CommentsForum: React.FC<CommentsForumProps> = ({ comments }) => {
     const { user } = useUser();
 
     return (

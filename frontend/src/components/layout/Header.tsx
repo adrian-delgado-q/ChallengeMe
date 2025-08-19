@@ -15,14 +15,41 @@ import {
     Text,
     Spinner
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { PlusIcon } from '../common/Icons';
 import { useUser } from '../../contexts/AuthContext'; // Using your 'useUser' hook
 
 export const Header: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     // Get the complete auth state, including the new signOut function
     const { user, signOut, isLoading } = useUser();
+
+    // Determine which action button to show based on current page
+    const getContextualButton = () => {
+        const path = location.pathname;
+
+        if (path === '/teams' || (path.startsWith('/teams/') && !path.includes('/edit'))) {
+            return {
+                label: 'New Team',
+                onClick: () => navigate('/create-team'),
+                icon: <PlusIcon className="w-4 h-4" />
+            };
+        } else if (path === '/create-team' || path.includes('/teams/') && path.includes('/edit')) {
+            // On create-team or edit-team pages, show "New Challenge" button
+            return {
+                label: 'New Challenge',
+                onClick: () => navigate('/create'),
+                icon: <PlusIcon className="w-4 h-4" />
+            };
+        } else {
+            return {
+                label: 'New Challenge',
+                onClick: () => navigate('/create'),
+                icon: <PlusIcon className="w-4 h-4" />
+            };
+        }
+    };
 
     // Renders the buttons and avatar menu on the right side of the header
     const renderUserActions = () => {
@@ -33,16 +60,18 @@ export const Header: React.FC = () => {
 
         // If a user is logged in, show the authenticated user's menu
         if (user) {
+            const contextButton = getContextualButton();
+
             return (
                 <HStack spacing={4}>
                     <Button
-                        onClick={() => navigate('/create')}
+                        onClick={contextButton.onClick}
                         colorScheme="orange"
                         display={{ base: 'none', md: 'inline-flex' }}
-                        leftIcon={<PlusIcon className="w-4 h-4" />}
+                        leftIcon={contextButton.icon}
                         size="sm"
                     >
-                        New Challenge
+                        {contextButton.label}
                     </Button>
                     <Menu>
                         <MenuButton

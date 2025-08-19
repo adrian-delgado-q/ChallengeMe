@@ -5,8 +5,8 @@
   "scripts": {
     "start": "ts-node index.ts",
     "seed": "ts-node database/seeder/fakeData.ts",
-    "migrate:sql": "cd sql && ./apply_migrations.sh",
-    "validate:db": "psql $SUPABASE_DB_URL -f sql/validate_database.sql"
+    "migrate:sql": "cd sql && node apply_migrations.js",
+    "validate:db": "node -e \"require('pg').Client({connectionString:process.env.SUPABASE_DB_URL}).connect().then(c=>c.query(require('fs').readFileSync('sql/validate_database.sql','utf8')).then(r=>console.log(r.rows)).finally(()=>c.end()))\""
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",

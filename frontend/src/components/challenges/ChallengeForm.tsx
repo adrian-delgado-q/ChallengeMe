@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-    Box, Button, FormControl, FormLabel, Grid, Heading, Input, Radio, RadioGroup, HStack,
+    Button, FormControl, FormLabel, Grid, Input, Radio, RadioGroup, HStack,
     Text, Textarea, VStack, Select, InputGroup, InputRightAddon, IconButton, useToast
 } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
@@ -25,12 +25,19 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
     onCancel,
     isEditing = false
 }) => {
+    // Helper function to get default end date (one month from today)
+    const getDefaultEndDate = () => {
+        const today = new Date();
+        const oneMonthLater = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+        return oneMonthLater.toISOString().split('T')[0];
+    };
+
     // Form state
     const [title, setTitle] = useState(challengeToEdit?.title || '');
     const [description, setDescription] = useState(challengeToEdit?.description || '');
     const [activityType, setActivityType] = useState(challengeToEdit?.type || '');
     const [maxParticipants, setMaxParticipants] = useState(challengeToEdit?.maxParticipants?.toString() || '');
-    const [endDate, setEndDate] = useState(challengeToEdit?.endDate || '');
+    const [endDate, setEndDate] = useState(challengeToEdit?.endDate || getDefaultEndDate());
     const [challengeType, setChallengeType] = useState<ChallengeType>(challengeToEdit?.challengeType || 'individual');
     const [isPublic, setIsPublic] = useState(challengeToEdit?.isPublic !== false);
     const [minDuration, setMinDuration] = useState(challengeToEdit?.rules?.minDuration?.toString() || '');
@@ -94,6 +101,11 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
         setIsSubmitting(true);
 
         try {
+            // Filter out incomplete milestones
+            const validMilestones = milestones
+                .filter(m => m.name && m.value && m.value > 0)
+                .map(m => ({ name: m.name!, value: m.value! }));
+
             const challengeData = {
                 title: title.trim(),
                 description: description.trim() || undefined,
@@ -101,7 +113,8 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                 maxParticipants: maxParticipants ? parseInt(maxParticipants) : undefined,
                 startDate: new Date().toISOString().split('T')[0], // Today
                 endDate,
-                isPublic
+                isPublic,
+                milestones: validMilestones // Include milestones
             };
 
             let result;

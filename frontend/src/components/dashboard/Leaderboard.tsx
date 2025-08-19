@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Avatar, Box, Heading, HStack, Text, VStack, Spinner, Center } from '@chakra-ui/react';
+import { Avatar, Heading, HStack, Text, VStack, Spinner, Center } from '@chakra-ui/react';
 import { ActivityService } from '../../graphql/services';
 import { useUser } from '../../contexts/AuthContext';
 import { Card } from '../common/Card';

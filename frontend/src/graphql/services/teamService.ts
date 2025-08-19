@@ -6,6 +6,8 @@ export interface TeamInput {
     description?: string;
     avatarUrl?: string;
     isPublic?: boolean;
+    maxMembers?: number;
+    sportsTypes?: string[];
 }
 
 export interface TeamMembershipInput {
@@ -16,48 +18,115 @@ export interface TeamMembershipInput {
 
 // Team data service
 export class TeamService {
-    // Get all public teams or teams I'm a member of
-    static async getTeams(isPublic?: boolean) {
+    // Get all public teams or teams I'm a member of with pagination and filtering
+    static async getTeams(options?: {
+        isPublic?: boolean;
+        page?: number;
+        limit?: number;
+        search?: string;
+        minMembers?: number;
+        maxMembers?: number;
+    }) {
+        const {
+            isPublic,
+            page = 1,
+            limit = 12,
+            search,
+            minMembers,
+            maxMembers
+        } = options || {};
+
         let query = supabase
             .from('Team')
-            .select('*');
+            .select('*', { count: 'exact' });
 
+        // Apply filters
         if (isPublic !== undefined) {
             query = query.eq('isPublic', isPublic);
         }
 
-        const { data: teams, error } = await query;
+        if (search) {
+            query = query.or(`name.ilike.%${search}%, description.ilike.%${search}%`);
+        }
+
+        // Apply pagination
+        const from = (page - 1) * limit;
+        const to = from + limit - 1;
+        query = query.range(from, to);
+
+        const { data: teams, error, count: totalCount } = await query;
 
         if (error) throw new Error(error.message);
 
-        // Get creator info and member counts for each team
-        const teamsWithDetails = await Promise.all(
-            (teams || []).map(async (team: any) => {
-                // Get creator info
-                const { data: creator } = await supabase
-                    .from('profiles')
-                    .select('id, username, avatar_url')
-                    .eq('id', team.creatorId)
-                    .single();
+        if (!teams || teams.length === 0) {
+            return {
+                teams: [],
+                totalCount: totalCount || 0,
+                totalPages: Math.ceil((totalCount || 0) / limit),
+                currentPage: page,
+                itemsPerPage: limit
+            };
+        }
 
-                // Get member count
-                const { count } = await supabase
-                    .from('TeamMembership')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('teamId', team.id);
+        // Batch fetch all required data
+        const teamIds = teams.map((team: any) => team.id);
+        const creatorIds = teams.map((team: any) => team.creatorId);
 
-                return {
-                    ...team,
-                    creator: creator ? {
-                        ...creator,
-                        avatarUrl: creator.avatar_url // Map database column to frontend expectation
-                    } : null,
-                    memberCount: count || 0
-                };
-            })
-        );
+        // Batch fetch creators
+        const { data: creators } = await supabase
+            .from('profiles')
+            .select('id, username, avatar_url')
+            .in('id', creatorIds);
 
-        return teamsWithDetails;
+        // Batch fetch member counts
+        const { data: allMemberships } = await supabase
+            .from('TeamMembership')
+            .select('teamId, userId')
+            .in('teamId', teamIds);
+
+        // Create lookup maps
+        const creatorMap = new Map();
+        (creators || []).forEach(creator => {
+            creatorMap.set(creator.id, {
+                ...creator,
+                avatarUrl: creator.avatar_url
+            });
+        });
+
+        const memberCountMap = new Map();
+        (allMemberships || []).forEach(membership => {
+            const count = memberCountMap.get(membership.teamId) || 0;
+            memberCountMap.set(membership.teamId, count + 1);
+        });
+
+        // Process teams with pre-fetched data
+        let teamsWithDetails = teams.map((team: any) => {
+            const creator = creatorMap.get(team.creatorId) || null;
+            const memberCount = memberCountMap.get(team.id) || 0;
+
+            return {
+                ...team,
+                creator,
+                memberCount
+            };
+        });
+
+        // Apply member count filters after getting the data
+        if (minMembers !== undefined || maxMembers !== undefined) {
+            teamsWithDetails = teamsWithDetails.filter(team => {
+                if (minMembers !== undefined && team.memberCount < minMembers) return false;
+                if (maxMembers !== undefined && team.memberCount > maxMembers) return false;
+                return true;
+            });
+        }
+
+        return {
+            teams: teamsWithDetails,
+            totalCount: totalCount || 0,
+            totalPages: Math.ceil((totalCount || 0) / limit),
+            currentPage: page,
+            itemsPerPage: limit
+        };
     }
 
     // Get teams I'm a member of
@@ -180,7 +249,9 @@ export class TeamService {
                 name: teamData.name,
                 description: teamData.description || null,
                 avatarUrl: teamData.avatarUrl || null,
-                isPublic: teamData.isPublic ?? true
+                isPublic: teamData.isPublic ?? true,
+                maxMembers: teamData.maxMembers || null,
+                sportsTypes: teamData.sportsTypes || null
             })
             .select()
             .single();
@@ -239,6 +310,29 @@ export class TeamService {
     static async joinTeam(teamId: string) {
         const user = await getCurrentUser();
         if (!user) throw new Error('User not authenticated');
+
+        // Check if team has member limit and if it's reached
+        const { data: teamData, error: teamError } = await supabase
+            .from('Team')
+            .select('maxMembers')
+            .eq('id', teamId)
+            .single();
+
+        if (teamError) throw new Error(teamError.message);
+
+        if (teamData?.maxMembers) {
+            // Count current members
+            const { count, error: countError } = await supabase
+                .from('TeamMembership')
+                .select('*', { count: 'exact', head: true })
+                .eq('teamId', teamId);
+
+            if (countError) throw new Error(countError.message);
+
+            if (count && count >= teamData.maxMembers) {
+                throw new Error('This team has reached its maximum member limit');
+            }
+        }
 
         // Generate UUID for the membership
         const membershipId = crypto.randomUUID();

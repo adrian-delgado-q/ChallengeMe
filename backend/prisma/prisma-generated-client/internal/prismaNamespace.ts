@@ -1220,6 +1220,8 @@ export const TeamScalarFieldEnum = {
   description: 'description',
   avatarUrl: 'avatarUrl',
   isPublic: 'isPublic',
+  maxMembers: 'maxMembers',
+  sportsTypes: 'sportsTypes',
   createdAt: 'createdAt',
   expiresAt: 'expiresAt'
 } as const
@@ -1398,6 +1400,20 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
  * Reference to a field of type 'TeamRole'
  */
 export type EnumTeamRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TeamRole'>
@@ -1422,20 +1438,6 @@ export type EnumChallengeParticipantTypeFieldRefInput<$PrismaModel> = FieldRefIn
  * Reference to a field of type 'ChallengeParticipantType[]'
  */
 export type ListEnumChallengeParticipantTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChallengeParticipantType[]'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 

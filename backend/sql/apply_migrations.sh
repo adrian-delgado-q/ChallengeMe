@@ -34,5 +34,3 @@ echo -e "${YELLOW}Applying RLS policies...${NC}"
 psql "$SUPABASE_DB_URL" -f complete_rls_setup.sql
 
 echo -e "${GREEN}✅ All migrations applied successfully!${NC}"
-echo -e "${GREEN}Atlas functionality has been replaced with pure SQL${NC}"
-echo -e "${YELLOW}You can now remove the Atlas configuration if desired${NC}"

@@ -53,6 +53,8 @@ model Team {
   description String?
   avatarUrl   String?
   isPublic    Boolean   @default(true)
+  maxMembers  Int? // Maximum number of members allowed
+  sportsTypes String[] // Array of sports/activity types this team focuses on
   createdAt   DateTime  @default(now()) @db.Timestamptz(6)
   expiresAt   DateTime? @db.Timestamptz(6)
 
@@ -105,26 +107,26 @@ model Milestone {
   challengeId String   @db.Uuid
   name        String
   description String?
-  targetValue Int      // The target value to achieve (e.g., 100 points, 10 activities, etc.)
-  valueType   String   // Type of value: "activities", "points", "distance", "duration", etc.
-  order       Int      // Display order of milestones
+  targetValue Int // The target value to achieve (e.g., 100 points, 10 activities, etc.)
+  valueType   String // Type of value: "activities", "points", "distance", "duration", etc.
+  order       Int // Display order of milestones
   createdAt   DateTime @default(now()) @db.Timestamptz(6)
 
-  challenge          Challenge            @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  challenge           Challenge           @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   participantProgress MilestoneProgress[]
 
   @@schema("public")
 }
 
 model MilestoneProgress {
-  id            String   @id @default(uuid()) @db.Uuid
-  milestoneId   String   @db.Uuid
-  participantId String   @db.Uuid
-  currentValue  Int      @default(0) // Current progress value
-  isAchieved    Boolean  @default(false)
+  id            String    @id @default(uuid()) @db.Uuid
+  milestoneId   String    @db.Uuid
+  participantId String    @db.Uuid
+  currentValue  Int       @default(0) // Current progress value
+  isAchieved    Boolean   @default(false)
   achievedAt    DateTime? @db.Timestamptz(6)
-  createdAt     DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime @updatedAt @db.Timestamptz(6)
+  createdAt     DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime  @updatedAt @db.Timestamptz(6)
 
   milestone   Milestone            @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
   participant ChallengeParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
@@ -134,26 +136,25 @@ model MilestoneProgress {
 }
 
 model ChallengeParticipant {
-  id          String    @id @default(uuid()) @db.Uuid
-  challengeId String    @db.Uuid
-  userId      String?   @db.Uuid
-  teamId      String?   @db.Uuid
-  joinedAt    DateTime  @default(now()) @db.Timestamptz(6)
+  id          String   @id @default(uuid()) @db.Uuid
+  challengeId String   @db.Uuid
+  userId      String?  @db.Uuid
+  teamId      String?  @db.Uuid
+  joinedAt    DateTime @default(now()) @db.Timestamptz(6)
 
-  challenge          Challenge           @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  user               Profile?            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  team               Team?               @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  activities         Activity[]
-  posts              Post[]
-  milestoneProgress  MilestoneProgress[]
-
-  @@schema("public")
+  challenge         Challenge           @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  user              Profile?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team              Team?               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  activities        Activity[]
+  posts             Post[]
+  milestoneProgress MilestoneProgress[]
 
   // While Prisma won't explicitly show the `WHERE` clause for partial indexes,
   // it's good practice to reflect the *existence* of these indexes using `@@index`.
   // Atlas handles the actual creation of the partial indexes.
   @@index([challengeId, userId], name: "idx_challengeparticipant_challengeid_userid_unique")
   @@index([challengeId, teamId], name: "idx_challengeparticipant_challengeid_teamid_unique")
+  @@schema("public")
 }
 
 model Activity {
