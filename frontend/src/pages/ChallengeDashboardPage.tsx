@@ -73,13 +73,13 @@ const ChallengeDashboardPage: React.FC = () => {
                                 <HStack><Icon as={CalendarIcon} w={6} h={6} color="red.500" /> <Text>Ends: <Box as="span" fontWeight="bold">{new Date(challenge.endDate).toLocaleDateString()}</Box></Text></HStack>
                             </VStack>
                         </Card>
-                        
+
                         {/* Milestones Display */}
-                        <MilestonesDisplay 
-                          milestones={challenge.milestones} 
-                          currentProgress={challenge.progress || 0}
+                        <MilestonesDisplay
+                            milestones={challenge.milestones}
+                            currentProgress={challenge.progress || 0}
                         />
-                        
+
                         {challengeId ? (
                             <Leaderboard challengeId={challengeId} />
                         ) : (

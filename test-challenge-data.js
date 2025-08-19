@@ -4,11 +4,11 @@ import { ChallengeService } from '../frontend/src/graphql/services/challengeServ
 async function testChallengeData() {
     try {
         console.log('Testing challenge data...');
-        
+
         // Test getChallenges
         const challenges = await ChallengeService.getChallenges();
         console.log('Challenges:', challenges?.length);
-        
+
         if (challenges && challenges.length > 0) {
             const firstChallenge = challenges[0];
             console.log('First challenge:');
@@ -17,12 +17,12 @@ async function testChallengeData() {
             console.log('- Challenge Type:', firstChallenge.challengeType);
             console.log('- Milestones:', firstChallenge.milestones?.length);
             console.log('- Progress:', firstChallenge.progress);
-            
+
             if (firstChallenge.milestones && firstChallenge.milestones.length > 0) {
                 console.log('- Milestone details:', firstChallenge.milestones);
             }
         }
-        
+
     } catch (error) {
         console.error('Error testing challenge data:', error);
     }

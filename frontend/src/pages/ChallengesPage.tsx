@@ -11,7 +11,7 @@ const ChallengesPage: React.FC = () => {
     const navigate = useNavigate();
     const { user, isLoading: isAuthLoading } = useUser();
     const { challenges, loading: isFetching, error } = useChallenges();
-    
+
     // Filter states
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
@@ -30,22 +30,22 @@ const ChallengesPage: React.FC = () => {
     // Filtered challenges
     const filteredChallenges = useMemo(() => {
         if (!challenges) return [];
-        
+
         return challenges.filter(challenge => {
             // Search filter (using debounced search term)
-            const matchesSearch = debouncedSearchTerm === '' || 
+            const matchesSearch = debouncedSearchTerm === '' ||
                 challenge.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
                 challenge.description?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
                 challenge.type?.toLowerCase().includes(debouncedSearchTerm.toLowerCase());
-            
+
             // Activity type filter
-            const matchesActivityType = activityTypeFilter === 'all' || 
+            const matchesActivityType = activityTypeFilter === 'all' ||
                 challenge.type === activityTypeFilter;
-            
+
             // Challenge type filter (individual vs team)
-            const matchesChallengeType = challengeTypeFilter === 'all' || 
+            const matchesChallengeType = challengeTypeFilter === 'all' ||
                 challenge.challengeType === challengeTypeFilter;
-            
+
             return matchesSearch && matchesActivityType && matchesChallengeType;
         });
     }, [challenges, debouncedSearchTerm, activityTypeFilter, challengeTypeFilter]);
@@ -111,22 +111,22 @@ const ChallengesPage: React.FC = () => {
                 <Heading as="h2" size="2xl" fontWeight="extrabold">Find Your Next Challenge</Heading>
                 <Text fontSize="lg" color="gray.600" maxW="2xl">Join thousands of others in community-driven fitness challenges. Stay motivated, track progress, and achieve your goals together.</Text>
             </VStack>
-            
+
             {/* Enhanced Filter Bar */}
             <VStack spacing={4} maxW="4xl" w="full" mx="auto">
                 {/* Search bar with clear button */}
                 <HStack w="full">
-                    <Input 
-                        placeholder="Search challenges (e.g., 'Marathon Prep', 'running', '5K')" 
+                    <Input
+                        placeholder="Search challenges (e.g., 'Marathon Prep', 'running', '5K')"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         flex="1"
                         title="Press Escape to clear search, Ctrl+K to clear all filters"
                     />
                     {searchTerm && (
-                        <Button 
-                            size="sm" 
-                            variant="ghost" 
+                        <Button
+                            size="sm"
+                            variant="ghost"
                             onClick={clearSearch}
                             title="Clear search (Esc)"
                         >
@@ -134,12 +134,12 @@ const ChallengesPage: React.FC = () => {
                         </Button>
                     )}
                 </HStack>
-                
+
                 {/* Filter dropdowns */}
                 <HStack w="full" spacing={4}>
                     <Box flex="1">
-                        <Select 
-                            placeholder="All Activity Types" 
+                        <Select
+                            placeholder="All Activity Types"
                             value={activityTypeFilter}
                             onChange={(e) => setActivityTypeFilter(e.target.value)}
                         >
@@ -150,10 +150,10 @@ const ChallengesPage: React.FC = () => {
                             ))}
                         </Select>
                     </Box>
-                    
+
                     <Box flex="1">
-                        <Select 
-                            placeholder="All Challenge Types" 
+                        <Select
+                            placeholder="All Challenge Types"
                             value={challengeTypeFilter}
                             onChange={(e) => setChallengeTypeFilter(e.target.value)}
                         >
@@ -161,12 +161,12 @@ const ChallengesPage: React.FC = () => {
                             <option value="team">Team</option>
                         </Select>
                     </Box>
-                    
+
                     {/* Clear All Filters button */}
                     {hasActiveFilters && (
-                        <Button 
-                            colorScheme="orange" 
-                            variant="outline" 
+                        <Button
+                            colorScheme="orange"
+                            variant="outline"
                             onClick={clearAllFilters}
                             minW="fit-content"
                             title="Clear all filters (Ctrl+K)"
@@ -175,7 +175,7 @@ const ChallengesPage: React.FC = () => {
                         </Button>
                     )}
                 </HStack>
-                
+
                 {/* Results count and active filters indicator */}
                 <HStack w="full" justify="space-between" align="center">
                     <Text fontSize="sm" color="gray.600">
@@ -186,7 +186,7 @@ const ChallengesPage: React.FC = () => {
                             </Text>
                         )}
                     </Text>
-                    
+
                     {hasActiveFilters && (
                         <Text fontSize="xs" color="orange.600" fontWeight="medium">
                             Filters active: {[
@@ -198,7 +198,7 @@ const ChallengesPage: React.FC = () => {
                     )}
                 </HStack>
             </VStack>
-            
+
             <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }} gap={6}>
                 {filteredChallenges.length > 0 ? (
                     filteredChallenges.map(challenge => (
@@ -217,10 +217,10 @@ const ChallengesPage: React.FC = () => {
                             }
                         </Text>
                         {hasActiveFilters && (
-                            <Button 
-                                variant="outline" 
-                                colorScheme="orange" 
-                                size="sm" 
+                            <Button
+                                variant="outline"
+                                colorScheme="orange"
+                                size="sm"
                                 onClick={clearAllFilters}
                             >
                                 Clear All Filters

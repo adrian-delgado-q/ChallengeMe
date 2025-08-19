@@ -68,16 +68,16 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
           </HStack>
         </Tag>
       )}
-      
+
       <Heading as="h3" size="sm">{challenge.title}</Heading>
-      
+
       {/* Description if available */}
       {challenge.description && (
         <Text fontSize="xs" color="gray.500" noOfLines={2}>
           {challenge.description}
         </Text>
       )}
-      
+
       <VStack spacing={2} align="stretch" fontSize="sm" color="gray.600">
         {/* Milestones summary */}
         <HStack>
@@ -85,7 +85,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
           <Text fontSize="xs">
             {challenge.milestones && challenge.milestones.length > 0 ? (
               <>
-                {challenge.milestones.length} milestone{challenge.milestones.length > 1 ? 's' : ''} 
+                {challenge.milestones.length} milestone{challenge.milestones.length > 1 ? 's' : ''}
                 {' '}(up to {Math.max(...challenge.milestones.map(m => m.value))} pts)
               </>
             ) : (
@@ -93,19 +93,19 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
             )}
           </Text>
         </HStack>
-        
+
         <HStack>
           <Icon as={UserTeamIcon} w={4} h={4} color="blue.400" />
           <Text fontSize="xs">{challenge.participants || 0} {challenge.challengeType === 'team' ? 'Teams' : 'Participants'}</Text>
         </HStack>
-        
+
         <HStack>
           <Icon as={CalendarIcon} w={4} h={4} color="red.400" />
           <Text fontSize="xs">Ends: {new Date(challenge.endDate).toLocaleDateString()}</Text>
         </HStack>
       </VStack>
     </VStack>
-    
+
     <Box mt={4}>
       <Progress value={challenge.progress || 0} colorScheme="orange" size="sm" rounded="full" />
       <Text textAlign="right" fontSize="xs" color="gray.500" mt={1}>{challenge.progress || 0}% complete</Text>
