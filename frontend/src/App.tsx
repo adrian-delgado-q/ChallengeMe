@@ -5,6 +5,7 @@ import { AppLayout } from './components/layout/AppLayout';
 import AuthPage from './pages/AuthPage';
 import ChallengesPage from './pages/ChallengesPage';
 import TeamsPage from './pages/TeamsPage';
+import TeamDashboardPage from './pages/TeamDashboardPage';
 import ProfilePage from './pages/ProfilePage';
 import CreateChallengePage from './pages/CreateChallengePage';
 import EditChallengePage from './pages/EditChallengePage';
@@ -100,6 +101,14 @@ const App: React.FC = () => {
                     <ProtectedRoute>
                         <AuthenticatedLayout>
                             <TeamsPage />
+                        </AuthenticatedLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/teams/:id" element={
+                    <ProtectedRoute>
+                        <AuthenticatedLayout>
+                            <TeamDashboardPage />
                         </AuthenticatedLayout>
                     </ProtectedRoute>
                 } />

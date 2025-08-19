@@ -75,6 +75,43 @@ export const useTeams = (myTeamsOnly = false) => {
     };
 };
 
+// Custom hook for team details
+export const useTeamDetails = (teamId: string) => {
+    const [team, setTeam] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const fetchTeam = useCallback(async () => {
+        if (!teamId) {
+            setLoading(false);
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            const data = await TeamService.getTeamById(teamId);
+            setTeam(data);
+        } catch (err: any) {
+            setError(err.message || 'Failed to fetch team details');
+        } finally {
+            setLoading(false);
+        }
+    }, [teamId]);
+
+    useEffect(() => {
+        fetchTeam();
+    }, [fetchTeam]);
+
+    return {
+        team,
+        loading,
+        error,
+        refetch: fetchTeam
+    };
+};
+
 // Custom hook for challenges
 export const useChallenges = () => {
     const { user } = useUser();
