@@ -147,6 +147,7 @@ export interface Activity {
   uploadedAt: string; // When it was uploaded
   time?: string; // User-friendly time, e.g., "2h ago"
   avatar?: string; // For backward compatibility
+  isEditable?: boolean; // Whether the activity can be edited (within 48h)
 }
 
 export interface Post {

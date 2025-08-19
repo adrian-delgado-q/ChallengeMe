@@ -12,6 +12,7 @@ import CreateTeamPage from './pages/CreateTeamPage';
 import EditChallengePage from './pages/EditChallengePage';
 import EditTeamPage from './pages/EditTeamPage';
 import ChallengeDashboardPage from './pages/ChallengeDashboardPage';
+import { ActivityManagementPage } from './pages/ActivityManagementPage';
 import { DebugPanel } from './components/common/DebugPanel';
 import { isSupabaseConfigured } from './supabase/client';
 
@@ -119,6 +120,14 @@ const App: React.FC = () => {
                     <ProtectedRoute>
                         <AuthenticatedLayout>
                             <ProfilePage />
+                        </AuthenticatedLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/activities" element={
+                    <ProtectedRoute>
+                        <AuthenticatedLayout>
+                            <ActivityManagementPage />
                         </AuthenticatedLayout>
                     </ProtectedRoute>
                 } />

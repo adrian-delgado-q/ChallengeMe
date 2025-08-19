@@ -103,6 +103,9 @@ export const Header: React.FC = () => {
                             <MenuItem onClick={() => navigate('/profile')}>
                                 My Profile
                             </MenuItem>
+                            <MenuItem onClick={() => navigate('/activities')}>
+                                My Activities
+                            </MenuItem>
                             <MenuDivider />
                             <MenuItem onClick={signOut} color="red.500">
                                 Sign Out
@@ -162,6 +165,7 @@ export const Header: React.FC = () => {
                     <HStack spacing={6} display={{ base: 'none', md: 'flex' }}>
                         <Link onClick={() => navigate('/challenges')} fontWeight="bold" _hover={{ color: 'orange.500' }}>Challenges</Link>
                         <Link onClick={() => navigate('/teams')} fontWeight="bold" _hover={{ color: 'orange.500' }}>Teams</Link>
+                        <Link onClick={() => navigate('/activities')} fontWeight="bold" _hover={{ color: 'orange.500' }}>Activities</Link>
                     </HStack>
                 )}
 

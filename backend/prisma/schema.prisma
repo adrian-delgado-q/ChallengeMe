@@ -1,7 +1,6 @@
 generator client {
-  provider        = "prisma-client-ts"
-  output          = "./prisma-generated-client"
-  previewFeatures = ["multiSchema"]
+  provider = "prisma-client-ts"
+  output   = "./prisma-generated-client"
 }
 
 datasource db {
