@@ -4,13 +4,12 @@ import { Header } from './Header';
 
 interface AppLayoutProps {
     children: React.ReactNode;
-    onNavigate: (page: string) => void;
 }
 
-export const AppLayout: React.FC<AppLayoutProps> = ({ children, onNavigate }) => (
-    <Box minH="100vh" display="flex" flexDirection="column" bg="gray.50" color="gray.800">
-        <Header onNavigate={onNavigate} />
-        <Container as="main" maxW="container.xl" py={{ base: 4, md: 8 }} flex="1">
+export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => (
+    <Box minH="100vh" w="100vw" display="flex" flexDirection="column" bg="gray.50" color="gray.800">
+        <Header />
+        <Container as="main" maxW="container.xl" py={{ base: 4, md: 8 }} flex="2" >
             {children}
         </Container>
     </Box>

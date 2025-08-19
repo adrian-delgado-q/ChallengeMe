@@ -37,7 +37,7 @@ export { Prisma }
 
 // file annotations for bundling tools to include these files
 path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node")
-path.join(process.cwd(), "prisma-generated-client/libquery_engine-debian-openssl-3.0.x.so.node")
+path.join(process.cwd(), "prisma/prisma-generated-client/libquery_engine-debian-openssl-3.0.x.so.node")
 
 /**
  * Model Profile
@@ -59,6 +59,16 @@ export type TeamMembership = Prisma.TeamMembershipModel
  * 
  */
 export type Challenge = Prisma.ChallengeModel
+/**
+ * Model Milestone
+ * 
+ */
+export type Milestone = Prisma.MilestoneModel
+/**
+ * Model MilestoneProgress
+ * 
+ */
+export type MilestoneProgress = Prisma.MilestoneProgressModel
 /**
  * Model ChallengeParticipant
  * 
