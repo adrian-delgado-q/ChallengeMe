@@ -6,6 +6,7 @@ import {
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '../components/common/Card';
 import { UserTeamIcon, CalendarIcon } from '../components/common/Icons';
+import { TeamMemberManagement } from '../components/teams/TeamMemberManagement';
 import { useTeamDetails } from '../hooks/useData';
 import { useUser } from '../contexts/AuthContext';
 import { TeamService } from '../graphql/services';

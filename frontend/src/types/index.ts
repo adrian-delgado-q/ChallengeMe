@@ -2,7 +2,7 @@
 
 // --- Core Enums ---
 export type ChallengeType = 'individual' | 'team';
-export type TeamRole = 'admin' | 'member';
+export type TeamRole = 'ADMIN' | 'MEMBER';
 
 // --- Challenge & Team Structures ---
 export interface Milestone {

@@ -33,13 +33,17 @@ interface TeamFormProps {
     onCancel: () => void;
     initialData?: any;
     isEditing?: boolean;
+    hideButtons?: boolean;
+    onLoadingChange?: (loading: boolean) => void;
 }
 
 export const TeamForm: React.FC<TeamFormProps> = ({
     onSubmit,
     onCancel,
     initialData,
-    isEditing = false
+    isEditing = false,
+    hideButtons = false,
+    onLoadingChange
 }) => {
     const [formData, setFormData] = useState({
         name: initialData?.name || '',
@@ -53,6 +57,13 @@ export const TeamForm: React.FC<TeamFormProps> = ({
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string>(initialData?.avatarUrl || '');
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Admin selection states (only for new teams)
+    const [adminSearchQuery, setAdminSearchQuery] = useState('');
+    const [adminSearchResults, setAdminSearchResults] = useState<any[]>([]);
+    const [isSearchingAdmins, setIsSearchingAdmins] = useState(false);
+    const [selectedAdmins, setSelectedAdmins] = useState<any[]>([]);
+
     const toast = useToast();
 
     const handleInputChange = (field: string, value: any) => {
@@ -109,6 +120,44 @@ export const TeamForm: React.FC<TeamFormProps> = ({
         }
     };
 
+    // Admin search functionality
+    const handleAdminSearch = async () => {
+        if (!adminSearchQuery.trim()) {
+            setAdminSearchResults([]);
+            return;
+        }
+
+        setIsSearchingAdmins(true);
+        try {
+            const results = await TeamService.searchUsers(adminSearchQuery);
+            // Filter out already selected admins
+            const filteredResults = results.filter(user =>
+                !selectedAdmins.some(admin => admin.id === user.id)
+            );
+            setAdminSearchResults(filteredResults);
+        } catch (error: any) {
+            toast({
+                title: 'Search Error',
+                description: error.message || 'Failed to search users',
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            });
+        } finally {
+            setIsSearchingAdmins(false);
+        }
+    };
+
+    const handleAddAdmin = (user: any) => {
+        setSelectedAdmins(prev => [...prev, user]);
+        setAdminSearchResults(prev => prev.filter(u => u.id !== user.id));
+        setAdminSearchQuery('');
+    };
+
+    const handleRemoveAdmin = (userId: string) => {
+        setSelectedAdmins(prev => prev.filter(admin => admin.id !== userId));
+    };
+
     const uploadAvatarFile = async (file: File): Promise<string> => {
         // Note: This is a placeholder for file upload functionality
         // In a real implementation, you would upload to your storage service
@@ -149,6 +198,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
         }
 
         setIsSubmitting(true);
+        onLoadingChange?.(true);
 
         try {
             let avatarUrl = formData.avatarUrl;
@@ -177,25 +227,35 @@ export const TeamForm: React.FC<TeamFormProps> = ({
                 result = await TeamService.createTeam(teamData);
             }
 
-            toast({
-                title: 'Success!',
-                description: `Team ${isEditing ? 'updated' : 'created'} successfully`,
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
+            // Only show toast notification if hideButtons is false (parent component not handling notifications)
+            if (!hideButtons) {
+                toast({
+                    title: 'Success!',
+                    description: `Team ${isEditing ? 'updated' : 'created'} successfully`,
+                    status: 'success',
+                    duration: 3000,
+                    isClosable: true,
+                });
+            }
 
             onSubmit(result);
         } catch (error: any) {
-            toast({
-                title: 'Error',
-                description: error.message || `Failed to ${isEditing ? 'update' : 'create'} team`,
-                status: 'error',
-                duration: 5000,
-                isClosable: true,
-            });
+            // If hideButtons is true, let parent component handle the error
+            if (hideButtons) {
+                throw error;
+            } else {
+                // Show error toast for standalone usage
+                toast({
+                    title: 'Error',
+                    description: error.message || `Failed to ${isEditing ? 'update' : 'create'} team`,
+                    status: 'error',
+                    duration: 5000,
+                    isClosable: true,
+                });
+            }
         } finally {
             setIsSubmitting(false);
+            onLoadingChange?.(false);
         }
     };
 
@@ -348,26 +408,28 @@ export const TeamForm: React.FC<TeamFormProps> = ({
                 </FormControl>
 
                 {/* Form Actions */}
-                <HStack spacing={4} pt={4}>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={onCancel}
-                        flex="1"
-                        isDisabled={isSubmitting}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        type="submit"
-                        colorScheme="orange"
-                        isLoading={isSubmitting}
-                        loadingText={isEditing ? 'Updating...' : 'Creating...'}
-                        flex="1"
-                    >
-                        {isEditing ? 'Update Team' : 'Create Team'}
-                    </Button>
-                </HStack>
+                {!hideButtons && (
+                    <HStack spacing={4} pt={4}>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={onCancel}
+                            flex="1"
+                            isDisabled={isSubmitting}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            colorScheme="orange"
+                            isLoading={isSubmitting}
+                            loadingText={isEditing ? 'Updating...' : 'Creating...'}
+                            flex="1"
+                        >
+                            {isEditing ? 'Update Team' : 'Create Team'}
+                        </Button>
+                    </HStack>
+                )}
             </VStack>
         </Box>
     );

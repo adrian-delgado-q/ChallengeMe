@@ -368,4 +368,225 @@ export class TeamService {
         if (error) throw new Error(error.message);
         return data;
     }
+
+    // Update team member role
+    static async updateMemberRole(teamId: string, userId: string, role: 'ADMIN' | 'MEMBER') {
+        const user = await getCurrentUser();
+        if (!user) throw new Error('User not authenticated');
+
+        // Verify the current user is the team creator or an admin
+        const { data: teamData, error: teamError } = await supabase
+            .from('Team')
+            .select('creatorId')
+            .eq('id', teamId)
+            .single();
+
+        if (teamError) throw new Error(teamError.message);
+
+        if (teamData.creatorId !== user.id) {
+            // Check if current user is an admin
+            const { data: membershipData, error: membershipError } = await supabase
+                .from('TeamMembership')
+                .select('role')
+                .eq('teamId', teamId)
+                .eq('userId', user.id)
+                .single();
+
+            if (membershipError || membershipData?.role !== 'ADMIN') {
+                throw new Error('You do not have permission to manage team roles');
+            }
+        }
+
+        const { data, error } = await supabase
+            .from('TeamMembership')
+            .update({ role })
+            .eq('teamId', teamId)
+            .eq('userId', userId)
+            .select()
+            .single();
+
+        if (error) throw new Error(error.message);
+        return data;
+    }
+
+    // Get available members for admin selection (existing team members who aren't already admins)
+    static async getAvailableAdmins(teamId: string) {
+        const { data: memberships, error } = await supabase
+            .from('TeamMembership')
+            .select(`
+                id, userId, role,
+                user:profiles(id, username, avatar_url)
+            `)
+            .eq('teamId', teamId);
+
+        if (error) throw new Error(error.message);
+
+        return (memberships || []).map((membership: any) => ({
+            ...membership,
+            user: membership.user ? {
+                ...membership.user,
+                avatarUrl: membership.user.avatar_url
+            } : null
+        }));
+    }
+
+    // Add member to team with specific role (for team creators/admins)
+    static async addMemberToTeam(teamId: string, userId: string, role: 'ADMIN' | 'MEMBER' = 'MEMBER') {
+        const user = await getCurrentUser();
+        if (!user) throw new Error('User not authenticated');
+
+        // Verify the current user is the team creator or an admin
+        const { data: teamData, error: teamError } = await supabase
+            .from('Team')
+            .select('creatorId, maxMembers')
+            .eq('id', teamId)
+            .single();
+
+        if (teamError) throw new Error(teamError.message);
+
+        if (teamData.creatorId !== user.id) {
+            // Check if current user is an admin
+            const { data: membershipData, error: membershipError } = await supabase
+                .from('TeamMembership')
+                .select('role')
+                .eq('teamId', teamId)
+                .eq('userId', user.id)
+                .single();
+
+            if (membershipError || membershipData?.role !== 'ADMIN') {
+                throw new Error('You do not have permission to add members to this team');
+            }
+        }
+
+        // Check member limit
+        if (teamData?.maxMembers) {
+            const { count, error: countError } = await supabase
+                .from('TeamMembership')
+                .select('*', { count: 'exact', head: true })
+                .eq('teamId', teamId);
+
+            if (countError) throw new Error(countError.message);
+
+            if (count && count >= teamData.maxMembers) {
+                throw new Error('This team has reached its maximum member limit');
+            }
+        }
+
+        // Generate UUID for the membership
+        const membershipId = crypto.randomUUID();
+
+        const { data, error } = await supabase
+            .from('TeamMembership')
+            .insert({
+                id: membershipId,
+                teamId,
+                userId,
+                role
+            })
+            .select()
+            .single();
+
+        if (error) throw new Error(error.message);
+        return data;
+    }
+
+    // Remove member from team (for team creators/admins)
+    static async removeMemberFromTeam(teamId: string, userId: string) {
+        const user = await getCurrentUser();
+        if (!user) throw new Error('User not authenticated');
+
+        // Verify the current user is the team creator or an admin
+        const { data: teamData, error: teamError } = await supabase
+            .from('Team')
+            .select('creatorId')
+            .eq('id', teamId)
+            .single();
+
+        if (teamError) throw new Error(teamError.message);
+
+        // Team creator can remove anyone, admins can remove non-admins
+        if (teamData.creatorId !== user.id) {
+            // Check if current user is an admin
+            const { data: membershipData, error: membershipError } = await supabase
+                .from('TeamMembership')
+                .select('role')
+                .eq('teamId', teamId)
+                .eq('userId', user.id)
+                .single();
+
+            if (membershipError || membershipData?.role !== 'ADMIN') {
+                throw new Error('You do not have permission to remove members from this team');
+            }
+
+            // Admins cannot remove other admins (only team creator can)
+            const { data: targetMemberData, error: targetError } = await supabase
+                .from('TeamMembership')
+                .select('role')
+                .eq('teamId', teamId)
+                .eq('userId', userId)
+                .single();
+
+            if (targetError) throw new Error(targetError.message);
+            
+            if (targetMemberData?.role === 'ADMIN') {
+                throw new Error('Only the team creator can remove administrators');
+            }
+        }
+
+        // Prevent team creator from removing themselves
+        if (teamData.creatorId === userId && user.id === userId) {
+            throw new Error('Team creator cannot leave the team. Transfer ownership or delete the team instead.');
+        }
+
+        const { data, error } = await supabase
+            .from('TeamMembership')
+            .delete()
+            .eq('teamId', teamId)
+            .eq('userId', userId)
+            .select()
+            .single();
+
+        if (error) throw new Error(error.message);
+        return data;
+    }
+
+    // Search for users by username to add to team
+    static async searchUsers(query: string, teamId?: string) {
+        if (!query || query.trim().length < 2) {
+            return [];
+        }
+
+        const { data: users, error } = await supabase
+            .from('profiles')
+            .select('id, username, avatar_url')
+            .ilike('username', `%${query.trim()}%`)
+            .limit(10);
+
+        if (error) throw new Error(error.message);
+
+        // If teamId is provided, filter out users who are already members
+        if (teamId && users && users.length > 0) {
+            const { data: existingMembers } = await supabase
+                .from('TeamMembership')
+                .select('userId')
+                .eq('teamId', teamId)
+                .in('userId', users.map(u => u.id));
+
+            const existingUserIds = new Set(existingMembers?.map(m => m.userId) || []);
+            
+            return users
+                .filter(user => !existingUserIds.has(user.id))
+                .map(user => ({
+                    id: user.id,
+                    username: user.username,
+                    avatarUrl: user.avatar_url
+                }));
+        }
+
+        return (users || []).map(user => ({
+            id: user.id,
+            username: user.username,
+            avatarUrl: user.avatar_url
+        }));
+    }
 }
