@@ -1,21 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Box, Heading, Text, VStack, Divider, HStack, Button,
-  AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, useDisclosure
+    Box, Heading, Text, VStack, Divider, HStack, Button,
+    AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, useDisclosure,
+    Spinner, Center, Alert, AlertIcon
 } from '@chakra-ui/react';
 import { Card } from '../components/common/Card';
 import { ChallengeForm } from '../components/challenges/ChallengeForm';
-import { existingChallengeData } from '../assets/fake_data/mockChallenges';
-
+import { useChallengeDetails } from '../hooks/useData';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ChallengeService } from '../graphql/services';
 
 const EditChallengePage: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef<HTMLButtonElement>(null);
+    const navigate = useNavigate();
+    const { id: challengeId } = useParams<{ id: string }>();
 
-    const handleUpdateChallenge = (formData: any) => {
-        console.log(`Updating challenge ${existingChallengeData.id} with data:`, formData);
-        alert("Challenge updated successfully! (See console for data)");
+    const { challenge, loading, error, refetch } = useChallengeDetails(challengeId || '');
+    const [deleting, setDeleting] = useState(false);
+
+    const handleUpdateChallenge = async (formData: any) => {
+        if (!challengeId) return;
+
+        try {
+            await ChallengeService.updateChallenge(challengeId, formData);
+            alert("Challenge updated successfully!");
+            refetch();
+        } catch (err: any) {
+            alert(`Failed to update challenge: ${err.message}`);
+        }
     };
+
+    const handleDeleteChallenge = async () => {
+        if (!challengeId) return;
+
+        setDeleting(true);
+        try {
+            await ChallengeService.deleteChallenge(challengeId);
+            alert("Challenge deleted successfully!");
+            navigate('/challenges');
+        } catch (err: any) {
+            alert(`Failed to delete challenge: ${err.message}`);
+        } finally {
+            setDeleting(false);
+            onClose();
+        }
+    };
+
+    if (loading) {
+        return (
+            <Center h="200px">
+                <Spinner size="xl" color="orange.500" />
+            </Center>
+        );
+    }
+
+    if (error || !challenge) {
+        return (
+            <Alert status="error">
+                <AlertIcon />
+                {error || 'Challenge not found'}
+            </Alert>
+        );
+    }
 
     return (
         <Box maxW="4xl" mx="auto">
@@ -25,11 +72,11 @@ const EditChallengePage: React.FC = () => {
                         <Heading as="h2" size="xl">Challenge Settings</Heading>
                         <Text color="gray.600">Update the details for your challenge.</Text>
                     </VStack>
-                    
-                    <ChallengeForm 
+
+                    <ChallengeForm
                         onSubmit={handleUpdateChallenge}
                         isEditing={true}
-                        challengeToEdit={existingChallengeData}
+                        challengeToEdit={challenge}
                     />
 
                     <Divider />
@@ -68,7 +115,7 @@ const EditChallengePage: React.FC = () => {
                             <Button ref={cancelRef} onClick={onClose}>
                                 Cancel
                             </Button>
-                            <Button colorScheme="red" onClick={onClose} ml={3}>
+                            <Button colorScheme="red" onClick={handleDeleteChallenge} ml={3} isLoading={deleting}>
                                 Delete
                             </Button>
                         </AlertDialogFooter>

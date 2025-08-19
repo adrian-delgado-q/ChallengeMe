@@ -76,9 +76,6 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
                             <MenuItem onClick={() => onNavigate('profile')}>
                                 My Profile
                             </MenuItem>
-                            <MenuItem onClick={() => onNavigate('dashboard')}>
-                                My Dashboard
-                            </MenuItem>
                             <MenuDivider />
                             <MenuItem onClick={signOut} color="red.500">
                                 Sign Out
@@ -136,9 +133,8 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
                 {/* Center: Navigation Links (only for logged-in users) */}
                 {user && (
                     <HStack spacing={6} display={{ base: 'none', md: 'flex' }}>
-                        <Link onClick={() => onNavigate('home')} fontWeight="medium" _hover={{ color: 'orange.500' }}>Home</Link>
-                        <Link onClick={() => onNavigate('dashboard')} fontWeight="medium" _hover={{ color: 'orange.500' }}>Dashboard</Link>
-                        <Link onClick={() => onNavigate('teams')} fontWeight="medium" _hover={{ color: 'orange.500' }}>Teams</Link>
+                        <Link onClick={() => onNavigate('home')} fontWeight="bold" _hover={{ color: 'orange.500' }}>Challenges</Link>
+                        <Link onClick={() => onNavigate('teams')} fontWeight="bold" _hover={{ color: 'orange.500' }}>Teams</Link>
                     </HStack>
                 )}
 

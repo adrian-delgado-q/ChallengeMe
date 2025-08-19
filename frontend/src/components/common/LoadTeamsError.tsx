@@ -6,7 +6,7 @@ interface LoadTeamsErrorProps {
 }
 
 export const LoadTeamsError: React.FC<LoadTeamsErrorProps> = ({ onRetry }) => (
-    <Center h="60vh">
+ 
         <Alert
             status="error"
             variant="subtle"
@@ -14,7 +14,6 @@ export const LoadTeamsError: React.FC<LoadTeamsErrorProps> = ({ onRetry }) => (
             alignItems="center"
             justifyContent="center"
             textAlign="center"
-            height="200px"
             rounded="lg"
         >
             <AlertIcon boxSize="40px" mr={0} />
@@ -28,5 +27,5 @@ export const LoadTeamsError: React.FC<LoadTeamsErrorProps> = ({ onRetry }) => (
                 Try Again
             </Button>
         </Alert>
-    </Center>
+
 );

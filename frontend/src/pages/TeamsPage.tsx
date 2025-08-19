@@ -1,17 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Box, Button, Grid, Heading, Input, Text, VStack, HStack, Tag, Avatar, TagLabel, Spinner, Center, Alert, AlertIcon } from '@chakra-ui/react';
+import React from 'react';
+import { Button, Grid, Heading, Input, Text, VStack, HStack, Tag, Avatar, Spinner, Center } from '@chakra-ui/react';
 import { Card } from '../components/common/Card';
 
 import { UserTeamIcon } from '../components/common/Icons';
 import { useUser } from '../contexts/AuthContext';
-import { executeQuery } from '../graphql/gqlClient'
-import { teamsQuery } from '../graphql/queries';
-import { AuthPrompt } from '../components/common/AuthPrompt'; 
-import { LoadTeamsError } from '../components/common/LoadTeamsError'; 
-import { GenericError } from '../components/common/GenericError'; 
+import { useTeams } from '../hooks/useData';
+import { AuthPrompt } from '../components/common/AuthPrompt';
+import { LoadTeamsError } from '../components/common/LoadTeamsError';
+import { GenericError } from '../components/common/GenericError';
 
-
-import type { Team, TeamsQueryResponse } from '../types';
+import type { Team } from '../types';
 
 
 interface TeamCardProps {
@@ -50,45 +48,9 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onSelect }) => (
     </Card>
 );
 
-// const mockTeams: Team[] = [
-//     { id: '1', name: 'Weekend Warriors', description: 'A casual team for weekend runners and cyclists aiming to stay active.', avatarUrl: 'https://placehold.co/64x64/34d399/ffffff?text=W', memberCount: 12, isPublic: true },
-//     { id: '2', name: 'Trail Blazers Hiking Club', description: 'Exploring local trails every Saturday morning. All levels welcome!', avatarUrl: 'https://placehold.co/64x64/fb923c/ffffff?text=T', memberCount: 25, isPublic: true },
-//     { id: '3', name: 'Office Step Challenge Crew', description: 'A private team for the annual Q3 step challenge at work.', avatarUrl: 'https://placehold.co/64x64/60a5fa/ffffff?text=O', memberCount: 8, isPublic: false },
-// ];
-
-
-
 const TeamsPage: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigate }) => {
-
-    const { user, isLoading: isAuthLoading } = useUser(); // <-- USE the hook
-    const [teams, setTeams] = useState<Team[]>([]);
-    const [isFetching, setIsFetching] = useState(true);
-    const [fetchError, setFetchError] = useState<string | null>(null);
-
-    const fetchTeams = useCallback(async () => {
-        if (!user) return; // Guard clause
-
-        setIsFetching(true);
-        setFetchError(null);
-        try {
-            const data = await executeQuery<TeamsQueryResponse>(teamsQuery);
-            const fetchedTeams = data.teamCollection.edges.map((edge: any) => edge.node);
-            setTeams(fetchedTeams);
-        } catch (error: any) {
-            console.error("Failed to fetch teams:", error);
-            setFetchError(error.message || 'An unexpected error occurred.');
-        } finally {
-            setIsFetching(false);
-        }
-    }, [user]);
-
-    useEffect(() => {
-        if (!isAuthLoading && user) {
-            fetchTeams();
-        } else if (!isAuthLoading && !user) {
-            setIsFetching(false);
-        }
-    }, [user, isAuthLoading, fetchTeams]);
+    const { user, isLoading: isAuthLoading } = useUser();
+    const { teams, loading: isFetching, error: fetchError, refetch: fetchTeams } = useTeams();
 
     if (isAuthLoading || isFetching) {
         return <Center h="50vh"><Spinner size="xl" color="orange.500" /></Center>;

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import type { ReactNode } from 'react';
-import { supabase } from '../supabase/client'; 
+import { supabase, isSupabaseConfigured } from '../supabase/client';
 import type { User, Session } from '@supabase/supabase-js';
 
 // 1. Define the shape of your context's value
@@ -25,11 +25,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      console.warn('Supabase not configured - auth will not work');
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      setIsLoading(false);
+    }).catch((error) => {
+      console.error('Auth session error:', error);
       setIsLoading(false);
     });
 
@@ -46,6 +55,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const signOut = async () => {
+    if (!isSupabaseConfigured) {
+      console.warn('Supabase not configured - cannot sign out');
+      return;
+    }
     await supabase.auth.signOut();
   };
 
@@ -53,7 +66,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     session,
     isLoading,
-    signOut, 
+    signOut,
   };
 
   // We only render the children after the initial loading is complete
