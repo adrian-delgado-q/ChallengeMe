@@ -21,3 +21,12 @@ export const ChallengeParticipantType = {
 } as const
 
 export type ChallengeParticipantType = (typeof ChallengeParticipantType)[keyof typeof ChallengeParticipantType]
+
+
+export const ChallengeStatus = {
+  ACTIVE: 'ACTIVE',
+  CLOSED: 'CLOSED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type ChallengeStatus = (typeof ChallengeStatus)[keyof typeof ChallengeStatus]

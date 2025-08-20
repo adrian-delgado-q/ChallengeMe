@@ -95,3 +95,6 @@ export const TeamRole = $Enums.TeamRole
 
 export type ChallengeParticipantType = $Enums.ChallengeParticipantType
 export const ChallengeParticipantType = $Enums.ChallengeParticipantType
+
+export type ChallengeStatus = $Enums.ChallengeStatus
+export const ChallengeStatus = $Enums.ChallengeStatus

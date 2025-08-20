@@ -40,6 +40,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
     const [description, setDescription] = useState(challengeToEdit?.description || '');
     const [activityType, setActivityType] = useState(challengeToEdit?.type || '');
     const [maxParticipants, setMaxParticipants] = useState(challengeToEdit?.maxParticipants?.toString() || '');
+    const [maxTeamSize, setMaxTeamSize] = useState(challengeToEdit?.maxTeamSize?.toString() || '');
     const [endDate, setEndDate] = useState(challengeToEdit?.endDate || getDefaultEndDate());
     const [challengeType, setChallengeType] = useState<ChallengeType>(challengeToEdit?.challengeType || 'individual');
     const [isPublic, setIsPublic] = useState(challengeToEdit?.isPublic !== false);
@@ -114,6 +115,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                 description: description.trim() || undefined,
                 challengeType: challengeType.toUpperCase() as 'INDIVIDUAL' | 'TEAM',
                 maxParticipants: maxParticipants ? parseInt(maxParticipants) : undefined,
+                maxTeamSize: challengeType === 'team' && maxTeamSize ? parseInt(maxTeamSize) : undefined,
                 startDate: new Date().toISOString().split('T')[0], // Today
                 endDate,
                 isPublic,
@@ -178,7 +180,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                 />
             </FormControl>
 
-            <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={6}>
+            <Grid templateColumns={{ base: '1fr', md: challengeType === 'team' ? '1fr 1fr 1fr' : '1fr 1fr' }} gap={6}>
                 <FormControl>
                     <FormLabel>Activity Type</FormLabel>
                     <Select
@@ -200,6 +202,21 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                         isDisabled={isSubmitting}
                     />
                 </FormControl>
+                {challengeType === 'team' && (
+                    <FormControl>
+                        <FormLabel>Max Team Size (Optional)</FormLabel>
+                        <Input
+                            type="number"
+                            placeholder="e.g., 5"
+                            value={maxTeamSize}
+                            onChange={(e) => setMaxTeamSize(e.target.value)}
+                            isDisabled={isSubmitting}
+                        />
+                        <Text fontSize="xs" color="gray.500" mt={1}>
+                            Maximum members per team
+                        </Text>
+                    </FormControl>
+                )}
             </Grid>
 
             <FormControl isRequired>

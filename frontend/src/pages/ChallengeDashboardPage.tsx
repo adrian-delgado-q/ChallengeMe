@@ -10,6 +10,7 @@ import { ActivityFeed } from '../components/dashboard/ActivityFeed';
 import { ChallengeRules } from '../components/dashboard/ChallengeRules';
 import { LogActivityModal } from '../components/dashboard/LogActivityModal';
 import { MilestonesDisplay } from '../components/dashboard/MilestonesDisplay';
+import { ChallengeJoinButton } from '../components/challenges/ChallengeJoinButton';
 import { useChallengeDetails, usePosts } from '../hooks/useData';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -25,7 +26,7 @@ const ChallengeDashboardPage: React.FC = () => {
     const { id: challengeId } = useParams<{ id: string }>();
     const navigate = useNavigate();
 
-    const { challenge, loading: challengeLoading, error: challengeError } = useChallengeDetails(challengeId || '');
+    const { challenge, loading: challengeLoading, error: challengeError, refetch } = useChallengeDetails(challengeId || '');
     const { posts, loading: postsLoading } = usePosts(challengeId);
 
     if (challengeLoading) {
@@ -54,6 +55,10 @@ const ChallengeDashboardPage: React.FC = () => {
                         <Text color="gray.600">{challenge.description || 'Push your limits and climb the leaderboard!'}</Text>
                     </Box>
                     <HStack spacing={2}>
+                        <ChallengeJoinButton
+                            challenge={challenge}
+                            onJoinSuccess={refetch}
+                        />
                         <Button
                             variant="outline"
                             colorScheme="orange"

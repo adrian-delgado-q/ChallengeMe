@@ -22,6 +22,8 @@ export interface ChallengeRulesProps {
   rules: RuleSet;
 }
 
+export type ChallengeStatus = 'ACTIVE' | 'CLOSED' | 'CANCELLED';
+
 export interface Challenge {
   id: string; // Changed from number to string to match UUID
   creatorId?: string;
@@ -29,8 +31,10 @@ export interface Challenge {
   description?: string;
   type?: string; // Activity type (running, cycling, etc.)
   challengeType: ChallengeType;
+  status?: ChallengeStatus; // Challenge status for management
   participants?: number; // Count of participants
   maxParticipants?: number;
+  maxTeamSize?: number; // For TEAM challenges: max members per team
   startDate?: string;
   endDate: string;
   progress?: number; // UI calculated progress

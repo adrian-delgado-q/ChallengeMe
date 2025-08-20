@@ -6,62 +6,39 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("SUPABASE_DB_URL")
-  schemas  = ["public"]
 }
-
-// --- Enums ---
-enum TeamRole {
-  ADMIN
-  MEMBER
-
-  @@schema("public")
-}
-
-enum ChallengeParticipantType {
-  INDIVIDUAL
-  TEAM
-
-  @@schema("public")
-}
-
-// --- Models ---
 
 model Profile {
-  id        String   @id @db.Uuid
-  username  String?  @unique
-  avatarUrl String?  @map("avatar_url")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
-
-  createdTeams      Team[]                 @relation("TeamCreator")
-  teamMemberships   TeamMembership[]
+  id                String                 @id @db.Uuid
+  username          String?                @unique
+  avatarUrl         String?                @map("avatar_url")
+  createdAt         DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime               @updatedAt @map("updated_at") @db.Timestamptz(6)
+  activities        Activity[]
   createdChallenges Challenge[]            @relation("ChallengeCreator")
   challengeEntries  ChallengeParticipant[]
-  activities        Activity[]
-  posts             Post[]
   comments          Comment[]
+  posts             Post[]
+  createdTeams      Team[]                 @relation("TeamCreator")
+  teamMemberships   TeamMembership[]
 
   @@map("profiles")
-  @@schema("public")
 }
 
 model Team {
-  id          String    @id @default(uuid()) @db.Uuid
-  creatorId   String    @db.Uuid
-  name        String
-  description String?
-  avatarUrl   String?
-  isPublic    Boolean   @default(true)
-  maxMembers  Int? // Maximum number of members allowed
-  sportsTypes String[] // Array of sports/activity types this team focuses on
-  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
-  expiresAt   DateTime? @db.Timestamptz(6)
-
+  id               String                 @id @default(uuid()) @db.Uuid
+  creatorId        String                 @db.Uuid
+  name             String
+  description      String?
+  avatarUrl        String?
+  isPublic         Boolean                @default(true)
+  createdAt        DateTime               @default(now()) @db.Timestamptz(6)
+  expiresAt        DateTime?              @db.Timestamptz(6)
+  maxMembers       Int?
+  sportsTypes      String[]
+  challengeEntries ChallengeParticipant[]
   creator          Profile                @relation("TeamCreator", fields: [creatorId], references: [id])
   teamMemberships  TeamMembership[]
-  challengeEntries ChallengeParticipant[]
-
-  @@schema("public")
 }
 
 model TeamMembership {
@@ -71,12 +48,10 @@ model TeamMembership {
   role      TeamRole  @default(MEMBER)
   joinedAt  DateTime  @default(now()) @db.Timestamptz(6)
   expiresAt DateTime? @db.Timestamptz(6)
-
-  team Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  user Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team      Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user      Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([teamId, userId])
-  @@schema("public")
 }
 
 model Challenge {
@@ -91,110 +66,88 @@ model Challenge {
   isPublic        Boolean                  @default(true)
   createdAt       DateTime                 @default(now()) @db.Timestamptz(6)
   expiresAt       DateTime?                @db.Timestamptz(6)
+  maxTeamSize     Int?
+  status          ChallengeStatus          @default(ACTIVE)
+  activities      Activity[]
+  creator         Profile                  @relation("ChallengeCreator", fields: [creatorId], references: [id])
+  participants    ChallengeParticipant[]
+  milestones      Milestone[]
+  posts           Post[]
 
-  creator      Profile                @relation("ChallengeCreator", fields: [creatorId], references: [id])
-  participants ChallengeParticipant[]
-  activities   Activity[]
-  posts        Post[]
-  milestones   Milestone[]
-
-  @@schema("public")
+  @@index([creatorId, status], map: "idx_challenge_creator_status")
+  @@index([status], map: "idx_challenge_status")
 }
 
 model Milestone {
-  id          String   @id @default(uuid()) @db.Uuid
-  challengeId String   @db.Uuid
-  name        String
-  description String?
-  targetValue Int // The target value to achieve (e.g., 100 points, 10 activities, etc.)
-  valueType   String // Type of value: "activities", "points", "distance", "duration", etc.
-  order       Int // Display order of milestones
-  createdAt   DateTime @default(now()) @db.Timestamptz(6)
-
+  id                  String              @id @default(uuid()) @db.Uuid
+  challengeId         String              @db.Uuid
+  name                String
+  description         String?
+  targetValue         Int
+  valueType           String
+  order               Int
+  createdAt           DateTime            @default(now()) @db.Timestamptz(6)
   challenge           Challenge           @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   participantProgress MilestoneProgress[]
-
-  @@schema("public")
 }
 
 model MilestoneProgress {
-  id            String    @id @default(uuid()) @db.Uuid
-  milestoneId   String    @db.Uuid
-  participantId String    @db.Uuid
-  currentValue  Int       @default(0) // Current progress value
-  isAchieved    Boolean   @default(false)
-  achievedAt    DateTime? @db.Timestamptz(6)
-  createdAt     DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime  @updatedAt @db.Timestamptz(6)
-
-  milestone   Milestone            @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
-  participant ChallengeParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  id            String               @id @default(uuid()) @db.Uuid
+  milestoneId   String               @db.Uuid
+  participantId String               @db.Uuid
+  currentValue  Int                  @default(0)
+  isAchieved    Boolean              @default(false)
+  achievedAt    DateTime?            @db.Timestamptz(6)
+  createdAt     DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime             @updatedAt @db.Timestamptz(6)
+  milestone     Milestone            @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  participant   ChallengeParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
 
   @@unique([milestoneId, participantId])
-  @@schema("public")
 }
 
 model ChallengeParticipant {
-  id          String   @id @default(uuid()) @db.Uuid
-  challengeId String   @db.Uuid
-  userId      String?  @db.Uuid
-  teamId      String?  @db.Uuid
-  joinedAt    DateTime @default(now()) @db.Timestamptz(6)
-
-  challenge         Challenge           @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  user              Profile?            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  team              Team?               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  id                String              @id @default(uuid()) @db.Uuid
+  challengeId       String              @db.Uuid
+  userId            String?             @db.Uuid
+  teamId            String?             @db.Uuid
+  joinedAt          DateTime            @default(now()) @db.Timestamptz(6)
   activities        Activity[]
-  posts             Post[]
+  challenge         Challenge           @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  team              Team?               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user              Profile?            @relation(fields: [userId], references: [id], onDelete: Cascade)
   milestoneProgress MilestoneProgress[]
+  posts             Post[]
 
-  // While Prisma won't explicitly show the `WHERE` clause for partial indexes,
-  // it's good practice to reflect the *existence* of these indexes using `@@index`.
-  // Atlas handles the actual creation of the partial indexes.
-  @@index([challengeId, userId], name: "idx_challengeparticipant_challengeid_userid_unique")
-  @@index([challengeId, teamId], name: "idx_challengeparticipant_challengeid_teamid_unique")
-  @@schema("public")
+  @@index([challengeId, userId], map: "idx_challengeparticipant_challengeid_userid_unique")
+  @@index([challengeId, teamId], map: "idx_challengeparticipant_challengeid_teamid_unique")
 }
 
 model Activity {
-  id            String   @id @default(uuid()) @db.Uuid
-  participantId String   @db.Uuid
+  id            String               @id @default(uuid()) @db.Uuid
+  participantId String               @db.Uuid
   notes         String?
-  date          DateTime @db.Date
-  uploadedAt    DateTime @default(now()) @db.Timestamptz(6)
-
-  // The relationship to the participant is the single source of truth.
-  // You can access the user and challenge via this relation, e.g., `activity.participant.user`.
-  participant ChallengeParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
-
-  // NOTE: Redundant convenience relations to User (Profile) and Challenge have been removed
-  // to simplify the schema and prevent data inconsistency.
-  Profile     Profile?   @relation(fields: [profileId], references: [id])
-  profileId   String?    @db.Uuid
-  Challenge   Challenge? @relation(fields: [challengeId], references: [id])
-  challengeId String?    @db.Uuid
-
-  @@schema("public")
+  date          DateTime             @db.Date
+  uploadedAt    DateTime             @default(now()) @db.Timestamptz(6)
+  profileId     String?              @db.Uuid
+  challengeId   String?              @db.Uuid
+  Challenge     Challenge?           @relation(fields: [challengeId], references: [id])
+  participant   ChallengeParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  Profile       Profile?             @relation(fields: [profileId], references: [id])
 }
 
 model Post {
-  id            String    @id @default(uuid()) @db.Uuid
-  participantId String    @db.Uuid
+  id            String               @id @default(uuid()) @db.Uuid
+  participantId String               @db.Uuid
   content       String?
   imageUrl      String?
-  createdAt     DateTime  @default(now()) @db.Timestamptz(6)
+  createdAt     DateTime             @default(now()) @db.Timestamptz(6)
+  profileId     String?              @db.Uuid
+  challengeId   String?              @db.Uuid
   comments      Comment[]
-
-  // The relationship to the participant is the single source of truth.
-  participant ChallengeParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
-
-  // NOTE: Redundant convenience relations to User (Profile) and Challenge have been removed.
-  Profile     Profile?   @relation(fields: [profileId], references: [id])
-  profileId   String?    @db.Uuid
-  Challenge   Challenge? @relation(fields: [challengeId], references: [id])
-  challengeId String?    @db.Uuid
-
-  @@schema("public")
+  Challenge     Challenge?           @relation(fields: [challengeId], references: [id])
+  participant   ChallengeParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  Profile       Profile?             @relation(fields: [profileId], references: [id])
 }
 
 model Comment {
@@ -203,9 +156,22 @@ model Comment {
   postId    String   @db.Uuid
   content   String?
   createdAt DateTime @default(now()) @db.Timestamptz(6)
+  author    Profile  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
 
-  author Profile @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  post   Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+enum TeamRole {
+  ADMIN
+  MEMBER
+}
 
-  @@schema("public")
+enum ChallengeParticipantType {
+  INDIVIDUAL
+  TEAM
+}
+
+enum ChallengeStatus {
+  ACTIVE
+  CLOSED
+  CANCELLED
 }

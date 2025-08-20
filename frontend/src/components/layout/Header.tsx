@@ -106,6 +106,9 @@ export const Header: React.FC = () => {
                             <MenuItem onClick={() => navigate('/activities')}>
                                 My Activities
                             </MenuItem>
+                            <MenuItem onClick={() => navigate('/my-challenges')}>
+                                My Challenges
+                            </MenuItem>
                             <MenuDivider />
                             <MenuItem onClick={signOut} color="red.500">
                                 Sign Out

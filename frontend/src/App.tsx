@@ -12,6 +12,8 @@ import CreateTeamPage from './pages/CreateTeamPage';
 import EditChallengePage from './pages/EditChallengePage';
 import EditTeamPage from './pages/EditTeamPage';
 import ChallengeDashboardPage from './pages/ChallengeDashboardPage';
+import ManageChallengePage from './pages/ManageChallengePage';
+import MyChallengesPage from './pages/MyChallengesPage';
 import { ActivityManagementPage } from './pages/ActivityManagementPage';
 import { DebugPanel } from './components/common/DebugPanel';
 import { isSupabaseConfigured } from './supabase/client';
@@ -96,6 +98,30 @@ const App: React.FC = () => {
                     <ProtectedRoute>
                         <AuthenticatedLayout>
                             <ChallengeDashboardPage />
+                        </AuthenticatedLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/challenges/:id/manage" element={
+                    <ProtectedRoute>
+                        <AuthenticatedLayout>
+                            <ManageChallengePage />
+                        </AuthenticatedLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/challenges/:id/edit" element={
+                    <ProtectedRoute>
+                        <AuthenticatedLayout>
+                            <EditChallengePage />
+                        </AuthenticatedLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/my-challenges" element={
+                    <ProtectedRoute>
+                        <AuthenticatedLayout>
+                            <MyChallengesPage />
                         </AuthenticatedLayout>
                     </ProtectedRoute>
                 } />

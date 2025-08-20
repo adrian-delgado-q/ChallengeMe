@@ -198,9 +198,9 @@ export type PostWhereInput = {
   profileId?: Prisma.UuidNullableFilter<"Post"> | string | null
   challengeId?: Prisma.UuidNullableFilter<"Post"> | string | null
   comments?: Prisma.CommentListRelationFilter
+  Challenge?: Prisma.XOR<Prisma.ChallengeNullableScalarRelationFilter, Prisma.ChallengeWhereInput> | null
   participant?: Prisma.XOR<Prisma.ChallengeParticipantScalarRelationFilter, Prisma.ChallengeParticipantWhereInput>
   Profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
-  Challenge?: Prisma.XOR<Prisma.ChallengeNullableScalarRelationFilter, Prisma.ChallengeWhereInput> | null
 }
 
 export type PostOrderByWithRelationInput = {
@@ -212,9 +212,9 @@ export type PostOrderByWithRelationInput = {
   profileId?: Prisma.SortOrderInput | Prisma.SortOrder
   challengeId?: Prisma.SortOrderInput | Prisma.SortOrder
   comments?: Prisma.CommentOrderByRelationAggregateInput
+  Challenge?: Prisma.ChallengeOrderByWithRelationInput
   participant?: Prisma.ChallengeParticipantOrderByWithRelationInput
   Profile?: Prisma.ProfileOrderByWithRelationInput
-  Challenge?: Prisma.ChallengeOrderByWithRelationInput
 }
 
 export type PostWhereUniqueInput = Prisma.AtLeast<{
@@ -229,9 +229,9 @@ export type PostWhereUniqueInput = Prisma.AtLeast<{
   profileId?: Prisma.UuidNullableFilter<"Post"> | string | null
   challengeId?: Prisma.UuidNullableFilter<"Post"> | string | null
   comments?: Prisma.CommentListRelationFilter
+  Challenge?: Prisma.XOR<Prisma.ChallengeNullableScalarRelationFilter, Prisma.ChallengeWhereInput> | null
   participant?: Prisma.XOR<Prisma.ChallengeParticipantScalarRelationFilter, Prisma.ChallengeParticipantWhereInput>
   Profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
-  Challenge?: Prisma.XOR<Prisma.ChallengeNullableScalarRelationFilter, Prisma.ChallengeWhereInput> | null
 }, "id">
 
 export type PostOrderByWithAggregationInput = {
@@ -266,9 +266,9 @@ export type PostCreateInput = {
   imageUrl?: string | null
   createdAt?: Date | string
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
+  Challenge?: Prisma.ChallengeCreateNestedOneWithoutPostsInput
   participant: Prisma.ChallengeParticipantCreateNestedOneWithoutPostsInput
   Profile?: Prisma.ProfileCreateNestedOneWithoutPostsInput
-  Challenge?: Prisma.ChallengeCreateNestedOneWithoutPostsInput
 }
 
 export type PostUncheckedCreateInput = {
@@ -288,9 +288,9 @@ export type PostUpdateInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
+  Challenge?: Prisma.ChallengeUpdateOneWithoutPostsNestedInput
   participant?: Prisma.ChallengeParticipantUpdateOneRequiredWithoutPostsNestedInput
   Profile?: Prisma.ProfileUpdateOneWithoutPostsNestedInput
-  Challenge?: Prisma.ChallengeUpdateOneWithoutPostsNestedInput
 }
 
 export type PostUncheckedUpdateInput = {
@@ -522,8 +522,8 @@ export type PostCreateWithoutProfileInput = {
   imageUrl?: string | null
   createdAt?: Date | string
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
-  participant: Prisma.ChallengeParticipantCreateNestedOneWithoutPostsInput
   Challenge?: Prisma.ChallengeCreateNestedOneWithoutPostsInput
+  participant: Prisma.ChallengeParticipantCreateNestedOneWithoutPostsInput
 }
 
 export type PostUncheckedCreateWithoutProfileInput = {
@@ -627,8 +627,8 @@ export type PostCreateWithoutParticipantInput = {
   imageUrl?: string | null
   createdAt?: Date | string
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
-  Profile?: Prisma.ProfileCreateNestedOneWithoutPostsInput
   Challenge?: Prisma.ChallengeCreateNestedOneWithoutPostsInput
+  Profile?: Prisma.ProfileCreateNestedOneWithoutPostsInput
 }
 
 export type PostUncheckedCreateWithoutParticipantInput = {
@@ -672,9 +672,9 @@ export type PostCreateWithoutCommentsInput = {
   content?: string | null
   imageUrl?: string | null
   createdAt?: Date | string
+  Challenge?: Prisma.ChallengeCreateNestedOneWithoutPostsInput
   participant: Prisma.ChallengeParticipantCreateNestedOneWithoutPostsInput
   Profile?: Prisma.ProfileCreateNestedOneWithoutPostsInput
-  Challenge?: Prisma.ChallengeCreateNestedOneWithoutPostsInput
 }
 
 export type PostUncheckedCreateWithoutCommentsInput = {
@@ -708,9 +708,9 @@ export type PostUpdateWithoutCommentsInput = {
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Challenge?: Prisma.ChallengeUpdateOneWithoutPostsNestedInput
   participant?: Prisma.ChallengeParticipantUpdateOneRequiredWithoutPostsNestedInput
   Profile?: Prisma.ProfileUpdateOneWithoutPostsNestedInput
-  Challenge?: Prisma.ChallengeUpdateOneWithoutPostsNestedInput
 }
 
 export type PostUncheckedUpdateWithoutCommentsInput = {
@@ -738,8 +738,8 @@ export type PostUpdateWithoutProfileInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
-  participant?: Prisma.ChallengeParticipantUpdateOneRequiredWithoutPostsNestedInput
   Challenge?: Prisma.ChallengeUpdateOneWithoutPostsNestedInput
+  participant?: Prisma.ChallengeParticipantUpdateOneRequiredWithoutPostsNestedInput
 }
 
 export type PostUncheckedUpdateWithoutProfileInput = {
@@ -814,8 +814,8 @@ export type PostUpdateWithoutParticipantInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
-  Profile?: Prisma.ProfileUpdateOneWithoutPostsNestedInput
   Challenge?: Prisma.ChallengeUpdateOneWithoutPostsNestedInput
+  Profile?: Prisma.ProfileUpdateOneWithoutPostsNestedInput
 }
 
 export type PostUncheckedUpdateWithoutParticipantInput = {
@@ -877,9 +877,9 @@ export type PostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   profileId?: boolean
   challengeId?: boolean
   comments?: boolean | Prisma.Post$commentsArgs<ExtArgs>
+  Challenge?: boolean | Prisma.Post$ChallengeArgs<ExtArgs>
   participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
   Profile?: boolean | Prisma.Post$ProfileArgs<ExtArgs>
-  Challenge?: boolean | Prisma.Post$ChallengeArgs<ExtArgs>
   _count?: boolean | Prisma.PostCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["post"]>
 
@@ -891,9 +891,9 @@ export type PostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   profileId?: boolean
   challengeId?: boolean
+  Challenge?: boolean | Prisma.Post$ChallengeArgs<ExtArgs>
   participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
   Profile?: boolean | Prisma.Post$ProfileArgs<ExtArgs>
-  Challenge?: boolean | Prisma.Post$ChallengeArgs<ExtArgs>
 }, ExtArgs["result"]["post"]>
 
 export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -904,9 +904,9 @@ export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   profileId?: boolean
   challengeId?: boolean
+  Challenge?: boolean | Prisma.Post$ChallengeArgs<ExtArgs>
   participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
   Profile?: boolean | Prisma.Post$ProfileArgs<ExtArgs>
-  Challenge?: boolean | Prisma.Post$ChallengeArgs<ExtArgs>
 }, ExtArgs["result"]["post"]>
 
 export type PostSelectScalar = {
@@ -922,29 +922,29 @@ export type PostSelectScalar = {
 export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "participantId" | "content" | "imageUrl" | "createdAt" | "profileId" | "challengeId", ExtArgs["result"]["post"]>
 export type PostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   comments?: boolean | Prisma.Post$commentsArgs<ExtArgs>
+  Challenge?: boolean | Prisma.Post$ChallengeArgs<ExtArgs>
   participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
   Profile?: boolean | Prisma.Post$ProfileArgs<ExtArgs>
-  Challenge?: boolean | Prisma.Post$ChallengeArgs<ExtArgs>
   _count?: boolean | Prisma.PostCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PostIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  Challenge?: boolean | Prisma.Post$ChallengeArgs<ExtArgs>
   participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
   Profile?: boolean | Prisma.Post$ProfileArgs<ExtArgs>
-  Challenge?: boolean | Prisma.Post$ChallengeArgs<ExtArgs>
 }
 export type PostIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  Challenge?: boolean | Prisma.Post$ChallengeArgs<ExtArgs>
   participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
   Profile?: boolean | Prisma.Post$ProfileArgs<ExtArgs>
-  Challenge?: boolean | Prisma.Post$ChallengeArgs<ExtArgs>
 }
 
 export type $PostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Post"
   objects: {
     comments: Prisma.$CommentPayload<ExtArgs>[]
+    Challenge: Prisma.$ChallengePayload<ExtArgs> | null
     participant: Prisma.$ChallengeParticipantPayload<ExtArgs>
     Profile: Prisma.$ProfilePayload<ExtArgs> | null
-    Challenge: Prisma.$ChallengePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1349,9 +1349,9 @@ readonly fields: PostFieldRefs;
 export interface Prisma__PostClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   comments<T extends Prisma.Post$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  Challenge<T extends Prisma.Post$ChallengeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$ChallengeArgs<ExtArgs>>): Prisma.Prisma__ChallengeClient<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   participant<T extends Prisma.ChallengeParticipantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChallengeParticipantDefaultArgs<ExtArgs>>): Prisma.Prisma__ChallengeParticipantClient<runtime.Types.Result.GetResult<Prisma.$ChallengeParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   Profile<T extends Prisma.Post$ProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$ProfileArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  Challenge<T extends Prisma.Post$ChallengeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$ChallengeArgs<ExtArgs>>): Prisma.Prisma__ChallengeClient<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1808,25 +1808,6 @@ export type Post$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * Post.Profile
- */
-export type Post$ProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Profile
-   */
-  select?: Prisma.ProfileSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Profile
-   */
-  omit?: Prisma.ProfileOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ProfileInclude<ExtArgs> | null
-  where?: Prisma.ProfileWhereInput
-}
-
-/**
  * Post.Challenge
  */
 export type Post$ChallengeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1843,6 +1824,25 @@ export type Post$ChallengeArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   include?: Prisma.ChallengeInclude<ExtArgs> | null
   where?: Prisma.ChallengeWhereInput
+}
+
+/**
+ * Post.Profile
+ */
+export type Post$ProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Profile
+   */
+  select?: Prisma.ProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Profile
+   */
+  omit?: Prisma.ProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProfileInclude<ExtArgs> | null
+  where?: Prisma.ProfileWhereInput
 }
 
 /**
