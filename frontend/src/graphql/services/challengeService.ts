@@ -7,6 +7,7 @@ export interface ChallengeInput {
     description?: string;
     challengeType: 'INDIVIDUAL' | 'TEAM';
     maxParticipants?: number;
+    maxTeamSize?: number; // For TEAM challenges: max members per team
     startDate: string; // ISO date string
     endDate: string;   // ISO date string
     isPublic?: boolean;
@@ -162,7 +163,7 @@ export class ChallengeService {
             const currentUser = await getCurrentUser();
 
             // Batch fetch user progress if user is authenticated
-            let userProgressMap = new Map();
+            const userProgressMap = new Map();
             if (currentUser) {
                 const { data: userParticipants } = await supabase
                     .from('ChallengeParticipant')
@@ -337,6 +338,7 @@ export class ChallengeService {
                     description: challengeData.description || null,
                     challengeType: challengeData.challengeType,
                     maxParticipants: challengeData.maxParticipants || null,
+                    maxTeamSize: challengeData.maxTeamSize || null,
                     startDate: challengeData.startDate,
                     endDate: challengeData.endDate,
                     isPublic: challengeData.isPublic ?? true
@@ -425,6 +427,195 @@ export class ChallengeService {
         }
     }
 
+    // === CHALLENGE MANAGEMENT METHODS ===
+
+    // Update challenge status (close/reopen/cancel)
+    static async updateChallengeStatus(id: string, status: 'ACTIVE' | 'CLOSED' | 'CANCELLED') {
+        try {
+            const user = await getCurrentUser();
+            if (!user) throw new Error('User not authenticated');
+
+            const { data, error } = await supabase
+                .from('Challenge')
+                .update({ status })
+                .eq('id', id)
+                .eq('creatorId', user.id) // Ensure user owns the challenge
+                .select()
+                .single();
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            this.handleError(error, 'updateChallengeStatus');
+        }
+    }
+
+    // Get challenges created by current user with management details
+    static async getMyCreatedChallenges() {
+        try {
+            const user = await getCurrentUser();
+            if (!user) throw new Error('User not authenticated');
+
+            const { data: challenges, error } = await supabase
+                .from('Challenge')
+                .select('*')
+                .eq('creatorId', user.id)
+                .order('createdAt', { ascending: false });
+
+            if (error) throw error;
+
+            // Get detailed participant information for each challenge
+            const challengesWithDetails = await Promise.all(
+                (challenges || []).map(async (challenge: any) => {
+                    // Get participants with user/team info
+                    const { data: participants } = await supabase
+                        .from('ChallengeParticipant')
+                        .select(`
+                            id,
+                            joinedAt,
+                            userId,
+                            teamId,
+                            user:profiles(id, username, avatarUrl:avatar_url),
+                            team:Team(id, name, avatarUrl)
+                        `)
+                        .eq('challengeId', challenge.id);
+
+                    // Get participant count
+                    const { count: participantCount } = await supabase
+                        .from('ChallengeParticipant')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('challengeId', challenge.id);
+
+                    // Get recent activities count
+                    const { count: recentActivitiesCount } = await supabase
+                        .from('Activity')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('challengeId', challenge.id)
+                        .gte('date', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]); // Last 7 days
+
+                    // Get milestones
+                    const { data: milestones } = await supabase
+                        .from('Milestone')
+                        .select('*')
+                        .eq('challengeId', challenge.id)
+                        .order('order', { ascending: true });
+
+                    return {
+                        ...challenge,
+                        challengeType: challenge.challengeType?.toLowerCase() as 'individual' | 'team',
+                        participantCount: participantCount || 0,
+                        participantList: participants || [],
+                        recentActivitiesCount: typeof recentActivitiesCount === 'number' ? recentActivitiesCount : (recentActivitiesCount as any)?.count || 0,
+                        milestones: (milestones || []).map((m: any) => ({
+                            name: m.name,
+                            value: m.targetValue
+                        }))
+                    };
+                })
+            );
+
+            return challengesWithDetails;
+        } catch (error) {
+            this.handleError(error, 'getMyCreatedChallenges');
+        }
+    }
+
+    // Get challenge analytics for creators
+    static async getChallengeAnalytics(challengeId: string) {
+        try {
+            const user = await getCurrentUser();
+            if (!user) throw new Error('User not authenticated');
+
+            // Verify user owns the challenge
+            const { data: challenge, error: challengeError } = await supabase
+                .from('Challenge')
+                .select('id, title, createdAt, challengeType')
+                .eq('id', challengeId)
+                .eq('creatorId', user.id)
+                .single();
+
+            if (challengeError || !challenge) throw new Error('Challenge not found or access denied');
+
+            // Get participant statistics
+            const { data: participants, count: totalParticipants } = await supabase
+                .from('ChallengeParticipant')
+                .select('id, joinedAt, userId, teamId', { count: 'exact' })
+                .eq('challengeId', challengeId);
+
+            // Get activity statistics
+            const { count: totalActivities } = await supabase
+                .from('Activity')
+                .select('*', { count: 'exact', head: true })
+                .eq('challengeId', challengeId);
+
+            // Get activities by day for the last 30 days
+            const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            const { data: recentActivities } = await supabase
+                .from('Activity')
+                .select('date')
+                .eq('challengeId', challengeId)
+                .gte('date', thirtyDaysAgo);
+
+            // Group activities by date
+            const activitiesByDate = (recentActivities || []).reduce((acc: any, activity: any) => {
+                const date = activity.date;
+                acc[date] = (acc[date] || 0) + 1;
+                return acc;
+            }, {});
+
+            // Get participant join dates
+            const participantsByDate = (participants || []).reduce((acc: any, participant: any) => {
+                const date = participant.joinedAt.split('T')[0];
+                acc[date] = (acc[date] || 0) + 1;
+                return acc;
+            }, {});
+
+            return {
+                challenge,
+                totalParticipants: totalParticipants || 0,
+                totalActivities: totalActivities || 0,
+                activitiesByDate,
+                participantsByDate,
+                averageActivitiesPerParticipant: totalParticipants ? ((totalActivities || 0) / totalParticipants).toFixed(1) : '0'
+            };
+        } catch (error) {
+            this.handleError(error, 'getChallengeAnalytics');
+        }
+    }
+
+    // Remove participant from challenge (for challenge creators)
+    static async removeParticipant(challengeId: string, participantId: string) {
+        try {
+            const user = await getCurrentUser();
+            if (!user) throw new Error('User not authenticated');
+
+            // Verify user owns the challenge
+            const { data: challenge } = await supabase
+                .from('Challenge')
+                .select('id')
+                .eq('id', challengeId)
+                .eq('creatorId', user.id)
+                .single();
+
+            if (!challenge) throw new Error('Challenge not found or access denied');
+
+            const { data, error } = await supabase
+                .from('ChallengeParticipant')
+                .delete()
+                .eq('id', participantId)
+                .eq('challengeId', challengeId)
+                .select()
+                .single();
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            this.handleError(error, 'removeParticipant');
+        }
+    }
+
+    // === END CHALLENGE MANAGEMENT METHODS ===
+
     // Join a challenge (individual)
     static async joinChallengeAsIndividual(challengeId: string) {
         try {
@@ -479,6 +670,72 @@ export class ChallengeService {
         try {
             const user = await getCurrentUser();
             if (!user) throw new Error('User not authenticated');
+
+            // Get challenge details to check maxTeamSize constraint
+            const { data: challenge, error: challengeError } = await supabase
+                .from('Challenge')
+                .select('maxTeamSize, challengeType')
+                .eq('id', challengeId)
+                .single();
+
+            if (challengeError) throw challengeError;
+            if (!challenge) throw new Error('Challenge not found');
+
+            // Validate that this is a team challenge
+            if (challenge.challengeType !== 'TEAM') {
+                throw new Error('This challenge only accepts individual participants');
+            }
+
+            // If there's a maxTeamSize constraint, validate team size
+            if (challenge.maxTeamSize) {
+                const { data: team, error: teamError } = await supabase
+                    .from('Team')
+                    .select('id, name')
+                    .eq('id', teamId)
+                    .single();
+
+                if (teamError) throw teamError;
+                if (!team) throw new Error('Team not found');
+
+                // Get team member count
+                const { count: memberCount, error: countError } = await supabase
+                    .from('TeamMembership')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('teamId', teamId);
+
+                if (countError) throw countError;
+
+                // Check if team size exceeds challenge limit
+                if (memberCount && memberCount > challenge.maxTeamSize) {
+                    throw new Error(`Team has ${memberCount} members, but this challenge has a maximum team size of ${challenge.maxTeamSize} members`);
+                }
+            }
+
+            // Verify user is a member of the team they're trying to join with
+            const { data: membership, error: membershipError } = await supabase
+                .from('TeamMembership')
+                .select('id')
+                .eq('teamId', teamId)
+                .eq('userId', user.id)
+                .maybeSingle();
+
+            if (membershipError) throw membershipError;
+            if (!membership) {
+                throw new Error('You must be a member of the team to join a challenge with it');
+            }
+
+            // Check if team is already participating in this challenge
+            const { data: existingParticipant, error: existingError } = await supabase
+                .from('ChallengeParticipant')
+                .select('id')
+                .eq('challengeId', challengeId)
+                .eq('teamId', teamId)
+                .maybeSingle();
+
+            if (existingError) throw existingError;
+            if (existingParticipant) {
+                throw new Error('This team is already participating in this challenge');
+            }
 
             // Generate UUID for the participant
             const participantId = crypto.randomUUID();
@@ -605,17 +862,125 @@ export class ChallengeService {
             const user = await getCurrentUser();
             if (!user) throw new Error('User not authenticated');
 
-            const { data, error } = await supabase
+            // Check for individual participation first
+            const { data: individualParticipant, error: individualError } = await supabase
                 .from('ChallengeParticipant')
                 .select('id')
                 .eq('challengeId', challengeId)
                 .eq('userId', user.id)
                 .maybeSingle();
 
-            if (error) throw error;
-            return data?.id || null;
+            if (individualError) throw individualError;
+
+            if (individualParticipant) {
+                return individualParticipant.id;
+            }
+
+            // Check for team participation
+            const { data: teamParticipants, error: teamError } = await supabase
+                .from('ChallengeParticipant')
+                .select('id, teamId')
+                .eq('challengeId', challengeId)
+                .not('teamId', 'is', null);
+
+            if (teamError) throw teamError;
+
+            // Check if user is a member of any participating team
+            for (const participant of teamParticipants || []) {
+                const { data: membership } = await supabase
+                    .from('TeamMembership')
+                    .select('id')
+                    .eq('teamId', participant.teamId)
+                    .eq('userId', user.id)
+                    .maybeSingle();
+
+                if (membership) {
+                    return participant.id;
+                }
+            }
+
+            return null;
         } catch (error) {
             this.handleError(error, 'getMyParticipantId');
+            return null;
+        }
+    }
+
+    // Get current user's participation details for a challenge (including team info)
+    static async getMyParticipationDetails(challengeId: string) {
+        try {
+            const user = await getCurrentUser();
+            if (!user) throw new Error('User not authenticated');
+
+            // Check for individual participation
+            const { data: individualParticipant, error: individualError } = await supabase
+                .from('ChallengeParticipant')
+                .select('id, teamId')
+                .eq('challengeId', challengeId)
+                .eq('userId', user.id)
+                .maybeSingle();
+
+            if (individualError) throw individualError;
+
+            if (individualParticipant) {
+                return {
+                    isParticipating: true,
+                    participantId: individualParticipant.id,
+                    participationType: 'individual' as const,
+                    team: null
+                };
+            }
+
+            // Check for team participation
+            const { data: teamParticipants, error: teamError } = await supabase
+                .from('ChallengeParticipant')
+                .select(`
+                    id,
+                    teamId,
+                    Team (
+                        id,
+                        name,
+                        avatarUrl
+                    )
+                `)
+                .eq('challengeId', challengeId)
+                .not('teamId', 'is', null);
+
+            if (teamError) throw teamError;
+
+            // Check if user is a member of any participating team
+            for (const participant of teamParticipants || []) {
+                const { data: membership } = await supabase
+                    .from('TeamMembership')
+                    .select('id')
+                    .eq('teamId', participant.teamId)
+                    .eq('userId', user.id)
+                    .maybeSingle();
+
+                if (membership) {
+                    return {
+                        isParticipating: true,
+                        participantId: participant.id,
+                        participationType: 'team' as const,
+                        team: Array.isArray(participant.Team) ? participant.Team[0] : participant.Team
+                    };
+                }
+            }
+
+            return {
+                isParticipating: false,
+                participantId: null,
+                participationType: null,
+                team: null
+            };
+        } catch (error) {
+            this.handleError(error, 'getMyParticipationDetails');
+            return {
+                isParticipating: false,
+                participantId: null,
+                participationType: null,
+                team: null
+            };
         }
     }
 

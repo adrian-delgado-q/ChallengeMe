@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Box, Heading, Text, VStack, Divider, HStack, Button,
     AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, useDisclosure,
@@ -9,42 +9,45 @@ import { ChallengeForm } from '../components/challenges/ChallengeForm';
 import { useChallengeDetails } from '../hooks/useData';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChallengeService } from '../graphql/services';
+import { useNotifications } from '../utils/notifications';
+import { useAsyncState } from '../hooks/useAsyncState';
 
 const EditChallengePage: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef<HTMLButtonElement>(null);
     const navigate = useNavigate();
     const { id: challengeId } = useParams<{ id: string }>();
+    const notifications = useNotifications();
 
     const { challenge, loading, error, refetch } = useChallengeDetails(challengeId || '');
-    const [deleting, setDeleting] = useState(false);
+    const { isLoading: deleting, execute: executeDelete } = useAsyncState({
+        successMessage: 'Challenge deleted successfully!'
+    });
 
     const handleUpdateChallenge = async (formData: any) => {
         if (!challengeId) return;
 
         try {
             await ChallengeService.updateChallenge(challengeId, formData);
-            alert("Challenge updated successfully!");
+            notifications.success('Success!', 'Challenge updated successfully!');
             refetch();
         } catch (err: any) {
-            alert(`Failed to update challenge: ${err.message}`);
+            notifications.error('Update Failed', err.message || 'Failed to update challenge');
         }
     };
 
     const handleDeleteChallenge = async () => {
         if (!challengeId) return;
 
-        setDeleting(true);
-        try {
+        const result = await executeDelete(async () => {
             await ChallengeService.deleteChallenge(challengeId);
-            alert("Challenge deleted successfully!");
+            return true;
+        });
+
+        if (result) {
             navigate('/challenges');
-        } catch (err: any) {
-            alert(`Failed to delete challenge: ${err.message}`);
-        } finally {
-            setDeleting(false);
-            onClose();
         }
+        onClose();
     };
 
     if (loading) {

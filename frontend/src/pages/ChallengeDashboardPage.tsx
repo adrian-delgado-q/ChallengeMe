@@ -10,8 +10,9 @@ import { ActivityFeed } from '../components/dashboard/ActivityFeed';
 import { ChallengeRules } from '../components/dashboard/ChallengeRules';
 import { LogActivityModal } from '../components/dashboard/LogActivityModal';
 import { MilestonesDisplay } from '../components/dashboard/MilestonesDisplay';
+import { ChallengeJoinButton } from '../components/challenges/ChallengeJoinButton';
 import { useChallengeDetails, usePosts } from '../hooks/useData';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 // Icon for the new button
 const LogActivityIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -23,8 +24,9 @@ const LogActivityIcon: React.FC<{ className?: string }> = ({ className }) => (
 const ChallengeDashboardPage: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { id: challengeId } = useParams<{ id: string }>();
+    const navigate = useNavigate();
 
-    const { challenge, loading: challengeLoading, error: challengeError } = useChallengeDetails(challengeId || '');
+    const { challenge, loading: challengeLoading, error: challengeError, refetch } = useChallengeDetails(challengeId || '');
     const { posts, loading: postsLoading } = usePosts(challengeId);
 
     if (challengeLoading) {
@@ -52,13 +54,27 @@ const ChallengeDashboardPage: React.FC = () => {
                         <Heading as="h2" size="xl">{challenge.title}</Heading>
                         <Text color="gray.600">{challenge.description || 'Push your limits and climb the leaderboard!'}</Text>
                     </Box>
-                    <Button
-                        colorScheme="orange"
-                        leftIcon={<Icon as={LogActivityIcon} w={5} h={5} />}
-                        onClick={onOpen}
-                    >
-                        Log an Activity
-                    </Button>
+                    <HStack spacing={2}>
+                        <ChallengeJoinButton
+                            challenge={challenge}
+                            onJoinSuccess={refetch}
+                        />
+                        <Button
+                            variant="outline"
+                            colorScheme="orange"
+                            onClick={() => navigate('/activities')}
+                            size="sm"
+                        >
+                            Manage Activities
+                        </Button>
+                        <Button
+                            colorScheme="orange"
+                            leftIcon={<Icon as={LogActivityIcon} w={5} h={5} />}
+                            onClick={onOpen}
+                        >
+                            Log an Activity
+                        </Button>
+                    </HStack>
                 </Flex>
 
                 {challenge.rules && <ChallengeRules rules={challenge.rules} />}

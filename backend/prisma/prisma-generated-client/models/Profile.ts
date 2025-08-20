@@ -181,13 +181,13 @@ export type ProfileWhereInput = {
   avatarUrl?: Prisma.StringNullableFilter<"Profile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
-  createdTeams?: Prisma.TeamListRelationFilter
-  teamMemberships?: Prisma.TeamMembershipListRelationFilter
+  activities?: Prisma.ActivityListRelationFilter
   createdChallenges?: Prisma.ChallengeListRelationFilter
   challengeEntries?: Prisma.ChallengeParticipantListRelationFilter
-  activities?: Prisma.ActivityListRelationFilter
-  posts?: Prisma.PostListRelationFilter
   comments?: Prisma.CommentListRelationFilter
+  posts?: Prisma.PostListRelationFilter
+  createdTeams?: Prisma.TeamListRelationFilter
+  teamMemberships?: Prisma.TeamMembershipListRelationFilter
 }
 
 export type ProfileOrderByWithRelationInput = {
@@ -196,13 +196,13 @@ export type ProfileOrderByWithRelationInput = {
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  createdTeams?: Prisma.TeamOrderByRelationAggregateInput
-  teamMemberships?: Prisma.TeamMembershipOrderByRelationAggregateInput
+  activities?: Prisma.ActivityOrderByRelationAggregateInput
   createdChallenges?: Prisma.ChallengeOrderByRelationAggregateInput
   challengeEntries?: Prisma.ChallengeParticipantOrderByRelationAggregateInput
-  activities?: Prisma.ActivityOrderByRelationAggregateInput
-  posts?: Prisma.PostOrderByRelationAggregateInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
+  posts?: Prisma.PostOrderByRelationAggregateInput
+  createdTeams?: Prisma.TeamOrderByRelationAggregateInput
+  teamMemberships?: Prisma.TeamMembershipOrderByRelationAggregateInput
 }
 
 export type ProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -214,13 +214,13 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   avatarUrl?: Prisma.StringNullableFilter<"Profile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
-  createdTeams?: Prisma.TeamListRelationFilter
-  teamMemberships?: Prisma.TeamMembershipListRelationFilter
+  activities?: Prisma.ActivityListRelationFilter
   createdChallenges?: Prisma.ChallengeListRelationFilter
   challengeEntries?: Prisma.ChallengeParticipantListRelationFilter
-  activities?: Prisma.ActivityListRelationFilter
-  posts?: Prisma.PostListRelationFilter
   comments?: Prisma.CommentListRelationFilter
+  posts?: Prisma.PostListRelationFilter
+  createdTeams?: Prisma.TeamListRelationFilter
+  teamMemberships?: Prisma.TeamMembershipListRelationFilter
 }, "id" | "username">
 
 export type ProfileOrderByWithAggregationInput = {
@@ -251,13 +251,13 @@ export type ProfileCreateInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
   createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
-  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
 }
 
 export type ProfileUncheckedCreateInput = {
@@ -266,13 +266,13 @@ export type ProfileUncheckedCreateInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
   createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
-  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type ProfileUpdateInput = {
@@ -281,13 +281,13 @@ export type ProfileUpdateInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
   createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
-  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
 }
 
 export type ProfileUncheckedUpdateInput = {
@@ -296,13 +296,13 @@ export type ProfileUncheckedUpdateInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
   createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
-  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type ProfileCreateManyInput = {
@@ -485,12 +485,12 @@ export type ProfileCreateWithoutCreatedTeamsInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
   createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
-  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
 }
 
 export type ProfileUncheckedCreateWithoutCreatedTeamsInput = {
@@ -499,12 +499,12 @@ export type ProfileUncheckedCreateWithoutCreatedTeamsInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
   createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
-  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type ProfileCreateOrConnectWithoutCreatedTeamsInput = {
@@ -529,12 +529,12 @@ export type ProfileUpdateWithoutCreatedTeamsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
   createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
-  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutCreatedTeamsInput = {
@@ -543,12 +543,12 @@ export type ProfileUncheckedUpdateWithoutCreatedTeamsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
   createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
-  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type ProfileCreateWithoutTeamMembershipsInput = {
@@ -557,12 +557,12 @@ export type ProfileCreateWithoutTeamMembershipsInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
   createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
-  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileUncheckedCreateWithoutTeamMembershipsInput = {
@@ -571,12 +571,12 @@ export type ProfileUncheckedCreateWithoutTeamMembershipsInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
   createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
-  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileCreateOrConnectWithoutTeamMembershipsInput = {
@@ -601,12 +601,12 @@ export type ProfileUpdateWithoutTeamMembershipsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
   createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
-  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -615,12 +615,12 @@ export type ProfileUncheckedUpdateWithoutTeamMembershipsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
   createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
-  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileCreateWithoutCreatedChallengesInput = {
@@ -629,12 +629,12 @@ export type ProfileCreateWithoutCreatedChallengesInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
+  challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
-  challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
-  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutCreatedChallengesInput = {
@@ -643,12 +643,12 @@ export type ProfileUncheckedCreateWithoutCreatedChallengesInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
+  challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
-  challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
-  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutCreatedChallengesInput = {
@@ -673,12 +673,12 @@ export type ProfileUpdateWithoutCreatedChallengesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
+  challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
-  challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
-  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutCreatedChallengesInput = {
@@ -687,12 +687,12 @@ export type ProfileUncheckedUpdateWithoutCreatedChallengesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
+  challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
-  challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
-  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateWithoutChallengeEntriesInput = {
@@ -701,12 +701,12 @@ export type ProfileCreateWithoutChallengeEntriesInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
-  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
-  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutChallengeEntriesInput = {
@@ -715,12 +715,12 @@ export type ProfileUncheckedCreateWithoutChallengeEntriesInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
-  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
-  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutChallengeEntriesInput = {
@@ -745,12 +745,12 @@ export type ProfileUpdateWithoutChallengeEntriesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
-  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
-  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutChallengeEntriesInput = {
@@ -759,12 +759,12 @@ export type ProfileUncheckedUpdateWithoutChallengeEntriesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
-  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
-  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateWithoutActivitiesInput = {
@@ -773,12 +773,12 @@ export type ProfileCreateWithoutActivitiesInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
 }
 
 export type ProfileUncheckedCreateWithoutActivitiesInput = {
@@ -787,12 +787,12 @@ export type ProfileUncheckedCreateWithoutActivitiesInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type ProfileCreateOrConnectWithoutActivitiesInput = {
@@ -817,12 +817,12 @@ export type ProfileUpdateWithoutActivitiesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutActivitiesInput = {
@@ -831,12 +831,12 @@ export type ProfileUncheckedUpdateWithoutActivitiesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type ProfileCreateWithoutPostsInput = {
@@ -845,12 +845,12 @@ export type ProfileCreateWithoutPostsInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
   createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
-  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
 }
 
 export type ProfileUncheckedCreateWithoutPostsInput = {
@@ -859,12 +859,12 @@ export type ProfileUncheckedCreateWithoutPostsInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
   createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
-  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type ProfileCreateOrConnectWithoutPostsInput = {
@@ -889,12 +889,12 @@ export type ProfileUpdateWithoutPostsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
   createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
-  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutPostsInput = {
@@ -903,12 +903,12 @@ export type ProfileUncheckedUpdateWithoutPostsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
   createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
-  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type ProfileCreateWithoutCommentsInput = {
@@ -917,12 +917,12 @@ export type ProfileCreateWithoutCommentsInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
   createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
-  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
   posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
 }
 
 export type ProfileUncheckedCreateWithoutCommentsInput = {
@@ -931,12 +931,12 @@ export type ProfileUncheckedCreateWithoutCommentsInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
   createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
-  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type ProfileCreateOrConnectWithoutCommentsInput = {
@@ -961,12 +961,12 @@ export type ProfileUpdateWithoutCommentsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
   createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
-  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
   posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutCommentsInput = {
@@ -975,12 +975,12 @@ export type ProfileUncheckedUpdateWithoutCommentsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
   createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
-  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -989,23 +989,23 @@ export type ProfileUncheckedUpdateWithoutCommentsInput = {
  */
 
 export type ProfileCountOutputType = {
-  createdTeams: number
-  teamMemberships: number
+  activities: number
   createdChallenges: number
   challengeEntries: number
-  activities: number
-  posts: number
   comments: number
+  posts: number
+  createdTeams: number
+  teamMemberships: number
 }
 
 export type ProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  createdTeams?: boolean | ProfileCountOutputTypeCountCreatedTeamsArgs
-  teamMemberships?: boolean | ProfileCountOutputTypeCountTeamMembershipsArgs
+  activities?: boolean | ProfileCountOutputTypeCountActivitiesArgs
   createdChallenges?: boolean | ProfileCountOutputTypeCountCreatedChallengesArgs
   challengeEntries?: boolean | ProfileCountOutputTypeCountChallengeEntriesArgs
-  activities?: boolean | ProfileCountOutputTypeCountActivitiesArgs
-  posts?: boolean | ProfileCountOutputTypeCountPostsArgs
   comments?: boolean | ProfileCountOutputTypeCountCommentsArgs
+  posts?: boolean | ProfileCountOutputTypeCountPostsArgs
+  createdTeams?: boolean | ProfileCountOutputTypeCountCreatedTeamsArgs
+  teamMemberships?: boolean | ProfileCountOutputTypeCountTeamMembershipsArgs
 }
 
 /**
@@ -1021,15 +1021,8 @@ export type ProfileCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
 /**
  * ProfileCountOutputType without action
  */
-export type ProfileCountOutputTypeCountCreatedTeamsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.TeamWhereInput
-}
-
-/**
- * ProfileCountOutputType without action
- */
-export type ProfileCountOutputTypeCountTeamMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.TeamMembershipWhereInput
+export type ProfileCountOutputTypeCountActivitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActivityWhereInput
 }
 
 /**
@@ -1049,8 +1042,8 @@ export type ProfileCountOutputTypeCountChallengeEntriesArgs<ExtArgs extends runt
 /**
  * ProfileCountOutputType without action
  */
-export type ProfileCountOutputTypeCountActivitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ActivityWhereInput
+export type ProfileCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentWhereInput
 }
 
 /**
@@ -1063,8 +1056,15 @@ export type ProfileCountOutputTypeCountPostsArgs<ExtArgs extends runtime.Types.E
 /**
  * ProfileCountOutputType without action
  */
-export type ProfileCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.CommentWhereInput
+export type ProfileCountOutputTypeCountCreatedTeamsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TeamWhereInput
+}
+
+/**
+ * ProfileCountOutputType without action
+ */
+export type ProfileCountOutputTypeCountTeamMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TeamMembershipWhereInput
 }
 
 
@@ -1074,13 +1074,13 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   avatarUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  createdTeams?: boolean | Prisma.Profile$createdTeamsArgs<ExtArgs>
-  teamMemberships?: boolean | Prisma.Profile$teamMembershipsArgs<ExtArgs>
+  activities?: boolean | Prisma.Profile$activitiesArgs<ExtArgs>
   createdChallenges?: boolean | Prisma.Profile$createdChallengesArgs<ExtArgs>
   challengeEntries?: boolean | Prisma.Profile$challengeEntriesArgs<ExtArgs>
-  activities?: boolean | Prisma.Profile$activitiesArgs<ExtArgs>
-  posts?: boolean | Prisma.Profile$postsArgs<ExtArgs>
   comments?: boolean | Prisma.Profile$commentsArgs<ExtArgs>
+  posts?: boolean | Prisma.Profile$postsArgs<ExtArgs>
+  createdTeams?: boolean | Prisma.Profile$createdTeamsArgs<ExtArgs>
+  teamMemberships?: boolean | Prisma.Profile$teamMembershipsArgs<ExtArgs>
   _count?: boolean | Prisma.ProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profile"]>
 
@@ -1110,13 +1110,13 @@ export type ProfileSelectScalar = {
 
 export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "avatarUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  createdTeams?: boolean | Prisma.Profile$createdTeamsArgs<ExtArgs>
-  teamMemberships?: boolean | Prisma.Profile$teamMembershipsArgs<ExtArgs>
+  activities?: boolean | Prisma.Profile$activitiesArgs<ExtArgs>
   createdChallenges?: boolean | Prisma.Profile$createdChallengesArgs<ExtArgs>
   challengeEntries?: boolean | Prisma.Profile$challengeEntriesArgs<ExtArgs>
-  activities?: boolean | Prisma.Profile$activitiesArgs<ExtArgs>
-  posts?: boolean | Prisma.Profile$postsArgs<ExtArgs>
   comments?: boolean | Prisma.Profile$commentsArgs<ExtArgs>
+  posts?: boolean | Prisma.Profile$postsArgs<ExtArgs>
+  createdTeams?: boolean | Prisma.Profile$createdTeamsArgs<ExtArgs>
+  teamMemberships?: boolean | Prisma.Profile$teamMembershipsArgs<ExtArgs>
   _count?: boolean | Prisma.ProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1125,13 +1125,13 @@ export type ProfileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Profile"
   objects: {
-    createdTeams: Prisma.$TeamPayload<ExtArgs>[]
-    teamMemberships: Prisma.$TeamMembershipPayload<ExtArgs>[]
+    activities: Prisma.$ActivityPayload<ExtArgs>[]
     createdChallenges: Prisma.$ChallengePayload<ExtArgs>[]
     challengeEntries: Prisma.$ChallengeParticipantPayload<ExtArgs>[]
-    activities: Prisma.$ActivityPayload<ExtArgs>[]
-    posts: Prisma.$PostPayload<ExtArgs>[]
     comments: Prisma.$CommentPayload<ExtArgs>[]
+    posts: Prisma.$PostPayload<ExtArgs>[]
+    createdTeams: Prisma.$TeamPayload<ExtArgs>[]
+    teamMemberships: Prisma.$TeamMembershipPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1533,13 +1533,13 @@ readonly fields: ProfileFieldRefs;
  */
 export interface Prisma__ProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  createdTeams<T extends Prisma.Profile$createdTeamsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$createdTeamsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  teamMemberships<T extends Prisma.Profile$teamMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$teamMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  activities<T extends Prisma.Profile$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdChallenges<T extends Prisma.Profile$createdChallengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$createdChallengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   challengeEntries<T extends Prisma.Profile$challengeEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$challengeEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengeParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  activities<T extends Prisma.Profile$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  posts<T extends Prisma.Profile$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.Profile$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  posts<T extends Prisma.Profile$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdTeams<T extends Prisma.Profile$createdTeamsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$createdTeamsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  teamMemberships<T extends Prisma.Profile$teamMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$teamMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1962,51 +1962,27 @@ export type ProfileDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
- * Profile.createdTeams
+ * Profile.activities
  */
-export type Profile$createdTeamsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Profile$activitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Team
+   * Select specific fields to fetch from the Activity
    */
-  select?: Prisma.TeamSelect<ExtArgs> | null
+  select?: Prisma.ActivitySelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Team
+   * Omit specific fields from the Activity
    */
-  omit?: Prisma.TeamOmit<ExtArgs> | null
+  omit?: Prisma.ActivityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.TeamInclude<ExtArgs> | null
-  where?: Prisma.TeamWhereInput
-  orderBy?: Prisma.TeamOrderByWithRelationInput | Prisma.TeamOrderByWithRelationInput[]
-  cursor?: Prisma.TeamWhereUniqueInput
+  include?: Prisma.ActivityInclude<ExtArgs> | null
+  where?: Prisma.ActivityWhereInput
+  orderBy?: Prisma.ActivityOrderByWithRelationInput | Prisma.ActivityOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.TeamScalarFieldEnum | Prisma.TeamScalarFieldEnum[]
-}
-
-/**
- * Profile.teamMemberships
- */
-export type Profile$teamMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the TeamMembership
-   */
-  select?: Prisma.TeamMembershipSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the TeamMembership
-   */
-  omit?: Prisma.TeamMembershipOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.TeamMembershipInclude<ExtArgs> | null
-  where?: Prisma.TeamMembershipWhereInput
-  orderBy?: Prisma.TeamMembershipOrderByWithRelationInput | Prisma.TeamMembershipOrderByWithRelationInput[]
-  cursor?: Prisma.TeamMembershipWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.TeamMembershipScalarFieldEnum | Prisma.TeamMembershipScalarFieldEnum[]
+  distinct?: Prisma.ActivityScalarFieldEnum | Prisma.ActivityScalarFieldEnum[]
 }
 
 /**
@@ -2058,27 +2034,27 @@ export type Profile$challengeEntriesArgs<ExtArgs extends runtime.Types.Extension
 }
 
 /**
- * Profile.activities
+ * Profile.comments
  */
-export type Profile$activitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Profile$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Activity
+   * Select specific fields to fetch from the Comment
    */
-  select?: Prisma.ActivitySelect<ExtArgs> | null
+  select?: Prisma.CommentSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Activity
+   * Omit specific fields from the Comment
    */
-  omit?: Prisma.ActivityOmit<ExtArgs> | null
+  omit?: Prisma.CommentOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.ActivityInclude<ExtArgs> | null
-  where?: Prisma.ActivityWhereInput
-  orderBy?: Prisma.ActivityOrderByWithRelationInput | Prisma.ActivityOrderByWithRelationInput[]
-  cursor?: Prisma.ActivityWhereUniqueInput
+  include?: Prisma.CommentInclude<ExtArgs> | null
+  where?: Prisma.CommentWhereInput
+  orderBy?: Prisma.CommentOrderByWithRelationInput | Prisma.CommentOrderByWithRelationInput[]
+  cursor?: Prisma.CommentWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.ActivityScalarFieldEnum | Prisma.ActivityScalarFieldEnum[]
+  distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
 }
 
 /**
@@ -2106,27 +2082,51 @@ export type Profile$postsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * Profile.comments
+ * Profile.createdTeams
  */
-export type Profile$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Profile$createdTeamsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Comment
+   * Select specific fields to fetch from the Team
    */
-  select?: Prisma.CommentSelect<ExtArgs> | null
+  select?: Prisma.TeamSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Comment
+   * Omit specific fields from the Team
    */
-  omit?: Prisma.CommentOmit<ExtArgs> | null
+  omit?: Prisma.TeamOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.CommentInclude<ExtArgs> | null
-  where?: Prisma.CommentWhereInput
-  orderBy?: Prisma.CommentOrderByWithRelationInput | Prisma.CommentOrderByWithRelationInput[]
-  cursor?: Prisma.CommentWhereUniqueInput
+  include?: Prisma.TeamInclude<ExtArgs> | null
+  where?: Prisma.TeamWhereInput
+  orderBy?: Prisma.TeamOrderByWithRelationInput | Prisma.TeamOrderByWithRelationInput[]
+  cursor?: Prisma.TeamWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
+  distinct?: Prisma.TeamScalarFieldEnum | Prisma.TeamScalarFieldEnum[]
+}
+
+/**
+ * Profile.teamMemberships
+ */
+export type Profile$teamMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TeamMembership
+   */
+  select?: Prisma.TeamMembershipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TeamMembership
+   */
+  omit?: Prisma.TeamMembershipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TeamMembershipInclude<ExtArgs> | null
+  where?: Prisma.TeamMembershipWhereInput
+  orderBy?: Prisma.TeamMembershipOrderByWithRelationInput | Prisma.TeamMembershipOrderByWithRelationInput[]
+  cursor?: Prisma.TeamMembershipWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TeamMembershipScalarFieldEnum | Prisma.TeamMembershipScalarFieldEnum[]
 }
 
 /**

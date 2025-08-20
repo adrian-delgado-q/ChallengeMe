@@ -1220,10 +1220,11 @@ export const TeamScalarFieldEnum = {
   description: 'description',
   avatarUrl: 'avatarUrl',
   isPublic: 'isPublic',
-  maxMembers: 'maxMembers',
-  sportsTypes: 'sportsTypes',
   createdAt: 'createdAt',
-  expiresAt: 'expiresAt'
+  expiresAt: 'expiresAt',
+  maxMembers: 'maxMembers',
+  memberCount: 'memberCount',
+  sportsTypes: 'sportsTypes'
 } as const
 
 export type TeamScalarFieldEnum = (typeof TeamScalarFieldEnum)[keyof typeof TeamScalarFieldEnum]
@@ -1248,11 +1249,14 @@ export const ChallengeScalarFieldEnum = {
   description: 'description',
   challengeType: 'challengeType',
   maxParticipants: 'maxParticipants',
+  participantCount: 'participantCount',
   startDate: 'startDate',
   endDate: 'endDate',
   isPublic: 'isPublic',
   createdAt: 'createdAt',
-  expiresAt: 'expiresAt'
+  expiresAt: 'expiresAt',
+  maxTeamSize: 'maxTeamSize',
+  status: 'status'
 } as const
 
 export type ChallengeScalarFieldEnum = (typeof ChallengeScalarFieldEnum)[keyof typeof ChallengeScalarFieldEnum]
@@ -1438,6 +1442,20 @@ export type EnumChallengeParticipantTypeFieldRefInput<$PrismaModel> = FieldRefIn
  * Reference to a field of type 'ChallengeParticipantType[]'
  */
 export type ListEnumChallengeParticipantTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChallengeParticipantType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ChallengeStatus'
+ */
+export type EnumChallengeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChallengeStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ChallengeStatus[]'
+ */
+export type ListEnumChallengeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChallengeStatus[]'>
     
 
 

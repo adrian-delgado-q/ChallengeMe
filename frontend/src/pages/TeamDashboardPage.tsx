@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Box, Grid, Heading, Text, VStack, Button, Flex, HStack,
-    Spinner, Center, Alert, AlertIcon, Avatar, Badge, Tag, Icon, useToast
+    Spinner, Center, Alert, AlertIcon, Avatar, Badge, Tag, Icon
 } from '@chakra-ui/react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '../components/common/Card';
@@ -9,68 +9,44 @@ import { UserTeamIcon, CalendarIcon } from '../components/common/Icons';
 import { useTeamDetails } from '../hooks/useData';
 import { useUser } from '../contexts/AuthContext';
 import { TeamService } from '../graphql/services';
+import { useNotifications } from '../utils/notifications';
+import { useAsyncState } from '../hooks/useAsyncState';
 
 const TeamDashboardPage: React.FC = () => {
     const { id: teamId } = useParams<{ id: string }>();
     const { user } = useUser();
     const navigate = useNavigate();
-    const toast = useToast();
-    const [isJoining, setIsJoining] = useState(false);
-    const [isLeaving, setIsLeaving] = useState(false);
+    const notifications = useNotifications();
+    const { isLoading: isJoining, execute: executeJoin } = useAsyncState();
+    const { isLoading: isLeaving, execute: executeLeave } = useAsyncState();
 
     const { team, loading: teamLoading, error: teamError, refetch } = useTeamDetails(teamId || '');
 
     const handleJoinTeam = async () => {
         if (!teamId) return;
 
-        setIsJoining(true);
-        try {
+        const result = await executeJoin(async () => {
             await TeamService.joinTeam(teamId);
-            toast({
-                title: 'Success!',
-                description: 'You have successfully joined the team.',
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
+            return true;
+        });
+
+        if (result) {
+            notifications.success('Success!', 'You have successfully joined the team.');
             refetch(); // Refresh team data to show updated member list
-        } catch (error: any) {
-            toast({
-                title: 'Error',
-                description: error.message || 'Failed to join team',
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
-        } finally {
-            setIsJoining(false);
         }
     };
 
     const handleLeaveTeam = async () => {
         if (!teamId) return;
 
-        setIsLeaving(true);
-        try {
+        const result = await executeLeave(async () => {
             await TeamService.leaveTeam(teamId);
-            toast({
-                title: 'Left Team',
-                description: 'You have left the team.',
-                status: 'info',
-                duration: 3000,
-                isClosable: true,
-            });
+            return true;
+        });
+
+        if (result) {
+            notifications.info('Left Team', 'You have left the team.');
             refetch(); // Refresh team data to show updated member list
-        } catch (error: any) {
-            toast({
-                title: 'Error',
-                description: error.message || 'Failed to leave team',
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
-        } finally {
-            setIsLeaving(false);
         }
     };
 

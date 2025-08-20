@@ -6,6 +6,11 @@ export interface ProfileInput {
     avatarUrl?: string;
 }
 
+export interface UsernameCheckResult {
+    isAvailable: boolean;
+    suggestion?: string;
+}
+
 // Profile data service
 export class ProfileService {
     // Get current user's profile
@@ -19,12 +24,12 @@ export class ProfileService {
     // Get profile by ID
     static async getProfileById(id: string) {
         const { data: profile, error } = await supabase
-            .from('Profile')
+            .from('profiles')
             .select(`
         *,
         createdTeams:Team!Team_creatorId_fkey(id),
         createdChallenges:Challenge!Challenge_creatorId_fkey(id),
-        teamMemberships:TeamMember!TeamMember_userId_fkey(id),
+        teamMemberships:TeamMembership!TeamMembership_userId_fkey(id),
         activities:Activity!Activity_profileId_fkey(id)
       `)
             .eq('id', id)
@@ -48,10 +53,11 @@ export class ProfileService {
         if (!user) throw new Error('User not authenticated');
 
         const { data: updatedProfile, error } = await supabase
-            .from('Profile')
+            .from('profiles')
             .update({
                 username: profileData.username,
-                avatarUrl: profileData.avatarUrl
+                avatar_url: profileData.avatarUrl,
+                updated_at: new Date().toISOString()
             })
             .eq('id', user.id)
             .select()
@@ -59,6 +65,50 @@ export class ProfileService {
 
         if (error) throw new Error(error.message);
         return updatedProfile;
+    }
+
+    // Check if username is available
+    static async checkUsernameAvailability(username: string): Promise<UsernameCheckResult> {
+        if (!username || username.trim().length < 3) {
+            return { isAvailable: false };
+        }
+
+        const cleanUsername = username.trim();
+        
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('username')
+            .eq('username', cleanUsername)
+            .maybeSingle();
+
+        if (error) throw new Error(error.message);
+
+        const isAvailable = !data;
+        let suggestion;
+
+        if (!isAvailable) {
+            // Generate a suggestion by adding a number
+            const baseUsername = cleanUsername.replace(/\d+$/, ''); // Remove trailing numbers
+            let counter = 1;
+            let foundAvailable = false;
+
+            while (!foundAvailable && counter <= 99) {
+                const testUsername = `${baseUsername}${counter}`;
+                const { data: existingUser } = await supabase
+                    .from('profiles')
+                    .select('username')
+                    .eq('username', testUsername)
+                    .maybeSingle();
+
+                if (!existingUser) {
+                    suggestion = testUsername;
+                    foundAvailable = true;
+                }
+                counter++;
+            }
+        }
+
+        return { isAvailable, suggestion };
     }
 
     // Get user statistics

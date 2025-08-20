@@ -197,9 +197,9 @@ export type ActivityWhereInput = {
   uploadedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   profileId?: Prisma.UuidNullableFilter<"Activity"> | string | null
   challengeId?: Prisma.UuidNullableFilter<"Activity"> | string | null
+  Challenge?: Prisma.XOR<Prisma.ChallengeNullableScalarRelationFilter, Prisma.ChallengeWhereInput> | null
   participant?: Prisma.XOR<Prisma.ChallengeParticipantScalarRelationFilter, Prisma.ChallengeParticipantWhereInput>
   Profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
-  Challenge?: Prisma.XOR<Prisma.ChallengeNullableScalarRelationFilter, Prisma.ChallengeWhereInput> | null
 }
 
 export type ActivityOrderByWithRelationInput = {
@@ -210,9 +210,9 @@ export type ActivityOrderByWithRelationInput = {
   uploadedAt?: Prisma.SortOrder
   profileId?: Prisma.SortOrderInput | Prisma.SortOrder
   challengeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  Challenge?: Prisma.ChallengeOrderByWithRelationInput
   participant?: Prisma.ChallengeParticipantOrderByWithRelationInput
   Profile?: Prisma.ProfileOrderByWithRelationInput
-  Challenge?: Prisma.ChallengeOrderByWithRelationInput
 }
 
 export type ActivityWhereUniqueInput = Prisma.AtLeast<{
@@ -226,9 +226,9 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
   uploadedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   profileId?: Prisma.UuidNullableFilter<"Activity"> | string | null
   challengeId?: Prisma.UuidNullableFilter<"Activity"> | string | null
+  Challenge?: Prisma.XOR<Prisma.ChallengeNullableScalarRelationFilter, Prisma.ChallengeWhereInput> | null
   participant?: Prisma.XOR<Prisma.ChallengeParticipantScalarRelationFilter, Prisma.ChallengeParticipantWhereInput>
   Profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
-  Challenge?: Prisma.XOR<Prisma.ChallengeNullableScalarRelationFilter, Prisma.ChallengeWhereInput> | null
 }, "id">
 
 export type ActivityOrderByWithAggregationInput = {
@@ -262,9 +262,9 @@ export type ActivityCreateInput = {
   notes?: string | null
   date: Date | string
   uploadedAt?: Date | string
+  Challenge?: Prisma.ChallengeCreateNestedOneWithoutActivitiesInput
   participant: Prisma.ChallengeParticipantCreateNestedOneWithoutActivitiesInput
   Profile?: Prisma.ProfileCreateNestedOneWithoutActivitiesInput
-  Challenge?: Prisma.ChallengeCreateNestedOneWithoutActivitiesInput
 }
 
 export type ActivityUncheckedCreateInput = {
@@ -282,9 +282,9 @@ export type ActivityUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Challenge?: Prisma.ChallengeUpdateOneWithoutActivitiesNestedInput
   participant?: Prisma.ChallengeParticipantUpdateOneRequiredWithoutActivitiesNestedInput
   Profile?: Prisma.ProfileUpdateOneWithoutActivitiesNestedInput
-  Challenge?: Prisma.ChallengeUpdateOneWithoutActivitiesNestedInput
 }
 
 export type ActivityUncheckedUpdateInput = {
@@ -495,8 +495,8 @@ export type ActivityCreateWithoutProfileInput = {
   notes?: string | null
   date: Date | string
   uploadedAt?: Date | string
-  participant: Prisma.ChallengeParticipantCreateNestedOneWithoutActivitiesInput
   Challenge?: Prisma.ChallengeCreateNestedOneWithoutActivitiesInput
+  participant: Prisma.ChallengeParticipantCreateNestedOneWithoutActivitiesInput
 }
 
 export type ActivityUncheckedCreateWithoutProfileInput = {
@@ -596,8 +596,8 @@ export type ActivityCreateWithoutParticipantInput = {
   notes?: string | null
   date: Date | string
   uploadedAt?: Date | string
-  Profile?: Prisma.ProfileCreateNestedOneWithoutActivitiesInput
   Challenge?: Prisma.ChallengeCreateNestedOneWithoutActivitiesInput
+  Profile?: Prisma.ProfileCreateNestedOneWithoutActivitiesInput
 }
 
 export type ActivityUncheckedCreateWithoutParticipantInput = {
@@ -649,8 +649,8 @@ export type ActivityUpdateWithoutProfileInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  participant?: Prisma.ChallengeParticipantUpdateOneRequiredWithoutActivitiesNestedInput
   Challenge?: Prisma.ChallengeUpdateOneWithoutActivitiesNestedInput
+  participant?: Prisma.ChallengeParticipantUpdateOneRequiredWithoutActivitiesNestedInput
 }
 
 export type ActivityUncheckedUpdateWithoutProfileInput = {
@@ -721,8 +721,8 @@ export type ActivityUpdateWithoutParticipantInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  Profile?: Prisma.ProfileUpdateOneWithoutActivitiesNestedInput
   Challenge?: Prisma.ChallengeUpdateOneWithoutActivitiesNestedInput
+  Profile?: Prisma.ProfileUpdateOneWithoutActivitiesNestedInput
 }
 
 export type ActivityUncheckedUpdateWithoutParticipantInput = {
@@ -753,9 +753,9 @@ export type ActivitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   uploadedAt?: boolean
   profileId?: boolean
   challengeId?: boolean
+  Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
   participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
   Profile?: boolean | Prisma.Activity$ProfileArgs<ExtArgs>
-  Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
 }, ExtArgs["result"]["activity"]>
 
 export type ActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -766,9 +766,9 @@ export type ActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   uploadedAt?: boolean
   profileId?: boolean
   challengeId?: boolean
+  Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
   participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
   Profile?: boolean | Prisma.Activity$ProfileArgs<ExtArgs>
-  Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
 }, ExtArgs["result"]["activity"]>
 
 export type ActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -779,9 +779,9 @@ export type ActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   uploadedAt?: boolean
   profileId?: boolean
   challengeId?: boolean
+  Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
   participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
   Profile?: boolean | Prisma.Activity$ProfileArgs<ExtArgs>
-  Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
 }, ExtArgs["result"]["activity"]>
 
 export type ActivitySelectScalar = {
@@ -796,27 +796,27 @@ export type ActivitySelectScalar = {
 
 export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "participantId" | "notes" | "date" | "uploadedAt" | "profileId" | "challengeId", ExtArgs["result"]["activity"]>
 export type ActivityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
   participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
   Profile?: boolean | Prisma.Activity$ProfileArgs<ExtArgs>
-  Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
 }
 export type ActivityIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
   participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
   Profile?: boolean | Prisma.Activity$ProfileArgs<ExtArgs>
-  Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
 }
 export type ActivityIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
   participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
   Profile?: boolean | Prisma.Activity$ProfileArgs<ExtArgs>
-  Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
 }
 
 export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Activity"
   objects: {
+    Challenge: Prisma.$ChallengePayload<ExtArgs> | null
     participant: Prisma.$ChallengeParticipantPayload<ExtArgs>
     Profile: Prisma.$ProfilePayload<ExtArgs> | null
-    Challenge: Prisma.$ChallengePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1220,9 +1220,9 @@ readonly fields: ActivityFieldRefs;
  */
 export interface Prisma__ActivityClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  Challenge<T extends Prisma.Activity$ChallengeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$ChallengeArgs<ExtArgs>>): Prisma.Prisma__ChallengeClient<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   participant<T extends Prisma.ChallengeParticipantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChallengeParticipantDefaultArgs<ExtArgs>>): Prisma.Prisma__ChallengeParticipantClient<runtime.Types.Result.GetResult<Prisma.$ChallengeParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   Profile<T extends Prisma.Activity$ProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$ProfileArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  Challenge<T extends Prisma.Activity$ChallengeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$ChallengeArgs<ExtArgs>>): Prisma.Prisma__ChallengeClient<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1655,25 +1655,6 @@ export type ActivityDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
- * Activity.Profile
- */
-export type Activity$ProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Profile
-   */
-  select?: Prisma.ProfileSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Profile
-   */
-  omit?: Prisma.ProfileOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ProfileInclude<ExtArgs> | null
-  where?: Prisma.ProfileWhereInput
-}
-
-/**
  * Activity.Challenge
  */
 export type Activity$ChallengeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1690,6 +1671,25 @@ export type Activity$ChallengeArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   include?: Prisma.ChallengeInclude<ExtArgs> | null
   where?: Prisma.ChallengeWhereInput
+}
+
+/**
+ * Activity.Profile
+ */
+export type Activity$ProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Profile
+   */
+  select?: Prisma.ProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Profile
+   */
+  omit?: Prisma.ProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProfileInclude<ExtArgs> | null
+  where?: Prisma.ProfileWhereInput
 }
 
 /**

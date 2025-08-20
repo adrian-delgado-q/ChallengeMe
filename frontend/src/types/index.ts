@@ -1,8 +1,11 @@
 // frontend/src/types/index.ts
 
+// Import and re-export common patterns for easier access
+export * from './commonPatterns';
+
 // --- Core Enums ---
 export type ChallengeType = 'individual' | 'team';
-export type TeamRole = 'admin' | 'member';
+export type TeamRole = 'ADMIN' | 'MEMBER';
 
 // --- Challenge & Team Structures ---
 export interface Milestone {
@@ -19,6 +22,8 @@ export interface ChallengeRulesProps {
   rules: RuleSet;
 }
 
+export type ChallengeStatus = 'ACTIVE' | 'CLOSED' | 'CANCELLED';
+
 export interface Challenge {
   id: string; // Changed from number to string to match UUID
   creatorId?: string;
@@ -26,8 +31,10 @@ export interface Challenge {
   description?: string;
   type?: string; // Activity type (running, cycling, etc.)
   challengeType: ChallengeType;
+  status?: ChallengeStatus; // Challenge status for management
   participants?: number; // Count of participants
   maxParticipants?: number;
+  maxTeamSize?: number; // For TEAM challenges: max members per team
   startDate?: string;
   endDate: string;
   progress?: number; // UI calculated progress
@@ -144,6 +151,7 @@ export interface Activity {
   uploadedAt: string; // When it was uploaded
   time?: string; // User-friendly time, e.g., "2h ago"
   avatar?: string; // For backward compatibility
+  isEditable?: boolean; // Whether the activity can be edited (within 48h)
 }
 
 export interface Post {

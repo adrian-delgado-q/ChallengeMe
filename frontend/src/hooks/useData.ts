@@ -307,6 +307,28 @@ export const useActivities = (challengeId?: string) => {
         }
     }, []);
 
+    const updateActivity = useCallback(async (activityId: string, activityData: any) => {
+        try {
+            const updatedActivity = await ActivityService.updateActivity(activityId, activityData);
+            setActivities(prev => prev.map(activity => 
+                activity.id === activityId ? { ...activity, ...updatedActivity } : activity
+            ));
+            return updatedActivity;
+        } catch (err: any) {
+            throw new Error(err.message || 'Failed to update activity');
+        }
+    }, []);
+
+    const deleteActivity = useCallback(async (activityId: string) => {
+        try {
+            await ActivityService.deleteActivity(activityId);
+            setActivities(prev => prev.filter(activity => activity.id !== activityId));
+            return true;
+        } catch (err: any) {
+            throw new Error(err.message || 'Failed to delete activity');
+        }
+    }, []);
+
     useEffect(() => {
         fetchActivities();
     }, [fetchActivities]);
@@ -316,7 +338,70 @@ export const useActivities = (challengeId?: string) => {
         loading,
         error,
         refetch: fetchActivities,
-        createActivity
+        createActivity,
+        updateActivity,
+        deleteActivity
+    };
+};
+
+// Custom hook for activity management
+export const useActivityManagement = (challengeId?: string) => {
+    const { user } = useUser();
+    const [activities, setActivities] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const fetchActivities = useCallback(async () => {
+        if (!user) {
+            setLoading(false);
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            const data = await ActivityService.getActivitiesForManagement();
+            setActivities(data);
+        } catch (err: any) {
+            setError(err.message || 'Failed to fetch activities');
+        } finally {
+            setLoading(false);
+        }
+    }, [user, challengeId]);
+
+    const updateActivity = useCallback(async (activityId: string, activityData: any) => {
+        try {
+            const updatedActivity = await ActivityService.updateActivity(activityId, activityData);
+            // Refresh the list to get updated editability status
+            await fetchActivities();
+            return updatedActivity;
+        } catch (err: any) {
+            throw new Error(err.message || 'Failed to update activity');
+        }
+    }, [fetchActivities]);
+
+    const deleteActivity = useCallback(async (activityId: string) => {
+        try {
+            await ActivityService.deleteActivity(activityId);
+            setActivities(prev => prev.filter(activity => activity.id !== activityId));
+            return true;
+        } catch (err: any) {
+            throw new Error(err.message || 'Failed to delete activity');
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchActivities();
+    }, [fetchActivities]);
+
+    return {
+        activities,
+        loading,
+        error,
+        refetch: fetchActivities,
+        updateActivity,
+        deleteActivity
     };
 };
 
