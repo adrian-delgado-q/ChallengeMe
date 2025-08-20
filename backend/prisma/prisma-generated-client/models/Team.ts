@@ -27,10 +27,12 @@ export type AggregateTeam = {
 
 export type TeamAvgAggregateOutputType = {
   maxMembers: number | null
+  memberCount: number | null
 }
 
 export type TeamSumAggregateOutputType = {
   maxMembers: number | null
+  memberCount: number | null
 }
 
 export type TeamMinAggregateOutputType = {
@@ -43,6 +45,7 @@ export type TeamMinAggregateOutputType = {
   createdAt: Date | null
   expiresAt: Date | null
   maxMembers: number | null
+  memberCount: number | null
 }
 
 export type TeamMaxAggregateOutputType = {
@@ -55,6 +58,7 @@ export type TeamMaxAggregateOutputType = {
   createdAt: Date | null
   expiresAt: Date | null
   maxMembers: number | null
+  memberCount: number | null
 }
 
 export type TeamCountAggregateOutputType = {
@@ -67,6 +71,7 @@ export type TeamCountAggregateOutputType = {
   createdAt: number
   expiresAt: number
   maxMembers: number
+  memberCount: number
   sportsTypes: number
   _all: number
 }
@@ -74,10 +79,12 @@ export type TeamCountAggregateOutputType = {
 
 export type TeamAvgAggregateInputType = {
   maxMembers?: true
+  memberCount?: true
 }
 
 export type TeamSumAggregateInputType = {
   maxMembers?: true
+  memberCount?: true
 }
 
 export type TeamMinAggregateInputType = {
@@ -90,6 +97,7 @@ export type TeamMinAggregateInputType = {
   createdAt?: true
   expiresAt?: true
   maxMembers?: true
+  memberCount?: true
 }
 
 export type TeamMaxAggregateInputType = {
@@ -102,6 +110,7 @@ export type TeamMaxAggregateInputType = {
   createdAt?: true
   expiresAt?: true
   maxMembers?: true
+  memberCount?: true
 }
 
 export type TeamCountAggregateInputType = {
@@ -114,6 +123,7 @@ export type TeamCountAggregateInputType = {
   createdAt?: true
   expiresAt?: true
   maxMembers?: true
+  memberCount?: true
   sportsTypes?: true
   _all?: true
 }
@@ -214,6 +224,7 @@ export type TeamGroupByOutputType = {
   createdAt: Date
   expiresAt: Date | null
   maxMembers: number | null
+  memberCount: number
   sportsTypes: string[]
   _count: TeamCountAggregateOutputType | null
   _avg: TeamAvgAggregateOutputType | null
@@ -250,6 +261,7 @@ export type TeamWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Team"> | Date | string
   expiresAt?: Prisma.DateTimeNullableFilter<"Team"> | Date | string | null
   maxMembers?: Prisma.IntNullableFilter<"Team"> | number | null
+  memberCount?: Prisma.IntFilter<"Team"> | number
   sportsTypes?: Prisma.StringNullableListFilter<"Team">
   challengeEntries?: Prisma.ChallengeParticipantListRelationFilter
   creator?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
@@ -266,6 +278,7 @@ export type TeamOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   maxMembers?: Prisma.SortOrderInput | Prisma.SortOrder
+  memberCount?: Prisma.SortOrder
   sportsTypes?: Prisma.SortOrder
   challengeEntries?: Prisma.ChallengeParticipantOrderByRelationAggregateInput
   creator?: Prisma.ProfileOrderByWithRelationInput
@@ -285,6 +298,7 @@ export type TeamWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Team"> | Date | string
   expiresAt?: Prisma.DateTimeNullableFilter<"Team"> | Date | string | null
   maxMembers?: Prisma.IntNullableFilter<"Team"> | number | null
+  memberCount?: Prisma.IntFilter<"Team"> | number
   sportsTypes?: Prisma.StringNullableListFilter<"Team">
   challengeEntries?: Prisma.ChallengeParticipantListRelationFilter
   creator?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
@@ -301,6 +315,7 @@ export type TeamOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   maxMembers?: Prisma.SortOrderInput | Prisma.SortOrder
+  memberCount?: Prisma.SortOrder
   sportsTypes?: Prisma.SortOrder
   _count?: Prisma.TeamCountOrderByAggregateInput
   _avg?: Prisma.TeamAvgOrderByAggregateInput
@@ -322,6 +337,7 @@ export type TeamScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Team"> | Date | string
   expiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Team"> | Date | string | null
   maxMembers?: Prisma.IntNullableWithAggregatesFilter<"Team"> | number | null
+  memberCount?: Prisma.IntWithAggregatesFilter<"Team"> | number
   sportsTypes?: Prisma.StringNullableListFilter<"Team">
 }
 
@@ -334,6 +350,7 @@ export type TeamCreateInput = {
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
+  memberCount?: number
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutTeamInput
   creator: Prisma.ProfileCreateNestedOneWithoutCreatedTeamsInput
@@ -350,6 +367,7 @@ export type TeamUncheckedCreateInput = {
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
+  memberCount?: number
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutTeamInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutTeamInput
@@ -364,6 +382,7 @@ export type TeamUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutTeamNestedInput
   creator?: Prisma.ProfileUpdateOneRequiredWithoutCreatedTeamsNestedInput
@@ -380,6 +399,7 @@ export type TeamUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutTeamNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutTeamNestedInput
@@ -395,6 +415,7 @@ export type TeamCreateManyInput = {
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
+  memberCount?: number
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
 }
 
@@ -407,6 +428,7 @@ export type TeamUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
 }
 
@@ -420,6 +442,7 @@ export type TeamUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
 }
 
@@ -451,11 +474,13 @@ export type TeamCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   maxMembers?: Prisma.SortOrder
+  memberCount?: Prisma.SortOrder
   sportsTypes?: Prisma.SortOrder
 }
 
 export type TeamAvgOrderByAggregateInput = {
   maxMembers?: Prisma.SortOrder
+  memberCount?: Prisma.SortOrder
 }
 
 export type TeamMaxOrderByAggregateInput = {
@@ -468,6 +493,7 @@ export type TeamMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   maxMembers?: Prisma.SortOrder
+  memberCount?: Prisma.SortOrder
 }
 
 export type TeamMinOrderByAggregateInput = {
@@ -480,10 +506,12 @@ export type TeamMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   maxMembers?: Prisma.SortOrder
+  memberCount?: Prisma.SortOrder
 }
 
 export type TeamSumOrderByAggregateInput = {
   maxMembers?: Prisma.SortOrder
+  memberCount?: Prisma.SortOrder
 }
 
 export type TeamScalarRelationFilter = {
@@ -558,6 +586,14 @@ export type NullableIntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type TeamUpdatesportsTypesInput = {
   set?: string[]
   push?: string | string[]
@@ -602,6 +638,7 @@ export type TeamCreateWithoutCreatorInput = {
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
+  memberCount?: number
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutTeamInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutTeamInput
@@ -616,6 +653,7 @@ export type TeamUncheckedCreateWithoutCreatorInput = {
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
+  memberCount?: number
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutTeamInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutTeamInput
@@ -660,6 +698,7 @@ export type TeamScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Team"> | Date | string
   expiresAt?: Prisma.DateTimeNullableFilter<"Team"> | Date | string | null
   maxMembers?: Prisma.IntNullableFilter<"Team"> | number | null
+  memberCount?: Prisma.IntFilter<"Team"> | number
   sportsTypes?: Prisma.StringNullableListFilter<"Team">
 }
 
@@ -672,6 +711,7 @@ export type TeamCreateWithoutTeamMembershipsInput = {
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
+  memberCount?: number
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutTeamInput
   creator: Prisma.ProfileCreateNestedOneWithoutCreatedTeamsInput
@@ -687,6 +727,7 @@ export type TeamUncheckedCreateWithoutTeamMembershipsInput = {
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
+  memberCount?: number
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutTeamInput
 }
@@ -716,6 +757,7 @@ export type TeamUpdateWithoutTeamMembershipsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutTeamNestedInput
   creator?: Prisma.ProfileUpdateOneRequiredWithoutCreatedTeamsNestedInput
@@ -731,6 +773,7 @@ export type TeamUncheckedUpdateWithoutTeamMembershipsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutTeamNestedInput
 }
@@ -744,6 +787,7 @@ export type TeamCreateWithoutChallengeEntriesInput = {
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
+  memberCount?: number
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   creator: Prisma.ProfileCreateNestedOneWithoutCreatedTeamsInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutTeamInput
@@ -759,6 +803,7 @@ export type TeamUncheckedCreateWithoutChallengeEntriesInput = {
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
+  memberCount?: number
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutTeamInput
 }
@@ -788,6 +833,7 @@ export type TeamUpdateWithoutChallengeEntriesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   creator?: Prisma.ProfileUpdateOneRequiredWithoutCreatedTeamsNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutTeamNestedInput
@@ -803,6 +849,7 @@ export type TeamUncheckedUpdateWithoutChallengeEntriesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutTeamNestedInput
 }
@@ -816,6 +863,7 @@ export type TeamCreateManyCreatorInput = {
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
+  memberCount?: number
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
 }
 
@@ -828,6 +876,7 @@ export type TeamUpdateWithoutCreatorInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutTeamNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutTeamNestedInput
@@ -842,6 +891,7 @@ export type TeamUncheckedUpdateWithoutCreatorInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutTeamNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutTeamNestedInput
@@ -856,6 +906,7 @@ export type TeamUncheckedUpdateManyWithoutCreatorInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
 }
 
@@ -909,6 +960,7 @@ export type TeamSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   expiresAt?: boolean
   maxMembers?: boolean
+  memberCount?: boolean
   sportsTypes?: boolean
   challengeEntries?: boolean | Prisma.Team$challengeEntriesArgs<ExtArgs>
   creator?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
@@ -926,6 +978,7 @@ export type TeamSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   expiresAt?: boolean
   maxMembers?: boolean
+  memberCount?: boolean
   sportsTypes?: boolean
   creator?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["team"]>
@@ -940,6 +993,7 @@ export type TeamSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   expiresAt?: boolean
   maxMembers?: boolean
+  memberCount?: boolean
   sportsTypes?: boolean
   creator?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["team"]>
@@ -954,10 +1008,11 @@ export type TeamSelectScalar = {
   createdAt?: boolean
   expiresAt?: boolean
   maxMembers?: boolean
+  memberCount?: boolean
   sportsTypes?: boolean
 }
 
-export type TeamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "name" | "description" | "avatarUrl" | "isPublic" | "createdAt" | "expiresAt" | "maxMembers" | "sportsTypes", ExtArgs["result"]["team"]>
+export type TeamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "name" | "description" | "avatarUrl" | "isPublic" | "createdAt" | "expiresAt" | "maxMembers" | "memberCount" | "sportsTypes", ExtArgs["result"]["team"]>
 export type TeamInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   challengeEntries?: boolean | Prisma.Team$challengeEntriesArgs<ExtArgs>
   creator?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
@@ -988,6 +1043,7 @@ export type $TeamPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdAt: Date
     expiresAt: Date | null
     maxMembers: number | null
+    memberCount: number
     sportsTypes: string[]
   }, ExtArgs["result"]["team"]>
   composites: {}
@@ -1424,6 +1480,7 @@ export interface TeamFieldRefs {
   readonly createdAt: Prisma.FieldRef<"Team", 'DateTime'>
   readonly expiresAt: Prisma.FieldRef<"Team", 'DateTime'>
   readonly maxMembers: Prisma.FieldRef<"Team", 'Int'>
+  readonly memberCount: Prisma.FieldRef<"Team", 'Int'>
   readonly sportsTypes: Prisma.FieldRef<"Team", 'String[]'>
 }
     

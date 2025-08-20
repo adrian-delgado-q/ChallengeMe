@@ -1223,6 +1223,7 @@ export const TeamScalarFieldEnum = {
   createdAt: 'createdAt',
   expiresAt: 'expiresAt',
   maxMembers: 'maxMembers',
+  memberCount: 'memberCount',
   sportsTypes: 'sportsTypes'
 } as const
 
@@ -1248,6 +1249,7 @@ export const ChallengeScalarFieldEnum = {
   description: 'description',
   challengeType: 'challengeType',
   maxParticipants: 'maxParticipants',
+  participantCount: 'participantCount',
   startDate: 'startDate',
   endDate: 'endDate',
   isPublic: 'isPublic',

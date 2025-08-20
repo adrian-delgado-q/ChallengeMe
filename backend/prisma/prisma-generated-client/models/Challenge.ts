@@ -27,11 +27,13 @@ export type AggregateChallenge = {
 
 export type ChallengeAvgAggregateOutputType = {
   maxParticipants: number | null
+  participantCount: number | null
   maxTeamSize: number | null
 }
 
 export type ChallengeSumAggregateOutputType = {
   maxParticipants: number | null
+  participantCount: number | null
   maxTeamSize: number | null
 }
 
@@ -42,6 +44,7 @@ export type ChallengeMinAggregateOutputType = {
   description: string | null
   challengeType: $Enums.ChallengeParticipantType | null
   maxParticipants: number | null
+  participantCount: number | null
   startDate: Date | null
   endDate: Date | null
   isPublic: boolean | null
@@ -58,6 +61,7 @@ export type ChallengeMaxAggregateOutputType = {
   description: string | null
   challengeType: $Enums.ChallengeParticipantType | null
   maxParticipants: number | null
+  participantCount: number | null
   startDate: Date | null
   endDate: Date | null
   isPublic: boolean | null
@@ -74,6 +78,7 @@ export type ChallengeCountAggregateOutputType = {
   description: number
   challengeType: number
   maxParticipants: number
+  participantCount: number
   startDate: number
   endDate: number
   isPublic: number
@@ -87,11 +92,13 @@ export type ChallengeCountAggregateOutputType = {
 
 export type ChallengeAvgAggregateInputType = {
   maxParticipants?: true
+  participantCount?: true
   maxTeamSize?: true
 }
 
 export type ChallengeSumAggregateInputType = {
   maxParticipants?: true
+  participantCount?: true
   maxTeamSize?: true
 }
 
@@ -102,6 +109,7 @@ export type ChallengeMinAggregateInputType = {
   description?: true
   challengeType?: true
   maxParticipants?: true
+  participantCount?: true
   startDate?: true
   endDate?: true
   isPublic?: true
@@ -118,6 +126,7 @@ export type ChallengeMaxAggregateInputType = {
   description?: true
   challengeType?: true
   maxParticipants?: true
+  participantCount?: true
   startDate?: true
   endDate?: true
   isPublic?: true
@@ -134,6 +143,7 @@ export type ChallengeCountAggregateInputType = {
   description?: true
   challengeType?: true
   maxParticipants?: true
+  participantCount?: true
   startDate?: true
   endDate?: true
   isPublic?: true
@@ -237,6 +247,7 @@ export type ChallengeGroupByOutputType = {
   description: string | null
   challengeType: $Enums.ChallengeParticipantType
   maxParticipants: number | null
+  participantCount: number
   startDate: Date
   endDate: Date
   isPublic: boolean
@@ -276,6 +287,7 @@ export type ChallengeWhereInput = {
   description?: Prisma.StringNullableFilter<"Challenge"> | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFilter<"Challenge"> | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.IntNullableFilter<"Challenge"> | number | null
+  participantCount?: Prisma.IntFilter<"Challenge"> | number
   startDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   endDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   isPublic?: Prisma.BoolFilter<"Challenge"> | boolean
@@ -297,6 +309,7 @@ export type ChallengeOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   challengeType?: Prisma.SortOrder
   maxParticipants?: Prisma.SortOrderInput | Prisma.SortOrder
+  participantCount?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
@@ -321,6 +334,7 @@ export type ChallengeWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Challenge"> | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFilter<"Challenge"> | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.IntNullableFilter<"Challenge"> | number | null
+  participantCount?: Prisma.IntFilter<"Challenge"> | number
   startDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   endDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   isPublic?: Prisma.BoolFilter<"Challenge"> | boolean
@@ -342,6 +356,7 @@ export type ChallengeOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   challengeType?: Prisma.SortOrder
   maxParticipants?: Prisma.SortOrderInput | Prisma.SortOrder
+  participantCount?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
@@ -366,6 +381,7 @@ export type ChallengeScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Challenge"> | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeWithAggregatesFilter<"Challenge"> | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.IntNullableWithAggregatesFilter<"Challenge"> | number | null
+  participantCount?: Prisma.IntWithAggregatesFilter<"Challenge"> | number
   startDate?: Prisma.DateTimeWithAggregatesFilter<"Challenge"> | Date | string
   endDate?: Prisma.DateTimeWithAggregatesFilter<"Challenge"> | Date | string
   isPublic?: Prisma.BoolWithAggregatesFilter<"Challenge"> | boolean
@@ -381,6 +397,7 @@ export type ChallengeCreateInput = {
   description?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
+  participantCount?: number
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
@@ -402,6 +419,7 @@ export type ChallengeUncheckedCreateInput = {
   description?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
+  participantCount?: number
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
@@ -421,6 +439,7 @@ export type ChallengeUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -442,6 +461,7 @@ export type ChallengeUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -462,6 +482,7 @@ export type ChallengeCreateManyInput = {
   description?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
+  participantCount?: number
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
@@ -477,6 +498,7 @@ export type ChallengeUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -493,6 +515,7 @@ export type ChallengeUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -519,6 +542,7 @@ export type ChallengeCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   challengeType?: Prisma.SortOrder
   maxParticipants?: Prisma.SortOrder
+  participantCount?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
@@ -530,6 +554,7 @@ export type ChallengeCountOrderByAggregateInput = {
 
 export type ChallengeAvgOrderByAggregateInput = {
   maxParticipants?: Prisma.SortOrder
+  participantCount?: Prisma.SortOrder
   maxTeamSize?: Prisma.SortOrder
 }
 
@@ -540,6 +565,7 @@ export type ChallengeMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   challengeType?: Prisma.SortOrder
   maxParticipants?: Prisma.SortOrder
+  participantCount?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
@@ -556,6 +582,7 @@ export type ChallengeMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   challengeType?: Prisma.SortOrder
   maxParticipants?: Prisma.SortOrder
+  participantCount?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
@@ -567,6 +594,7 @@ export type ChallengeMinOrderByAggregateInput = {
 
 export type ChallengeSumOrderByAggregateInput = {
   maxParticipants?: Prisma.SortOrder
+  participantCount?: Prisma.SortOrder
   maxTeamSize?: Prisma.SortOrder
 }
 
@@ -696,6 +724,7 @@ export type ChallengeCreateWithoutCreatorInput = {
   description?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
+  participantCount?: number
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
@@ -715,6 +744,7 @@ export type ChallengeUncheckedCreateWithoutCreatorInput = {
   description?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
+  participantCount?: number
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
@@ -764,6 +794,7 @@ export type ChallengeScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Challenge"> | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFilter<"Challenge"> | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.IntNullableFilter<"Challenge"> | number | null
+  participantCount?: Prisma.IntFilter<"Challenge"> | number
   startDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   endDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   isPublic?: Prisma.BoolFilter<"Challenge"> | boolean
@@ -779,6 +810,7 @@ export type ChallengeCreateWithoutMilestonesInput = {
   description?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
+  participantCount?: number
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
@@ -799,6 +831,7 @@ export type ChallengeUncheckedCreateWithoutMilestonesInput = {
   description?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
+  participantCount?: number
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
@@ -833,6 +866,7 @@ export type ChallengeUpdateWithoutMilestonesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -853,6 +887,7 @@ export type ChallengeUncheckedUpdateWithoutMilestonesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -871,6 +906,7 @@ export type ChallengeCreateWithoutParticipantsInput = {
   description?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
+  participantCount?: number
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
@@ -891,6 +927,7 @@ export type ChallengeUncheckedCreateWithoutParticipantsInput = {
   description?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
+  participantCount?: number
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
@@ -925,6 +962,7 @@ export type ChallengeUpdateWithoutParticipantsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -945,6 +983,7 @@ export type ChallengeUncheckedUpdateWithoutParticipantsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -963,6 +1002,7 @@ export type ChallengeCreateWithoutActivitiesInput = {
   description?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
+  participantCount?: number
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
@@ -983,6 +1023,7 @@ export type ChallengeUncheckedCreateWithoutActivitiesInput = {
   description?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
+  participantCount?: number
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
@@ -1017,6 +1058,7 @@ export type ChallengeUpdateWithoutActivitiesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1037,6 +1079,7 @@ export type ChallengeUncheckedUpdateWithoutActivitiesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1055,6 +1098,7 @@ export type ChallengeCreateWithoutPostsInput = {
   description?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
+  participantCount?: number
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
@@ -1075,6 +1119,7 @@ export type ChallengeUncheckedCreateWithoutPostsInput = {
   description?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
+  participantCount?: number
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
@@ -1109,6 +1154,7 @@ export type ChallengeUpdateWithoutPostsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1129,6 +1175,7 @@ export type ChallengeUncheckedUpdateWithoutPostsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1147,6 +1194,7 @@ export type ChallengeCreateManyCreatorInput = {
   description?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
+  participantCount?: number
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
@@ -1162,6 +1210,7 @@ export type ChallengeUpdateWithoutCreatorInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1181,6 +1230,7 @@ export type ChallengeUncheckedUpdateWithoutCreatorInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1200,6 +1250,7 @@ export type ChallengeUncheckedUpdateManyWithoutCreatorInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  participantCount?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1274,6 +1325,7 @@ export type ChallengeSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   description?: boolean
   challengeType?: boolean
   maxParticipants?: boolean
+  participantCount?: boolean
   startDate?: boolean
   endDate?: boolean
   isPublic?: boolean
@@ -1296,6 +1348,7 @@ export type ChallengeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   description?: boolean
   challengeType?: boolean
   maxParticipants?: boolean
+  participantCount?: boolean
   startDate?: boolean
   endDate?: boolean
   isPublic?: boolean
@@ -1313,6 +1366,7 @@ export type ChallengeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   description?: boolean
   challengeType?: boolean
   maxParticipants?: boolean
+  participantCount?: boolean
   startDate?: boolean
   endDate?: boolean
   isPublic?: boolean
@@ -1330,6 +1384,7 @@ export type ChallengeSelectScalar = {
   description?: boolean
   challengeType?: boolean
   maxParticipants?: boolean
+  participantCount?: boolean
   startDate?: boolean
   endDate?: boolean
   isPublic?: boolean
@@ -1339,7 +1394,7 @@ export type ChallengeSelectScalar = {
   status?: boolean
 }
 
-export type ChallengeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "title" | "description" | "challengeType" | "maxParticipants" | "startDate" | "endDate" | "isPublic" | "createdAt" | "expiresAt" | "maxTeamSize" | "status", ExtArgs["result"]["challenge"]>
+export type ChallengeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "title" | "description" | "challengeType" | "maxParticipants" | "participantCount" | "startDate" | "endDate" | "isPublic" | "createdAt" | "expiresAt" | "maxTeamSize" | "status", ExtArgs["result"]["challenge"]>
 export type ChallengeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | Prisma.Challenge$activitiesArgs<ExtArgs>
   creator?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
@@ -1371,6 +1426,7 @@ export type $ChallengePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     description: string | null
     challengeType: $Enums.ChallengeParticipantType
     maxParticipants: number | null
+    participantCount: number
     startDate: Date
     endDate: Date
     isPublic: boolean
@@ -1812,6 +1868,7 @@ export interface ChallengeFieldRefs {
   readonly description: Prisma.FieldRef<"Challenge", 'String'>
   readonly challengeType: Prisma.FieldRef<"Challenge", 'ChallengeParticipantType'>
   readonly maxParticipants: Prisma.FieldRef<"Challenge", 'Int'>
+  readonly participantCount: Prisma.FieldRef<"Challenge", 'Int'>
   readonly startDate: Prisma.FieldRef<"Challenge", 'DateTime'>
   readonly endDate: Prisma.FieldRef<"Challenge", 'DateTime'>
   readonly isPublic: Prisma.FieldRef<"Challenge", 'Boolean'>

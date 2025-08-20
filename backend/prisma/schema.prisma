@@ -35,6 +35,7 @@ model Team {
   createdAt        DateTime               @default(now()) @db.Timestamptz(6)
   expiresAt        DateTime?              @db.Timestamptz(6)
   maxMembers       Int?
+  memberCount      Int                    @default(0) // Add this field that triggers maintain
   sportsTypes      String[]
   challengeEntries ChallengeParticipant[]
   creator          Profile                @relation("TeamCreator", fields: [creatorId], references: [id])
@@ -55,24 +56,25 @@ model TeamMembership {
 }
 
 model Challenge {
-  id              String                   @id @default(uuid()) @db.Uuid
-  creatorId       String                   @db.Uuid
-  title           String
-  description     String?
-  challengeType   ChallengeParticipantType @default(INDIVIDUAL)
-  maxParticipants Int?
-  startDate       DateTime                 @db.Date
-  endDate         DateTime                 @db.Date
-  isPublic        Boolean                  @default(true)
-  createdAt       DateTime                 @default(now()) @db.Timestamptz(6)
-  expiresAt       DateTime?                @db.Timestamptz(6)
-  maxTeamSize     Int?
-  status          ChallengeStatus          @default(ACTIVE)
-  activities      Activity[]
-  creator         Profile                  @relation("ChallengeCreator", fields: [creatorId], references: [id])
-  participants    ChallengeParticipant[]
-  milestones      Milestone[]
-  posts           Post[]
+  id               String                   @id @default(uuid()) @db.Uuid
+  creatorId        String                   @db.Uuid
+  title            String
+  description      String?
+  challengeType    ChallengeParticipantType @default(INDIVIDUAL)
+  maxParticipants  Int?
+  participantCount Int                      @default(0) // Add this field that triggers maintain
+  startDate        DateTime                 @db.Date
+  endDate          DateTime                 @db.Date
+  isPublic         Boolean                  @default(true)
+  createdAt        DateTime                 @default(now()) @db.Timestamptz(6)
+  expiresAt        DateTime?                @db.Timestamptz(6)
+  maxTeamSize      Int?
+  status           ChallengeStatus          @default(ACTIVE)
+  activities       Activity[]
+  creator          Profile                  @relation("ChallengeCreator", fields: [creatorId], references: [id])
+  participants     ChallengeParticipant[]
+  milestones       Milestone[]
+  posts            Post[]
 
   @@index([creatorId, status], map: "idx_challenge_creator_status")
   @@index([status], map: "idx_challenge_status")
@@ -119,6 +121,8 @@ model ChallengeParticipant {
   milestoneProgress MilestoneProgress[]
   posts             Post[]
 
+  // Partial unique constraints for preventing duplicate participations
+  // Note: These are implemented as partial unique indexes in SQL since Prisma doesn't support conditional unique constraints
   @@index([challengeId, userId], map: "idx_challengeparticipant_challengeid_userid_unique")
   @@index([challengeId, teamId], map: "idx_challengeparticipant_challengeid_teamid_unique")
 }
