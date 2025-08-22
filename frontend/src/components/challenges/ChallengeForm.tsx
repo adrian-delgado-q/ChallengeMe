@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Button, FormControl, FormLabel, Grid, Input, Radio, RadioGroup, HStack,
-    Text, Textarea, VStack, Select, InputGroup, InputRightAddon, IconButton
+    Text, Textarea, VStack
 } from '@chakra-ui/react';
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import { useChallenges } from '../../hooks/useData';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { CommonValidationSchemas } from '../../utils/validation';
-import type { Challenge, Milestone, ChallengeType } from '../../types';
+import { ActivityTypeService } from '../../graphql/services/activityTypeService';
+import { ActivityTypeSelector } from './ActivityTypeSelector';
+import { MilestoneManager } from './MilestoneManager';
+import type { Challenge, Milestone, ChallengeType, ActivityType } from '../../types';
 
 interface ChallengeFormProps {
     challengeToEdit?: Challenge;
@@ -17,17 +19,40 @@ interface ChallengeFormProps {
     isEditing?: boolean;
 }
 
-const activityOptions = [
-    "Running", "Walking", "Cycling", "Swimming", "Stair Climbing",
-    "Strength Training", "Yoga", "Hiking", "Rowing", "Meditation"
-];
-
 export const ChallengeForm: React.FC<ChallengeFormProps> = ({
     challengeToEdit,
     onSubmit,
     onCancel,
     isEditing = false
 }) => {
+    // State for activity types
+    const [activityTypes, setActivityTypes] = useState<ActivityType[]>([]);
+    const [isLoadingActivityTypes, setIsLoadingActivityTypes] = useState(true);
+
+    const { createChallenge } = useChallenges();
+    const notifications = useNotifications();
+    const { isLoading: isSubmitting, execute } = useAsyncState({
+        showSuccessNotifications: true,
+        successMessage: `Challenge ${isEditing ? 'updated' : 'created'} successfully!`
+    });
+
+    // Load activity types on component mount
+    useEffect(() => {
+        const loadActivityTypes = async () => {
+            try {
+                const types = await ActivityTypeService.getActivityTypes();
+                setActivityTypes(types);
+            } catch (error) {
+                console.error('Failed to load activity types:', error);
+                notifications.error('Failed to load activity types');
+            } finally {
+                setIsLoadingActivityTypes(false);
+            }
+        };
+
+        loadActivityTypes();
+    }, []);
+
     // Helper function to get default end date (one month from today)
     const getDefaultEndDate = () => {
         const today = new Date();
@@ -38,52 +63,98 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
     // Form state
     const [title, setTitle] = useState(challengeToEdit?.title || '');
     const [description, setDescription] = useState(challengeToEdit?.description || '');
-    const [activityType, setActivityType] = useState(challengeToEdit?.type || '');
+    const [selectedActivityTypeIds, setSelectedActivityTypeIds] = useState<string[]>(
+        challengeToEdit?.activityTypes || []
+    );
     const [maxParticipants, setMaxParticipants] = useState(challengeToEdit?.maxParticipants?.toString() || '');
     const [maxTeamSize, setMaxTeamSize] = useState(challengeToEdit?.maxTeamSize?.toString() || '');
     const [endDate, setEndDate] = useState(challengeToEdit?.endDate || getDefaultEndDate());
     const [challengeType, setChallengeType] = useState<ChallengeType>(challengeToEdit?.challengeType || 'individual');
     const [isPublic, setIsPublic] = useState(challengeToEdit?.isPublic !== false);
-    const [minDuration, setMinDuration] = useState(challengeToEdit?.rules?.minDuration?.toString() || '');
-    const [minRepetitions, setMinRepetitions] = useState(challengeToEdit?.rules?.minRepetitions?.toString() || '');
-    const [milestones, setMilestones] = useState<Partial<Milestone>[]>(
-        challengeToEdit?.milestones || [{ name: 'Bronze', value: undefined }]
-    );
-
-    const { createChallenge } = useChallenges();
-    const notifications = useNotifications();
-    const { isLoading: isSubmitting, execute } = useAsyncState({
-        showSuccessNotifications: true,
-        successMessage: `Challenge ${isEditing ? 'updated' : 'created'} successfully!`
+    const [milestonesByActivityType, setMilestonesByActivityType] = useState<Record<string, Partial<Milestone>[]>>(() => {
+        if (challengeToEdit?.milestones && challengeToEdit.milestones.length > 0) {
+            // Group existing milestones by activity type ID
+            const grouped = challengeToEdit.milestones.reduce((acc, milestone) => {
+                const activityTypeId = milestone.activityTypeId || 'general';
+                if (!acc[activityTypeId]) acc[activityTypeId] = [];
+                acc[activityTypeId].push(milestone);
+                return acc;
+            }, {} as Record<string, Partial<Milestone>[]>);
+            return grouped;
+        }
+        // Default milestones for each selected activity type
+        const defaultMilestones: Record<string, Partial<Milestone>[]> = {};
+        selectedActivityTypeIds.forEach(activityTypeId => {
+            defaultMilestones[activityTypeId] = [{ name: 'Bronze', value: undefined, activityTypeId }];
+        });
+        return defaultMilestones;
     });
 
-    const handleMilestoneChange = (index: number, field: keyof Milestone, value: string | number) => {
-        const newMilestones = [...milestones];
-        const milestone = { ...newMilestones[index] };
+    // Helper functions for managing activity types
+    const handleActivityTypeChange = (newActivityTypeIds: string[]) => {
+        setSelectedActivityTypeIds(newActivityTypeIds);
+
+        // Update milestones for new activity types
+        const newMilestonesByActivityType = { ...milestonesByActivityType };
+
+        // Add default milestones for new activity types
+        newActivityTypeIds.forEach(activityTypeId => {
+            if (!newMilestonesByActivityType[activityTypeId]) {
+                newMilestonesByActivityType[activityTypeId] = [
+                    { name: 'Bronze', value: undefined, activityTypeId }
+                ];
+            }
+        });
+
+        // Remove milestones for removed activity types
+        Object.keys(newMilestonesByActivityType).forEach(activityTypeId => {
+            if (!newActivityTypeIds.includes(activityTypeId)) {
+                delete newMilestonesByActivityType[activityTypeId];
+            }
+        });
+
+        setMilestonesByActivityType(newMilestonesByActivityType);
+    };
+
+    const updateMilestone = (activityTypeId: string, index: number, field: string, value: any) => {
+        const newMilestonesByActivityType = { ...milestonesByActivityType };
+        const milestones = [...(newMilestonesByActivityType[activityTypeId] || [])];
+        const milestone = { ...milestones[index] };
 
         if (field === 'value') {
             milestone.value = Number(value);
         } else {
             milestone.name = String(value);
         }
-        newMilestones[index] = milestone;
-        setMilestones(newMilestones);
+        milestone.activityTypeId = activityTypeId;
+
+        milestones[index] = milestone;
+        newMilestonesByActivityType[activityTypeId] = milestones;
+        setMilestonesByActivityType(newMilestonesByActivityType);
     };
 
-    const addMilestone = () => {
-        setMilestones([...milestones, { name: '', value: undefined }]);
+    const addMilestone = (activityTypeId: string) => {
+        const newMilestonesByActivityType = { ...milestonesByActivityType };
+        const milestones = [...(newMilestonesByActivityType[activityTypeId] || [])];
+        milestones.push({ name: '', value: undefined, activityTypeId });
+        newMilestonesByActivityType[activityTypeId] = milestones;
+        setMilestonesByActivityType(newMilestonesByActivityType);
     };
 
-    const removeMilestone = (index: number) => {
+    const removeMilestone = (activityTypeId: string, index: number) => {
+        const newMilestonesByActivityType = { ...milestonesByActivityType };
+        const milestones = [...(newMilestonesByActivityType[activityTypeId] || [])];
         if (milestones.length > 1) {
-            setMilestones(milestones.filter((_, i) => i !== index));
+            milestones.splice(index, 1);
+            newMilestonesByActivityType[activityTypeId] = milestones;
+            setMilestonesByActivityType(newMilestonesByActivityType);
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Validation using ValidationUtils
+        // Validation
         const titleValidation = CommonValidationSchemas.challengeTitle(title);
         if (!titleValidation.isValid) {
             notifications.validationError(titleValidation.error!);
@@ -96,6 +167,11 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
             return;
         }
 
+        if (selectedActivityTypeIds.length === 0) {
+            notifications.validationError('Please select at least one activity type');
+            return;
+        }
+
         if (maxParticipants) {
             const maxParticipantsValidation = CommonValidationSchemas.maxParticipants(maxParticipants);
             if (!maxParticipantsValidation.isValid) {
@@ -105,21 +181,32 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
         }
 
         const result = await execute(async () => {
-            // Filter out incomplete milestones
-            const validMilestones = milestones
-                .filter(m => m.name && m.value && m.value > 0)
-                .map(m => ({ name: m.name!, value: m.value! }));
+            // Collect all valid milestones across all activity types
+            const allMilestones: Array<{ name: string, value: number, activityTypeId: string, activityType?: any }> = [];
+            Object.entries(milestonesByActivityType).forEach(([activityTypeId, milestones]) => {
+                const activityType = activityTypes.find(at => at.id === activityTypeId);
+                const validMilestones = milestones
+                    .filter(m => m.name && m.value && m.value > 0)
+                    .map(m => ({
+                        name: m.name!,
+                        value: m.value!,
+                        activityTypeId,
+                        activityType
+                    }));
+                allMilestones.push(...validMilestones);
+            });
 
             const challengeData = {
                 title: title.trim(),
                 description: description.trim() || undefined,
+                activityTypes: selectedActivityTypeIds,
                 challengeType: challengeType.toUpperCase() as 'INDIVIDUAL' | 'TEAM',
                 maxParticipants: maxParticipants ? parseInt(maxParticipants) : undefined,
                 maxTeamSize: challengeType === 'team' && maxTeamSize ? parseInt(maxTeamSize) : undefined,
                 startDate: new Date().toISOString().split('T')[0], // Today
                 endDate,
                 isPublic,
-                milestones: validMilestones // Include milestones
+                milestones: allMilestones
             };
 
             if (isEditing && challengeToEdit) {
@@ -132,14 +219,12 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
         });
 
         if (result) {
-            // Call parent callback
             onSubmit?.(result);
         }
     };
 
     return (
         <VStack as="form" spacing={6} w="full" align="stretch" onSubmit={handleSubmit}>
-
             <FormControl as="fieldset" isRequired>
                 <FormLabel as="legend">Challenge Type</FormLabel>
                 <RadioGroup
@@ -163,7 +248,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
             <FormControl isRequired>
                 <FormLabel>Challenge Title</FormLabel>
                 <Input
-                    placeholder="e.g., August 30-Day Plank Challenge"
+                    placeholder="e.g., Mixed Fitness Challenge - Running & Cycling"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     isDisabled={isSubmitting}
@@ -173,25 +258,25 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
             <FormControl>
                 <FormLabel>Description</FormLabel>
                 <Textarea
-                    placeholder="Briefly describe your challenge, its rules, and what makes it special."
+                    placeholder="Describe your mixed challenge. Include what activities are allowed and any special rules."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     isDisabled={isSubmitting}
                 />
             </FormControl>
 
+            <FormControl isRequired>
+                <FormLabel>Activity Types</FormLabel>
+                <ActivityTypeSelector
+                    activityTypes={activityTypes}
+                    selectedActivityTypeIds={selectedActivityTypeIds}
+                    onSelectionChange={handleActivityTypeChange}
+                    isLoading={isLoadingActivityTypes}
+                    isDisabled={isSubmitting}
+                />
+            </FormControl>
+
             <Grid templateColumns={{ base: '1fr', md: challengeType === 'team' ? '1fr 1fr 1fr' : '1fr 1fr' }} gap={6}>
-                <FormControl>
-                    <FormLabel>Activity Type</FormLabel>
-                    <Select
-                        placeholder="Select activity"
-                        value={activityType}
-                        onChange={(e) => setActivityType(e.target.value)}
-                        isDisabled={isSubmitting}
-                    >
-                        {activityOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                    </Select>
-                </FormControl>
                 <FormControl>
                     <FormLabel>Max {challengeType === 'team' ? 'Teams' : 'Participants'} (Optional)</FormLabel>
                     <Input
@@ -229,72 +314,20 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                 />
             </FormControl>
 
-            <FormControl>
-                <FormLabel>Challenge Rules (Optional)</FormLabel>
-                <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={6}>
-                    <InputGroup>
-                        <Input
-                            type="number"
-                            placeholder="Minimum Duration"
-                            value={minDuration}
-                            onChange={(e) => setMinDuration(e.target.value)}
-                            isDisabled={isSubmitting}
-                        />
-                        <InputRightAddon>minutes</InputRightAddon>
-                    </InputGroup>
-                    <InputGroup>
-                        <Input
-                            type="number"
-                            placeholder="Minimum Repetitions"
-                            value={minRepetitions}
-                            onChange={(e) => setMinRepetitions(e.target.value)}
-                            isDisabled={isSubmitting}
-                        />
-                        <InputRightAddon>reps</InputRightAddon>
-                    </InputGroup>
-                </Grid>
-            </FormControl>
-
-            <FormControl>
-                <FormLabel>Milestone Goals (Optional)</FormLabel>
-                <VStack spacing={4} align="stretch">
-                    {milestones.map((milestone, index) => (
-                        <HStack key={index} spacing={2}>
-                            <Input
-                                placeholder={`Milestone ${index + 1} Name`}
-                                value={milestone.name || ''}
-                                onChange={(e) => handleMilestoneChange(index, 'name', e.target.value)}
-                                isDisabled={isSubmitting}
-                            />
-                            <Input
-                                type="number"
-                                placeholder="Goal Value (e.g., 100)"
-                                value={milestone.value || ''}
-                                onChange={(e) => handleMilestoneChange(index, 'value', e.target.value)}
-                                isDisabled={isSubmitting}
-                            />
-                            <IconButton
-                                aria-label="Remove milestone"
-                                icon={<DeleteIcon />}
-                                colorScheme="red"
-                                variant="ghost"
-                                onClick={() => removeMilestone(index)}
-                                isDisabled={milestones.length <= 1 || isSubmitting}
-                            />
-                        </HStack>
-                    ))}
-                    <Button
-                        leftIcon={<AddIcon />}
-                        size="sm"
-                        variant="outline"
-                        colorScheme="orange"
-                        onClick={addMilestone}
+            {/* Activity-Specific Milestones */}
+            {selectedActivityTypeIds.length > 0 && (
+                <FormControl>
+                    <MilestoneManager
+                        activityTypes={activityTypes}
+                        selectedActivityTypeIds={selectedActivityTypeIds}
+                        milestonesByActivityType={milestonesByActivityType}
+                        onUpdateMilestone={updateMilestone}
+                        onAddMilestone={addMilestone}
+                        onRemoveMilestone={removeMilestone}
                         isDisabled={isSubmitting}
-                    >
-                        Add Milestone
-                    </Button>
-                </VStack>
-            </FormControl>
+                    />
+                </FormControl>
+            )}
 
             <FormControl as="fieldset">
                 <FormLabel as="legend">Visibility</FormLabel>
@@ -333,3 +366,5 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
         </VStack>
     );
 };
+
+export default ChallengeForm;

@@ -1,5 +1,9 @@
 import React from 'react';
-import { Box, Heading, VStack, HStack, Text, Progress, Icon, Badge } from '@chakra-ui/react';
+import {
+    Box, Heading, VStack, HStack, Text, Progress, Icon, Badge,
+    Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon,
+    SimpleGrid, Stat, StatLabel, StatNumber
+} from '@chakra-ui/react';
 import { Card } from '../common/Card';
 import type { Milestone } from '../../types';
 
@@ -13,11 +17,14 @@ const MilestoneIcon: React.FC<{ className?: string }> = ({ className }) => (
 interface MilestonesDisplayProps {
     milestones?: Milestone[];
     currentProgress?: number;
+    // Add support for activity-specific progress
+    progressByActivityType?: Record<string, number>;
 }
 
 export const MilestonesDisplay: React.FC<MilestonesDisplayProps> = ({
     milestones = [],
-    currentProgress = 0
+    currentProgress = 0,
+    progressByActivityType = {}
 }) => {
     if (!milestones || milestones.length === 0) {
         return (
@@ -30,114 +37,228 @@ export const MilestonesDisplay: React.FC<MilestonesDisplayProps> = ({
         );
     }
 
-    // Sort milestones by value
-    const sortedMilestones = [...milestones].sort((a, b) => a.value - b.value);
+    // Group milestones by activity type
+    const milestonesByActivityType = milestones.reduce((acc, milestone) => {
+        const activityTypeId = milestone.activityTypeId || 'general';
+        if (!acc[activityTypeId]) {
+            acc[activityTypeId] = [];
+        }
+        acc[activityTypeId].push(milestone);
+        return acc;
+    }, {} as Record<string, Milestone[]>);
+
+    // Calculate overall progress statistics
+    const totalMilestones = milestones.length;
+    const achievedMilestones = milestones.filter(milestone => {
+        const activityProgress = progressByActivityType[milestone.activityTypeId || 'general'] || currentProgress;
+        return activityProgress >= milestone.value;
+    }).length;
+    const overallCompletionPercentage = totalMilestones > 0 ? (achievedMilestones / totalMilestones) * 100 : 0;
 
     return (
         <Card p={6}>
-            <Heading as="h3" size="md" mb={4}>
-                <HStack>
-                    <Icon as={MilestoneIcon} w={5} h={5} color="purple.500" />
-                    <Text>Milestones ({milestones.length})</Text>
-                </HStack>
-            </Heading>
-
-            <VStack spacing={4} align="stretch">
-                {sortedMilestones.map((milestone, index) => {
-                    const isAchieved = currentProgress >= milestone.value;
-                    const isNext = !isAchieved && (index === 0 || currentProgress >= sortedMilestones[index - 1]?.value);
-
-                    return (
-                        <Box key={`${milestone.name}-${milestone.value}`} position="relative">
-                            <HStack justify="space-between" align="center" mb={2}>
-                                <HStack>
-                                    <Box
-                                        w={3}
-                                        h={3}
-                                        rounded="full"
-                                        bg={isAchieved ? 'green.500' : isNext ? 'orange.500' : 'gray.300'}
-                                        border="2px solid"
-                                        borderColor={isAchieved ? 'green.500' : isNext ? 'orange.500' : 'gray.300'}
-                                    />
-                                    <Text
-                                        fontSize="sm"
-                                        fontWeight={isNext ? 'bold' : 'normal'}
-                                        color={isAchieved ? 'green.600' : isNext ? 'orange.600' : 'gray.600'}
-                                    >
-                                        {milestone.name}
-                                    </Text>
-                                </HStack>
-
-                                <HStack spacing={2}>
-                                    <Badge
-                                        colorScheme={isAchieved ? 'green' : isNext ? 'orange' : 'gray'}
-                                        variant={isAchieved ? 'solid' : 'outline'}
-                                    >
-                                        {milestone.value} pts
-                                    </Badge>
-                                    {isAchieved && (
-                                        <Badge colorScheme="green" variant="solid" fontSize="xs">
-                                            ✓ Achieved
-                                        </Badge>
-                                    )}
-                                    {isNext && !isAchieved && (
-                                        <Badge colorScheme="orange" variant="solid" fontSize="xs">
-                                            Next Goal
-                                        </Badge>
-                                    )}
-                                </HStack>
+            <VStack spacing={6} align="stretch">
+                {/* Header with overall progress */}
+                <Box>
+                    <HStack justify="space-between" mb={4}>
+                        <Heading as="h3" size="md">
+                            <HStack>
+                                <Icon as={MilestoneIcon} w={5} h={5} color="purple.500" />
+                                <Text>Challenge Milestones</Text>
                             </HStack>
+                        </Heading>
+                        <Badge
+                            colorScheme={overallCompletionPercentage === 100 ? "green" : overallCompletionPercentage > 50 ? "orange" : "gray"}
+                            variant="solid"
+                            fontSize="sm"
+                            px={3}
+                            py={1}
+                        >
+                            {achievedMilestones}/{totalMilestones} Completed
+                        </Badge>
+                    </HStack>
 
-                            {/* Progress bar for current milestone */}
-                            {isNext && (
-                                <Box ml={6}>
-                                    <Progress
-                                        value={Math.min((currentProgress / milestone.value) * 100, 100)}
-                                        colorScheme="orange"
-                                        size="sm"
-                                        rounded="full"
-                                        bg="gray.100"
-                                    />
-                                    <Text fontSize="xs" color="gray.500" mt={1}>
-                                        {currentProgress} / {milestone.value} points
-                                    </Text>
-                                </Box>
-                            )}
+                    {/* Overall Progress Bar */}
+                    <Box p={4} bg="gray.50" borderRadius="md" border="1px solid" borderColor="gray.200">
+                        <Text fontSize="sm" fontWeight="bold" mb={2} color="gray.700">
+                            Overall Challenge Progress
+                        </Text>
+                        <Progress
+                            value={overallCompletionPercentage}
+                            colorScheme={overallCompletionPercentage === 100 ? "green" : "purple"}
+                            size="lg"
+                            borderRadius="full"
+                            bg="gray.200"
+                        />
+                        <HStack justify="space-between" mt={2}>
+                            <Text fontSize="xs" color="gray.600">
+                                {Math.round(overallCompletionPercentage)}% Complete
+                            </Text>
+                            <Text fontSize="xs" color="gray.600">
+                                {totalMilestones - achievedMilestones} remaining
+                            </Text>
+                        </HStack>
+                    </Box>
+                </Box>
 
-                            {/* Connecting line to next milestone */}
-                            {index < sortedMilestones.length - 1 && (
-                                <Box
-                                    position="absolute"
-                                    left="5px"
-                                    top="20px"
-                                    w="2px"
-                                    h="30px"
-                                    bg={isAchieved ? 'green.200' : 'gray.200'}
-                                />
-                            )}
-                        </Box>
-                    );
-                })}
+                {/* Milestones by Activity Type */}
+                <Accordion allowMultiple defaultIndex={Object.keys(milestonesByActivityType).map((_, index) => index)}>
+                    {Object.entries(milestonesByActivityType).map(([activityTypeId, activityMilestones]) => {
+                        const activityProgress = progressByActivityType[activityTypeId] || currentProgress;
+                        const sortedMilestones = [...activityMilestones].sort((a, b) => a.value - b.value);
+                        const activityType = activityMilestones[0]?.activityType;
+                        const achievedCount = sortedMilestones.filter(m => activityProgress >= m.value).length;
+                        const activityCompletionPercentage = sortedMilestones.length > 0 ? (achievedCount / sortedMilestones.length) * 100 : 0;
+
+                        return (
+                            <AccordionItem key={activityTypeId} border="1px solid" borderColor="gray.200" borderRadius="md" mb={2}>
+                                <AccordionButton
+                                    bg="white"
+                                    _hover={{ bg: "gray.50" }}
+                                    borderRadius="md"
+                                    p={4}
+                                >
+                                    <Box flex="1" textAlign="left">
+                                        <HStack justify="space-between" w="full">
+                                            <VStack align="start" spacing={1}>
+                                                <HStack>
+                                                    <Text fontWeight="bold" color="orange.600">
+                                                        {activityType?.name || 'General'}
+                                                    </Text>
+                                                    {activityType && (
+                                                        <Badge colorScheme="blue" variant="subtle" fontSize="xs">
+                                                            {activityType.category}
+                                                        </Badge>
+                                                    )}
+                                                </HStack>
+                                                <Text fontSize="sm" color="gray.600">
+                                                    {achievedCount}/{sortedMilestones.length} milestones • {Math.round(activityCompletionPercentage)}% complete
+                                                </Text>
+                                            </VStack>
+                                            <HStack>
+                                                <Badge
+                                                    colorScheme={activityCompletionPercentage === 100 ? "green" : activityCompletionPercentage > 0 ? "orange" : "gray"}
+                                                    variant="solid"
+                                                >
+                                                    {activityProgress} {activityType?.unit || 'pts'}
+                                                </Badge>
+                                                <AccordionIcon />
+                                            </HStack>
+                                        </HStack>
+                                    </Box>
+                                </AccordionButton>
+                                <AccordionPanel p={4} bg="gray.50">
+                                    <VStack spacing={4} align="stretch">
+                                        {/* Activity Progress Summary */}
+                                        <SimpleGrid columns={3} spacing={4}>
+                                            <Stat size="sm">
+                                                <StatLabel fontSize="xs">Current Progress</StatLabel>
+                                                <StatNumber fontSize="md" color="blue.600">
+                                                    {activityProgress} {activityType?.unit || 'pts'}
+                                                </StatNumber>
+                                            </Stat>
+                                            <Stat size="sm">
+                                                <StatLabel fontSize="xs">Next Goal</StatLabel>
+                                                <StatNumber fontSize="md" color="orange.600">
+                                                    {(() => {
+                                                        const nextMilestone = sortedMilestones.find(m => activityProgress < m.value);
+                                                        return nextMilestone ? `${nextMilestone.value} ${activityType?.unit || 'pts'}` : 'Complete!';
+                                                    })()}
+                                                </StatNumber>
+                                            </Stat>
+                                            <Stat size="sm">
+                                                <StatLabel fontSize="xs">Completion</StatLabel>
+                                                <StatNumber fontSize="md" color="green.600">
+                                                    {Math.round(activityCompletionPercentage)}%
+                                                </StatNumber>
+                                            </Stat>
+                                        </SimpleGrid>
+
+                                        {/* Individual Milestones */}
+                                        <VStack spacing={3} align="stretch">
+                                            {sortedMilestones.map((milestone, index) => {
+                                                const isAchieved = activityProgress >= milestone.value;
+                                                const isNext = !isAchieved && (index === 0 || activityProgress >= sortedMilestones[index - 1]?.value);
+
+                                                return (
+                                                    <Box key={`${milestone.name}-${milestone.value}`} position="relative">
+                                                        <HStack justify="space-between" align="center" mb={2}>
+                                                            <HStack>
+                                                                <Box
+                                                                    w={3}
+                                                                    h={3}
+                                                                    rounded="full"
+                                                                    bg={isAchieved ? 'green.500' : isNext ? 'orange.500' : 'gray.300'}
+                                                                    border="2px solid"
+                                                                    borderColor={isAchieved ? 'green.500' : isNext ? 'orange.500' : 'gray.300'}
+                                                                />
+                                                                <Text
+                                                                    fontSize="sm"
+                                                                    fontWeight={isNext ? 'bold' : 'normal'}
+                                                                    color={isAchieved ? 'green.600' : isNext ? 'orange.600' : 'gray.600'}
+                                                                >
+                                                                    {milestone.name}
+                                                                </Text>
+                                                            </HStack>
+
+                                                            <HStack spacing={2}>
+                                                                <Badge
+                                                                    colorScheme={isAchieved ? 'green' : isNext ? 'orange' : 'gray'}
+                                                                    variant={isAchieved ? 'solid' : 'outline'}
+                                                                >
+                                                                    {milestone.value} {activityType?.unit || 'pts'}
+                                                                </Badge>
+                                                                {isAchieved && (
+                                                                    <Badge colorScheme="green" variant="solid" fontSize="xs">
+                                                                        ✓ Achieved
+                                                                    </Badge>
+                                                                )}
+                                                                {isNext && !isAchieved && (
+                                                                    <Badge colorScheme="orange" variant="solid" fontSize="xs">
+                                                                        Next Goal
+                                                                    </Badge>
+                                                                )}
+                                                            </HStack>
+                                                        </HStack>
+
+                                                        {/* Progress bar for current milestone */}
+                                                        {isNext && (
+                                                            <Box ml={6}>
+                                                                <Progress
+                                                                    value={Math.min((activityProgress / milestone.value) * 100, 100)}
+                                                                    colorScheme="orange"
+                                                                    size="sm"
+                                                                    borderRadius="full"
+                                                                    bg="gray.200"
+                                                                />
+                                                                <Text fontSize="xs" color="gray.500" mt={1}>
+                                                                    {activityProgress} / {milestone.value} {activityType?.unitLabel || 'points'}
+                                                                </Text>
+                                                            </Box>
+                                                        )}
+
+                                                        {/* Connecting line to next milestone */}
+                                                        {index < sortedMilestones.length - 1 && (
+                                                            <Box
+                                                                position="absolute"
+                                                                left="5px"
+                                                                top="20px"
+                                                                w="2px"
+                                                                h="30px"
+                                                                bg={isAchieved ? 'green.200' : 'gray.200'}
+                                                            />
+                                                        )}
+                                                    </Box>
+                                                );
+                                            })}
+                                        </VStack>
+                                    </VStack>
+                                </AccordionPanel>
+                            </AccordionItem>
+                        );
+                    })}
+                </Accordion>
             </VStack>
-
-            {/* Overall progress summary */}
-            <Box mt={6} p={4} bg="gray.50" rounded="md">
-                <Text fontSize="sm" fontWeight="bold" mb={2}>Overall Progress</Text>
-                <Progress
-                    value={Math.min((currentProgress / Math.max(...sortedMilestones.map(m => m.value))) * 100, 100)}
-                    colorScheme="purple"
-                    size="md"
-                    rounded="full"
-                />
-                <HStack justify="space-between" mt={2}>
-                    <Text fontSize="xs" color="gray.600">
-                        {currentProgress} points
-                    </Text>
-                    <Text fontSize="xs" color="gray.600">
-                        {Math.max(...sortedMilestones.map(m => m.value))} points (max)
-                    </Text>
-                </HStack>
-            </Box>
         </Card>
     );
 };

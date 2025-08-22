@@ -56,39 +56,51 @@ model TeamMembership {
 }
 
 model Challenge {
-  id               String                   @id @default(uuid()) @db.Uuid
-  creatorId        String                   @db.Uuid
-  title            String
-  description      String?
-  challengeType    ChallengeParticipantType @default(INDIVIDUAL)
-  maxParticipants  Int?
-  participantCount Int                      @default(0) // Add this field that triggers maintain
-  startDate        DateTime                 @db.Date
-  endDate          DateTime                 @db.Date
-  isPublic         Boolean                  @default(true)
-  createdAt        DateTime                 @default(now()) @db.Timestamptz(6)
-  expiresAt        DateTime?                @db.Timestamptz(6)
-  maxTeamSize      Int?
-  status           ChallengeStatus          @default(ACTIVE)
-  activities       Activity[]
-  creator          Profile                  @relation("ChallengeCreator", fields: [creatorId], references: [id])
-  participants     ChallengeParticipant[]
-  milestones       Milestone[]
-  posts            Post[]
+  id                  String                   @id @default(uuid()) @db.Uuid
+  creatorId           String                   @db.Uuid
+  title               String
+  description         String?
+  challengeType       ChallengeParticipantType @default(INDIVIDUAL)
+  maxParticipants     Int?
+  participantCount    Int                      @default(0) // Add this field that triggers maintain
+  startDate           DateTime                 @db.Date
+  endDate             DateTime                 @db.Date
+  isPublic            Boolean                  @default(true)
+  createdAt           DateTime                 @default(now()) @db.Timestamptz(6)
+  expiresAt           DateTime?                @db.Timestamptz(6)
+  maxTeamSize         Int?
+  status              ChallengeStatus          @default(ACTIVE)
+  activities          Activity[]
+  creator             Profile                  @relation("ChallengeCreator", fields: [creatorId], references: [id])
+  participants        ChallengeParticipant[]
+  milestones          Milestone[]
+  posts               Post[]
+  supportedActivities ChallengeActivityType[] // Many-to-many relation for supported activity types
 
   @@index([creatorId, status], map: "idx_challenge_creator_status")
   @@index([status], map: "idx_challenge_status")
 }
 
+model ChallengeActivityType {
+  id             String       @id @default(uuid()) @db.Uuid
+  challengeId    String       @db.Uuid
+  activityTypeId String       @db.Uuid
+  challenge      Challenge    @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
+
+  @@unique([challengeId, activityTypeId])
+}
+
 model Milestone {
   id                  String              @id @default(uuid()) @db.Uuid
   challengeId         String              @db.Uuid
+  activityTypeId      String              @db.Uuid // Which activity type this milestone is for
   name                String
   description         String?
-  targetValue         Int
-  valueType           String
+  targetValue         Float // Target value in the activity's unit
   order               Int
   createdAt           DateTime            @default(now()) @db.Timestamptz(6)
+  activityType        ActivityType        @relation(fields: [activityTypeId], references: [id])
   challenge           Challenge           @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   participantProgress MilestoneProgress[]
 }
@@ -127,17 +139,34 @@ model ChallengeParticipant {
   @@index([challengeId, teamId], map: "idx_challengeparticipant_challengeid_teamid_unique")
 }
 
+model ActivityType {
+  id          String                  @id @default(uuid()) @db.Uuid
+  name        String                  @unique // e.g., "Running", "Cycling", "Push-ups", "Meditation"
+  category    String // e.g., "Cardio", "Strength", "Flexibility", "Mindfulness"
+  unit        String // e.g., "km", "minutes", "reps", "sets"
+  unitLabel   String // e.g., "kilometers", "minutes", "repetitions", "sets"
+  description String?
+  isActive    Boolean                 @default(true)
+  createdAt   DateTime                @default(now()) @db.Timestamptz(6)
+  activities  Activity[]
+  milestones  Milestone[]
+  challenges  ChallengeActivityType[]
+}
+
 model Activity {
-  id            String               @id @default(uuid()) @db.Uuid
-  participantId String               @db.Uuid
-  notes         String?
-  date          DateTime             @db.Date
-  uploadedAt    DateTime             @default(now()) @db.Timestamptz(6)
-  profileId     String?              @db.Uuid
-  challengeId   String?              @db.Uuid
-  Challenge     Challenge?           @relation(fields: [challengeId], references: [id])
-  participant   ChallengeParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
-  Profile       Profile?             @relation(fields: [profileId], references: [id])
+  id             String               @id @default(uuid()) @db.Uuid
+  participantId  String               @db.Uuid
+  activityTypeId String               @db.Uuid
+  value          Float // The numeric value (distance, time, reps, etc.)
+  notes          String?
+  date           DateTime             @db.Date
+  uploadedAt     DateTime             @default(now()) @db.Timestamptz(6)
+  profileId      String?              @db.Uuid
+  challengeId    String?              @db.Uuid
+  activityType   ActivityType         @relation(fields: [activityTypeId], references: [id])
+  Challenge      Challenge?           @relation(fields: [challengeId], references: [id])
+  participant    ChallengeParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  Profile        Profile?             @relation(fields: [profileId], references: [id])
 }
 
 model Post {

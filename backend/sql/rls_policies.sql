@@ -4,7 +4,7 @@
 -- CLEANUP EXISTING POLICIES
 -- =====================================================
 -- Drop all existing policies to avoid conflicts
-DO $$ DECLARE r RECORD;
+DO $ $ DECLARE r RECORD;
 
 BEGIN FOR r IN (
     SELECT
@@ -19,7 +19,7 @@ BEGIN FOR r IN (
 
 END LOOP;
 
-END $$;
+END $ $;
 
 -- =====================================================
 -- ENABLE RLS ON ALL TABLES
@@ -37,6 +37,12 @@ ALTER TABLE
 
 ALTER TABLE
     "public"."Challenge" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE
+    "public"."ChallengeActivityType" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE
+    "public"."ActivityType" ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE
     "public"."Milestone" ENABLE ROW LEVEL SECURITY;
@@ -59,6 +65,63 @@ ALTER TABLE
 -- Re-enable RLS on profiles AFTER ensuring triggers work
 ALTER TABLE
     "public"."profiles" ENABLE ROW LEVEL SECURITY;
+
+-- =====================================================
+-- ACTIVITY TYPE POLICIES
+-- =====================================================
+CREATE POLICY "Activity types are viewable by everyone" ON "public"."ActivityType" FOR
+SELECT
+    USING (true);
+
+-- Only system/admin can manage activity types (for now)
+CREATE POLICY "System can manage activity types" ON "public"."ActivityType" FOR ALL USING (true) WITH CHECK (true);
+
+-- =====================================================
+-- CHALLENGE ACTIVITY TYPE POLICIES
+-- =====================================================
+CREATE POLICY "Challenge activity types are viewable by everyone" ON "public"."ChallengeActivityType" FOR
+SELECT
+    USING (true);
+
+CREATE POLICY "Challenge creators can manage activity types" ON "public"."ChallengeActivityType" FOR
+INSERT
+    WITH CHECK (
+        EXISTS (
+            SELECT
+                1
+            FROM
+                "public"."Challenge"
+            WHERE
+                id = "challengeId"
+                AND "creatorId" = auth.uid()
+        )
+    );
+
+CREATE POLICY "Challenge creators can update activity types" ON "public"."ChallengeActivityType" FOR
+UPDATE
+    USING (
+        EXISTS (
+            SELECT
+                1
+            FROM
+                "public"."Challenge"
+            WHERE
+                id = "challengeId"
+                AND "creatorId" = auth.uid()
+        )
+    );
+
+CREATE POLICY "Challenge creators can delete activity types" ON "public"."ChallengeActivityType" FOR DELETE USING (
+    EXISTS (
+        SELECT
+            1
+        FROM
+            "public"."Challenge"
+        WHERE
+            id = "challengeId"
+            AND "creatorId" = auth.uid()
+    )
+);
 
 -- =====================================================
 -- PROFILES POLICIES

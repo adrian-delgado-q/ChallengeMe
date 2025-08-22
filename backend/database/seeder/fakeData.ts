@@ -88,11 +88,19 @@ async function main() {
   const challenges = [];
   const challengeTitles = [
     'Daily Running Challenge',
-    'Cycling Adventure Quest',
+    'Cycling Adventure Quest', 
     'Swimming Endurance Test',
     'Strength Training Bootcamp',
     'Walking Wellness Journey'
   ];
+  
+  // Get activity types to assign to challenges
+  const allActivityTypes = await prisma.activityType.findMany();
+  const runningType = allActivityTypes.find(at => at.name === 'Running');
+  const cyclingType = allActivityTypes.find(at => at.name === 'Cycling');
+  const swimmingType = allActivityTypes.find(at => at.name === 'Swimming');
+  const strengthTypes = allActivityTypes.filter(at => ['Weight Lifting', 'Push-ups', 'Pull-ups', 'Squats'].includes(at.name));
+  const walkingType = allActivityTypes.find(at => at.name === 'Walking');
   
   for (let i = 0; i < 5; i++) {
     const startDate = faker.date.soon();
@@ -109,6 +117,36 @@ async function main() {
       },
     });
     challenges.push(challenge);
+    
+    // Assign activity types to challenges based on title
+    let challengeActivityTypes: any[] = [];
+    switch (challengeTitles[i]) {
+      case 'Daily Running Challenge':
+        if (runningType) challengeActivityTypes = [runningType];
+        break;
+      case 'Cycling Adventure Quest':
+        if (cyclingType) challengeActivityTypes = [cyclingType];
+        break;
+      case 'Swimming Endurance Test':
+        if (swimmingType) challengeActivityTypes = [swimmingType];
+        break;
+      case 'Strength Training Bootcamp':
+        challengeActivityTypes = strengthTypes;
+        break;
+      case 'Walking Wellness Journey':
+        if (walkingType) challengeActivityTypes = [walkingType];
+        break;
+    }
+    
+    // Create ChallengeActivityType relationships
+    for (const activityType of challengeActivityTypes) {
+      await prisma.challengeActivityType.create({
+        data: {
+          challengeId: challenge.id,
+          activityTypeId: activityType.id,
+        },
+      });
+    }
   }
   console.log(`Created ${challenges.length} challenges.`);
 
@@ -152,20 +190,47 @@ async function main() {
 
 
   // --- 6. Create Activities ---
+  // Use the activity types we already fetched
   const activities = [];
-    for (let i = 0; i < 5; i++) {
-        const participant = faker.helpers.arrayElement(challengeParticipants);
-        const activity = await prisma.activity.create({
-            data: {
-                participantId: participant.id,
-                notes: faker.lorem.sentence(),
-                date: faker.date.recent(),
-                profileId: participant.userId,
-                challengeId: participant.challengeId,
-            },
-        });
-        activities.push(activity);
+  for (let i = 0; i < 20; i++) {
+    const participant = faker.helpers.arrayElement(challengeParticipants);
+    const activityType = faker.helpers.arrayElement(allActivityTypes);
+    
+    // Generate appropriate value based on activity type
+    let value: number;
+    switch (activityType.unit) {
+      case 'km':
+        value = faker.number.float({ min: 1, max: 20, fractionDigits: 1 });
+        break;
+      case 'minutes':
+        value = faker.number.int({ min: 10, max: 120 });
+        break;
+      case 'reps':
+        value = faker.number.int({ min: 10, max: 100 });
+        break;
+      case 'kg':
+        value = faker.number.int({ min: 20, max: 150 });
+        break;
+      case 'steps':
+        value = faker.number.int({ min: 1000, max: 15000 });
+        break;
+      default:
+        value = faker.number.int({ min: 1, max: 100 });
     }
+    
+    const activity = await prisma.activity.create({
+      data: {
+        participantId: participant.id,
+        activityTypeId: activityType.id,
+        value: value,
+        notes: faker.lorem.sentence(),
+        date: faker.date.recent({ days: 30 }),
+        profileId: participant.userId,
+        challengeId: participant.challengeId,
+      },
+    });
+    activities.push(activity);
+  }
   console.log(`Created ${activities.length} activities.`);
 
 
@@ -202,47 +267,34 @@ async function main() {
 
   // --- 9. Create Milestones ---
   const milestones = [];
-  const milestoneTemplates: Record<string, Array<{ name: string; targetValue: number; valueType: string; order: number }>> = {
-    'Daily Running Challenge': [
-      { name: 'First Steps', targetValue: 10, valueType: 'activities', order: 1 },
-      { name: 'Bronze Runner', targetValue: 50, valueType: 'activities', order: 2 },
-      { name: 'Silver Sprinter', targetValue: 100, valueType: 'activities', order: 3 },
-      { name: 'Gold Marathon', targetValue: 200, valueType: 'activities', order: 4 }
-    ],
-    'Cycling Adventure Quest': [
-      { name: 'Cyclist', targetValue: 30, valueType: 'activities', order: 1 },
-      { name: 'Road Rider', targetValue: 80, valueType: 'activities', order: 2 },
-      { name: 'Tour Champion', targetValue: 160, valueType: 'activities', order: 3 }
-    ],
-    'Swimming Endurance Test': [
-      { name: 'Paddler', targetValue: 20, valueType: 'activities', order: 1 },
-      { name: 'Swimmer', targetValue: 60, valueType: 'activities', order: 2 },
-      { name: 'Aquatic Ace', targetValue: 120, valueType: 'activities', order: 3 }
-    ],
-    'Strength Training Bootcamp': [
-      { name: 'Beginner', targetValue: 15, valueType: 'activities', order: 1 },
-      { name: 'Lifter', targetValue: 45, valueType: 'activities', order: 2 },
-      { name: 'Strong', targetValue: 90, valueType: 'activities', order: 3 },
-      { name: 'Beast Mode', targetValue: 180, valueType: 'activities', order: 4 }
-    ],
-    'Walking Wellness Journey': [
-      { name: 'Walker', targetValue: 25, valueType: 'activities', order: 1 },
-      { name: 'Strider', targetValue: 75, valueType: 'activities', order: 2 },
-      { name: 'Trekker', targetValue: 150, valueType: 'activities', order: 3 }
-    ]
-  };
-
+  
+  // Create milestones for each challenge based on its supported activity types
   for (const challenge of challenges) {
-    const milestoneTemplate = milestoneTemplates[challenge.title];
-    if (milestoneTemplate) {
-      for (const template of milestoneTemplate) {
+    // Get the activity types for this challenge
+    const challengeActivityTypes = await prisma.challengeActivityType.findMany({
+      where: { challengeId: challenge.id },
+      include: { activityType: true }
+    });
+    
+    if (challengeActivityTypes.length > 0) {
+      // Create milestones for the first activity type of each challenge
+      const primaryActivityType = challengeActivityTypes[0].activityType;
+      
+      const milestoneTemplates = [
+        { name: 'First Steps', targetValue: 10, order: 1 },
+        { name: 'Getting Started', targetValue: 25, order: 2 },
+        { name: 'Making Progress', targetValue: 50, order: 3 },
+        { name: 'Champion Level', targetValue: 100, order: 4 }
+      ];
+      
+      for (const template of milestoneTemplates) {
         const milestone = await prisma.milestone.create({
           data: {
             challengeId: challenge.id,
+            activityTypeId: primaryActivityType.id,
             name: template.name,
-            description: `Achieve ${template.targetValue} ${template.valueType} in this challenge`,
+            description: `Achieve ${template.targetValue} ${primaryActivityType.unitLabel} in this challenge`,
             targetValue: template.targetValue,
-            valueType: template.valueType,
             order: template.order
           }
         });

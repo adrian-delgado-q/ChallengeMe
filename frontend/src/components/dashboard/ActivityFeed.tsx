@@ -36,11 +36,11 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({ challengeId }) => {
         }
     };
 
-    // Set up real-time updates for activities
+    // Set up real-time updates for activities - only when challengeId is present
     useActivityUpdates({
         challengeId,
         onActivityUpdate: handleRefresh,
-        enabled: true
+        enabled: !!challengeId // Only enable when challengeId exists
     });
 
     if (loading) {
