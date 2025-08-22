@@ -7,10 +7,24 @@ export * from './commonPatterns';
 export type ChallengeType = 'individual' | 'team';
 export type TeamRole = 'ADMIN' | 'MEMBER';
 
+// --- Activity Types ---
+export interface ActivityType {
+  id: string;
+  name: string;
+  category: string;
+  unit: string;
+  unitLabel: string;
+  description?: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
 // --- Challenge & Team Structures ---
 export interface Milestone {
   name: string;
   value: number;
+  activityTypeId: string; // ActivityType ID this milestone is for
+  activityType?: ActivityType; // Populated ActivityType data
 }
 
 export interface RuleSet {
@@ -29,7 +43,8 @@ export interface Challenge {
   creatorId?: string;
   title: string;
   description?: string;
-  type?: string; // Activity type (running, cycling, etc.)
+  type?: string; // Activity type (running, cycling, etc.) - kept for backward compatibility
+  activityTypes?: string[]; // Array of supported activity types for mixed challenges
   challengeType: ChallengeType;
   status?: ChallengeStatus; // Challenge status for management
   participants?: number; // Count of participants
@@ -125,7 +140,7 @@ export interface ChallengeParticipant {
 
 // --- Activity & Social ---
 export interface Activity {
-  id: string; // Changed from number to string
+  id: string;
   participantId?: string; // Reference to ChallengeParticipant
   userId?: string; // For backward compatibility
   user?: {
@@ -142,9 +157,10 @@ export interface Activity {
     id: string;
     name: string;
   };
+  activityTypeId: string; // Reference to ActivityType
+  activityType?: ActivityType; // Populated ActivityType data
+  value: number; // Single value based on activity type's unit
   action?: string; // e.g., "logged a 10km run" - for UI display
-  distance?: number; // in km
-  duration?: number; // in minutes
   notes?: string;
   date: string; // Date of the activity
   timestamp?: string; // ISO 8601 timestamp - for backward compatibility
@@ -152,6 +168,14 @@ export interface Activity {
   time?: string; // User-friendly time, e.g., "2h ago"
   avatar?: string; // For backward compatibility
   isEditable?: boolean; // Whether the activity can be edited (within 48h)
+}
+
+export interface ActivityInput {
+  participantId: string;
+  activityTypeId: string; // Reference to ActivityType
+  value: number; // Single value based on activity type's unit
+  notes?: string;
+  date: string;
 }
 
 export interface Post {

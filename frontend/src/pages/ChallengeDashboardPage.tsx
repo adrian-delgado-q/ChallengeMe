@@ -127,6 +127,7 @@ const ChallengeDashboardPage: React.FC = () => {
                         <MilestonesDisplay
                             milestones={challenge.milestones}
                             currentProgress={challenge.progress || 0}
+                            progressByActivityType={challenge.progressByActivityType || {}}
                         />
 
                         {challengeId ? (

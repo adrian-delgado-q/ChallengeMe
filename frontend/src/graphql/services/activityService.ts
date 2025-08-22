@@ -1,21 +1,36 @@
 import { supabase, getCurrentUser } from '../../supabase/client';
 import { generateUUID } from '../../utils/uuid';
-
-// Types for activity operations
-export interface ActivityInput {
-    participantId: string; // ChallengeParticipant ID
-    notes?: string;
-    date: string; // ISO date string
-}
+import type { ActivityInput } from '../../types';
 
 // Activity data service
 export class ActivityService {
     // Get activities for a specific challenge
     static async getActivitiesForChallenge(challengeId: string) {
+        // First get all participants for this challenge
+        const { data: participants, error: participantsError } = await supabase
+            .from('ChallengeParticipant')
+            .select('id, userId, teamId')
+            .eq('challengeId', challengeId);
+
+        if (participantsError) throw new Error(participantsError.message);
+        if (!participants || participants.length === 0) return [];
+
+        const participantIds = participants.map(p => p.id);
+
+        // Get activities for these participants
         const { data: activities, error } = await supabase
             .from('Activity')
-            .select('*')
-            .eq('challengeId', challengeId);
+            .select(`
+                id, 
+                participantId, 
+                activityTypeId, 
+                value, 
+                notes, 
+                date, 
+                uploadedAt,
+                activityType:ActivityType(id, name, category, unit, unitLabel, description)
+            `)
+            .in('participantId', participantIds);
 
         if (error) throw new Error(error.message);
 
@@ -69,6 +84,14 @@ export class ActivityService {
 
                 return {
                     id: activity.id,
+                    activityType: activity.activityType,
+                    distance: activity.distance,
+                    duration: activity.duration,
+                    repetitions: activity.repetitions,
+                    weight: activity.weight,
+                    sets: activity.sets,
+                    calories: activity.calories,
+                    pace: activity.pace,
                     notes: activity.notes,
                     date: activity.date,
                     uploadedAt: activity.uploadedAt,
@@ -89,7 +112,7 @@ export class ActivityService {
 
         const { data: activities, error } = await supabase
             .from('Activity')
-            .select('*')
+            .select('id, participantId, challengeId, activityType, distance, duration, repetitions, weight, sets, calories, pace, notes, date, uploadedAt, profileId')
             .eq('profileId', currentUser.id);
 
         if (error) throw new Error(error.message);
@@ -136,6 +159,14 @@ export class ActivityService {
 
                 return {
                     id: activity.id,
+                    activityType: activity.activityType,
+                    distance: activity.distance,
+                    duration: activity.duration,
+                    repetitions: activity.repetitions,
+                    weight: activity.weight,
+                    sets: activity.sets,
+                    calories: activity.calories,
+                    pace: activity.pace,
                     notes: activity.notes,
                     date: activity.date,
                     uploadedAt: activity.uploadedAt,
@@ -178,12 +209,13 @@ export class ActivityService {
         const { data: newActivity, error } = await supabase
             .from('Activity')
             .insert({
-                id: activityId, // Explicitly provide the UUID
+                id: activityId,
                 participantId: activityData.participantId,
-                challengeId: participant.challengeId, // Include challengeId
+                activityTypeId: activityData.activityTypeId,
+                value: activityData.value,
                 notes: activityData.notes || null,
                 date: activityData.date,
-                profileId: user.id
+                uploadedAt: new Date().toISOString()
             })
             .select()
             .single();
@@ -222,6 +254,8 @@ export class ActivityService {
         const { data: updatedActivity, error } = await supabase
             .from('Activity')
             .update({
+                activityTypeId: activityData.activityTypeId,
+                value: activityData.value,
                 notes: activityData.notes,
                 date: activityData.date
             })
@@ -285,7 +319,7 @@ export class ActivityService {
         // Get all user activities
         const { data: activities, error } = await supabase
             .from('Activity')
-            .select('*')
+            .select('id, participantId, challengeId, activityType, distance, duration, repetitions, weight, sets, calories, pace, notes, date, uploadedAt, profileId')
             .eq('profileId', user.id)
             .order('uploadedAt', { ascending: false });
 
@@ -335,6 +369,14 @@ export class ActivityService {
 
                 return {
                     id: activity.id,
+                    activityType: activity.activityType,
+                    distance: activity.distance,
+                    duration: activity.duration,
+                    repetitions: activity.repetitions,
+                    weight: activity.weight,
+                    sets: activity.sets,
+                    calories: activity.calories,
+                    pace: activity.pace,
                     notes: activity.notes,
                     date: activity.date,
                     uploadedAt: activity.uploadedAt,
@@ -361,7 +403,7 @@ export class ActivityService {
     static async getRecentActivities(limit: number = 20) {
         const { data: activities, error } = await supabase
             .from('Activity')
-            .select('*')
+            .select('id, participantId, challengeId, activityType, distance, duration, repetitions, weight, sets, calories, pace, notes, date, uploadedAt, profileId')
             .order('uploadedAt', { ascending: false })
             .limit(limit);
 
@@ -417,6 +459,14 @@ export class ActivityService {
 
                 return {
                     id: activity.id,
+                    activityType: activity.activityType,
+                    distance: activity.distance,
+                    duration: activity.duration,
+                    repetitions: activity.repetitions,
+                    weight: activity.weight,
+                    sets: activity.sets,
+                    calories: activity.calories,
+                    pace: activity.pace,
                     notes: activity.notes,
                     date: activity.date,
                     uploadedAt: activity.uploadedAt,
@@ -493,6 +543,8 @@ export class ActivityService {
             // Create a test activity
             const testActivity = {
                 participantId: participant.id,
+                activityTypeId: 'test-activity-type-id', // This should be a valid ActivityType ID
+                value: 5.0, // Test value (e.g., 5 km)
                 notes: `Test activity - ${new Date().toLocaleTimeString()}`,
                 date: new Date().toISOString().split('T')[0]
             };

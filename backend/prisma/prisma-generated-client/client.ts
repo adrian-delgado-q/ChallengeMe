@@ -60,6 +60,11 @@ export type TeamMembership = Prisma.TeamMembershipModel
  */
 export type Challenge = Prisma.ChallengeModel
 /**
+ * Model ChallengeActivityType
+ * 
+ */
+export type ChallengeActivityType = Prisma.ChallengeActivityTypeModel
+/**
  * Model Milestone
  * 
  */
@@ -74,6 +79,11 @@ export type MilestoneProgress = Prisma.MilestoneProgressModel
  * 
  */
 export type ChallengeParticipant = Prisma.ChallengeParticipantModel
+/**
+ * Model ActivityType
+ * 
+ */
+export type ActivityType = Prisma.ActivityTypeModel
 /**
  * Model Activity
  * 

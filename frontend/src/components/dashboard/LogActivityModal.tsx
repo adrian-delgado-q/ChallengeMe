@@ -18,20 +18,24 @@ import {
   useDisclosure,
   Text,
   Alert,
-  AlertIcon
+  AlertIcon,
+  Select,
+  Spinner,
+  Box
 } from '@chakra-ui/react';
 import { useActivities, useChallenges, useTeams } from '../../hooks/useData';
 import { ChallengeService } from '../../graphql/services';
+import { ActivityTypeService } from '../../graphql/services/activityTypeService';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ValidationUtils } from '../../utils/validation';
 import { TeamSelectionModal } from '../challenges/TeamSelectionModal';
-import type { Challenge } from '../../types';
+import type { Challenge, ActivityType } from '../../types';
 
 interface LogActivityModalProps {
   isOpen: boolean;
   onClose: () => void;
-  challengeId?: string; // Challenge ID
+  challengeId?: string;
   onActivityLogged?: () => void;
 }
 
@@ -41,8 +45,14 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
   challengeId,
   onActivityLogged
 }) => {
-  const [distance, setDistance] = useState('');
-  const [duration, setDuration] = useState('');
+  // State for activity types
+  const [activityTypes, setActivityTypes] = useState<ActivityType[]>([]);
+  const [challengeActivityTypes, setChallengeActivityTypes] = useState<ActivityType[]>([]);
+  const [isLoadingActivityTypes, setIsLoadingActivityTypes] = useState(true);
+
+  // Form state
+  const [selectedActivityTypeId, setSelectedActivityTypeId] = useState('');
+  const [value, setValue] = useState('');
   const [notes, setNotes] = useState('');
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [showJoinPrompt, setShowJoinPrompt] = useState(false);
@@ -58,44 +68,76 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
   });
   const initialRef = React.useRef(null);
 
-  // Fetch challenge details when modal opens
+  // Fetch challenge details and activity types when modal opens
   useEffect(() => {
-    const fetchChallenge = async () => {
+    const fetchData = async () => {
       if (!challengeId || !isOpen) return;
 
       try {
+        setIsLoadingActivityTypes(true);
+
+        // Load all activity types
+        const allActivityTypes = await ActivityTypeService.getActivityTypes();
+        setActivityTypes(allActivityTypes);
+
+        // Fetch challenge details
         const challengeData = await ChallengeService.getChallengeById(challengeId);
         setChallenge(challengeData);
+
+        // Filter activity types based on challenge's supported types
+        if (challengeData.activityTypes && challengeData.activityTypes.length > 0) {
+          const supportedTypes = allActivityTypes.filter(at =>
+            challengeData.activityTypes!.includes(at.id)
+          );
+          setChallengeActivityTypes(supportedTypes);
+
+          // Set default activity type for single-activity challenges
+          if (supportedTypes.length === 1) {
+            setSelectedActivityTypeId(supportedTypes[0].id);
+          }
+        } else {
+          // If challenge doesn't have activity types set, show all
+          setChallengeActivityTypes(allActivityTypes);
+        }
       } catch (error) {
-        console.error('Error fetching challenge:', error);
+        console.error('Error fetching data:', error);
+        notifications.error('Failed to load activity types');
+      } finally {
+        setIsLoadingActivityTypes(false);
       }
     };
 
-    fetchChallenge();
+    fetchData();
   }, [challengeId, isOpen]);
 
   const handleSubmit = async () => {
-    // Validation using ValidationUtils
+    // Validation
     if (!challengeId) {
       notifications.error('Error', 'No challenge ID provided');
       return;
     }
 
-    const distanceValidation = ValidationUtils.combine(
-      ValidationUtils.required(distance, 'Distance'),
-      ValidationUtils.numeric(distance, 0.1, 1000, 'Distance')
-    );
-    if (!distanceValidation.isValid) {
-      notifications.validationError(distanceValidation.error!);
+    if (!selectedActivityTypeId) {
+      notifications.error('Validation Error', 'Please select an activity type');
       return;
     }
 
-    if (duration) {
-      const durationValidation = ValidationUtils.numeric(duration, 1, 1440, 'Duration');
-      if (!durationValidation.isValid) {
-        notifications.validationError(durationValidation.error!);
-        return;
-      }
+    if (!value || value.trim() === '') {
+      notifications.error('Validation Error', 'Please enter a value for your activity');
+      return;
+    }
+
+    // Validate the numeric value
+    const numericValue = parseFloat(value);
+    if (isNaN(numericValue) || numericValue <= 0) {
+      notifications.error('Validation Error', 'Please enter a valid positive number');
+      return;
+    }
+
+    const selectedActivityType = challengeActivityTypes.find(at => at.id === selectedActivityTypeId);
+    if (!selectedActivityType) {
+      notifications.error('Error', 'Selected activity type not found');
+      return;
     }
 
     const result = await execute(async () => {
@@ -115,30 +157,21 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
           // Use the newly created participant ID
           const newParticipantId = participant.id;
 
-          // Create activity notes combining distance, duration, and user notes
-          const activityNotes = [
-            `Distance: ${distance} km`,
-            duration && `Duration: ${duration} minutes`,
-            notes && `Notes: ${notes}`
-          ].filter(Boolean).join(' | ');
-
           await createActivity({
             participantId: newParticipantId,
-            notes: activityNotes,
+            activityTypeId: selectedActivityTypeId,
+            value: numericValue,
+            notes,
             date: new Date().toISOString().split('T')[0] // Today's date
           });
         }
       } else {
         // User is already a participant
-        const activityNotes = [
-          `Distance: ${distance} km`,
-          duration && `Duration: ${duration} minutes`,
-          notes && `Notes: ${notes}`
-        ].filter(Boolean).join(' | ');
-
         await createActivity({
           participantId,
-          notes: activityNotes,
+          activityTypeId: selectedActivityTypeId,
+          value: numericValue,
+          notes,
           date: new Date().toISOString().split('T')[0] // Today's date
         });
       }
@@ -148,10 +181,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 
     if (result) {
       // Reset form and close modal
-      setDistance('');
-      setDuration('');
-      setNotes('');
-      setShowJoinPrompt(false);
+      resetForm();
       onActivityLogged?.();
       onClose();
     }
@@ -162,16 +192,12 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
       // Join as individual and then log activity
       const participant = await ChallengeService.joinChallengeAsIndividual(challengeId!);
 
-      // Create activity notes combining distance, duration, and user notes
-      const activityNotes = [
-        `Distance: ${distance} km`,
-        duration && `Duration: ${duration} minutes`,
-        notes && `Notes: ${notes}`
-      ].filter(Boolean).join(' | ');
-
+      const numericValue = parseFloat(value);
       await createActivity({
         participantId: participant.id,
-        notes: activityNotes,
+        activityTypeId: selectedActivityTypeId,
+        value: numericValue,
+        notes,
         date: new Date().toISOString().split('T')[0] // Today's date
       });
 
@@ -180,10 +206,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 
     if (result) {
       // Reset form and close modal
-      setDistance('');
-      setDuration('');
-      setNotes('');
-      setShowJoinPrompt(false);
+      resetForm();
       onActivityLogged?.();
       onClose();
     }
@@ -206,16 +229,12 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
         throw new Error('Failed to get participant ID after joining');
       }
 
-      // Create activity notes combining distance, duration, and user notes
-      const activityNotes = [
-        `Distance: ${distance} km`,
-        duration && `Duration: ${duration} minutes`,
-        notes && `Notes: ${notes}`
-      ].filter(Boolean).join(' | ');
-
+      const numericValue = parseFloat(value);
       await createActivity({
         participantId,
-        notes: activityNotes,
+        activityTypeId: selectedActivityTypeId,
+        value: numericValue,
+        notes,
         date: new Date().toISOString().split('T')[0] // Today's date
       });
 
@@ -224,22 +243,23 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 
     if (result) {
       // Reset form and close modal
-      setDistance('');
-      setDuration('');
-      setNotes('');
-      setShowJoinPrompt(false);
+      resetForm();
       onTeamModalClose();
       onActivityLogged?.();
       onClose();
     }
   };
 
+  const resetForm = () => {
+    setSelectedActivityTypeId('');
+    setValue('');
+    setNotes('');
+    setShowJoinPrompt(false);
+  };
+
   const handleClose = () => {
     if (!isSubmitting) {
-      setDistance('');
-      setDuration('');
-      setNotes('');
-      setShowJoinPrompt(false);
+      resetForm();
       onClose();
     }
   };
@@ -302,33 +322,64 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
                 </>
               ) : (
                 <>
-                  <FormControl isRequired>
-                    <FormLabel>Distance</FormLabel>
-                    <InputGroup>
-                      <Input
-                        ref={initialRef}
-                        type="number"
-                        placeholder="e.g., 5.5"
-                        value={distance}
-                        onChange={(e) => setDistance(e.target.value)}
+                  {/* Activity Type Selection */}
+                  {isLoadingActivityTypes ? (
+                    <Box textAlign="center" py={4}>
+                      <Spinner size="md" color="orange.500" />
+                      <Text mt={2} fontSize="sm" color="gray.500">Loading activity types...</Text>
+                    </Box>
+                  ) : challengeActivityTypes.length > 1 ? (
+                    <FormControl isRequired>
+                      <FormLabel>Activity Type</FormLabel>
+                      <Select
+                        placeholder="Select activity type"
+                        value={selectedActivityTypeId}
+                        onChange={(e) => setSelectedActivityTypeId(e.target.value)}
                         isDisabled={isSubmitting}
-                      />
-                      <InputRightAddon>km</InputRightAddon>
-                    </InputGroup>
-                  </FormControl>
-                  <FormControl>
-                    <FormLabel>Duration (Optional)</FormLabel>
-                    <InputGroup>
-                      <Input
-                        type="number"
-                        placeholder="e.g., 30"
-                        value={duration}
-                        onChange={(e) => setDuration(e.target.value)}
-                        isDisabled={isSubmitting}
-                      />
-                      <InputRightAddon>minutes</InputRightAddon>
-                    </InputGroup>
-                  </FormControl>
+                      >
+                        {challengeActivityTypes.map((activityType) => (
+                          <option key={activityType.id} value={activityType.id}>
+                            {activityType.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  ) : challengeActivityTypes.length === 1 ? (
+                    <FormControl>
+                      <FormLabel>Activity Type</FormLabel>
+                      <Text fontWeight="medium" color="gray.700">
+                        {challengeActivityTypes[0].name}
+                      </Text>
+                    </FormControl>
+                  ) : null}
+
+                  {/* Value input - shows appropriate unit based on selected activity type */}
+                  {(() => {
+                    const currentActivityType = challengeActivityTypes.find(at =>
+                      at.id === selectedActivityTypeId
+                    ) || (challengeActivityTypes.length === 1 ? challengeActivityTypes[0] : null);
+
+                    if (!currentActivityType) return null;
+
+                    return (
+                      <FormControl isRequired>
+                        <FormLabel>{currentActivityType.name} Value</FormLabel>
+                        <InputGroup>
+                          <Input
+                            ref={initialRef}
+                            type="number"
+                            step="0.1"
+                            placeholder={`Enter ${currentActivityType.unitLabel}`}
+                            value={value}
+                            onChange={(e) => setValue(e.target.value)}
+                            isDisabled={isSubmitting}
+                          />
+                          <InputRightAddon>{currentActivityType.unitLabel}</InputRightAddon>
+                        </InputGroup>
+                      </FormControl>
+                    );
+                  })()}
+
                   <FormControl>
                     <FormLabel>Notes (Optional)</FormLabel>
                     <Textarea

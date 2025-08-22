@@ -9,6 +9,7 @@ interface UseActivityUpdatesProps {
 
 /**
  * Custom hook to handle real-time activity updates with fallback to polling
+ * Optimized to prevent excessive subscriptions and infinite reconnection loops
  */
 export const useActivityUpdates = ({ 
     challengeId, 
@@ -18,10 +19,12 @@ export const useActivityUpdates = ({
     const subscriptionRef = useRef<any>(null);
     const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
     const lastActivityCountRef = useRef<number>(0);
+    const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const isCleanedUpRef = useRef<boolean>(false);
 
-    // Real-time subscription setup
+    // Real-time subscription setup with better error handling
     const setupRealTimeSubscription = useCallback(() => {
-        if (!enabled) return;
+        if (!enabled || isCleanedUpRef.current) return;
 
         // Clean up existing subscription
         if (subscriptionRef.current) {
@@ -29,10 +32,17 @@ export const useActivityUpdates = ({
             subscriptionRef.current = null;
         }
 
-        const channelName = challengeId ? `activities-${challengeId}` : 'activities-all';
+        // Only create subscription if we have a specific challenge ID
+        // This prevents global subscriptions on the main page
+        if (!challengeId) {
+            console.log('No challengeId provided, skipping real-time subscription');
+            return;
+        }
+
+        const channelName = `activities-${challengeId}`;
         
         try {
-            console.log('Setting up real-time subscription for:', channelName);
+            console.log('Setting up real-time subscription for challenge:', challengeId);
             
             subscriptionRef.current = supabase
                 .channel(channelName, {
@@ -48,11 +58,13 @@ export const useActivityUpdates = ({
                         event: '*',
                         schema: 'public',
                         table: 'Activity',
-                        ...(challengeId && { filter: `challengeId=eq.${challengeId}` })
+                        filter: `challengeId=eq.${challengeId}`
                     },
                     (payload) => {
                         console.log('Real-time activity update detected:', payload);
-                        onActivityUpdate();
+                        if (!isCleanedUpRef.current) {
+                            onActivityUpdate();
+                        }
                     }
                 )
                 .subscribe((status, err) => {
@@ -62,72 +74,75 @@ export const useActivityUpdates = ({
                         console.error('Subscription error:', err);
                     }
                     
-                    // Only fall back to polling if subscription definitely failed
-                    if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
-                        console.warn('Real-time subscription failed, falling back to polling');
-                        setupPollingFallback();
+                    // Handle different subscription states
+                    if (status === 'SUBSCRIBED') {
+                        console.log('Successfully subscribed to real-time updates');
+                    } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+                        console.warn('Real-time subscription failed, relying on polling');
+                        // Don't attempt reconnection for these error types
                     } else if (status === 'CLOSED') {
-                        // Connection was closed, attempt to reconnect after a delay
-                        console.log('Connection closed, will attempt to reconnect...');
-                        setTimeout(() => {
-                            if (enabled) {
-                                setupRealTimeSubscription();
-                            }
-                        }, 2000);
+                        // Only attempt reconnection if we're still enabled and not cleaned up
+                        if (enabled && !isCleanedUpRef.current) {
+                            console.log('Connection closed, will attempt to reconnect in 5 seconds...');
+                            reconnectTimeoutRef.current = setTimeout(() => {
+                                if (enabled && !isCleanedUpRef.current) {
+                                    setupRealTimeSubscription();
+                                }
+                            }, 5000); // Increased delay to 5 seconds to prevent rapid reconnections
+                        }
                     }
                 });
         } catch (error) {
-            console.warn('Failed to setup real-time subscription, falling back to polling:', error);
-            setupPollingFallback();
+            console.warn('Failed to setup real-time subscription:', error);
+            // Don't fall back to polling here, let the polling system handle it independently
         }
     }, [challengeId, enabled, onActivityUpdate]);
 
-    // Polling fallback setup
+    // Polling fallback setup with better performance
     const setupPollingFallback = useCallback(async () => {
-        if (!enabled) return;
+        if (!enabled || isCleanedUpRef.current) return;
 
         // Clear existing polling
         if (pollingIntervalRef.current) {
             clearInterval(pollingIntervalRef.current);
         }
 
-        // Check activity count every 5 seconds (only when tab is visible)
+        // Only poll if we have a specific challenge ID
+        if (!challengeId) {
+            console.log('No challengeId provided, skipping polling');
+            return;
+        }
+
+        // Check activity count every 10 seconds (reduced frequency)
         pollingIntervalRef.current = setInterval(async () => {
-            // Only poll when the browser tab is active
-            if (document.hidden) return;
+            // Only poll when the browser tab is active and not cleaned up
+            if (document.hidden || isCleanedUpRef.current) return;
             
             try {
-                const query = supabase
+                const { count } = await supabase
                     .from('Activity')
-                    .select('*', { count: 'exact', head: true });
-
-                if (challengeId) {
-                    query.eq('challengeId', challengeId);
-                }
-
-                const { count } = await query;
+                    .select('*', { count: 'exact', head: true })
+                    .eq('challengeId', challengeId);
                 
                 if (count !== null && count !== lastActivityCountRef.current) {
                     lastActivityCountRef.current = count;
                     console.log('Polling detected activity change, triggering update');
-                    onActivityUpdate();
+                    if (!isCleanedUpRef.current) {
+                        onActivityUpdate();
+                    }
                 }
             } catch (error) {
                 console.error('Polling error:', error);
             }
-        }, 5000); // Poll every 5 seconds
+        }, 10000); // Increased to 10 seconds to reduce load
 
         // Get initial count
         try {
-            const query = supabase
+            const { count } = await supabase
                 .from('Activity')
-                .select('*', { count: 'exact', head: true });
-
-            if (challengeId) {
-                query.eq('challengeId', challengeId);
-            }
-
-            const { count } = await query;
+                .select('*', { count: 'exact', head: true })
+                .eq('challengeId', challengeId);
+                
             if (count !== null) {
                 lastActivityCountRef.current = count;
             }
@@ -140,31 +155,53 @@ export const useActivityUpdates = ({
     useEffect(() => {
         if (!enabled) return;
 
+        isCleanedUpRef.current = false;
+
         // Start with polling as the primary method (more reliable)
         setupPollingFallback();
         
-        // Try real-time as an enhancement, but don't rely on it
+        // Try real-time as an enhancement after a delay to avoid conflicts
         const realTimeTimeout = setTimeout(() => {
-            setupRealTimeSubscription();
-        }, 1000); // Delay real-time setup to avoid conflicts
+            if (!isCleanedUpRef.current) {
+                setupRealTimeSubscription();
+            }
+        }, 2000);
 
         // Cleanup function
         return () => {
+            isCleanedUpRef.current = true;
+            
             clearTimeout(realTimeTimeout);
+            
+            if (reconnectTimeoutRef.current) {
+                clearTimeout(reconnectTimeoutRef.current);
+                reconnectTimeoutRef.current = null;
+            }
+            
             if (subscriptionRef.current) {
                 subscriptionRef.current.unsubscribe();
+                subscriptionRef.current = null;
             }
+            
             if (pollingIntervalRef.current) {
                 clearInterval(pollingIntervalRef.current);
+                pollingIntervalRef.current = null;
             }
         };
     }, [setupRealTimeSubscription, setupPollingFallback, enabled]);
 
     // Manual cleanup function
     const cleanup = useCallback(() => {
+        isCleanedUpRef.current = true;
+        
+        if (reconnectTimeoutRef.current) {
+            clearTimeout(reconnectTimeoutRef.current);
+        }
+        
         if (subscriptionRef.current) {
             subscriptionRef.current.unsubscribe();
         }
+        
         if (pollingIntervalRef.current) {
             clearInterval(pollingIntervalRef.current);
         }

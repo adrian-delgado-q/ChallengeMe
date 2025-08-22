@@ -35,11 +35,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ challengeId }) => {
         fetchLeaderboard();
     }, [fetchLeaderboard]);
 
-    // Set up real-time updates for leaderboard
+    // Set up real-time updates for leaderboard - only when challengeId is present
     useActivityUpdates({
         challengeId,
         onActivityUpdate: fetchLeaderboard,
-        enabled: true
+        enabled: !!challengeId // Only enable when challengeId exists
     });
 
     if (loading) {
