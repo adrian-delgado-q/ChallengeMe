@@ -1,6 +1,8 @@
-import React from 'react';
-import { Avatar, Box, Heading, HStack, Text, VStack, Spinner, Center } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Avatar, Box, Heading, HStack, Text, VStack, Spinner, Center, Badge, useToast, IconButton } from '@chakra-ui/react';
+import { RepeatIcon } from '@chakra-ui/icons';
 import { useActivities } from '../../hooks/useData';
+import { useActivityUpdates } from '../../hooks/useActivityUpdates';
 import { Card } from '../common/Card';
 
 interface ActivityFeedProps {
@@ -8,7 +10,38 @@ interface ActivityFeedProps {
 }
 
 export const ActivityFeed: React.FC<ActivityFeedProps> = ({ challengeId }) => {
-    const { activities, loading, error } = useActivities(challengeId);
+    const { activities, loading, error, refetch } = useActivities(challengeId);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const toast = useToast();
+
+    // Enhanced refetch function with visual feedback
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        try {
+            await refetch();
+            // Show a subtle toast notification for real-time updates (only in development)
+            if (process.env.NODE_ENV === 'development') {
+                toast({
+                    title: "Activities Updated",
+                    description: "Latest activities refreshed",
+                    status: "info",
+                    duration: 1500,
+                    isClosable: true,
+                    position: "bottom-right"
+                });
+            }
+        } finally {
+            // Add a small delay to show the refreshing state
+            setTimeout(() => setIsRefreshing(false), 500);
+        }
+    };
+
+    // Set up real-time updates for activities
+    useActivityUpdates({
+        challengeId,
+        onActivityUpdate: handleRefresh,
+        enabled: true
+    });
 
     if (loading) {
         return (
@@ -32,7 +65,28 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({ challengeId }) => {
 
     return (
         <Card p={6}>
-            <Heading as="h3" size="lg" mb={4}>Latest Updates</Heading>
+            <HStack justify="space-between" align="center" mb={4}>
+                <Heading as="h3" size="lg">Latest Updates</Heading>
+                <HStack spacing={2}>
+                    {isRefreshing && (
+                        <Badge colorScheme="orange" variant="subtle">
+                            <HStack spacing={1}>
+                                <Spinner size="xs" />
+                                <Text fontSize="xs">Updating...</Text>
+                            </HStack>
+                        </Badge>
+                    )}
+                    <IconButton
+                        aria-label="Refresh activities"
+                        icon={<RepeatIcon />}
+                        size="sm"
+                        variant="ghost"
+                        colorScheme="orange"
+                        onClick={handleRefresh}
+                        isLoading={isRefreshing}
+                    />
+                </HStack>
+            </HStack>
             <VStack spacing={4} align="stretch">
                 {activities.length > 0 ? (
                     activities.map((activity) => (

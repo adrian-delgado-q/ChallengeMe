@@ -13,6 +13,9 @@ import { MilestonesDisplay } from '../components/dashboard/MilestonesDisplay';
 import { ChallengeJoinButton } from '../components/challenges/ChallengeJoinButton';
 import { useChallengeDetails, usePosts } from '../hooks/useData';
 import { useParams, useNavigate } from 'react-router-dom';
+import { ActivityService } from '../graphql/services';
+import { useNotifications } from '../utils/notifications';
+import { RealTimeDebug } from '../components/debug/RealTimeDebug';
 
 // Icon for the new button
 const LogActivityIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -25,9 +28,28 @@ const ChallengeDashboardPage: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { id: challengeId } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const notifications = useNotifications();
 
     const { challenge, loading: challengeLoading, error: challengeError, refetch } = useChallengeDetails(challengeId || '');
     const { posts, loading: postsLoading } = usePosts(challengeId);
+
+    // Function to refresh challenge data and activity feeds
+    const handleActivityLogged = () => {
+        refetch(); // Refresh challenge data (participant count, etc.)
+        // The ActivityFeed and Leaderboard components will automatically refresh via real-time subscription
+    };
+
+    // Development helper function to test real-time updates
+    const handleTestRealTimeUpdates = async () => {
+        if (!challengeId) return;
+
+        try {
+            await ActivityService.testRealTimeUpdates(challengeId);
+            notifications.success('Test Activity Created', 'A test activity was created to verify real-time updates are working.');
+        } catch (error: any) {
+            notifications.error('Test Failed', error.message || 'Failed to create test activity');
+        }
+    };
 
     if (challengeLoading) {
         return (
@@ -67,6 +89,17 @@ const ChallengeDashboardPage: React.FC = () => {
                         >
                             Manage Activities
                         </Button>
+                        {/* Development test button - only show in development */}
+                        {process.env.NODE_ENV === 'development' && (
+                            <Button
+                                variant="outline"
+                                colorScheme="blue"
+                                onClick={handleTestRealTimeUpdates}
+                                size="sm"
+                            >
+                                Test Real-time Updates
+                            </Button>
+                        )}
                         <Button
                             colorScheme="orange"
                             leftIcon={<Icon as={LogActivityIcon} w={5} h={5} />}
@@ -130,7 +163,15 @@ const ChallengeDashboardPage: React.FC = () => {
                 </Grid>
             </VStack>
 
-            <LogActivityModal isOpen={isOpen} onClose={onClose} challengeId={challengeId} />
+            <LogActivityModal
+                isOpen={isOpen}
+                onClose={onClose}
+                challengeId={challengeId}
+                onActivityLogged={handleActivityLogged}
+            />
+
+            {/* Development debug component */}
+            <RealTimeDebug challengeId={challengeId} />
         </>
     );
 };

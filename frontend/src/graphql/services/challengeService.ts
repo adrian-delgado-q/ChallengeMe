@@ -1,5 +1,6 @@
 import { supabase } from '../../supabase/client';
 import { getCurrentUser } from '../../supabase/client';
+import { generateUUID } from '../../utils/uuid';
 
 // Types for challenge operations
 export interface ChallengeInput {
@@ -327,7 +328,7 @@ export class ChallengeService {
             if (!user) throw new Error('User not authenticated');
 
             // Generate UUID for the challenge
-            const challengeId = crypto.randomUUID();
+            const challengeId = generateUUID();
 
             const { data, error } = await supabase
                 .from('Challenge')
@@ -353,7 +354,7 @@ export class ChallengeService {
                 const milestonesToCreate = challengeData.milestones
                     .filter(m => m.name && m.value) // Only include valid milestones
                     .map((milestone, index) => ({
-                        id: crypto.randomUUID(),
+                        id: generateUUID(),
                         challengeId: challengeId,
                         name: milestone.name,
                         description: `Achieve ${milestone.value} activities in this challenge`,
@@ -645,7 +646,7 @@ export class ChallengeService {
             }
 
             // Generate UUID for the participant
-            const participantId = crypto.randomUUID();
+            const participantId = generateUUID();
 
             const { data, error } = await supabase
                 .from('ChallengeParticipant')
@@ -738,7 +739,7 @@ export class ChallengeService {
             }
 
             // Generate UUID for the participant
-            const participantId = crypto.randomUUID();
+            const participantId = generateUUID();
 
             const { data, error } = await supabase
                 .from('ChallengeParticipant')

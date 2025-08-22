@@ -47,7 +47,7 @@ const AuthenticatedLayout: React.FC<{ children: React.ReactNode }> = ({ children
     return (
         <AppLayout>
             {children}
-            <DebugPanel />
+            {import.meta.env.DEV && <DebugPanel />}
         </AppLayout>
     );
 };
@@ -66,7 +66,7 @@ const App: React.FC = () => {
                 <h2>⚠️ Configuration Required</h2>
                 <p>Supabase environment variables are not configured.</p>
                 <p>Please check <strong>QUICK_AUTH_SETUP.md</strong> for setup instructions.</p>
-                <DebugPanel />
+                {import.meta.env.DEV && <DebugPanel />}
             </div>
         );
     }
