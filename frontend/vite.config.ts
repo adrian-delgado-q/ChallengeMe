@@ -21,7 +21,7 @@ export default defineConfig({
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom'],
           ui: ['@chakra-ui/react', '@emotion/react', '@emotion/styled', 'framer-motion'],
-          supabase: ['@supabase/supabase-js', '@supabase/auth-helpers-react'],
+          supabase: ['@supabase/supabase-js', '@supabase/ssr'],
           charts: ['chart.js', 'react-chartjs-2'],
         },
       },
