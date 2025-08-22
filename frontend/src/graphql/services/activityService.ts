@@ -1,6 +1,7 @@
 import { supabase, getCurrentUser } from '../../supabase/client';
 import { generateUUID } from '../../utils/uuid';
 import type { ActivityInput } from '../../types';
+export type { ActivityInput };
 
 // Activity data service
 export class ActivityService {

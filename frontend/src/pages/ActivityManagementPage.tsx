@@ -77,7 +77,13 @@ export const ActivityManagementPage: React.FC = () => {
 
             // Always fetch all activities, filtering will be done locally
             const data = await ActivityService.getActivitiesForManagement();
-            setAllActivities(data as Activity[]);
+            setAllActivities(
+              (data as any[]).map(item => ({
+                ...item,
+                activityTypeId: item.activityTypeId ?? item.activityType?.id ?? '',
+                value: item.value ?? item.distance ?? item.duration ?? item.repetitions ?? item.weight ?? item.sets ?? item.calories ?? item.pace ?? 0
+              }))
+            );
         } catch (err: any) {
             setError(err.message || 'Failed to fetch activities');
         } finally {

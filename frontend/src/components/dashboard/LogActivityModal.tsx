@@ -28,7 +28,6 @@ import { ChallengeService } from '../../graphql/services';
 import { ActivityTypeService } from '../../graphql/services/activityTypeService';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { ValidationUtils } from '../../utils/validation';
 import { TeamSelectionModal } from '../challenges/TeamSelectionModal';
 import type { Challenge, ActivityType } from '../../types';
 
@@ -46,7 +45,6 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
   onActivityLogged
 }) => {
   // State for activity types
-  const [activityTypes, setActivityTypes] = useState<ActivityType[]>([]);
   const [challengeActivityTypes, setChallengeActivityTypes] = useState<ActivityType[]>([]);
   const [isLoadingActivityTypes, setIsLoadingActivityTypes] = useState(true);
 
@@ -72,25 +70,19 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       if (!challengeId || !isOpen) return;
-
       try {
         setIsLoadingActivityTypes(true);
-
         // Load all activity types
         const allActivityTypes = await ActivityTypeService.getActivityTypes();
-        setActivityTypes(allActivityTypes);
-
         // Fetch challenge details
-        const challengeData = await ChallengeService.getChallengeById(challengeId);
-        setChallenge(challengeData);
-
+        const challengeFetched = await ChallengeService.getChallengeById(challengeId);
+        setChallenge(challengeFetched);
         // Filter activity types based on challenge's supported types
-        if (challengeData.activityTypes && challengeData.activityTypes.length > 0) {
+        if (challengeFetched.activityTypes && challengeFetched.activityTypes.length > 0) {
           const supportedTypes = allActivityTypes.filter(at =>
-            challengeData.activityTypes!.includes(at.id)
+            challengeFetched.activityTypes!.includes(at.id)
           );
           setChallengeActivityTypes(supportedTypes);
-
           // Set default activity type for single-activity challenges
           if (supportedTypes.length === 1) {
             setSelectedActivityTypeId(supportedTypes[0].id);
@@ -106,7 +98,6 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
         setIsLoadingActivityTypes(false);
       }
     };
-
     fetchData();
   }, [challengeId, isOpen]);
 
