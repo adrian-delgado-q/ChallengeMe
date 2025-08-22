@@ -300,12 +300,13 @@ export const useActivities = (challengeId?: string) => {
     const createActivity = useCallback(async (activityData: any) => {
         try {
             const newActivity = await ActivityService.createActivity(activityData);
-            setActivities(prev => [newActivity, ...prev]);
+            // Refresh the activities list to get the complete activity with user/challenge info
+            await fetchActivities();
             return newActivity;
         } catch (err: any) {
             throw new Error(err.message || 'Failed to create activity');
         }
-    }, []);
+    }, [fetchActivities]);
 
     const updateActivity = useCallback(async (activityId: string, activityData: any) => {
         try {

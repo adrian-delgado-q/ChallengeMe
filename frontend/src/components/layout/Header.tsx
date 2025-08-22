@@ -13,8 +13,18 @@ import {
     MenuItem,
     MenuDivider,
     Text,
-    Spinner
+    Spinner,
+    IconButton,
+    useDisclosure,
+    VStack,
+    Drawer,
+    DrawerBody,
+    DrawerHeader,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerCloseButton
 } from '@chakra-ui/react';
+import { HamburgerIcon } from '@chakra-ui/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { PlusIcon } from '../common/Icons';
 import { useUser } from '../../contexts/AuthContext'; // Using your 'useUser' hook
@@ -22,6 +32,7 @@ import { useUser } from '../../contexts/AuthContext'; // Using your 'useUser' ho
 export const Header: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { isOpen, onOpen, onClose } = useDisclosure();
     // Get the complete auth state, including the new signOut function
     const { user, signOut, isLoading } = useUser();
 
@@ -165,15 +176,75 @@ export const Header: React.FC = () => {
 
                 {/* Center: Navigation Links (only for logged-in users) */}
                 {user && (
-                    <HStack spacing={6} display={{ base: 'none', md: 'flex' }}>
-                        <Link onClick={() => navigate('/challenges')} fontWeight="bold" _hover={{ color: 'orange.500' }}>Challenges</Link>
-                        <Link onClick={() => navigate('/teams')} fontWeight="bold" _hover={{ color: 'orange.500' }}>Teams</Link>
-                    </HStack>
+                    <>
+                        {/* Desktop Navigation */}
+                        <HStack spacing={6} display={{ base: 'none', md: 'flex' }}>
+                            <Link onClick={() => navigate('/challenges')} fontWeight="bold" _hover={{ color: 'orange.500' }}>Challenges</Link>
+                            <Link onClick={() => navigate('/teams')} fontWeight="bold" _hover={{ color: 'orange.500' }}>Teams</Link>
+                        </HStack>
+
+                        {/* Mobile Navigation Button */}
+                        <IconButton
+                            display={{ base: 'flex', md: 'none' }}
+                            onClick={onOpen}
+                            variant="outline"
+                            aria-label="Open menu"
+                            icon={<HamburgerIcon />}
+                        />
+                    </>
                 )}
 
                 {/* Right Side: User Actions */}
                 {renderUserActions()}
             </Flex>
+
+            {/* Mobile Navigation Drawer */}
+            <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+                <DrawerOverlay />
+                <DrawerContent>
+                    <DrawerCloseButton />
+                    <DrawerHeader>Navigation</DrawerHeader>
+                    <DrawerBody>
+                        <VStack spacing={4} align="stretch">
+                            <Button
+                                variant="ghost"
+                                justifyContent="flex-start"
+                                onClick={() => {
+                                    navigate('/challenges');
+                                    onClose();
+                                }}
+                            >
+                                Challenges
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                justifyContent="flex-start"
+                                onClick={() => {
+                                    navigate('/teams');
+                                    onClose();
+                                }}
+                            >
+                                Teams
+                            </Button>
+                            {(() => {
+                                const contextButton = getContextualButton();
+                                return (
+                                    <Button
+                                        colorScheme="orange"
+                                        leftIcon={contextButton.icon}
+                                        onClick={() => {
+                                            contextButton.onClick();
+                                            onClose();
+                                        }}
+                                    >
+                                        {contextButton.label}
+                                    </Button>
+                                );
+                            })()}
+                        </VStack>
+                    </DrawerBody>
+                </DrawerContent>
+            </Drawer>
         </Box>
     );
 };

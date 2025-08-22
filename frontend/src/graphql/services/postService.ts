@@ -1,4 +1,5 @@
 import { supabase, getCurrentUser } from '../../supabase/client';
+import { generateUUID } from '../../utils/uuid';
 
 // Types for post and comment operations
 export interface PostInput {
@@ -83,7 +84,7 @@ export class PostService {
         if (!user) throw new Error('User not authenticated');
 
         // Generate UUID for the post
-        const postId = crypto.randomUUID();
+        const postId = generateUUID();
 
         const { data: newPost, error } = await supabase
             .from('Post')
@@ -106,7 +107,7 @@ export class PostService {
         if (!user) throw new Error('User not authenticated');
 
         // Generate UUID for the comment
-        const commentId = crypto.randomUUID();
+        const commentId = generateUUID();
 
         const { data: newComment, error } = await supabase
             .from('Comment')

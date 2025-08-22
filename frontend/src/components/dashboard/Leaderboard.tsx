@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Avatar, Heading, HStack, Text, VStack, Spinner, Center } from '@chakra-ui/react';
 import { ActivityService } from '../../graphql/services';
 import { useUser } from '../../contexts/AuthContext';
+import { useActivityUpdates } from '../../hooks/useActivityUpdates';
 import { Card } from '../common/Card';
 
 interface LeaderboardProps {
@@ -14,25 +15,32 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ challengeId }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchLeaderboard = async () => {
-            if (!challengeId) return;
+    const fetchLeaderboard = useCallback(async () => {
+        if (!challengeId) return;
 
-            setLoading(true);
-            setError(null);
+        setLoading(true);
+        setError(null);
 
-            try {
-                const leaderboardData = await ActivityService.getActivitiesForLeaderboard(challengeId);
-                setEntries(leaderboardData);
-            } catch (err: any) {
-                setError(err.message || 'Failed to load leaderboard');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchLeaderboard();
+        try {
+            const leaderboardData = await ActivityService.getActivitiesForLeaderboard(challengeId);
+            setEntries(leaderboardData);
+        } catch (err: any) {
+            setError(err.message || 'Failed to load leaderboard');
+        } finally {
+            setLoading(false);
+        }
     }, [challengeId]);
+
+    useEffect(() => {
+        fetchLeaderboard();
+    }, [fetchLeaderboard]);
+
+    // Set up real-time updates for leaderboard
+    useActivityUpdates({
+        challengeId,
+        onActivityUpdate: fetchLeaderboard,
+        enabled: true
+    });
 
     if (loading) {
         return (

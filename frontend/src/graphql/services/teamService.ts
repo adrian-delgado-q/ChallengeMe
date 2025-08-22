@@ -1,4 +1,5 @@
 import { supabase, getCurrentUser } from '../../supabase/client';
+import { generateUUID } from '../../utils/uuid';
 
 // Types for team operations
 export interface TeamInput {
@@ -239,7 +240,7 @@ export class TeamService {
         if (!user) throw new Error('User not authenticated');
 
         // Generate UUID for the team
-        const teamId = crypto.randomUUID();
+        const teamId = generateUUID();
 
         const { data: newTeam, error } = await supabase
             .from('Team')
@@ -259,7 +260,7 @@ export class TeamService {
         if (error) throw new Error(error.message);
 
         // Automatically add creator as admin member
-        const membershipId = crypto.randomUUID();
+        const membershipId = generateUUID();
         await supabase
             .from('TeamMembership')
             .insert({
@@ -335,7 +336,7 @@ export class TeamService {
         }
 
         // Generate UUID for the membership
-        const membershipId = crypto.randomUUID();
+        const membershipId = generateUUID();
 
         const { data, error } = await supabase
             .from('TeamMembership')
@@ -473,7 +474,7 @@ export class TeamService {
         }
 
         // Generate UUID for the membership
-        const membershipId = crypto.randomUUID();
+        const membershipId = generateUUID();
 
         const { data, error } = await supabase
             .from('TeamMembership')

@@ -1,4 +1,5 @@
 import { supabase, getCurrentUser } from '../../supabase/client';
+import { generateUUID } from '../../utils/uuid';
 
 // Types for activity operations
 export interface ActivityInput {
@@ -161,14 +162,25 @@ export class ActivityService {
         const user = await getCurrentUser();
         if (!user) throw new Error('User not authenticated');
 
+        // Get the challengeId from the participant
+        const { data: participant, error: participantError } = await supabase
+            .from('ChallengeParticipant')
+            .select('challengeId')
+            .eq('id', activityData.participantId)
+            .single();
+
+        if (participantError) throw new Error(participantError.message);
+        if (!participant) throw new Error('Participant not found');
+
         // Generate UUID for the activity
-        const activityId = crypto.randomUUID();
+        const activityId = generateUUID();
 
         const { data: newActivity, error } = await supabase
             .from('Activity')
             .insert({
                 id: activityId, // Explicitly provide the UUID
                 participantId: activityData.participantId,
+                challengeId: participant.challengeId, // Include challengeId
                 notes: activityData.notes || null,
                 date: activityData.date,
                 profileId: user.id
@@ -456,5 +468,43 @@ export class ActivityService {
                 value: `${user.activityCount} activities`,
                 avatar: user.avatar
             }));
+    }
+
+    // Test function to verify real-time updates are working
+    static async testRealTimeUpdates(challengeId: string) {
+        try {
+            console.log('Testing real-time updates for challenge:', challengeId);
+            
+            const user = await getCurrentUser();
+            if (!user) throw new Error('User not authenticated');
+            
+            // Get the current user's participant record for this challenge
+            const { data: participant } = await supabase
+                .from('ChallengeParticipant')
+                .select('id, userId')
+                .eq('challengeId', challengeId)
+                .eq('userId', user.id)
+                .maybeSingle();
+
+            if (!participant) {
+                throw new Error('You must be a participant in this challenge to test real-time updates. Please join the challenge first.');
+            }
+            
+            // Create a test activity
+            const testActivity = {
+                participantId: participant.id,
+                notes: `Test activity - ${new Date().toLocaleTimeString()}`,
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            console.log('Creating test activity:', testActivity);
+            const result = await this.createActivity(testActivity);
+            console.log('Test activity created successfully:', result);
+            
+            return result;
+        } catch (error) {
+            console.error('Real-time update test failed:', error);
+            throw error;
+        }
     }
 }
