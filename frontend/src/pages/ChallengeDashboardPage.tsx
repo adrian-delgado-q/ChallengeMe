@@ -154,7 +154,7 @@ const ChallengeDashboardPage: React.FC = () => {
                         )}
                     </VStack>
                     <VStack spacing={8} align="stretch">
-                        <ProgressChart />
+                        <ProgressChart challengeId={challengeId} />
                         {postsLoading ? (
                             <Card p={6}>
                                 <Center>

@@ -1221,6 +1221,131 @@ export class ChallengeService {
         }
     }
 
+    // Get challenge progress over time for the current user
+    static async getChallengeProgressOverTime(challengeId: string): Promise<{
+        progressData: Array<{
+            date: string;
+            totalValue: number;
+            activityType: string;
+            activityTypeName: string;
+            unit: string;
+            milestoneLevel: number;
+        }>;
+        milestones: Array<{
+            name: string;
+            targetValue: number;
+            activityTypeId: string;
+            order: number;
+        }>;
+    }> {
+        try {
+            const user = await getCurrentUser();
+            if (!user) return { progressData: [], milestones: [] };
+
+            // Get user's participant ID for this challenge
+            const { data: participant } = await supabase
+                .from('ChallengeParticipant')
+                .select('id')
+                .eq('challengeId', challengeId)
+                .eq('userId', user.id)
+                .maybeSingle();
+
+            if (!participant) return { progressData: [], milestones: [] };
+
+            // Get challenge supported activity types to filter relevant progress
+            const { data: challengeActivityTypes } = await supabase
+                .from('ChallengeActivityType')
+                .select(`
+                    activityTypeId,
+                    activityType:ActivityType(
+                        id,
+                        name,
+                        unit,
+                        unitLabel
+                    )
+                `)
+                .eq('challengeId', challengeId);
+
+            if (!challengeActivityTypes || challengeActivityTypes.length === 0) {
+                return { progressData: [], milestones: [] };
+            }
+
+            const supportedActivityTypeIds = challengeActivityTypes.map(cat => cat.activityTypeId);
+
+            // Get progress data from challenge_progress table for this participant
+            const { data: progressRecords } = await supabase
+                .from('challenge_progress')
+                .select(`
+                    totalValue,
+                    updatedAt,
+                    activityTypeId,
+                    activityType:ActivityType(
+                        id,
+                        name,
+                        unit,
+                        unitLabel
+                    )
+                `)
+                .eq('challengeId', challengeId)
+                .eq('participantId', participant.id)
+                .in('activityTypeId', supportedActivityTypeIds)
+                .order('updatedAt', { ascending: true });
+
+            // Get milestones for this challenge
+            const { data: milestones } = await supabase
+                .from('Milestone')
+                .select('name, targetValue, activityTypeId, order')
+                .eq('challengeId', challengeId)
+                .in('activityTypeId', supportedActivityTypeIds)
+                .order('order', { ascending: true });
+
+            // Transform progress data and calculate milestone levels
+            const progressData = (progressRecords || []).map(record => {
+                const milestoneLevel = this.calculateMilestoneLevel(
+                    record.totalValue,
+                    record.activityTypeId,
+                    milestones || []
+                );
+
+                return {
+                    date: new Date(record.updatedAt).toISOString().split('T')[0],
+                    totalValue: record.totalValue,
+                    activityType: record.activityTypeId,
+                    activityTypeName: (record.activityType as any)?.name || 'Unknown',
+                    unit: (record.activityType as any)?.unit || '',
+                    milestoneLevel
+                };
+            });
+
+            return {
+                progressData,
+                milestones: milestones || []
+            };
+        } catch (error) {
+            this.handleError(error, 'getChallengeProgressOverTime');
+            return { progressData: [], milestones: [] };
+        }
+    }
+
+    // Calculate which milestone level the user has reached for a specific activity type
+    private static calculateMilestoneLevel(
+        currentValue: number,
+        activityTypeId: string,
+        milestones: Array<{ targetValue: number; activityTypeId: string; order: number }>
+    ): number {
+        const relevantMilestones = milestones
+            .filter(m => m.activityTypeId === activityTypeId)
+            .sort((a, b) => a.order - b.order);
+
+        for (let i = relevantMilestones.length - 1; i >= 0; i--) {
+            if (currentValue >= relevantMilestones[i].targetValue) {
+                return i + 1; // Return 1-based milestone level
+            }
+        }
+        
+        return 0; // No milestone reached yet
+    }
+
     // Helper method to generate sample activity type based on challenge title
     private static generateSampleActivityType(title: string): string {
         const titleLower = title.toLowerCase();
