@@ -66,6 +66,7 @@ model Challenge {
   startDate           DateTime                 @db.Date
   endDate             DateTime                 @db.Date
   isPublic            Boolean                  @default(true)
+  accessCode          String? // Optional access code for private challenges
   createdAt           DateTime                 @default(now()) @db.Timestamptz(6)
   expiresAt           DateTime?                @db.Timestamptz(6)
   maxTeamSize         Int?

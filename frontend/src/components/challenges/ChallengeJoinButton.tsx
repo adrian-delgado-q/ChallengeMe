@@ -5,6 +5,7 @@ import {
     Icon
 } from '@chakra-ui/react';
 import { TeamSelectionModal } from './TeamSelectionModal';
+import { AccessCodeModal } from './AccessCodeModal';
 import { useChallenges, useTeams } from '../../hooks/useData';
 import { useUser } from '../../contexts/AuthContext';
 import { useNotifications } from '../../utils/notifications';
@@ -39,11 +40,17 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
     const { joinChallenge } = useChallenges();
     const { teams } = useTeams();
     const notifications = useNotifications();
-    const { isOpen, onOpen, onClose } = useDisclosure();
+
+    // Team selection modal
+    const { isOpen: isTeamModalOpen, onOpen: onTeamModalOpen, onClose: onTeamModalClose } = useDisclosure();
+
+    // Access code modal
+    const { isOpen: isAccessCodeModalOpen, onOpen: onAccessCodeModalOpen, onClose: onAccessCodeModalClose } = useDisclosure();
 
     const [isParticipating, setIsParticipating] = useState(false);
     const [participantTeam, setParticipantTeam] = useState<Team | null>(null);
     const [participationType, setParticipationType] = useState<'individual' | 'team' | null>(null);
+    const [pendingTeamId, setPendingTeamId] = useState<string | null>(null); // For team challenges requiring access code
 
     const { isLoading: isJoining, execute: executeJoin } = useAsyncState({
         successMessage: 'Successfully joined challenge!'
@@ -93,9 +100,22 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
             return;
         }
 
+        // Check if challenge is private and needs access code
+        if (!challenge.isPublic) {
+            if (challenge.challengeType === 'team') {
+                // Show team selection modal first, then access code modal
+                onTeamModalOpen();
+            } else {
+                // Show access code modal directly for individual challenges
+                onAccessCodeModalOpen();
+            }
+            return;
+        }
+
+        // Public challenge - proceed normally
         if (challenge.challengeType === 'team') {
             // Show team selection modal for team challenges
-            onOpen();
+            onTeamModalOpen();
         } else {
             // Join as individual directly
             await executeJoin(async () => {
@@ -122,6 +142,16 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
     };
 
     const handleTeamSelection = async (teamId: string) => {
+        // Check if this is a private challenge that needs access code
+        if (!challenge.isPublic) {
+            // Store the selected team and show access code modal
+            setPendingTeamId(teamId);
+            onTeamModalClose();
+            onAccessCodeModalOpen();
+            return;
+        }
+
+        // Public challenge - join directly
         await executeJoin(async () => {
             await joinChallenge(challenge.id, teamId);
             setIsParticipating(true);
@@ -133,7 +163,31 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
             }
             onJoinSuccess?.();
         });
-        onClose();
+        onTeamModalClose();
+    };
+
+    const handleAccessCodeSubmit = async (accessCode: string) => {
+        await executeJoin(async () => {
+            if (pendingTeamId) {
+                // Join with team using access code
+                await joinChallenge(challenge.id, pendingTeamId, accessCode);
+                setIsParticipating(true);
+                setParticipationType('team');
+                // Find and set the selected team
+                const selectedTeam = teams?.find(t => t.id === pendingTeamId);
+                if (selectedTeam) {
+                    setParticipantTeam(selectedTeam);
+                }
+                setPendingTeamId(null);
+            } else {
+                // Join as individual using access code
+                await joinChallenge(challenge.id, undefined, accessCode);
+                setIsParticipating(true);
+                setParticipationType('individual');
+            }
+            onJoinSuccess?.();
+        });
+        onAccessCodeModalClose();
     };
 
     const isCurrentUserCreator = user?.id === challenge.creatorId;
@@ -174,8 +228,8 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
             {/* Team Selection Modal */}
             {challenge.challengeType === 'team' && (
                 <TeamSelectionModal
-                    isOpen={isOpen}
-                    onClose={onClose}
+                    isOpen={isTeamModalOpen}
+                    onClose={onTeamModalClose}
                     onSelectTeam={handleTeamSelection}
                     teams={teams || []}
                     challengeTitle={challenge.title}
@@ -183,6 +237,15 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
                     isLoading={isJoining}
                 />
             )}
+
+            {/* Access Code Modal */}
+            <AccessCodeModal
+                isOpen={isAccessCodeModalOpen}
+                onClose={onAccessCodeModalClose}
+                onSubmit={handleAccessCodeSubmit}
+                challengeTitle={challenge.title}
+                isLoading={isJoining}
+            />
         </>
     );
 };

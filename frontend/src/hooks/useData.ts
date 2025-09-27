@@ -203,12 +203,12 @@ export const useChallenges = (options?: {
         }
     }, [fetchChallenges]);
 
-    const joinChallenge = useCallback(async (challengeId: string, asTeam?: string) => {
+    const joinChallenge = useCallback(async (challengeId: string, asTeam?: string, accessCode?: string) => {
         try {
             if (asTeam) {
-                await ChallengeService.joinChallengeAsTeam(challengeId, asTeam);
+                await ChallengeService.joinChallengeAsTeam(challengeId, asTeam, accessCode);
             } else {
-                await ChallengeService.joinChallengeAsIndividual(challengeId);
+                await ChallengeService.joinChallengeAsIndividual(challengeId, accessCode);
             }
             // Refresh challenges list
             await fetchChallenges();

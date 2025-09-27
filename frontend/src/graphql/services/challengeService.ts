@@ -13,6 +13,7 @@ export interface ChallengeInput {
     startDate: string; // ISO date string
     endDate: string;   // ISO date string
     isPublic?: boolean;
+    accessCode?: string; // Optional access code for private challenges
     milestones?: Array<{
         name: string;
         value: number;
@@ -356,7 +357,8 @@ export class ChallengeService {
                     maxTeamSize: challengeData.maxTeamSize || null,
                     startDate: challengeData.startDate,
                     endDate: challengeData.endDate,
-                    isPublic: challengeData.isPublic ?? true
+                    isPublic: challengeData.isPublic ?? true,
+                    accessCode: challengeData.accessCode || null // Add access code support
                 })
                 .select()
                 .single();
@@ -650,10 +652,33 @@ export class ChallengeService {
     // === END CHALLENGE MANAGEMENT METHODS ===
 
     // Join a challenge (individual)
-    static async joinChallengeAsIndividual(challengeId: string) {
+    static async joinChallengeAsIndividual(challengeId: string, accessCode?: string) {
         try {
             const user = await getCurrentUser();
             if (!user) throw new Error('User not authenticated');
+
+            // Get challenge details to check privacy and access code
+            const { data: challenge, error: challengeError } = await supabase
+                .from('Challenge')
+                .select('isPublic, accessCode, title')
+                .eq('id', challengeId)
+                .single();
+
+            if (challengeError) throw challengeError;
+            if (!challenge) throw new Error('Challenge not found');
+
+            // Validate access for private challenges
+            if (!challenge.isPublic) {
+                if (!challenge.accessCode) {
+                    throw new Error('This private challenge cannot be joined');
+                }
+                if (!accessCode) {
+                    throw new Error('Access code is required to join this private challenge');
+                }
+                if (accessCode !== challenge.accessCode) {
+                    throw new Error('Invalid access code');
+                }
+            }
 
             // First, ensure the user has a profile
             const { data: profile, error: profileError } = await supabase
@@ -699,20 +724,33 @@ export class ChallengeService {
     }
 
     // Join a challenge as a team
-    static async joinChallengeAsTeam(challengeId: string, teamId: string) {
+    static async joinChallengeAsTeam(challengeId: string, teamId: string, accessCode?: string) {
         try {
             const user = await getCurrentUser();
             if (!user) throw new Error('User not authenticated');
 
-            // Get challenge details to check maxTeamSize constraint
+            // Get challenge details to check maxTeamSize constraint and access code
             const { data: challenge, error: challengeError } = await supabase
                 .from('Challenge')
-                .select('maxTeamSize, challengeType')
+                .select('maxTeamSize, challengeType, isPublic, accessCode, title')
                 .eq('id', challengeId)
                 .single();
 
             if (challengeError) throw challengeError;
             if (!challenge) throw new Error('Challenge not found');
+
+            // Validate access for private challenges
+            if (!challenge.isPublic) {
+                if (!challenge.accessCode) {
+                    throw new Error('This private challenge cannot be joined');
+                }
+                if (!accessCode) {
+                    throw new Error('Access code is required to join this private challenge');
+                }
+                if (accessCode !== challenge.accessCode) {
+                    throw new Error('Invalid access code');
+                }
+            }
 
             // Validate that this is a team challenge
             if (challenge.challengeType !== 'TEAM') {

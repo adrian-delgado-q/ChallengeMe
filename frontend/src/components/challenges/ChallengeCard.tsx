@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Challenge, Team } from '../../types';
 import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../common/Icons';
 import { TeamSelectionModal } from './TeamSelectionModal';
+import { AccessCodeModal } from './AccessCodeModal';
 import { useChallenges, useTeams } from '../../hooks/useData';
 import { useUser } from '../../contexts/AuthContext';
 import { useNotifications } from '../../utils/notifications';
@@ -36,10 +37,16 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
   const { teams } = useTeams();
   const notifications = useNotifications();
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // Team selection modal
+  const { isOpen: isTeamModalOpen, onOpen: onTeamModalOpen, onClose: onTeamModalClose } = useDisclosure();
+
+  // Access code modal
+  const { isOpen: isAccessCodeModalOpen, onOpen: onAccessCodeModalOpen, onClose: onAccessCodeModalClose } = useDisclosure();
 
   const [isParticipating, setIsParticipating] = useState(false);
   const [participantTeam, setParticipantTeam] = useState<Team | null>(null);
+  const [pendingTeamId, setPendingTeamId] = useState<string | null>(null); // For team challenges requiring access code
 
   const { isLoading: isJoining, execute: executeJoin } = useAsyncState({
     successMessage: 'Successfully joined challenge!'
@@ -90,9 +97,22 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
       return;
     }
 
+    // Check if challenge is private and needs access code
+    if (!challenge.isPublic) {
+      if (challenge.challengeType === 'team') {
+        // Show team selection modal first, then access code modal
+        onTeamModalOpen();
+      } else {
+        // Show access code modal directly for individual challenges
+        onAccessCodeModalOpen();
+      }
+      return;
+    }
+
+    // Public challenge - proceed normally
     if (challenge.challengeType === 'team') {
       // Show team selection modal for team challenges
-      onOpen();
+      onTeamModalOpen();
     } else {
       // Join as individual directly
       await executeJoin(async () => {
@@ -117,6 +137,16 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
   };
 
   const handleTeamSelection = async (teamId: string) => {
+    // Check if this is a private challenge that needs access code
+    if (!challenge.isPublic) {
+      // Store the selected team and show access code modal
+      setPendingTeamId(teamId);
+      onTeamModalClose();
+      onAccessCodeModalOpen();
+      return;
+    }
+
+    // Public challenge - join directly
     await executeJoin(async () => {
       await joinChallenge(challenge.id, teamId);
       setIsParticipating(true);
@@ -126,7 +156,28 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
         setParticipantTeam(selectedTeam);
       }
     });
-    onClose();
+    onTeamModalClose();
+  };
+
+  const handleAccessCodeSubmit = async (accessCode: string) => {
+    await executeJoin(async () => {
+      if (pendingTeamId) {
+        // Join with team using access code
+        await joinChallenge(challenge.id, pendingTeamId, accessCode);
+        setIsParticipating(true);
+        // Find and set the selected team
+        const selectedTeam = teams?.find(t => t.id === pendingTeamId);
+        if (selectedTeam) {
+          setParticipantTeam(selectedTeam);
+        }
+        setPendingTeamId(null);
+      } else {
+        // Join as individual using access code
+        await joinChallenge(challenge.id, undefined, accessCode);
+        setIsParticipating(true);
+      }
+    });
+    onAccessCodeModalClose();
   };
 
   const handleCardClick = () => {
@@ -291,10 +342,11 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
       </Box>
 
       {/* Team Selection Modal */}
+      {/* Team Selection Modal */}
       {challenge.challengeType === 'team' && (
         <TeamSelectionModal
-          isOpen={isOpen}
-          onClose={onClose}
+          isOpen={isTeamModalOpen}
+          onClose={onTeamModalClose}
           onSelectTeam={handleTeamSelection}
           teams={teams || []}
           challengeTitle={challenge.title}
@@ -302,6 +354,15 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
           isLoading={isJoining}
         />
       )}
+
+      {/* Access Code Modal */}
+      <AccessCodeModal
+        isOpen={isAccessCodeModalOpen}
+        onClose={onAccessCodeModalClose}
+        onSubmit={handleAccessCodeSubmit}
+        challengeTitle={challenge.title}
+        isLoading={isJoining}
+      />
     </Box>
   );
 };

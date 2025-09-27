@@ -1403,6 +1403,7 @@ export const ChallengeScalarFieldEnum = {
   startDate: 'startDate',
   endDate: 'endDate',
   isPublic: 'isPublic',
+  accessCode: 'accessCode',
   createdAt: 'createdAt',
   expiresAt: 'expiresAt',
   maxTeamSize: 'maxTeamSize',

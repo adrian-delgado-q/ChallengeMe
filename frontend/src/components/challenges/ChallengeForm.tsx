@@ -71,6 +71,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
     const [endDate, setEndDate] = useState(challengeToEdit?.endDate || getDefaultEndDate());
     const [challengeType, setChallengeType] = useState<ChallengeType>(challengeToEdit?.challengeType || 'individual');
     const [isPublic, setIsPublic] = useState(challengeToEdit?.isPublic !== false);
+    const [accessCode, setAccessCode] = useState(challengeToEdit?.accessCode || '');
     const [milestonesByActivityType, setMilestonesByActivityType] = useState<Record<string, Partial<Milestone>[]>>(() => {
         if (challengeToEdit?.milestones && challengeToEdit.milestones.length > 0) {
             // Group existing milestones by activity type ID
@@ -206,6 +207,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                 startDate: new Date().toISOString().split('T')[0], // Today
                 endDate,
                 isPublic,
+                accessCode: !isPublic && accessCode.trim() ? accessCode.trim() : undefined, // Only include access code for private challenges
                 milestones: allMilestones
             };
 
@@ -341,7 +343,30 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                         <Radio value="private" colorScheme="orange">Private</Radio>
                     </HStack>
                 </RadioGroup>
+                <Text fontSize="xs" color="gray.500" mt={1}>
+                    {isPublic
+                        ? "Anyone can find and join this challenge."
+                        : "Only users with the access code can join this private challenge."
+                    }
+                </Text>
             </FormControl>
+
+            {/* Access Code field for private challenges */}
+            {!isPublic && (
+                <FormControl>
+                    <FormLabel>Access Code</FormLabel>
+                    <Input
+                        placeholder="Create an access code for this private challenge"
+                        value={accessCode}
+                        onChange={(e) => setAccessCode(e.target.value)}
+                        isDisabled={isSubmitting}
+                        maxLength={50}
+                    />
+                    <Text fontSize="xs" color="gray.500" mt={1}>
+                        Users will need this code to join your private challenge. Keep it simple and shareable.
+                    </Text>
+                </FormControl>
+            )}
 
             <HStack justify="flex-end" pt={4}>
                 {onCancel && (

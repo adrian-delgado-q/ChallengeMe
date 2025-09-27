@@ -54,6 +54,7 @@ export interface Challenge {
   endDate: string;
   progress?: number; // UI calculated progress
   isPublic: boolean;
+  accessCode?: string; // Optional access code for private challenges
   milestones?: Milestone[];
   rules?: RuleSet;
   createdAt?: string;

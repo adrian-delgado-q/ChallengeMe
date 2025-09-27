@@ -48,6 +48,7 @@ export type ChallengeMinAggregateOutputType = {
   startDate: Date | null
   endDate: Date | null
   isPublic: boolean | null
+  accessCode: string | null
   createdAt: Date | null
   expiresAt: Date | null
   maxTeamSize: number | null
@@ -65,6 +66,7 @@ export type ChallengeMaxAggregateOutputType = {
   startDate: Date | null
   endDate: Date | null
   isPublic: boolean | null
+  accessCode: string | null
   createdAt: Date | null
   expiresAt: Date | null
   maxTeamSize: number | null
@@ -82,6 +84,7 @@ export type ChallengeCountAggregateOutputType = {
   startDate: number
   endDate: number
   isPublic: number
+  accessCode: number
   createdAt: number
   expiresAt: number
   maxTeamSize: number
@@ -113,6 +116,7 @@ export type ChallengeMinAggregateInputType = {
   startDate?: true
   endDate?: true
   isPublic?: true
+  accessCode?: true
   createdAt?: true
   expiresAt?: true
   maxTeamSize?: true
@@ -130,6 +134,7 @@ export type ChallengeMaxAggregateInputType = {
   startDate?: true
   endDate?: true
   isPublic?: true
+  accessCode?: true
   createdAt?: true
   expiresAt?: true
   maxTeamSize?: true
@@ -147,6 +152,7 @@ export type ChallengeCountAggregateInputType = {
   startDate?: true
   endDate?: true
   isPublic?: true
+  accessCode?: true
   createdAt?: true
   expiresAt?: true
   maxTeamSize?: true
@@ -251,6 +257,7 @@ export type ChallengeGroupByOutputType = {
   startDate: Date
   endDate: Date
   isPublic: boolean
+  accessCode: string | null
   createdAt: Date
   expiresAt: Date | null
   maxTeamSize: number | null
@@ -291,6 +298,7 @@ export type ChallengeWhereInput = {
   startDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   endDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   isPublic?: Prisma.BoolFilter<"Challenge"> | boolean
+  accessCode?: Prisma.StringNullableFilter<"Challenge"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   expiresAt?: Prisma.DateTimeNullableFilter<"Challenge"> | Date | string | null
   maxTeamSize?: Prisma.IntNullableFilter<"Challenge"> | number | null
@@ -314,6 +322,7 @@ export type ChallengeOrderByWithRelationInput = {
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  accessCode?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   maxTeamSize?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -340,6 +349,7 @@ export type ChallengeWhereUniqueInput = Prisma.AtLeast<{
   startDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   endDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   isPublic?: Prisma.BoolFilter<"Challenge"> | boolean
+  accessCode?: Prisma.StringNullableFilter<"Challenge"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   expiresAt?: Prisma.DateTimeNullableFilter<"Challenge"> | Date | string | null
   maxTeamSize?: Prisma.IntNullableFilter<"Challenge"> | number | null
@@ -363,6 +373,7 @@ export type ChallengeOrderByWithAggregationInput = {
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  accessCode?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   maxTeamSize?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -388,6 +399,7 @@ export type ChallengeScalarWhereWithAggregatesInput = {
   startDate?: Prisma.DateTimeWithAggregatesFilter<"Challenge"> | Date | string
   endDate?: Prisma.DateTimeWithAggregatesFilter<"Challenge"> | Date | string
   isPublic?: Prisma.BoolWithAggregatesFilter<"Challenge"> | boolean
+  accessCode?: Prisma.StringNullableWithAggregatesFilter<"Challenge"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Challenge"> | Date | string
   expiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Challenge"> | Date | string | null
   maxTeamSize?: Prisma.IntNullableWithAggregatesFilter<"Challenge"> | number | null
@@ -404,6 +416,7 @@ export type ChallengeCreateInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -427,6 +440,7 @@ export type ChallengeUncheckedCreateInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -448,6 +462,7 @@ export type ChallengeUpdateInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -471,6 +486,7 @@ export type ChallengeUncheckedUpdateInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -493,6 +509,7 @@ export type ChallengeCreateManyInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -509,6 +526,7 @@ export type ChallengeUpdateManyMutationInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -526,6 +544,7 @@ export type ChallengeUncheckedUpdateManyInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -553,6 +572,7 @@ export type ChallengeCountOrderByAggregateInput = {
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  accessCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   maxTeamSize?: Prisma.SortOrder
@@ -576,6 +596,7 @@ export type ChallengeMaxOrderByAggregateInput = {
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  accessCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   maxTeamSize?: Prisma.SortOrder
@@ -593,6 +614,7 @@ export type ChallengeMinOrderByAggregateInput = {
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  accessCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   maxTeamSize?: Prisma.SortOrder
@@ -749,6 +771,7 @@ export type ChallengeCreateWithoutCreatorInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -770,6 +793,7 @@ export type ChallengeUncheckedCreateWithoutCreatorInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -821,6 +845,7 @@ export type ChallengeScalarWhereInput = {
   startDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   endDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   isPublic?: Prisma.BoolFilter<"Challenge"> | boolean
+  accessCode?: Prisma.StringNullableFilter<"Challenge"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   expiresAt?: Prisma.DateTimeNullableFilter<"Challenge"> | Date | string | null
   maxTeamSize?: Prisma.IntNullableFilter<"Challenge"> | number | null
@@ -837,6 +862,7 @@ export type ChallengeCreateWithoutSupportedActivitiesInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -859,6 +885,7 @@ export type ChallengeUncheckedCreateWithoutSupportedActivitiesInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -895,6 +922,7 @@ export type ChallengeUpdateWithoutSupportedActivitiesInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -917,6 +945,7 @@ export type ChallengeUncheckedUpdateWithoutSupportedActivitiesInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -937,6 +966,7 @@ export type ChallengeCreateWithoutMilestonesInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -959,6 +989,7 @@ export type ChallengeUncheckedCreateWithoutMilestonesInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -995,6 +1026,7 @@ export type ChallengeUpdateWithoutMilestonesInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1017,6 +1049,7 @@ export type ChallengeUncheckedUpdateWithoutMilestonesInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1037,6 +1070,7 @@ export type ChallengeCreateWithoutParticipantsInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -1059,6 +1093,7 @@ export type ChallengeUncheckedCreateWithoutParticipantsInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -1095,6 +1130,7 @@ export type ChallengeUpdateWithoutParticipantsInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1117,6 +1153,7 @@ export type ChallengeUncheckedUpdateWithoutParticipantsInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1137,6 +1174,7 @@ export type ChallengeCreateWithoutActivitiesInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -1159,6 +1197,7 @@ export type ChallengeUncheckedCreateWithoutActivitiesInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -1195,6 +1234,7 @@ export type ChallengeUpdateWithoutActivitiesInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1217,6 +1257,7 @@ export type ChallengeUncheckedUpdateWithoutActivitiesInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1237,6 +1278,7 @@ export type ChallengeCreateWithoutPostsInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -1259,6 +1301,7 @@ export type ChallengeUncheckedCreateWithoutPostsInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -1295,6 +1338,7 @@ export type ChallengeUpdateWithoutPostsInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1317,6 +1361,7 @@ export type ChallengeUncheckedUpdateWithoutPostsInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1337,6 +1382,7 @@ export type ChallengeCreateManyCreatorInput = {
   startDate: Date | string
   endDate: Date | string
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxTeamSize?: number | null
@@ -1353,6 +1399,7 @@ export type ChallengeUpdateWithoutCreatorInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1374,6 +1421,7 @@ export type ChallengeUncheckedUpdateWithoutCreatorInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1395,6 +1443,7 @@ export type ChallengeUncheckedUpdateManyWithoutCreatorInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxTeamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1479,6 +1528,7 @@ export type ChallengeSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   startDate?: boolean
   endDate?: boolean
   isPublic?: boolean
+  accessCode?: boolean
   createdAt?: boolean
   expiresAt?: boolean
   maxTeamSize?: boolean
@@ -1503,6 +1553,7 @@ export type ChallengeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   startDate?: boolean
   endDate?: boolean
   isPublic?: boolean
+  accessCode?: boolean
   createdAt?: boolean
   expiresAt?: boolean
   maxTeamSize?: boolean
@@ -1521,6 +1572,7 @@ export type ChallengeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   startDate?: boolean
   endDate?: boolean
   isPublic?: boolean
+  accessCode?: boolean
   createdAt?: boolean
   expiresAt?: boolean
   maxTeamSize?: boolean
@@ -1539,13 +1591,14 @@ export type ChallengeSelectScalar = {
   startDate?: boolean
   endDate?: boolean
   isPublic?: boolean
+  accessCode?: boolean
   createdAt?: boolean
   expiresAt?: boolean
   maxTeamSize?: boolean
   status?: boolean
 }
 
-export type ChallengeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "title" | "description" | "challengeType" | "maxParticipants" | "participantCount" | "startDate" | "endDate" | "isPublic" | "createdAt" | "expiresAt" | "maxTeamSize" | "status", ExtArgs["result"]["challenge"]>
+export type ChallengeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "title" | "description" | "challengeType" | "maxParticipants" | "participantCount" | "startDate" | "endDate" | "isPublic" | "accessCode" | "createdAt" | "expiresAt" | "maxTeamSize" | "status", ExtArgs["result"]["challenge"]>
 export type ChallengeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | Prisma.Challenge$activitiesArgs<ExtArgs>
   creator?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
@@ -1583,6 +1636,7 @@ export type $ChallengePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     startDate: Date
     endDate: Date
     isPublic: boolean
+    accessCode: string | null
     createdAt: Date
     expiresAt: Date | null
     maxTeamSize: number | null
@@ -2026,6 +2080,7 @@ export interface ChallengeFieldRefs {
   readonly startDate: Prisma.FieldRef<"Challenge", 'DateTime'>
   readonly endDate: Prisma.FieldRef<"Challenge", 'DateTime'>
   readonly isPublic: Prisma.FieldRef<"Challenge", 'Boolean'>
+  readonly accessCode: Prisma.FieldRef<"Challenge", 'String'>
   readonly createdAt: Prisma.FieldRef<"Challenge", 'DateTime'>
   readonly expiresAt: Prisma.FieldRef<"Challenge", 'DateTime'>
   readonly maxTeamSize: Prisma.FieldRef<"Challenge", 'Int'>
