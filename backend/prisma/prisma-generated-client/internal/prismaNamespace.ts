@@ -404,6 +404,7 @@ export const ModelName = {
   ChallengeParticipant: 'ChallengeParticipant',
   ActivityType: 'ActivityType',
   Activity: 'Activity',
+  ChallengeProgress: 'ChallengeProgress',
   Post: 'Post',
   Comment: 'Comment'
 } as const
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "profile" | "team" | "teamMembership" | "challenge" | "challengeActivityType" | "milestone" | "milestoneProgress" | "challengeParticipant" | "activityType" | "activity" | "post" | "comment"
+    modelProps: "profile" | "team" | "teamMembership" | "challenge" | "challengeActivityType" | "milestone" | "milestoneProgress" | "challengeParticipant" | "activityType" | "activity" | "challengeProgress" | "post" | "comment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1165,6 +1166,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ChallengeProgress: {
+      payload: Prisma.$ChallengeProgressPayload<ExtArgs>
+      fields: Prisma.ChallengeProgressFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChallengeProgressFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeProgressPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChallengeProgressFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeProgressPayload>
+        }
+        findFirst: {
+          args: Prisma.ChallengeProgressFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeProgressPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChallengeProgressFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeProgressPayload>
+        }
+        findMany: {
+          args: Prisma.ChallengeProgressFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeProgressPayload>[]
+        }
+        create: {
+          args: Prisma.ChallengeProgressCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeProgressPayload>
+        }
+        createMany: {
+          args: Prisma.ChallengeProgressCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChallengeProgressCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeProgressPayload>[]
+        }
+        delete: {
+          args: Prisma.ChallengeProgressDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeProgressPayload>
+        }
+        update: {
+          args: Prisma.ChallengeProgressUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeProgressPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChallengeProgressDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChallengeProgressUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChallengeProgressUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeProgressPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChallengeProgressUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeProgressPayload>
+        }
+        aggregate: {
+          args: Prisma.ChallengeProgressAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChallengeProgress>
+        }
+        groupBy: {
+          args: Prisma.ChallengeProgressGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChallengeProgressGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChallengeProgressCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChallengeProgressCountAggregateOutputType> | number
+        }
+      }
+    }
     Post: {
       payload: Prisma.$PostPayload<ExtArgs>
       fields: Prisma.PostFieldRefs
@@ -1490,6 +1565,23 @@ export const ActivityScalarFieldEnum = {
 export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
 
 
+export const ChallengeProgressScalarFieldEnum = {
+  id: 'id',
+  challengeId: 'challengeId',
+  participantId: 'participantId',
+  activityTypeId: 'activityTypeId',
+  totalValue: 'totalValue',
+  activityCount: 'activityCount',
+  averageValue: 'averageValue',
+  bestValue: 'bestValue',
+  lastActivityDate: 'lastActivityDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChallengeProgressScalarFieldEnum = (typeof ChallengeProgressScalarFieldEnum)[keyof typeof ChallengeProgressScalarFieldEnum]
+
+
 export const PostScalarFieldEnum = {
   id: 'id',
   participantId: 'participantId',
@@ -1733,6 +1825,7 @@ export type GlobalOmitConfig = {
   challengeParticipant?: Prisma.ChallengeParticipantOmit
   activityType?: Prisma.ActivityTypeOmit
   activity?: Prisma.ActivityOmit
+  challengeProgress?: Prisma.ChallengeProgressOmit
   post?: Prisma.PostOmit
   comment?: Prisma.CommentOmit
 }

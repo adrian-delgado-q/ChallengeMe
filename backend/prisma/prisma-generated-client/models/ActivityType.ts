@@ -208,6 +208,7 @@ export type ActivityTypeWhereInput = {
   activities?: Prisma.ActivityListRelationFilter
   milestones?: Prisma.MilestoneListRelationFilter
   challenges?: Prisma.ChallengeActivityTypeListRelationFilter
+  progress?: Prisma.ChallengeProgressListRelationFilter
 }
 
 export type ActivityTypeOrderByWithRelationInput = {
@@ -222,6 +223,7 @@ export type ActivityTypeOrderByWithRelationInput = {
   activities?: Prisma.ActivityOrderByRelationAggregateInput
   milestones?: Prisma.MilestoneOrderByRelationAggregateInput
   challenges?: Prisma.ChallengeActivityTypeOrderByRelationAggregateInput
+  progress?: Prisma.ChallengeProgressOrderByRelationAggregateInput
 }
 
 export type ActivityTypeWhereUniqueInput = Prisma.AtLeast<{
@@ -239,6 +241,7 @@ export type ActivityTypeWhereUniqueInput = Prisma.AtLeast<{
   activities?: Prisma.ActivityListRelationFilter
   milestones?: Prisma.MilestoneListRelationFilter
   challenges?: Prisma.ChallengeActivityTypeListRelationFilter
+  progress?: Prisma.ChallengeProgressListRelationFilter
 }, "id" | "name">
 
 export type ActivityTypeOrderByWithAggregationInput = {
@@ -281,6 +284,7 @@ export type ActivityTypeCreateInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutActivityTypeInput
   milestones?: Prisma.MilestoneCreateNestedManyWithoutActivityTypeInput
   challenges?: Prisma.ChallengeActivityTypeCreateNestedManyWithoutActivityTypeInput
+  progress?: Prisma.ChallengeProgressCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeUncheckedCreateInput = {
@@ -295,6 +299,7 @@ export type ActivityTypeUncheckedCreateInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActivityTypeInput
   milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutActivityTypeInput
   challenges?: Prisma.ChallengeActivityTypeUncheckedCreateNestedManyWithoutActivityTypeInput
+  progress?: Prisma.ChallengeProgressUncheckedCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeUpdateInput = {
@@ -309,6 +314,7 @@ export type ActivityTypeUpdateInput = {
   activities?: Prisma.ActivityUpdateManyWithoutActivityTypeNestedInput
   milestones?: Prisma.MilestoneUpdateManyWithoutActivityTypeNestedInput
   challenges?: Prisma.ChallengeActivityTypeUpdateManyWithoutActivityTypeNestedInput
+  progress?: Prisma.ChallengeProgressUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeUncheckedUpdateInput = {
@@ -323,6 +329,7 @@ export type ActivityTypeUncheckedUpdateInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutActivityTypeNestedInput
   milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutActivityTypeNestedInput
   challenges?: Prisma.ChallengeActivityTypeUncheckedUpdateManyWithoutActivityTypeNestedInput
+  progress?: Prisma.ChallengeProgressUncheckedUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeCreateManyInput = {
@@ -438,6 +445,20 @@ export type ActivityTypeUpdateOneRequiredWithoutActivitiesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ActivityTypeUpdateToOneWithWhereWithoutActivitiesInput, Prisma.ActivityTypeUpdateWithoutActivitiesInput>, Prisma.ActivityTypeUncheckedUpdateWithoutActivitiesInput>
 }
 
+export type ActivityTypeCreateNestedOneWithoutProgressInput = {
+  create?: Prisma.XOR<Prisma.ActivityTypeCreateWithoutProgressInput, Prisma.ActivityTypeUncheckedCreateWithoutProgressInput>
+  connectOrCreate?: Prisma.ActivityTypeCreateOrConnectWithoutProgressInput
+  connect?: Prisma.ActivityTypeWhereUniqueInput
+}
+
+export type ActivityTypeUpdateOneRequiredWithoutProgressNestedInput = {
+  create?: Prisma.XOR<Prisma.ActivityTypeCreateWithoutProgressInput, Prisma.ActivityTypeUncheckedCreateWithoutProgressInput>
+  connectOrCreate?: Prisma.ActivityTypeCreateOrConnectWithoutProgressInput
+  upsert?: Prisma.ActivityTypeUpsertWithoutProgressInput
+  connect?: Prisma.ActivityTypeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ActivityTypeUpdateToOneWithWhereWithoutProgressInput, Prisma.ActivityTypeUpdateWithoutProgressInput>, Prisma.ActivityTypeUncheckedUpdateWithoutProgressInput>
+}
+
 export type ActivityTypeCreateWithoutChallengesInput = {
   id?: string
   name: string
@@ -449,6 +470,7 @@ export type ActivityTypeCreateWithoutChallengesInput = {
   createdAt?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutActivityTypeInput
   milestones?: Prisma.MilestoneCreateNestedManyWithoutActivityTypeInput
+  progress?: Prisma.ChallengeProgressCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeUncheckedCreateWithoutChallengesInput = {
@@ -462,6 +484,7 @@ export type ActivityTypeUncheckedCreateWithoutChallengesInput = {
   createdAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActivityTypeInput
   milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutActivityTypeInput
+  progress?: Prisma.ChallengeProgressUncheckedCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeCreateOrConnectWithoutChallengesInput = {
@@ -491,6 +514,7 @@ export type ActivityTypeUpdateWithoutChallengesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutActivityTypeNestedInput
   milestones?: Prisma.MilestoneUpdateManyWithoutActivityTypeNestedInput
+  progress?: Prisma.ChallengeProgressUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeUncheckedUpdateWithoutChallengesInput = {
@@ -504,6 +528,7 @@ export type ActivityTypeUncheckedUpdateWithoutChallengesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutActivityTypeNestedInput
   milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutActivityTypeNestedInput
+  progress?: Prisma.ChallengeProgressUncheckedUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeCreateWithoutMilestonesInput = {
@@ -517,6 +542,7 @@ export type ActivityTypeCreateWithoutMilestonesInput = {
   createdAt?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutActivityTypeInput
   challenges?: Prisma.ChallengeActivityTypeCreateNestedManyWithoutActivityTypeInput
+  progress?: Prisma.ChallengeProgressCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeUncheckedCreateWithoutMilestonesInput = {
@@ -530,6 +556,7 @@ export type ActivityTypeUncheckedCreateWithoutMilestonesInput = {
   createdAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActivityTypeInput
   challenges?: Prisma.ChallengeActivityTypeUncheckedCreateNestedManyWithoutActivityTypeInput
+  progress?: Prisma.ChallengeProgressUncheckedCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeCreateOrConnectWithoutMilestonesInput = {
@@ -559,6 +586,7 @@ export type ActivityTypeUpdateWithoutMilestonesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutActivityTypeNestedInput
   challenges?: Prisma.ChallengeActivityTypeUpdateManyWithoutActivityTypeNestedInput
+  progress?: Prisma.ChallengeProgressUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeUncheckedUpdateWithoutMilestonesInput = {
@@ -572,6 +600,7 @@ export type ActivityTypeUncheckedUpdateWithoutMilestonesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutActivityTypeNestedInput
   challenges?: Prisma.ChallengeActivityTypeUncheckedUpdateManyWithoutActivityTypeNestedInput
+  progress?: Prisma.ChallengeProgressUncheckedUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeCreateWithoutActivitiesInput = {
@@ -585,6 +614,7 @@ export type ActivityTypeCreateWithoutActivitiesInput = {
   createdAt?: Date | string
   milestones?: Prisma.MilestoneCreateNestedManyWithoutActivityTypeInput
   challenges?: Prisma.ChallengeActivityTypeCreateNestedManyWithoutActivityTypeInput
+  progress?: Prisma.ChallengeProgressCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeUncheckedCreateWithoutActivitiesInput = {
@@ -598,6 +628,7 @@ export type ActivityTypeUncheckedCreateWithoutActivitiesInput = {
   createdAt?: Date | string
   milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutActivityTypeInput
   challenges?: Prisma.ChallengeActivityTypeUncheckedCreateNestedManyWithoutActivityTypeInput
+  progress?: Prisma.ChallengeProgressUncheckedCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeCreateOrConnectWithoutActivitiesInput = {
@@ -627,6 +658,7 @@ export type ActivityTypeUpdateWithoutActivitiesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   milestones?: Prisma.MilestoneUpdateManyWithoutActivityTypeNestedInput
   challenges?: Prisma.ChallengeActivityTypeUpdateManyWithoutActivityTypeNestedInput
+  progress?: Prisma.ChallengeProgressUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeUncheckedUpdateWithoutActivitiesInput = {
@@ -640,6 +672,79 @@ export type ActivityTypeUncheckedUpdateWithoutActivitiesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutActivityTypeNestedInput
   challenges?: Prisma.ChallengeActivityTypeUncheckedUpdateManyWithoutActivityTypeNestedInput
+  progress?: Prisma.ChallengeProgressUncheckedUpdateManyWithoutActivityTypeNestedInput
+}
+
+export type ActivityTypeCreateWithoutProgressInput = {
+  id?: string
+  name: string
+  category: string
+  unit: string
+  unitLabel: string
+  description?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  activities?: Prisma.ActivityCreateNestedManyWithoutActivityTypeInput
+  milestones?: Prisma.MilestoneCreateNestedManyWithoutActivityTypeInput
+  challenges?: Prisma.ChallengeActivityTypeCreateNestedManyWithoutActivityTypeInput
+}
+
+export type ActivityTypeUncheckedCreateWithoutProgressInput = {
+  id?: string
+  name: string
+  category: string
+  unit: string
+  unitLabel: string
+  description?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActivityTypeInput
+  milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutActivityTypeInput
+  challenges?: Prisma.ChallengeActivityTypeUncheckedCreateNestedManyWithoutActivityTypeInput
+}
+
+export type ActivityTypeCreateOrConnectWithoutProgressInput = {
+  where: Prisma.ActivityTypeWhereUniqueInput
+  create: Prisma.XOR<Prisma.ActivityTypeCreateWithoutProgressInput, Prisma.ActivityTypeUncheckedCreateWithoutProgressInput>
+}
+
+export type ActivityTypeUpsertWithoutProgressInput = {
+  update: Prisma.XOR<Prisma.ActivityTypeUpdateWithoutProgressInput, Prisma.ActivityTypeUncheckedUpdateWithoutProgressInput>
+  create: Prisma.XOR<Prisma.ActivityTypeCreateWithoutProgressInput, Prisma.ActivityTypeUncheckedCreateWithoutProgressInput>
+  where?: Prisma.ActivityTypeWhereInput
+}
+
+export type ActivityTypeUpdateToOneWithWhereWithoutProgressInput = {
+  where?: Prisma.ActivityTypeWhereInput
+  data: Prisma.XOR<Prisma.ActivityTypeUpdateWithoutProgressInput, Prisma.ActivityTypeUncheckedUpdateWithoutProgressInput>
+}
+
+export type ActivityTypeUpdateWithoutProgressInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  unitLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUpdateManyWithoutActivityTypeNestedInput
+  milestones?: Prisma.MilestoneUpdateManyWithoutActivityTypeNestedInput
+  challenges?: Prisma.ChallengeActivityTypeUpdateManyWithoutActivityTypeNestedInput
+}
+
+export type ActivityTypeUncheckedUpdateWithoutProgressInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  unitLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActivityTypeNestedInput
+  milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutActivityTypeNestedInput
+  challenges?: Prisma.ChallengeActivityTypeUncheckedUpdateManyWithoutActivityTypeNestedInput
 }
 
 
@@ -651,12 +756,14 @@ export type ActivityTypeCountOutputType = {
   activities: number
   milestones: number
   challenges: number
+  progress: number
 }
 
 export type ActivityTypeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | ActivityTypeCountOutputTypeCountActivitiesArgs
   milestones?: boolean | ActivityTypeCountOutputTypeCountMilestonesArgs
   challenges?: boolean | ActivityTypeCountOutputTypeCountChallengesArgs
+  progress?: boolean | ActivityTypeCountOutputTypeCountProgressArgs
 }
 
 /**
@@ -690,6 +797,13 @@ export type ActivityTypeCountOutputTypeCountChallengesArgs<ExtArgs extends runti
   where?: Prisma.ChallengeActivityTypeWhereInput
 }
 
+/**
+ * ActivityTypeCountOutputType without action
+ */
+export type ActivityTypeCountOutputTypeCountProgressArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChallengeProgressWhereInput
+}
+
 
 export type ActivityTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -703,6 +817,7 @@ export type ActivityTypeSelect<ExtArgs extends runtime.Types.Extensions.Internal
   activities?: boolean | Prisma.ActivityType$activitiesArgs<ExtArgs>
   milestones?: boolean | Prisma.ActivityType$milestonesArgs<ExtArgs>
   challenges?: boolean | Prisma.ActivityType$challengesArgs<ExtArgs>
+  progress?: boolean | Prisma.ActivityType$progressArgs<ExtArgs>
   _count?: boolean | Prisma.ActivityTypeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["activityType"]>
 
@@ -744,6 +859,7 @@ export type ActivityTypeInclude<ExtArgs extends runtime.Types.Extensions.Interna
   activities?: boolean | Prisma.ActivityType$activitiesArgs<ExtArgs>
   milestones?: boolean | Prisma.ActivityType$milestonesArgs<ExtArgs>
   challenges?: boolean | Prisma.ActivityType$challengesArgs<ExtArgs>
+  progress?: boolean | Prisma.ActivityType$progressArgs<ExtArgs>
   _count?: boolean | Prisma.ActivityTypeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ActivityTypeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -755,6 +871,7 @@ export type $ActivityTypePayload<ExtArgs extends runtime.Types.Extensions.Intern
     activities: Prisma.$ActivityPayload<ExtArgs>[]
     milestones: Prisma.$MilestonePayload<ExtArgs>[]
     challenges: Prisma.$ChallengeActivityTypePayload<ExtArgs>[]
+    progress: Prisma.$ChallengeProgressPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1162,6 +1279,7 @@ export interface Prisma__ActivityTypeClient<T, Null = never, ExtArgs extends run
   activities<T extends Prisma.ActivityType$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityType$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   milestones<T extends Prisma.ActivityType$milestonesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityType$milestonesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MilestonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   challenges<T extends Prisma.ActivityType$challengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityType$challengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengeActivityTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  progress<T extends Prisma.ActivityType$progressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityType$progressArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengeProgressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1656,6 +1774,30 @@ export type ActivityType$challengesArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.ChallengeActivityTypeScalarFieldEnum | Prisma.ChallengeActivityTypeScalarFieldEnum[]
+}
+
+/**
+ * ActivityType.progress
+ */
+export type ActivityType$progressArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChallengeProgress
+   */
+  select?: Prisma.ChallengeProgressSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChallengeProgress
+   */
+  omit?: Prisma.ChallengeProgressOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChallengeProgressInclude<ExtArgs> | null
+  where?: Prisma.ChallengeProgressWhereInput
+  orderBy?: Prisma.ChallengeProgressOrderByWithRelationInput | Prisma.ChallengeProgressOrderByWithRelationInput[]
+  cursor?: Prisma.ChallengeProgressWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChallengeProgressScalarFieldEnum | Prisma.ChallengeProgressScalarFieldEnum[]
 }
 
 /**

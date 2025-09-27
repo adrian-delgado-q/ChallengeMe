@@ -86,13 +86,7 @@ export class ActivityService {
                 return {
                     id: activity.id,
                     activityType: activity.activityType,
-                    distance: activity.distance,
-                    duration: activity.duration,
-                    repetitions: activity.repetitions,
-                    weight: activity.weight,
-                    sets: activity.sets,
-                    calories: activity.calories,
-                    pace: activity.pace,
+                    value: activity.value,
                     notes: activity.notes,
                     date: activity.date,
                     uploadedAt: activity.uploadedAt,
@@ -113,7 +107,18 @@ export class ActivityService {
 
         const { data: activities, error } = await supabase
             .from('Activity')
-            .select('id, participantId, challengeId, activityType, distance, duration, repetitions, weight, sets, calories, pace, notes, date, uploadedAt, profileId')
+            .select(`
+                id, 
+                participantId, 
+                challengeId, 
+                activityTypeId,
+                value,
+                notes, 
+                date, 
+                uploadedAt, 
+                profileId,
+                activityType:ActivityType(id, name, category, unit, unitLabel, description)
+            `)
             .eq('profileId', currentUser.id);
 
         if (error) throw new Error(error.message);
@@ -161,13 +166,7 @@ export class ActivityService {
                 return {
                     id: activity.id,
                     activityType: activity.activityType,
-                    distance: activity.distance,
-                    duration: activity.duration,
-                    repetitions: activity.repetitions,
-                    weight: activity.weight,
-                    sets: activity.sets,
-                    calories: activity.calories,
-                    pace: activity.pace,
+                    value: activity.value,
                     notes: activity.notes,
                     date: activity.date,
                     uploadedAt: activity.uploadedAt,
@@ -213,6 +212,8 @@ export class ActivityService {
                 id: activityId,
                 participantId: activityData.participantId,
                 activityTypeId: activityData.activityTypeId,
+                challengeId: participant.challengeId, 
+                profileId: user.id,
                 value: activityData.value,
                 notes: activityData.notes || null,
                 date: activityData.date,
@@ -320,7 +321,18 @@ export class ActivityService {
         // Get all user activities
         const { data: activities, error } = await supabase
             .from('Activity')
-            .select('id, participantId, challengeId, activityType, distance, duration, repetitions, weight, sets, calories, pace, notes, date, uploadedAt, profileId')
+            .select(`
+                id, 
+                participantId, 
+                challengeId, 
+                activityTypeId,
+                value,
+                notes, 
+                date, 
+                uploadedAt, 
+                profileId,
+                activityType:ActivityType(id, name, category, unit, unitLabel, description)
+            `)
             .eq('profileId', user.id)
             .order('uploadedAt', { ascending: false });
 
@@ -371,13 +383,7 @@ export class ActivityService {
                 return {
                     id: activity.id,
                     activityType: activity.activityType,
-                    distance: activity.distance,
-                    duration: activity.duration,
-                    repetitions: activity.repetitions,
-                    weight: activity.weight,
-                    sets: activity.sets,
-                    calories: activity.calories,
-                    pace: activity.pace,
+                    value: activity.value,
                     notes: activity.notes,
                     date: activity.date,
                     uploadedAt: activity.uploadedAt,
@@ -404,7 +410,18 @@ export class ActivityService {
     static async getRecentActivities(limit: number = 20) {
         const { data: activities, error } = await supabase
             .from('Activity')
-            .select('id, participantId, challengeId, activityType, distance, duration, repetitions, weight, sets, calories, pace, notes, date, uploadedAt, profileId')
+            .select(`
+                id, 
+                participantId, 
+                challengeId, 
+                activityTypeId,
+                value,
+                notes, 
+                date, 
+                uploadedAt, 
+                profileId,
+                activityType:ActivityType(id, name, category, unit, unitLabel, description)
+            `)
             .order('uploadedAt', { ascending: false })
             .limit(limit);
 
@@ -461,13 +478,7 @@ export class ActivityService {
                 return {
                     id: activity.id,
                     activityType: activity.activityType,
-                    distance: activity.distance,
-                    duration: activity.duration,
-                    repetitions: activity.repetitions,
-                    weight: activity.weight,
-                    sets: activity.sets,
-                    calories: activity.calories,
-                    pace: activity.pace,
+                    value: activity.value,
                     notes: activity.notes,
                     date: activity.date,
                     uploadedAt: activity.uploadedAt,

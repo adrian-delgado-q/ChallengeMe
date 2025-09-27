@@ -31,7 +31,7 @@ COMMENT ON COLUMN "public"."Team"."memberCount" IS 'Automatically maintained cou
 -- =====================================================
 -- Function to generate random usernames
 CREATE
-OR REPLACE FUNCTION public.generate_random_username() RETURNS TEXT LANGUAGE plpgsql AS $$ DECLARE adjectives TEXT [] := ARRAY [
+OR REPLACE FUNCTION public.generate_random_username() RETURNS TEXT LANGUAGE plpgsql AS $ $ DECLARE adjectives TEXT [] := ARRAY [
         'Swift', 'Strong', 'Fast', 'Fit', 'Bold', 'Active', 'Power', 'Elite', 
         'Peak', 'Max', 'Pro', 'Iron', 'Steel', 'Fire', 'Storm', 'Thunder', 
         'Lightning', 'Mighty', 'Super', 'Ultra', 'Dynamic', 'Turbo', 'Mega', 
@@ -86,11 +86,11 @@ END LOOP;
 
 END;
 
-$$;
+$ $;
 
 -- Function to get random avatar URL using DiceBear API
 CREATE
-OR REPLACE FUNCTION public.get_random_avatar_url() RETURNS TEXT LANGUAGE plpgsql AS $$ DECLARE styles TEXT [] := ARRAY ['avataaars', 'bottts', 'fun-emoji', 'icons', 'identicon', 'initials', 'lorelei', 'micah', 'miniavs', 'open-peeps', 'personas', 'pixel-art'];
+OR REPLACE FUNCTION public.get_random_avatar_url() RETURNS TEXT LANGUAGE plpgsql AS $ $ DECLARE styles TEXT [] := ARRAY ['avataaars', 'bottts', 'fun-emoji', 'icons', 'identicon', 'initials', 'lorelei', 'micah', 'miniavs', 'open-peeps', 'personas', 'pixel-art'];
 
 random_style TEXT;
 
@@ -104,11 +104,11 @@ RETURN 'https://api.dicebear.com/7.x/' || random_style || '/svg?seed=' || random
 
 END;
 
-$$;
+$ $;
 
 -- Function to handle new user signups
 CREATE
-OR REPLACE FUNCTION public.handle_new_user() RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$ DECLARE new_username TEXT;
+OR REPLACE FUNCTION public.handle_new_user() RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $ $ DECLARE new_username TEXT;
 
 new_avatar_url TEXT;
 
@@ -142,11 +142,11 @@ RETURN NEW;
 
 END;
 
-$$;
+$ $;
 
 -- Function to update team member count
 CREATE
-OR REPLACE FUNCTION public.update_team_member_count() RETURNS TRIGGER LANGUAGE plpgsql AS $$ BEGIN IF TG_OP = 'INSERT' THEN
+OR REPLACE FUNCTION public.update_team_member_count() RETURNS TRIGGER LANGUAGE plpgsql AS $ $ BEGIN IF TG_OP = 'INSERT' THEN
 UPDATE
     "public"."Team"
 SET
@@ -186,11 +186,11 @@ RETURN NULL;
 
 END;
 
-$$;
+$ $;
 
 -- Function to update challenge participant count
 CREATE
-OR REPLACE FUNCTION public.update_challenge_participant_count() RETURNS TRIGGER LANGUAGE plpgsql AS $$ BEGIN IF TG_OP = 'INSERT' THEN
+OR REPLACE FUNCTION public.update_challenge_participant_count() RETURNS TRIGGER LANGUAGE plpgsql AS $ $ BEGIN IF TG_OP = 'INSERT' THEN
 UPDATE
     "public"."Challenge"
 SET
@@ -230,7 +230,7 @@ RETURN NULL;
 
 END;
 
-$$;
+$ $;
 
 -- Create triggers
 -- Note: Auth trigger (on_auth_user_created) is handled separately in migrate.sh due to permissions
@@ -254,7 +254,7 @@ INSERT
 -- STEP 3: RLS POLICIES
 -- =====================================================
 -- Drop all existing policies to avoid conflicts
-DO $$ DECLARE r RECORD;
+DO $ $ DECLARE r RECORD;
 
 BEGIN FOR r IN (
     SELECT
@@ -269,7 +269,7 @@ BEGIN FOR r IN (
 
 END LOOP;
 
-END $$;
+END $ $;
 
 -- Disable RLS temporarily on profiles to allow trigger functions to work
 ALTER TABLE
@@ -312,6 +312,10 @@ ALTER TABLE
 -- Re-enable RLS on profiles AFTER ensuring triggers work
 ALTER TABLE
     "public"."profiles" ENABLE ROW LEVEL SECURITY;
+
+-- Enable RLS for Challenge Progress (aggregation table)
+ALTER TABLE
+    "public"."challenge_progress" ENABLE ROW LEVEL SECURITY;
 
 -- Activity Type Policies
 CREATE POLICY "Activity types are viewable by everyone" ON "public"."ActivityType" FOR
@@ -679,6 +683,46 @@ UPDATE
 
 CREATE POLICY "Users can delete their own comments" ON "public"."Comment" FOR DELETE USING (auth.uid() = "authorId");
 
+-- Challenge Progress Policies (Aggregation Table)
+-- This table is automatically maintained by database triggers
+-- Users can view progress data, but only system/triggers can modify it
+CREATE POLICY "Challenge progress is viewable by everyone" ON "public"."challenge_progress" FOR
+SELECT
+    USING (true);
+
+CREATE POLICY "System can manage challenge progress" ON "public"."challenge_progress" FOR ALL USING (true) WITH CHECK (true);
+
+-- Users can view their own participation progress
+CREATE POLICY "Users can view their own progress" ON "public"."challenge_progress" FOR
+SELECT
+    USING (
+        EXISTS (
+            SELECT
+                1
+            FROM
+                "public"."ChallengeParticipant" cp
+            WHERE
+                cp.id = "participantId"
+                AND cp."userId" = auth.uid()
+        )
+    );
+
+-- Team members can view their team's progress  
+CREATE POLICY "Team members can view team progress" ON "public"."challenge_progress" FOR
+SELECT
+    USING (
+        EXISTS (
+            SELECT
+                1
+            FROM
+                "public"."ChallengeParticipant" cp
+                JOIN "public"."TeamMembership" tm ON tm."teamId" = cp."teamId"
+            WHERE
+                cp.id = "participantId"
+                AND tm."userId" = auth.uid()
+        )
+    );
+
 -- Grant permissions
 GRANT ALL ON "public"."profiles" TO service_role;
 
@@ -700,7 +744,7 @@ SELECT
     'Tables Check' as check_type,
     COUNT(*) as found_tables,
     CASE
-        WHEN COUNT(*) >= 12 THEN '✅ All expected tables found'
+        WHEN COUNT(*) >= 13 THEN '✅ All expected tables found'
         ELSE '⚠️ Missing some tables'
     END as status
 FROM
@@ -719,7 +763,8 @@ WHERE
         'ChallengeParticipant',
         'Activity',
         'Post',
-        'Comment'
+        'Comment',
+        'challenge_progress'
     );
 
 -- Check that RLS is enabled
@@ -727,7 +772,7 @@ SELECT
     'RLS Check' as check_type,
     COUNT(*) as tables_with_rls,
     CASE
-        WHEN COUNT(*) >= 11 THEN '✅ RLS enabled on all tables'
+        WHEN COUNT(*) >= 12 THEN '✅ RLS enabled on all tables'
         ELSE '⚠️ RLS not enabled on some tables'
     END as status
 FROM
@@ -746,7 +791,8 @@ WHERE
         'ChallengeParticipant',
         'Activity',
         'Post',
-        'Comment'
+        'Comment',
+        'challenge_progress'
     )
     AND c.relrowsecurity = true;
 
@@ -819,3 +865,324 @@ WHERE
     );
 
 -- Migration completed successfully!
+-- =====================================================
+-- STEP 3: CHALLENGE PROGRESS AGGREGATION SYSTEM
+-- =====================================================
+-- Function to update challenge progress aggregation
+-- Uses UPSERT with ON CONFLICT to handle concurrent inserts safely
+CREATE
+OR REPLACE FUNCTION update_challenge_progress() RETURNS TRIGGER AS $ $ DECLARE v_challenge_id UUID;
+
+v_participant_id UUID;
+
+v_activity_type_id UUID;
+
+v_activity_value FLOAT;
+
+v_activity_date DATE;
+
+BEGIN -- Handle both INSERT and UPDATE scenarios
+IF TG_OP = 'INSERT' THEN v_challenge_id := NEW."challengeId";
+
+v_participant_id := NEW."participantId";
+
+v_activity_type_id := NEW."activityTypeId";
+
+v_activity_value := NEW.value;
+
+v_activity_date := NEW.date;
+
+ELSIF TG_OP = 'UPDATE' THEN -- For updates, we need to handle both old and new values
+-- First, reverse the old values
+IF OLD."challengeId" IS NOT NULL
+AND OLD."participantId" IS NOT NULL
+AND OLD."activityTypeId" IS NOT NULL THEN PERFORM reverse_challenge_progress(
+    OLD."challengeId",
+    OLD."participantId",
+    OLD."activityTypeId",
+    OLD.value,
+    OLD.date
+);
+
+END IF;
+
+-- Then apply new values
+v_challenge_id := NEW."challengeId";
+
+v_participant_id := NEW."participantId";
+
+v_activity_type_id := NEW."activityTypeId";
+
+v_activity_value := NEW.value;
+
+v_activity_date := NEW.date;
+
+END IF;
+
+-- Skip if any required field is NULL (shouldn't happen with proper constraints)
+IF v_challenge_id IS NULL
+OR v_participant_id IS NULL
+OR v_activity_type_id IS NULL THEN RETURN COALESCE(NEW, OLD);
+
+END IF;
+
+-- Use INSERT ... ON CONFLICT to handle concurrent updates
+-- This ensures atomicity and prevents race conditions
+INSERT INTO
+    challenge_progress (
+        id,
+        "challengeId",
+        "participantId",
+        "activityTypeId",
+        "totalValue",
+        "activityCount",
+        "averageValue",
+        "bestValue",
+        "lastActivityDate",
+        "createdAt",
+        "updatedAt"
+    )
+VALUES
+    (
+        gen_random_uuid(),
+        v_challenge_id,
+        v_participant_id,
+        v_activity_type_id,
+        v_activity_value,
+        1,
+        v_activity_value,
+        v_activity_value,
+        v_activity_date,
+        NOW(),
+        NOW()
+    ) ON CONFLICT ("challengeId", "participantId", "activityTypeId") DO
+UPDATE
+SET
+    "totalValue" = challenge_progress."totalValue" + v_activity_value,
+    "activityCount" = challenge_progress."activityCount" + 1,
+    "averageValue" = (
+        challenge_progress."totalValue" + v_activity_value
+    ) / (challenge_progress."activityCount" + 1),
+    "bestValue" = GREATEST(challenge_progress."bestValue", v_activity_value),
+    "lastActivityDate" = GREATEST(
+        challenge_progress."lastActivityDate",
+        v_activity_date
+    ),
+    "updatedAt" = NOW();
+
+RETURN COALESCE(NEW, OLD);
+
+END;
+
+$ $ LANGUAGE plpgsql;
+
+-- Function to reverse challenge progress (used for UPDATE operations)
+CREATE
+OR REPLACE FUNCTION reverse_challenge_progress(
+    p_challenge_id UUID,
+    p_participant_id UUID,
+    p_activity_type_id UUID,
+    p_activity_value FLOAT,
+    p_activity_date DATE
+) RETURNS VOID AS $ $ DECLARE v_record RECORD;
+
+v_new_total FLOAT;
+
+v_new_count INT;
+
+v_new_average FLOAT;
+
+BEGIN -- Get current progress record
+SELECT
+    * INTO v_record
+FROM
+    challenge_progress
+WHERE
+    "challengeId" = p_challenge_id
+    AND "participantId" = p_participant_id
+    AND "activityTypeId" = p_activity_type_id;
+
+IF NOT FOUND THEN RETURN;
+
+-- Nothing to reverse
+END IF;
+
+-- Calculate new values after removing the old activity
+v_new_total := v_record."totalValue" - p_activity_value;
+
+v_new_count := v_record."activityCount" - 1;
+
+IF v_new_count <= 0 THEN -- Delete the record if no activities remain
+DELETE FROM
+    challenge_progress
+WHERE
+    "challengeId" = p_challenge_id
+    AND "participantId" = p_participant_id
+    AND "activityTypeId" = p_activity_type_id;
+
+ELSE -- Recalculate average
+v_new_average := v_new_total / v_new_count;
+
+-- For bestValue, we need to recalculate from all activities
+-- This is expensive but necessary for accuracy on updates
+WITH activity_stats AS (
+    SELECT
+        MAX(value) as max_value,
+        MAX(date) as max_date
+    FROM
+        "Activity" a
+    WHERE
+        a."challengeId" = p_challenge_id
+        AND a."participantId" = p_participant_id
+        AND a."activityTypeId" = p_activity_type_id
+        AND NOT (
+            a.value = p_activity_value
+            AND a.date = p_activity_date
+        )
+)
+UPDATE
+    challenge_progress
+SET
+    "totalValue" = v_new_total,
+    "activityCount" = v_new_count,
+    "averageValue" = v_new_average,
+    "bestValue" = COALESCE(
+        (
+            SELECT
+                max_value
+            FROM
+                activity_stats
+        ),
+        0
+    ),
+    "lastActivityDate" = (
+        SELECT
+            max_date
+        FROM
+            activity_stats
+    ),
+    "updatedAt" = NOW()
+FROM
+    activity_stats
+WHERE
+    "challengeId" = p_challenge_id
+    AND "participantId" = p_participant_id
+    AND "activityTypeId" = p_activity_type_id;
+
+END IF;
+
+END;
+
+$ $ LANGUAGE plpgsql;
+
+-- Function to handle activity deletion
+CREATE
+OR REPLACE FUNCTION handle_activity_delete() RETURNS TRIGGER AS $ $ BEGIN -- Reverse the progress for the deleted activity
+IF OLD."challengeId" IS NOT NULL
+AND OLD."participantId" IS NOT NULL
+AND OLD."activityTypeId" IS NOT NULL THEN PERFORM reverse_challenge_progress(
+    OLD."challengeId",
+    OLD."participantId",
+    OLD."activityTypeId",
+    OLD.value,
+    OLD.date
+);
+
+END IF;
+
+RETURN OLD;
+
+END;
+
+$ $ LANGUAGE plpgsql;
+
+-- Drop existing triggers if they exist
+DROP TRIGGER IF EXISTS trg_activity_progress_upsert ON "Activity";
+
+DROP TRIGGER IF EXISTS trg_activity_progress_delete ON "Activity";
+
+-- Create triggers for Activity table
+-- Trigger for INSERT and UPDATE
+CREATE TRIGGER trg_activity_progress_upsert
+AFTER
+INSERT
+    OR
+UPDATE
+    ON "Activity" FOR EACH ROW EXECUTE FUNCTION update_challenge_progress();
+
+-- Trigger for DELETE  
+CREATE TRIGGER trg_activity_progress_delete
+AFTER
+    DELETE ON "Activity" FOR EACH ROW EXECUTE FUNCTION handle_activity_delete();
+
+-- Function to rebuild progress data (for maintenance/repair)
+CREATE
+OR REPLACE FUNCTION rebuild_challenge_progress(p_challenge_id UUID DEFAULT NULL) RETURNS VOID AS $ $ DECLARE v_where_clause TEXT := '';
+
+BEGIN -- Build where clause if specific challenge provided
+IF p_challenge_id IS NOT NULL THEN v_where_clause := 'WHERE a."challengeId" = ''' || p_challenge_id || '''';
+
+END IF;
+
+-- Clear existing progress data
+IF p_challenge_id IS NOT NULL THEN
+DELETE FROM
+    challenge_progress
+WHERE
+    "challengeId" = p_challenge_id;
+
+ELSE TRUNCATE TABLE challenge_progress;
+
+END IF;
+
+-- Rebuild from Activity data
+EXECUTE format(
+    '
+        INSERT INTO challenge_progress (
+            id,
+            "challengeId",
+            "participantId",
+            "activityTypeId", 
+            "totalValue",
+            "activityCount",
+            "averageValue",
+            "bestValue",
+            "lastActivityDate",
+            "createdAt",
+            "updatedAt"
+        )
+        SELECT 
+            gen_random_uuid(),
+            a."challengeId",
+            a."participantId",
+            a."activityTypeId",
+            SUM(a.value) as total_value,
+            COUNT(*)::INT as activity_count,
+            AVG(a.value) as average_value,
+            MAX(a.value) as best_value,
+            MAX(a.date) as last_activity_date,
+            NOW(),
+            NOW()
+        FROM "Activity" a
+        %s
+        GROUP BY a."challengeId", a."participantId", a."activityTypeId"
+        HAVING a."challengeId" IS NOT NULL 
+           AND a."participantId" IS NOT NULL 
+           AND a."activityTypeId" IS NOT NULL
+    ',
+    v_where_clause
+);
+
+END;
+
+$ $ LANGUAGE plpgsql;
+
+-- Create an index on Activity table to optimize the trigger performance
+CREATE INDEX IF NOT EXISTS idx_activity_challenge_participant_type ON "Activity"("challengeId", "participantId", "activityTypeId");
+
+-- Add comments for documentation
+COMMENT ON TABLE challenge_progress IS 'Aggregated activity progress per challenge, participant, and activity type. Automatically maintained by triggers.';
+
+COMMENT ON FUNCTION update_challenge_progress() IS 'Trigger function to update challenge progress aggregations. Uses UPSERT for concurrency safety.';
+
+COMMENT ON FUNCTION rebuild_challenge_progress(UUID) IS 'Maintenance function to rebuild progress data from scratch. Use when data integrity issues are suspected.';

@@ -1014,7 +1014,7 @@ export class ChallengeService {
                     Team (
                         id,
                         name,
-                        avatarUrl:avatar_url
+                        avatarUrl
                     )
                 `)
                 .eq('challengeId', challengeId)

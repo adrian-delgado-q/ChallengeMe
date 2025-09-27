@@ -28,7 +28,7 @@ interface EditActivityModalProps {
     onClose: () => void;
     activity: Activity | null;
     onActivityUpdated?: () => void;
-    onUpdateActivity: (activityId: string, data: { notes?: string; date: string }) => Promise<void>;
+    onUpdateActivity: (activityId: string, data: { value?: number; notes?: string; date: string }) => Promise<void>;
 }
 
 export const EditActivityModal: React.FC<EditActivityModalProps> = ({
@@ -64,27 +64,40 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
 
     const [distance, setDistance] = useState('');
     const [duration, setDuration] = useState('');
-    const [otherNotes, setOtherNotes] = useState('');
 
     useEffect(() => {
         if (activity) {
             setDate(activity.date);
+            setNotes(activity.notes || '');
 
-            // Extract structured data from notes
-            const { distance: extractedDistance, duration: extractedDuration, otherNotes: extractedNotes } = extractDataFromNotes(activity.notes || null);
+            // Handle the new structure with generic value field
+            if (activity.value && activity.activityType) {
+                const activityType = activity.activityType;
 
-            if (extractedDistance || extractedDuration) {
-                // If we can extract structured data, use it
-                setDistance(extractedDistance);
-                setDuration(extractedDuration);
-                setOtherNotes(extractedNotes);
-                setNotes(''); // Clear the raw notes field
+                // Pre-populate the appropriate field based on activity type
+                if (activityType.category === 'distance' || activityType.unit === 'km' || activityType.unit === 'miles') {
+                    setDistance(activity.value.toString());
+                    setDuration('');
+                } else if (activityType.category === 'time' || activityType.unit === 'minutes' || activityType.unit === 'hours') {
+                    setDuration(activity.value.toString());
+                    setDistance('');
+                } else {
+                    // For other types (reps, weight, etc.), clear the specific fields and use notes
+                    setDistance('');
+                    setDuration('');
+                }
             } else {
-                // Otherwise, put everything in notes
-                setNotes(activity.notes || '');
-                setDistance('');
-                setDuration('');
-                setOtherNotes('');
+                // Fallback: Extract structured data from notes (backward compatibility)
+                const { distance: extractedDistance, duration: extractedDuration } = extractDataFromNotes(activity.notes || null);
+
+                if (extractedDistance || extractedDuration) {
+                    setDistance(extractedDistance);
+                    setDuration(extractedDuration);
+                    setNotes(''); // Clear the raw notes field
+                } else {
+                    setDistance('');
+                    setDuration('');
+                }
             }
         }
     }, [activity]);
@@ -118,14 +131,26 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
         }
 
         const result = await execute(async () => {
+            // Determine the value based on activity type
+            let activityValue: number | undefined = undefined;
+            
+            if (activity && activity.activityType) {
+                const activityType = activity.activityType;
+                
+                if (distance && (activityType.category === 'distance' || activityType.unit === 'km' || activityType.unit === 'miles')) {
+                    activityValue = parseFloat(distance);
+                } else if (duration && (activityType.category === 'time' || activityType.unit === 'minutes' || activityType.unit === 'hours')) {
+                    activityValue = parseFloat(duration);
+                }
+            }
+            
             // Create activity notes combining distance, duration, and user notes
             let finalNotes = '';
 
-            if (distance || duration || otherNotes) {
+            if (distance || duration) {
                 const noteParts = [
                     distance && `Distance: ${distance} km`,
-                    duration && `Duration: ${duration} minutes`,
-                    otherNotes && `Notes: ${otherNotes}`
+                    duration && `Duration: ${duration} minutes`
                 ].filter(Boolean);
                 finalNotes = noteParts.join(' | ');
             } else {
@@ -133,16 +158,16 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
             }
 
             await onUpdateActivity(activity.id, {
+                value: activityValue,
                 notes: finalNotes || undefined,
                 date
             });
-        });
-
-        if (result) {
-            // Reset form and close modal
-            resetForm();
-            onActivityUpdated?.();
-            onClose();
+        });        if (result !== null) {
+            // Close modal and trigger refresh
+            handleClose();
+            if (onActivityUpdated) {
+                onActivityUpdated();
+            }
         }
     };
 
@@ -151,14 +176,11 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
         setDate('');
         setDistance('');
         setDuration('');
-        setOtherNotes('');
     };
 
     const handleClose = () => {
-        if (!isSubmitting) {
-            resetForm();
-            onClose();
-        }
+        resetForm();
+        onClose();
     };
 
     if (!activity) return null;
@@ -202,51 +224,47 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
                         </FormControl>
 
                         <FormControl>
-                            <FormLabel>Distance (km)</FormLabel>
-                            <Input
-                                type="number"
-                                step="0.1"
-                                value={distance}
-                                onChange={(e) => setDistance(e.target.value)}
-                                placeholder="e.g., 5.5"
-                                isDisabled={!isEditable || isSubmitting}
-                            />
+                            <FormLabel>
+                                {activity.activityType?.name || 'Activity Type'} ({activity.activityType?.unit || 'Value'})
+                            </FormLabel>
+                            {activity.activityType?.category === 'distance' || activity.activityType?.unit === 'km' || activity.activityType?.unit === 'miles' ? (
+                                <Input
+                                    type="number"
+                                    step="0.1"
+                                    value={distance}
+                                    onChange={(e) => setDistance(e.target.value)}
+                                    placeholder={`e.g., 5.5 ${activity.activityType?.unit || 'km'}`}
+                                    isDisabled={!isEditable || isSubmitting}
+                                />
+                            ) : activity.activityType?.category === 'time' || activity.activityType?.unit === 'minutes' || activity.activityType?.unit === 'hours' ? (
+                                <Input
+                                    type="number"
+                                    value={duration}
+                                    onChange={(e) => setDuration(e.target.value)}
+                                    placeholder={`e.g., 30 ${activity.activityType?.unit || 'minutes'}`}
+                                    isDisabled={!isEditable || isSubmitting}
+                                />
+                            ) : (
+                                <Input
+                                    type="number"
+                                    step="0.1"
+                                    value={activity.value?.toString() || ''}
+                                    placeholder={`Current: ${activity.value} ${activity.activityType?.unit || ''}`}
+                                    isDisabled={true}
+                                />
+                            )}
                         </FormControl>
 
                         <FormControl>
-                            <FormLabel>Duration (minutes)</FormLabel>
-                            <Input
-                                type="number"
-                                value={duration}
-                                onChange={(e) => setDuration(e.target.value)}
-                                placeholder="e.g., 30"
-                                isDisabled={!isEditable || isSubmitting}
-                            />
-                        </FormControl>
-
-                        <FormControl>
-                            <FormLabel>Additional Notes</FormLabel>
+                            <FormLabel>Notes</FormLabel>
                             <Textarea
-                                value={otherNotes}
-                                onChange={(e) => setOtherNotes(e.target.value)}
+                                value={notes}
+                                onChange={(e) => setNotes(e.target.value)}
                                 placeholder="Any additional details..."
                                 rows={3}
                                 isDisabled={!isEditable || isSubmitting}
                             />
                         </FormControl>
-
-                        {(!distance && !duration) && (
-                            <FormControl>
-                                <FormLabel>Activity Notes</FormLabel>
-                                <Textarea
-                                    value={notes}
-                                    onChange={(e) => setNotes(e.target.value)}
-                                    placeholder="Describe your activity..."
-                                    rows={4}
-                                    isDisabled={!isEditable || isSubmitting}
-                                />
-                            </FormControl>
-                        )}
 
                         <Text fontSize="xs" color="gray.500" textAlign="center">
                             Activities can only be edited within 48 hours of being logged.
