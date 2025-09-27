@@ -29,7 +29,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
     const [activityTypes, setActivityTypes] = useState<ActivityType[]>([]);
     const [isLoadingActivityTypes, setIsLoadingActivityTypes] = useState(true);
 
-    const { createChallenge } = useChallenges();
+    const { createChallenge, updateChallenge } = useChallenges();
     const notifications = useNotifications();
     const { isLoading: isSubmitting, execute } = useAsyncState({
         showSuccessNotifications: true,
@@ -60,6 +60,12 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
         return oneMonthLater.toISOString().split('T')[0];
     };
 
+    // Helper function to get default start date (today)
+    const getDefaultStartDate = () => {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
+    };
+
     // Form state
     const [title, setTitle] = useState(challengeToEdit?.title || '');
     const [description, setDescription] = useState(challengeToEdit?.description || '');
@@ -68,6 +74,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
     );
     const [maxParticipants, setMaxParticipants] = useState(challengeToEdit?.maxParticipants?.toString() || '');
     const [maxTeamSize, setMaxTeamSize] = useState(challengeToEdit?.maxTeamSize?.toString() || '');
+    const [startDate, setStartDate] = useState(challengeToEdit?.startDate || getDefaultStartDate());
     const [endDate, setEndDate] = useState(challengeToEdit?.endDate || getDefaultEndDate());
     const [challengeType, setChallengeType] = useState<ChallengeType>(challengeToEdit?.challengeType || 'individual');
     const [isPublic, setIsPublic] = useState(challengeToEdit?.isPublic !== false);
@@ -162,6 +169,19 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
             return;
         }
 
+        // Validate start date is not in the past
+        const today = new Date().toISOString().split('T')[0];
+        if (startDate < today) {
+            notifications.validationError('Start date cannot be in the past');
+            return;
+        }
+
+        // Validate end date is after start date
+        if (endDate <= startDate) {
+            notifications.validationError('End date must be after start date');
+            return;
+        }
+
         const endDateValidation = CommonValidationSchemas.endDate(endDate);
         if (!endDateValidation.isValid) {
             notifications.validationError(endDateValidation.error!);
@@ -204,7 +224,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                 challengeType: challengeType.toUpperCase() as 'INDIVIDUAL' | 'TEAM',
                 maxParticipants: maxParticipants ? parseInt(maxParticipants) : undefined,
                 maxTeamSize: challengeType === 'team' && maxTeamSize ? parseInt(maxTeamSize) : undefined,
-                startDate: new Date().toISOString().split('T')[0], // Today
+                startDate,
                 endDate,
                 isPublic,
                 accessCode: !isPublic && accessCode.trim() ? accessCode.trim() : undefined, // Only include access code for private challenges
@@ -212,9 +232,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
             };
 
             if (isEditing && challengeToEdit) {
-                // Update challenge - would need to implement updateChallenge in the hook
-                notifications.info('Info', 'Challenge update not yet implemented');
-                return null;
+                return await updateChallenge(challengeToEdit.id, challengeData);
             } else {
                 return await createChallenge(challengeData);
             }
@@ -306,15 +324,34 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                 )}
             </Grid>
 
-            <FormControl isRequired>
-                <FormLabel>End Date</FormLabel>
-                <Input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    isDisabled={isSubmitting}
-                />
-            </FormControl>
+            <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={6}>
+                <FormControl isRequired>
+                    <FormLabel>Start Date</FormLabel>
+                    <Input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        isDisabled={isSubmitting}
+                        min={new Date().toISOString().split('T')[0]} // Prevent selecting past dates
+                    />
+                    <Text fontSize="xs" color="gray.500" mt={1}>
+                        When the challenge begins
+                    </Text>
+                </FormControl>
+                <FormControl isRequired>
+                    <FormLabel>End Date</FormLabel>
+                    <Input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        isDisabled={isSubmitting}
+                        min={startDate || new Date().toISOString().split('T')[0]} // End date must be after start date
+                    />
+                    <Text fontSize="xs" color="gray.500" mt={1}>
+                        When the challenge ends
+                    </Text>
+                </FormControl>
+            </Grid>
 
             {/* Activity-Specific Milestones */}
             {selectedActivityTypeIds.length > 0 && (

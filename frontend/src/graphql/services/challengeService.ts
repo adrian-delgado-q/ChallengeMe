@@ -435,11 +435,15 @@ export class ChallengeService {
             const user = await getCurrentUser();
             if (!user) throw new Error('User not authenticated');
 
-            // Remove undefined values
+            // Separate activity types and milestones from main challenge data
+            const { activityTypes, milestones, ...mainChallengeData } = challengeData;
+
+            // Remove undefined values from main challenge data
             const updateData = Object.fromEntries(
-                Object.entries(challengeData).filter(([_, value]) => value !== undefined)
+                Object.entries(mainChallengeData).filter(([_, value]) => value !== undefined)
             );
 
+            // Update the main challenge record
             const { data, error } = await supabase
                 .from('Challenge')
                 .update(updateData)
@@ -449,6 +453,75 @@ export class ChallengeService {
                 .single();
 
             if (error) throw error;
+
+            // Update activity types if provided
+            if (activityTypes !== undefined) {
+                // First, delete existing activity type relationships
+                const { error: deleteError } = await supabase
+                    .from('ChallengeActivityType')
+                    .delete()
+                    .eq('challengeId', id);
+
+                if (deleteError) {
+                    console.error('Failed to delete existing activity types:', deleteError);
+                }
+
+                // Then, create new activity type relationships
+                if (activityTypes.length > 0) {
+                    const challengeActivityTypes = activityTypes.map(activityTypeId => ({
+                        id: generateUUID(),
+                        challengeId: id,
+                        activityTypeId: activityTypeId
+                    }));
+
+                    const { error: activityTypeError } = await supabase
+                        .from('ChallengeActivityType')
+                        .insert(challengeActivityTypes);
+
+                    if (activityTypeError) {
+                        console.error('Failed to create new activity types:', activityTypeError);
+                    }
+                }
+            }
+
+            // Update milestones if provided
+            if (milestones !== undefined) {
+                // First, delete existing milestones
+                const { error: deleteMilestonesError } = await supabase
+                    .from('Milestone')
+                    .delete()
+                    .eq('challengeId', id);
+
+                if (deleteMilestonesError) {
+                    console.error('Failed to delete existing milestones:', deleteMilestonesError);
+                }
+
+                // Then, create new milestones
+                if (milestones.length > 0) {
+                    const milestonesToCreate = milestones
+                        .filter(m => m.name && m.value && m.activityTypeId)
+                        .map((milestone, index) => ({
+                            id: generateUUID(),
+                            challengeId: id,
+                            activityTypeId: milestone.activityTypeId,
+                            name: milestone.name,
+                            description: `Achieve ${milestone.value} ${milestone.activityType?.unitLabel || 'units'} in this challenge`,
+                            targetValue: milestone.value,
+                            order: index + 1
+                        }));
+
+                    if (milestonesToCreate.length > 0) {
+                        const { error: milestoneError } = await supabase
+                            .from('Milestone')
+                            .insert(milestonesToCreate);
+
+                        if (milestoneError) {
+                            console.error('Failed to create new milestones:', milestoneError);
+                        }
+                    }
+                }
+            }
+
             return data;
         } catch (error) {
             this.handleError(error, 'updateChallenge');

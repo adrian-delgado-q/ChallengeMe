@@ -119,6 +119,10 @@ const ChallengeDashboardPage: React.FC = () => {
                             <VStack spacing={3} align="stretch">
                                 <HStack><Icon as={TrophyIcon} w={6} h={6} color="orange.500" /> <Text>Type: <Box as="span" fontWeight="bold">{challenge.type || 'General'}</Box></Text></HStack>
                                 <HStack><Icon as={UserTeamIcon} w={6} h={6} color="blue.500" /> <Text><Box as="span" fontWeight="bold">{challenge.participantCount || 0}</Box> Participants</Text></HStack>
+                                {/* Show start date if available */}
+                                {challenge.startDate && (
+                                    <HStack><Icon as={CalendarIcon} w={6} h={6} color="green.500" /> <Text>Starts: <Box as="span" fontWeight="bold">{new Date(challenge.startDate).toLocaleDateString()}</Box></Text></HStack>
+                                )}
                                 <HStack><Icon as={CalendarIcon} w={6} h={6} color="red.500" /> <Text>Ends: <Box as="span" fontWeight="bold">{new Date(challenge.endDate).toLocaleDateString()}</Box></Text></HStack>
                             </VStack>
                         </Card>
