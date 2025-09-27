@@ -78,11 +78,11 @@ export const ActivityManagementPage: React.FC = () => {
             // Always fetch all activities, filtering will be done locally
             const data = await ActivityService.getActivitiesForManagement();
             setAllActivities(
-              (data as any[]).map(item => ({
-                ...item,
-                activityTypeId: item.activityTypeId ?? item.activityType?.id ?? '',
-                value: item.value ?? item.distance ?? item.duration ?? item.repetitions ?? item.weight ?? item.sets ?? item.calories ?? item.pace ?? 0
-              }))
+                (data as any[]).map(item => ({
+                    ...item,
+                    activityTypeId: item.activityTypeId ?? item.activityType?.id ?? '',
+                    value: item.value ?? item.distance ?? item.duration ?? item.repetitions ?? item.weight ?? item.sets ?? item.calories ?? item.pace ?? 0
+                }))
             );
         } catch (err: any) {
             setError(err.message || 'Failed to fetch activities');
@@ -111,6 +111,17 @@ export const ActivityManagementPage: React.FC = () => {
     const handleEditActivity = (activity: Activity) => {
         setSelectedActivity(activity);
         onEditOpen();
+    };
+
+    // Handle edit modal close
+    const handleEditClose = () => {
+        setSelectedActivity(null); // Clear selected activity
+        onEditClose();
+    };
+
+    // Handle successful activity update
+    const handleActivityUpdated = async () => {
+        await fetchActivities(); // Refresh the list
     };
 
     // Handle activity delete
@@ -152,7 +163,12 @@ export const ActivityManagementPage: React.FC = () => {
     };
 
     // Handle activity update
-    const handleUpdateActivity = async (activityId: string, data: { notes?: string; date: string }) => {
+    const handleUpdateActivity = async (activityId: string, data: {
+        activityTypeId?: string;
+        value?: number;
+        notes?: string;
+        date: string
+    }) => {
         await ActivityService.updateActivity(activityId, data);
         await fetchActivities(); // Refresh the list
     };
@@ -382,10 +398,11 @@ export const ActivityManagementPage: React.FC = () => {
 
             {/* Edit Modal */}
             <EditActivityModal
+                key={selectedActivity?.id || 'no-activity'}
                 isOpen={isEditOpen}
-                onClose={onEditClose}
+                onClose={handleEditClose}
                 activity={selectedActivity}
-                onActivityUpdated={fetchActivities}
+                onActivityUpdated={handleActivityUpdated}
                 onUpdateActivity={handleUpdateActivity}
             />
 

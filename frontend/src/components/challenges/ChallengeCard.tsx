@@ -214,6 +214,21 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
                   {challenge.status === 'CLOSED' ? 'Closed' : 'Cancelled'}
                 </Badge>
               )}
+              {/* Start Date Status Badge */}
+              {(() => {
+                const now = new Date();
+                const startDate = challenge.startDate ? new Date(challenge.startDate) : null;
+                const hasStarted = !startDate || startDate <= now;
+
+                if (startDate && !hasStarted) {
+                  return (
+                    <Badge colorScheme="yellow">
+                      Starting Soon
+                    </Badge>
+                  );
+                }
+                return null;
+              })()}
             </HStack>
           </WrapItem>
           <WrapItem>
@@ -277,10 +292,35 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
             </HStack>
           )}
 
-          <HStack>
-            <Icon as={CalendarIcon} w={4} h={4} color="red.400" />
-            <Text fontSize="xs">Ends: {new Date(challenge.endDate).toLocaleDateString()}</Text>
-          </HStack>
+          {/* Date information */}
+          {(() => {
+            const now = new Date();
+            const startDate = challenge.startDate ? new Date(challenge.startDate) : null;
+            const endDate = new Date(challenge.endDate);
+            const hasStarted = !startDate || startDate <= now;
+            const hasEnded = endDate < now;
+
+            return (
+              <VStack spacing={1} align="start">
+                {/* Always show start date if available */}
+                {startDate && (
+                  <HStack>
+                    <Icon as={CalendarIcon} w={4} h={4} color={!hasStarted ? "green.400" : "blue.400"} />
+                    <Text fontSize="xs" fontWeight="medium" color={!hasStarted ? "green.600" : "blue.600"}>
+                      {!hasStarted ? "Starts" : "Started"}: {startDate.toLocaleDateString()}
+                    </Text>
+                  </HStack>
+                )}
+                {/* Always show end date */}
+                <HStack>
+                  <Icon as={CalendarIcon} w={4} h={4} color={hasEnded ? "red.400" : "orange.400"} />
+                  <Text fontSize="xs" color={hasEnded ? "red.600" : "gray.600"}>
+                    {hasEnded ? "Ended" : "Ends"}: {endDate.toLocaleDateString()}
+                  </Text>
+                </HStack>
+              </VStack>
+            );
+          })()}
         </VStack>
       </VStack>
 
@@ -323,19 +363,31 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
                 {participantTeam && ` (${participantTeam.name})`}
               </Button>
             ) : (
-              <Button
-                size="sm"
-                colorScheme="orange"
-                width="full"
-                onClick={handleJoinChallenge}
-                isLoading={isJoining}
-                loadingText="Joining..."
-                isDisabled={challenge.status === 'CLOSED' || challenge.status === 'CANCELLED'}
-              >
-                {challenge.status === 'CLOSED' ? 'Challenge Closed' :
-                  challenge.status === 'CANCELLED' ? 'Challenge Cancelled' :
-                    'Join Challenge'}
-              </Button>
+              (() => {
+                const now = new Date();
+                const startDate = challenge.startDate ? new Date(challenge.startDate) : null;
+                const hasStarted = !startDate || startDate <= now;
+                const isDisabled = challenge.status === 'CLOSED' || challenge.status === 'CANCELLED' || !hasStarted;
+
+                let buttonText = 'Join Challenge';
+                if (challenge.status === 'CLOSED') buttonText = 'Challenge Closed';
+                else if (challenge.status === 'CANCELLED') buttonText = 'Challenge Cancelled';
+                else if (!hasStarted) buttonText = `Starts ${startDate?.toLocaleDateString()}`;
+
+                return (
+                  <Button
+                    size="sm"
+                    colorScheme={!hasStarted ? "gray" : "orange"}
+                    width="full"
+                    onClick={handleJoinChallenge}
+                    isLoading={isJoining}
+                    loadingText="Joining..."
+                    isDisabled={isDisabled}
+                  >
+                    {buttonText}
+                  </Button>
+                );
+              })()
             )}
           </>
         )}

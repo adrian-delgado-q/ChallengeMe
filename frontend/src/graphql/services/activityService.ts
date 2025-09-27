@@ -5,6 +5,22 @@ export type { ActivityInput };
 
 // Activity data service
 export class ActivityService {
+    // Helper function to validate if an activity type is supported by a challenge
+    static async validateActivityTypeForChallenge(challengeId: string, activityTypeId: string): Promise<boolean> {
+        const { data: supportedActivity, error } = await supabase
+            .from('ChallengeActivityType')
+            .select('id')
+            .eq('challengeId', challengeId)
+            .eq('activityTypeId', activityTypeId)
+            .single();
+
+        if (error && error.code !== 'PGRST116') { // PGRST116 is "not found" error
+            throw new Error(`Failed to validate activity type: ${error.message}`);
+        }
+
+        return !!supportedActivity; // Returns true if the activity type is supported
+    }
+
     // Get activities for a specific challenge
     static async getActivitiesForChallenge(challengeId: string) {
         // First get all participants for this challenge
@@ -86,13 +102,7 @@ export class ActivityService {
                 return {
                     id: activity.id,
                     activityType: activity.activityType,
-                    distance: activity.distance,
-                    duration: activity.duration,
-                    repetitions: activity.repetitions,
-                    weight: activity.weight,
-                    sets: activity.sets,
-                    calories: activity.calories,
-                    pace: activity.pace,
+                    value: activity.value,
                     notes: activity.notes,
                     date: activity.date,
                     uploadedAt: activity.uploadedAt,
@@ -113,7 +123,18 @@ export class ActivityService {
 
         const { data: activities, error } = await supabase
             .from('Activity')
-            .select('id, participantId, challengeId, activityType, distance, duration, repetitions, weight, sets, calories, pace, notes, date, uploadedAt, profileId')
+            .select(`
+                id, 
+                participantId, 
+                challengeId, 
+                activityTypeId,
+                value,
+                notes, 
+                date, 
+                uploadedAt, 
+                profileId,
+                activityType:ActivityType(id, name, category, unit, unitLabel, description)
+            `)
             .eq('profileId', currentUser.id);
 
         if (error) throw new Error(error.message);
@@ -161,13 +182,7 @@ export class ActivityService {
                 return {
                     id: activity.id,
                     activityType: activity.activityType,
-                    distance: activity.distance,
-                    duration: activity.duration,
-                    repetitions: activity.repetitions,
-                    weight: activity.weight,
-                    sets: activity.sets,
-                    calories: activity.calories,
-                    pace: activity.pace,
+                    value: activity.value,
                     notes: activity.notes,
                     date: activity.date,
                     uploadedAt: activity.uploadedAt,
@@ -204,6 +219,16 @@ export class ActivityService {
         if (participantError) throw new Error(participantError.message);
         if (!participant) throw new Error('Participant not found');
 
+        // Validate that the activity type is supported by this challenge
+        const isActivityTypeSupported = await this.validateActivityTypeForChallenge(
+            participant.challengeId, 
+            activityData.activityTypeId
+        );
+
+        if (!isActivityTypeSupported) {
+            throw new Error('This activity type is not supported by the current challenge. Please select a different activity type.');
+        }
+
         // Generate UUID for the activity
         const activityId = generateUUID();
 
@@ -213,6 +238,8 @@ export class ActivityService {
                 id: activityId,
                 participantId: activityData.participantId,
                 activityTypeId: activityData.activityTypeId,
+                challengeId: participant.challengeId, 
+                profileId: user.id,
                 value: activityData.value,
                 notes: activityData.notes || null,
                 date: activityData.date,
@@ -240,16 +267,28 @@ export class ActivityService {
         if (fetchError) throw new Error(fetchError.message);
         if (!activity) throw new Error('Activity not found');
 
-        // Verify the user owns this activity through participant
+        // Verify the user owns this activity through participant and get challenge info
         const { data: participant, error: participantError } = await supabase
             .from('ChallengeParticipant')
-            .select('userId')
+            .select('userId, challengeId')
             .eq('id', activity.participantId)
             .single();
 
         if (participantError) throw new Error(participantError.message);
         if (participant.userId !== user.id) {
             throw new Error('You can only edit your own activities');
+        }
+
+        // If activityTypeId is being changed, validate it's supported by the challenge
+        if (activityData.activityTypeId !== undefined) {
+            const isActivityTypeSupported = await this.validateActivityTypeForChallenge(
+                participant.challengeId, 
+                activityData.activityTypeId
+            );
+
+            if (!isActivityTypeSupported) {
+                throw new Error('This activity type is not supported by the current challenge. Please select a different activity type.');
+            }
         }
 
         const { data: updatedActivity, error } = await supabase
@@ -320,7 +359,18 @@ export class ActivityService {
         // Get all user activities
         const { data: activities, error } = await supabase
             .from('Activity')
-            .select('id, participantId, challengeId, activityType, distance, duration, repetitions, weight, sets, calories, pace, notes, date, uploadedAt, profileId')
+            .select(`
+                id, 
+                participantId, 
+                challengeId, 
+                activityTypeId,
+                value,
+                notes, 
+                date, 
+                uploadedAt, 
+                profileId,
+                activityType:ActivityType(id, name, category, unit, unitLabel, description)
+            `)
             .eq('profileId', user.id)
             .order('uploadedAt', { ascending: false });
 
@@ -371,13 +421,7 @@ export class ActivityService {
                 return {
                     id: activity.id,
                     activityType: activity.activityType,
-                    distance: activity.distance,
-                    duration: activity.duration,
-                    repetitions: activity.repetitions,
-                    weight: activity.weight,
-                    sets: activity.sets,
-                    calories: activity.calories,
-                    pace: activity.pace,
+                    value: activity.value,
                     notes: activity.notes,
                     date: activity.date,
                     uploadedAt: activity.uploadedAt,
@@ -404,7 +448,18 @@ export class ActivityService {
     static async getRecentActivities(limit: number = 20) {
         const { data: activities, error } = await supabase
             .from('Activity')
-            .select('id, participantId, challengeId, activityType, distance, duration, repetitions, weight, sets, calories, pace, notes, date, uploadedAt, profileId')
+            .select(`
+                id, 
+                participantId, 
+                challengeId, 
+                activityTypeId,
+                value,
+                notes, 
+                date, 
+                uploadedAt, 
+                profileId,
+                activityType:ActivityType(id, name, category, unit, unitLabel, description)
+            `)
             .order('uploadedAt', { ascending: false })
             .limit(limit);
 
@@ -461,13 +516,7 @@ export class ActivityService {
                 return {
                     id: activity.id,
                     activityType: activity.activityType,
-                    distance: activity.distance,
-                    duration: activity.duration,
-                    repetitions: activity.repetitions,
-                    weight: activity.weight,
-                    sets: activity.sets,
-                    calories: activity.calories,
-                    pace: activity.pace,
+                    value: activity.value,
                     notes: activity.notes,
                     date: activity.date,
                     uploadedAt: activity.uploadedAt,

@@ -217,6 +217,17 @@ export const useChallenges = (options?: {
         }
     }, [fetchChallenges]);
 
+    const updateChallenge = useCallback(async (challengeId: string, challengeData: any) => {
+        try {
+            const updatedChallenge = await ChallengeService.updateChallenge(challengeId, challengeData);
+            // Refresh challenges after update
+            await fetchChallenges();
+            return updatedChallenge;
+        } catch (err: any) {
+            throw new Error(err.message || 'Failed to update challenge');
+        }
+    }, [fetchChallenges]);
+
     useEffect(() => {
         fetchChallenges();
     }, [fetchChallenges]);
@@ -228,6 +239,7 @@ export const useChallenges = (options?: {
         pagination,
         refetch: fetchChallenges,
         createChallenge,
+        updateChallenge,
         joinChallenge
     };
 };
