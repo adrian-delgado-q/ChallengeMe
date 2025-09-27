@@ -11,7 +11,7 @@ import { ChallengeRules } from '../components/dashboard/ChallengeRules';
 import { LogActivityModal } from '../components/dashboard/LogActivityModal';
 import { MilestonesDisplay } from '../components/dashboard/MilestonesDisplay';
 import { ChallengeJoinButton } from '../components/challenges/ChallengeJoinButton';
-import { useChallengeDetails, usePosts } from '../hooks/useData';
+import { useChallengeDetails } from '../hooks/useData';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ActivityService } from '../graphql/services';
 import { useNotifications } from '../utils/notifications';
@@ -31,7 +31,6 @@ const ChallengeDashboardPage: React.FC = () => {
     const notifications = useNotifications();
 
     const { challenge, loading: challengeLoading, error: challengeError, refetch } = useChallengeDetails(challengeId || '');
-    const { posts, loading: postsLoading } = usePosts(challengeId);
 
     // Function to refresh challenge data and activity feeds
     const handleActivityLogged = () => {
@@ -112,57 +111,80 @@ const ChallengeDashboardPage: React.FC = () => {
 
                 {challenge.rules && <ChallengeRules rules={challenge.rules} />}
 
-                <Grid templateColumns={{ base: '1fr', lg: '1fr 2fr' }} gap={8} alignItems="start">
-                    <VStack spacing={8} align="stretch">
-                        <Card p={6}>
-                            <Heading as="h3" size="md" mb={4}>Details</Heading>
-                            <VStack spacing={3} align="stretch">
-                                <HStack><Icon as={TrophyIcon} w={6} h={6} color="orange.500" /> <Text>Type: <Box as="span" fontWeight="bold">{challenge.type || 'General'}</Box></Text></HStack>
-                                <HStack><Icon as={UserTeamIcon} w={6} h={6} color="blue.500" /> <Text><Box as="span" fontWeight="bold">{challenge.participantCount || 0}</Box> Participants</Text></HStack>
-                                {/* Show start date if available */}
+                {/* Grid layout: Main content (2fr) | Compact sidebar (1fr) */}
+                <Grid templateColumns={{ base: '1fr', lg: '2fr 1fr' }} gap={6} alignItems="start">
+                    {/* Left Column: Main Content (Progress Chart + Discussion) */}
+                    <VStack spacing={6} align="stretch">
+                        <ProgressChart challengeId={challengeId} />
+                        {challengeId && (
+                            <CommentsForum challengeId={challengeId} />
+                        )}
+                    </VStack>
+
+                    {/* Right Column: Compact Sidebar */}
+                    <VStack spacing={4} align="stretch">
+                        {/* Compact Details Card */}
+                        <Card p={4}>
+                            <Heading as="h4" size="sm" mb={3} color="orange.500">Challenge Details</Heading>
+                            <VStack spacing={2} align="stretch">
+                                <HStack spacing={2}>
+                                    <Icon as={TrophyIcon} w={4} h={4} color="orange.500" />
+                                    <Text fontSize="sm">
+                                        <Text as="span" fontWeight="semibold">{challenge.type || 'General'}</Text>
+                                    </Text>
+                                </HStack>
+                                <HStack spacing={2}>
+                                    <Icon as={UserTeamIcon} w={4} h={4} color="blue.500" />
+                                    <Text fontSize="sm">
+                                        <Text as="span" fontWeight="semibold">{challenge.participantCount || 0}</Text> participants
+                                    </Text>
+                                </HStack>
                                 {challenge.startDate && (
-                                    <HStack><Icon as={CalendarIcon} w={6} h={6} color="green.500" /> <Text>Starts: <Box as="span" fontWeight="bold">{new Date(challenge.startDate).toLocaleDateString()}</Box></Text></HStack>
+                                    <HStack spacing={2}>
+                                        <Icon as={CalendarIcon} w={4} h={4} color="green.500" />
+                                        <Text fontSize="sm">Started {new Date(challenge.startDate).toLocaleDateString()}</Text>
+                                    </HStack>
                                 )}
-                                <HStack><Icon as={CalendarIcon} w={6} h={6} color="red.500" /> <Text>Ends: <Box as="span" fontWeight="bold">{new Date(challenge.endDate).toLocaleDateString()}</Box></Text></HStack>
+                                <HStack spacing={2}>
+                                    <Icon as={CalendarIcon} w={4} h={4} color="red.500" />
+                                    <Text fontSize="sm">Ends {new Date(challenge.endDate).toLocaleDateString()}</Text>
+                                </HStack>
                             </VStack>
                         </Card>
 
-                        {/* Milestones Display */}
-                        <MilestonesDisplay
-                            milestones={challenge.milestones}
-                            currentProgress={challenge.progress || 0}
-                            progressByActivityType={challenge.progressByActivityType || {}}
-                        />
+                        {/* Compact Milestones Display */}
+                        <Box>
+                            <MilestonesDisplay
+                                milestones={challenge.milestones}
+                                currentProgress={challenge.progress || 0}
+                                progressByActivityType={challenge.progressByActivityType || {}}
+                            />
+                        </Box>
 
+                        {/* Compact Leaderboard */}
                         {challengeId ? (
-                            <Leaderboard challengeId={challengeId} />
+                            <Box>
+                                <Leaderboard challengeId={challengeId} />
+                            </Box>
                         ) : (
-                            <Card p={6}>
+                            <Card p={4}>
                                 <Center>
-                                    <Text>No challenge selected</Text>
+                                    <Text fontSize="sm">No challenge selected</Text>
                                 </Center>
                             </Card>
                         )}
+
+                        {/* Compact Latest Updates */}
                         {challengeId ? (
-                            <ActivityFeed challengeId={challengeId} />
+                            <Box>
+                                <ActivityFeed challengeId={challengeId} />
+                            </Box>
                         ) : (
-                            <Card p={6}>
+                            <Card p={4}>
                                 <Center>
-                                    <Text>No challenge selected</Text>
+                                    <Text fontSize="sm">No challenge selected</Text>
                                 </Center>
                             </Card>
-                        )}
-                    </VStack>
-                    <VStack spacing={8} align="stretch">
-                        <ProgressChart challengeId={challengeId} />
-                        {postsLoading ? (
-                            <Card p={6}>
-                                <Center>
-                                    <Spinner />
-                                </Center>
-                            </Card>
-                        ) : (
-                            <CommentsForum comments={posts || []} challengeId={challengeId} />
                         )}
                     </VStack>
                 </Grid>

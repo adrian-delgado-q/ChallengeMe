@@ -22,6 +22,14 @@ model Profile {
   createdTeams      Team[]                 @relation("TeamCreator")
   teamMemberships   TeamMembership[]
 
+  // Discussion relations
+  discussionPosts   DiscussionPost[]
+  discussionReplies DiscussionReply[]
+  moderatorRoles    DiscussionModerator[]
+  grantedModerators DiscussionModerator[] @relation("GrantedModerators")
+  discussionBans    DiscussionBan[]
+  bannedUsers       DiscussionBan[]       @relation("BannedUsers")
+
   @@map("profiles")
 }
 
@@ -78,6 +86,11 @@ model Challenge {
   posts               Post[]
   supportedActivities ChallengeActivityType[] // Many-to-many relation for supported activity types
   progress            ChallengeProgress[] // Progress aggregation for this challenge
+
+  // Discussion relations
+  discussionPosts      DiscussionPost[]
+  discussionModerators DiscussionModerator[]
+  discussionBans       DiscussionBan[]
 
   @@index([creatorId, status], map: "idx_challenge_creator_status")
   @@index([status], map: "idx_challenge_status")
@@ -224,6 +237,87 @@ model Comment {
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
+// New Discussion Models for Threaded Comments
+model DiscussionPost {
+  id          String    @id @default(uuid()) @db.Uuid
+  challengeId String    @db.Uuid
+  authorId    String    @db.Uuid
+  content     String
+  isPinned    Boolean   @default(false)
+  isDeleted   Boolean   @default(false)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+  replyCount  Int       @default(0)
+  lastReplyAt DateTime? @db.Timestamptz(6)
+
+  // Relations
+  challenge Challenge         @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  author    Profile           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  replies   DiscussionReply[]
+
+  @@index([challengeId, createdAt])
+  @@index([challengeId, isPinned, createdAt])
+  @@map("discussion_posts")
+}
+
+model DiscussionReply {
+  id        String   @id @default(uuid()) @db.Uuid
+  postId    String   @db.Uuid
+  parentId  String?  @db.Uuid // For nested replies
+  authorId  String   @db.Uuid
+  content   String
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+
+  // Relations
+  post    DiscussionPost    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parent  DiscussionReply?  @relation("ReplyThread", fields: [parentId], references: [id], onDelete: Cascade)
+  replies DiscussionReply[] @relation("ReplyThread")
+  author  Profile           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([postId, createdAt])
+  @@index([parentId, createdAt])
+  @@map("discussion_replies")
+}
+
+model DiscussionModerator {
+  id          String        @id @default(uuid()) @db.Uuid
+  challengeId String        @db.Uuid
+  userId      String        @db.Uuid
+  role        ModeratorRole @default(MODERATOR)
+  grantedAt   DateTime      @default(now()) @db.Timestamptz(6)
+  grantedById String        @db.Uuid
+
+  // Relations
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  user      Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  grantedBy Profile   @relation("GrantedModerators", fields: [grantedById], references: [id])
+
+  @@unique([challengeId, userId])
+  @@map("discussion_moderators")
+}
+
+model DiscussionBan {
+  id          String    @id @default(uuid()) @db.Uuid
+  challengeId String    @db.Uuid
+  userId      String    @db.Uuid
+  reason      String?
+  bannedAt    DateTime  @default(now()) @db.Timestamptz(6)
+  expiresAt   DateTime? @db.Timestamptz(6) // null = permanent ban
+  bannedById  String    @db.Uuid
+  isActive    Boolean   @default(true)
+
+  // Relations
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  user      Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bannedBy  Profile   @relation("BannedUsers", fields: [bannedById], references: [id])
+
+  @@unique([challengeId, userId, isActive]) // Only one active ban per user per challenge
+  @@index([challengeId, isActive])
+  @@map("discussion_bans")
+}
+
 enum TeamRole {
   ADMIN
   MEMBER
@@ -238,4 +332,9 @@ enum ChallengeStatus {
   ACTIVE
   CLOSED
   CANCELLED
+}
+
+enum ModeratorRole {
+  MODERATOR
+  ADMIN
 }

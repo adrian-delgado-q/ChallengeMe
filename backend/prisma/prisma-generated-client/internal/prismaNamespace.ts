@@ -406,7 +406,11 @@ export const ModelName = {
   Activity: 'Activity',
   ChallengeProgress: 'ChallengeProgress',
   Post: 'Post',
-  Comment: 'Comment'
+  Comment: 'Comment',
+  DiscussionPost: 'DiscussionPost',
+  DiscussionReply: 'DiscussionReply',
+  DiscussionModerator: 'DiscussionModerator',
+  DiscussionBan: 'DiscussionBan'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -422,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "profile" | "team" | "teamMembership" | "challenge" | "challengeActivityType" | "milestone" | "milestoneProgress" | "challengeParticipant" | "activityType" | "activity" | "challengeProgress" | "post" | "comment"
+    modelProps: "profile" | "team" | "teamMembership" | "challenge" | "challengeActivityType" | "milestone" | "milestoneProgress" | "challengeParticipant" | "activityType" | "activity" | "challengeProgress" | "post" | "comment" | "discussionPost" | "discussionReply" | "discussionModerator" | "discussionBan"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1388,6 +1392,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DiscussionPost: {
+      payload: Prisma.$DiscussionPostPayload<ExtArgs>
+      fields: Prisma.DiscussionPostFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DiscussionPostFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DiscussionPostFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>
+        }
+        findFirst: {
+          args: Prisma.DiscussionPostFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DiscussionPostFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>
+        }
+        findMany: {
+          args: Prisma.DiscussionPostFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>[]
+        }
+        create: {
+          args: Prisma.DiscussionPostCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>
+        }
+        createMany: {
+          args: Prisma.DiscussionPostCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DiscussionPostCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>[]
+        }
+        delete: {
+          args: Prisma.DiscussionPostDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>
+        }
+        update: {
+          args: Prisma.DiscussionPostUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>
+        }
+        deleteMany: {
+          args: Prisma.DiscussionPostDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DiscussionPostUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DiscussionPostUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>[]
+        }
+        upsert: {
+          args: Prisma.DiscussionPostUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>
+        }
+        aggregate: {
+          args: Prisma.DiscussionPostAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDiscussionPost>
+        }
+        groupBy: {
+          args: Prisma.DiscussionPostGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscussionPostGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DiscussionPostCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscussionPostCountAggregateOutputType> | number
+        }
+      }
+    }
+    DiscussionReply: {
+      payload: Prisma.$DiscussionReplyPayload<ExtArgs>
+      fields: Prisma.DiscussionReplyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DiscussionReplyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionReplyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DiscussionReplyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionReplyPayload>
+        }
+        findFirst: {
+          args: Prisma.DiscussionReplyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionReplyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DiscussionReplyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionReplyPayload>
+        }
+        findMany: {
+          args: Prisma.DiscussionReplyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionReplyPayload>[]
+        }
+        create: {
+          args: Prisma.DiscussionReplyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionReplyPayload>
+        }
+        createMany: {
+          args: Prisma.DiscussionReplyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DiscussionReplyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionReplyPayload>[]
+        }
+        delete: {
+          args: Prisma.DiscussionReplyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionReplyPayload>
+        }
+        update: {
+          args: Prisma.DiscussionReplyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionReplyPayload>
+        }
+        deleteMany: {
+          args: Prisma.DiscussionReplyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DiscussionReplyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DiscussionReplyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionReplyPayload>[]
+        }
+        upsert: {
+          args: Prisma.DiscussionReplyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionReplyPayload>
+        }
+        aggregate: {
+          args: Prisma.DiscussionReplyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDiscussionReply>
+        }
+        groupBy: {
+          args: Prisma.DiscussionReplyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscussionReplyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DiscussionReplyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscussionReplyCountAggregateOutputType> | number
+        }
+      }
+    }
+    DiscussionModerator: {
+      payload: Prisma.$DiscussionModeratorPayload<ExtArgs>
+      fields: Prisma.DiscussionModeratorFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DiscussionModeratorFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionModeratorPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DiscussionModeratorFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionModeratorPayload>
+        }
+        findFirst: {
+          args: Prisma.DiscussionModeratorFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionModeratorPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DiscussionModeratorFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionModeratorPayload>
+        }
+        findMany: {
+          args: Prisma.DiscussionModeratorFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionModeratorPayload>[]
+        }
+        create: {
+          args: Prisma.DiscussionModeratorCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionModeratorPayload>
+        }
+        createMany: {
+          args: Prisma.DiscussionModeratorCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DiscussionModeratorCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionModeratorPayload>[]
+        }
+        delete: {
+          args: Prisma.DiscussionModeratorDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionModeratorPayload>
+        }
+        update: {
+          args: Prisma.DiscussionModeratorUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionModeratorPayload>
+        }
+        deleteMany: {
+          args: Prisma.DiscussionModeratorDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DiscussionModeratorUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DiscussionModeratorUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionModeratorPayload>[]
+        }
+        upsert: {
+          args: Prisma.DiscussionModeratorUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionModeratorPayload>
+        }
+        aggregate: {
+          args: Prisma.DiscussionModeratorAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDiscussionModerator>
+        }
+        groupBy: {
+          args: Prisma.DiscussionModeratorGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscussionModeratorGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DiscussionModeratorCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscussionModeratorCountAggregateOutputType> | number
+        }
+      }
+    }
+    DiscussionBan: {
+      payload: Prisma.$DiscussionBanPayload<ExtArgs>
+      fields: Prisma.DiscussionBanFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DiscussionBanFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionBanPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DiscussionBanFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionBanPayload>
+        }
+        findFirst: {
+          args: Prisma.DiscussionBanFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionBanPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DiscussionBanFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionBanPayload>
+        }
+        findMany: {
+          args: Prisma.DiscussionBanFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionBanPayload>[]
+        }
+        create: {
+          args: Prisma.DiscussionBanCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionBanPayload>
+        }
+        createMany: {
+          args: Prisma.DiscussionBanCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DiscussionBanCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionBanPayload>[]
+        }
+        delete: {
+          args: Prisma.DiscussionBanDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionBanPayload>
+        }
+        update: {
+          args: Prisma.DiscussionBanUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionBanPayload>
+        }
+        deleteMany: {
+          args: Prisma.DiscussionBanDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DiscussionBanUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DiscussionBanUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionBanPayload>[]
+        }
+        upsert: {
+          args: Prisma.DiscussionBanUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionBanPayload>
+        }
+        aggregate: {
+          args: Prisma.DiscussionBanAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDiscussionBan>
+        }
+        groupBy: {
+          args: Prisma.DiscussionBanGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscussionBanGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DiscussionBanCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscussionBanCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1606,6 +1906,62 @@ export const CommentScalarFieldEnum = {
 export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
 
 
+export const DiscussionPostScalarFieldEnum = {
+  id: 'id',
+  challengeId: 'challengeId',
+  authorId: 'authorId',
+  content: 'content',
+  isPinned: 'isPinned',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  replyCount: 'replyCount',
+  lastReplyAt: 'lastReplyAt'
+} as const
+
+export type DiscussionPostScalarFieldEnum = (typeof DiscussionPostScalarFieldEnum)[keyof typeof DiscussionPostScalarFieldEnum]
+
+
+export const DiscussionReplyScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  parentId: 'parentId',
+  authorId: 'authorId',
+  content: 'content',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DiscussionReplyScalarFieldEnum = (typeof DiscussionReplyScalarFieldEnum)[keyof typeof DiscussionReplyScalarFieldEnum]
+
+
+export const DiscussionModeratorScalarFieldEnum = {
+  id: 'id',
+  challengeId: 'challengeId',
+  userId: 'userId',
+  role: 'role',
+  grantedAt: 'grantedAt',
+  grantedById: 'grantedById'
+} as const
+
+export type DiscussionModeratorScalarFieldEnum = (typeof DiscussionModeratorScalarFieldEnum)[keyof typeof DiscussionModeratorScalarFieldEnum]
+
+
+export const DiscussionBanScalarFieldEnum = {
+  id: 'id',
+  challengeId: 'challengeId',
+  userId: 'userId',
+  reason: 'reason',
+  bannedAt: 'bannedAt',
+  expiresAt: 'expiresAt',
+  bannedById: 'bannedById',
+  isActive: 'isActive'
+} as const
+
+export type DiscussionBanScalarFieldEnum = (typeof DiscussionBanScalarFieldEnum)[keyof typeof DiscussionBanScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1740,6 +2096,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
+
+/**
+ * Reference to a field of type 'ModeratorRole'
+ */
+export type EnumModeratorRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModeratorRole'>
+    
+
+
+/**
+ * Reference to a field of type 'ModeratorRole[]'
+ */
+export type ListEnumModeratorRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModeratorRole[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -1828,6 +2198,10 @@ export type GlobalOmitConfig = {
   challengeProgress?: Prisma.ChallengeProgressOmit
   post?: Prisma.PostOmit
   comment?: Prisma.CommentOmit
+  discussionPost?: Prisma.DiscussionPostOmit
+  discussionReply?: Prisma.DiscussionReplyOmit
+  discussionModerator?: Prisma.DiscussionModeratorOmit
+  discussionBan?: Prisma.DiscussionBanOmit
 }
 
 /* Types for Logging */

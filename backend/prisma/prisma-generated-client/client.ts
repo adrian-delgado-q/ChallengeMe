@@ -104,6 +104,26 @@ export type Post = Prisma.PostModel
  * 
  */
 export type Comment = Prisma.CommentModel
+/**
+ * Model DiscussionPost
+ * 
+ */
+export type DiscussionPost = Prisma.DiscussionPostModel
+/**
+ * Model DiscussionReply
+ * 
+ */
+export type DiscussionReply = Prisma.DiscussionReplyModel
+/**
+ * Model DiscussionModerator
+ * 
+ */
+export type DiscussionModerator = Prisma.DiscussionModeratorModel
+/**
+ * Model DiscussionBan
+ * 
+ */
+export type DiscussionBan = Prisma.DiscussionBanModel
 
 export type TeamRole = $Enums.TeamRole
 export const TeamRole = $Enums.TeamRole
@@ -113,3 +133,6 @@ export const ChallengeParticipantType = $Enums.ChallengeParticipantType
 
 export type ChallengeStatus = $Enums.ChallengeStatus
 export const ChallengeStatus = $Enums.ChallengeStatus
+
+export type ModeratorRole = $Enums.ModeratorRole
+export const ModeratorRole = $Enums.ModeratorRole

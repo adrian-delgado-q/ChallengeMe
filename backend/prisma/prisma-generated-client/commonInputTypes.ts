@@ -333,6 +333,23 @@ export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedStringNullableFilter<$PrismaModel>
 }
 
+export type EnumModeratorRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.ModeratorRole | Prisma.EnumModeratorRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ModeratorRole[] | Prisma.ListEnumModeratorRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ModeratorRole[] | Prisma.ListEnumModeratorRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumModeratorRoleFilter<$PrismaModel> | $Enums.ModeratorRole
+}
+
+export type EnumModeratorRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ModeratorRole | Prisma.EnumModeratorRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ModeratorRole[] | Prisma.ListEnumModeratorRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ModeratorRole[] | Prisma.ListEnumModeratorRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumModeratorRoleWithAggregatesFilter<$PrismaModel> | $Enums.ModeratorRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumModeratorRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumModeratorRoleFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -649,6 +666,23 @@ export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedStringNullableFilter<$PrismaModel>
   _max?: Prisma.NestedStringNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumModeratorRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.ModeratorRole | Prisma.EnumModeratorRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ModeratorRole[] | Prisma.ListEnumModeratorRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ModeratorRole[] | Prisma.ListEnumModeratorRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumModeratorRoleFilter<$PrismaModel> | $Enums.ModeratorRole
+}
+
+export type NestedEnumModeratorRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ModeratorRole | Prisma.EnumModeratorRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ModeratorRole[] | Prisma.ListEnumModeratorRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ModeratorRole[] | Prisma.ListEnumModeratorRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumModeratorRoleWithAggregatesFilter<$PrismaModel> | $Enums.ModeratorRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumModeratorRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumModeratorRoleFilter<$PrismaModel>
 }
 
 
