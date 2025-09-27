@@ -45,6 +45,7 @@ MIGRATION_FILES=(
     "03_triggers.sql"
     "04_rls_policies.sql"
     "05_progress_aggregation.sql"
+    "06_discussion_rls_policies.sql"
 )
 
 # Run migrations in order

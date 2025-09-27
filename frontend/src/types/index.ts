@@ -216,6 +216,93 @@ export interface Comment {
   timestamp?: string;
 }
 
+// --- New Discussion System Types ---
+export interface DiscussionPost {
+  id: string;
+  challengeId: string;
+  authorId: string;
+  content: string;
+  isPinned: boolean;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  replyCount: number;
+  lastReplyAt?: string;
+  author: {
+    id: string;
+    username?: string;
+    avatarUrl?: string;
+  };
+  replies?: DiscussionReply[];
+  canEdit?: boolean;
+  canDelete?: boolean;
+  canPin?: boolean;
+}
+
+export interface DiscussionReply {
+  id: string;
+  postId: string;
+  parentId?: string;
+  authorId: string;
+  content: string;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  author: {
+    id: string;
+    username?: string;
+    avatarUrl?: string;
+  };
+  replies?: DiscussionReply[];
+  canEdit?: boolean;
+  canDelete?: boolean;
+}
+
+export interface DiscussionModerator {
+  id: string;
+  challengeId: string;
+  userId: string;
+  role: ModeratorRole;
+  grantedAt: string;
+  grantedById: string;
+  user: {
+    id: string;
+    username?: string;
+    avatarUrl?: string;
+  };
+}
+
+export interface DiscussionBan {
+  id: string;
+  challengeId: string;
+  userId: string;
+  reason?: string;
+  bannedAt: string;
+  expiresAt?: string;
+  bannedById: string;
+  isActive: boolean;
+  user: {
+    id: string;
+    username?: string;
+    avatarUrl?: string;
+  };
+}
+
+export interface DiscussionPermissions {
+  canPost: boolean;
+  canReply: boolean;
+  canEdit: boolean;
+  canDelete: boolean;
+  canPin: boolean;
+  canModerate: boolean;
+  canBan: boolean;
+  isBanned: boolean;
+  banReason?: string;
+  banExpiresAt?: string;
+}
+
+export type ModeratorRole = 'MODERATOR' | 'ADMIN';
+
 // --- UI & Other ---
 export interface LeaderboardEntry {
   rank: number;

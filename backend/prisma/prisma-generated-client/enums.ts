@@ -30,3 +30,11 @@ export const ChallengeStatus = {
 } as const
 
 export type ChallengeStatus = (typeof ChallengeStatus)[keyof typeof ChallengeStatus]
+
+
+export const ModeratorRole = {
+  MODERATOR: 'MODERATOR',
+  ADMIN: 'ADMIN'
+} as const
+
+export type ModeratorRole = (typeof ModeratorRole)[keyof typeof ModeratorRole]

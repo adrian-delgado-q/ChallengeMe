@@ -11,7 +11,7 @@ import { ChallengeRules } from '../components/dashboard/ChallengeRules';
 import { LogActivityModal } from '../components/dashboard/LogActivityModal';
 import { MilestonesDisplay } from '../components/dashboard/MilestonesDisplay';
 import { ChallengeJoinButton } from '../components/challenges/ChallengeJoinButton';
-import { useChallengeDetails, usePosts } from '../hooks/useData';
+import { useChallengeDetails } from '../hooks/useData';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ActivityService } from '../graphql/services';
 import { useNotifications } from '../utils/notifications';
@@ -31,7 +31,6 @@ const ChallengeDashboardPage: React.FC = () => {
     const notifications = useNotifications();
 
     const { challenge, loading: challengeLoading, error: challengeError, refetch } = useChallengeDetails(challengeId || '');
-    const { posts, loading: postsLoading } = usePosts(challengeId);
 
     // Function to refresh challenge data and activity feeds
     const handleActivityLogged = () => {
@@ -155,14 +154,8 @@ const ChallengeDashboardPage: React.FC = () => {
                     </VStack>
                     <VStack spacing={8} align="stretch">
                         <ProgressChart challengeId={challengeId} />
-                        {postsLoading ? (
-                            <Card p={6}>
-                                <Center>
-                                    <Spinner />
-                                </Center>
-                            </Card>
-                        ) : (
-                            <CommentsForum comments={posts || []} challengeId={challengeId} />
+                        {challengeId && (
+                            <CommentsForum challengeId={challengeId} />
                         )}
                     </VStack>
                 </Grid>
