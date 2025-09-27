@@ -300,6 +300,19 @@ export class ChallengeService {
                 .eq('challengeId', id)
                 .order('order', { ascending: true });
 
+            // Get supported activity types for this challenge
+            const { data: challengeActivityTypes } = await supabase
+                .from('ChallengeActivityType')
+                .select(`
+                    activityTypeId,
+                    activityType:ActivityType(id, name, category, unit, unitLabel, description)
+                `)
+                .eq('challengeId', id);
+
+            // Extract activity type IDs and full activity type objects
+            const activityTypes = (challengeActivityTypes || []).map(cat => cat.activityTypeId);
+            const activityTypeDetails = (challengeActivityTypes || []).map(cat => cat.activityType);
+
             // Convert database milestones to frontend format
             const formattedMilestones = (milestones || []).map((milestone: any) => ({
                 name: milestone.name,
@@ -325,6 +338,8 @@ export class ChallengeService {
                 participantCount: participants?.length || 0,
                 participantList,
                 milestones: formattedMilestones,
+                activityTypes, // Array of activity type IDs
+                activityTypeDetails, // Array of full activity type objects  
                 progress: userProgress,
                 progressByActivityType,
                 type: activityType,
@@ -351,7 +366,6 @@ export class ChallengeService {
                     creatorId: user.id,
                     title: challengeData.title,
                     description: challengeData.description || null,
-                    activityTypes: challengeData.activityTypes || null, // Add activityTypes support
                     challengeType: challengeData.challengeType,
                     maxParticipants: challengeData.maxParticipants || null,
                     maxTeamSize: challengeData.maxTeamSize || null,

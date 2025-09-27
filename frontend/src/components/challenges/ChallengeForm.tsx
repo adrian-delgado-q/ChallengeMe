@@ -267,7 +267,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                 />
             </FormControl>
 
-            <FormControl isRequired>
+            <FormControl isRequired={selectedActivityTypeIds.length === 0}>
                 <FormLabel>Activity Types</FormLabel>
                 <ActivityTypeSelector
                     activityTypes={activityTypes}
