@@ -45,10 +45,10 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({ challengeId }) => {
 
     if (loading) {
         return (
-            <Card p={6}>
-                <Heading as="h3" size="lg" mb={4}>Latest Updates</Heading>
-                <Center h="200px">
-                    <Spinner color="orange.500" />
+            <Card p={4}>
+                <Heading as="h4" size="sm" mb={3}>Latest Updates</Heading>
+                <Center h="120px">
+                    <Spinner color="orange.500" size="sm" />
                 </Center>
             </Card>
         );
@@ -56,20 +56,20 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({ challengeId }) => {
 
     if (error) {
         return (
-            <Card p={6}>
-                <Heading as="h3" size="lg" mb={4}>Latest Updates</Heading>
-                <Text color="red.500">Failed to load activities: {error}</Text>
+            <Card p={4}>
+                <Heading as="h4" size="sm" mb={3}>Latest Updates</Heading>
+                <Text color="red.500" fontSize="sm">Failed to load activities: {error}</Text>
             </Card>
         );
     }
 
     return (
-        <Card p={6}>
-            <HStack justify="space-between" align="center" mb={4}>
-                <Heading as="h3" size="lg">Latest Updates</Heading>
-                <HStack spacing={2}>
+        <Card p={4}>
+            <HStack justify="space-between" align="center" mb={3}>
+                <Heading as="h4" size="sm">Latest Updates</Heading>
+                <HStack spacing={1}>
                     {isRefreshing && (
-                        <Badge colorScheme="orange" variant="subtle">
+                        <Badge colorScheme="orange" variant="subtle" size="sm">
                             <HStack spacing={1}>
                                 <Spinner size="xs" />
                                 <Text fontSize="xs">Updating...</Text>
@@ -87,7 +87,7 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({ challengeId }) => {
                     />
                 </HStack>
             </HStack>
-            <VStack spacing={4} align="stretch">
+            <VStack spacing={2} align="stretch">
                 {activities.length > 0 ? (
                     activities.map((activity) => (
                         <HStack key={activity.id} spacing={4} align="flex-start">

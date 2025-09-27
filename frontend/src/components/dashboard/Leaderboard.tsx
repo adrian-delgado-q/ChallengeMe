@@ -44,10 +44,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ challengeId }) => {
 
     if (loading) {
         return (
-            <Card p={6}>
-                <Heading as="h3" size="lg" mb={4}>Leaderboard</Heading>
-                <Center h="200px">
-                    <Spinner color="orange.500" />
+            <Card p={4}>
+                <Heading as="h4" size="sm" mb={3}>Leaderboard</Heading>
+                <Center h="120px">
+                    <Spinner color="orange.500" size="sm" />
                 </Center>
             </Card>
         );
@@ -55,28 +55,29 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ challengeId }) => {
 
     if (error) {
         return (
-            <Card p={6}>
-                <Heading as="h3" size="lg" mb={4}>Leaderboard</Heading>
-                <Text color="red.500">Failed to load leaderboard: {error}</Text>
+            <Card p={4}>
+                <Heading as="h4" size="sm" mb={3}>Leaderboard</Heading>
+                <Text color="red.500" fontSize="sm">Failed to load leaderboard: {error}</Text>
             </Card>
         );
     }
 
     return (
-        <Card p={6}>
-            <Heading as="h3" size="lg" mb={4}>Leaderboard</Heading>
-            <VStack spacing={4} align="stretch">
+        <Card p={4}>
+            <Heading as="h4" size="sm" mb={3}>Leaderboard</Heading>
+            <VStack spacing={2} align="stretch">
                 {entries.length > 0 ? (
-                    entries.map((entry) => {
+                    entries.slice(0, 5).map((entry) => {
                         const isCurrentUser = user?.id === entry.id;
                         return (
                             <HStack
                                 key={entry.rank}
                                 p={2}
-                                rounded="lg"
+                                rounded="md"
                                 bg={isCurrentUser ? 'orange.50' : 'transparent'}
-                                borderWidth={isCurrentUser ? '2px' : '0px'}
+                                borderWidth={isCurrentUser ? '1px' : '0px'}
                                 borderColor="orange.200"
+                                fontSize="sm"
                             >
                                 <Text fontWeight="bold" color="gray.500" w={8}>{entry.rank}</Text>
                                 <Avatar src={entry.avatar} name={entry.name} size="sm" />
