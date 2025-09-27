@@ -163,7 +163,12 @@ export const ActivityManagementPage: React.FC = () => {
     };
 
     // Handle activity update
-    const handleUpdateActivity = async (activityId: string, data: { value?: number; notes?: string; date: string }) => {
+    const handleUpdateActivity = async (activityId: string, data: {
+        activityTypeId?: string;
+        value?: number;
+        notes?: string;
+        date: string
+    }) => {
         await ActivityService.updateActivity(activityId, data);
         await fetchActivities(); // Refresh the list
     };

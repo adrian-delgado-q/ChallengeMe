@@ -15,20 +15,29 @@ import {
     Textarea,
     Text,
     HStack,
-    Icon
+    Icon,
+    Select,
+    Spinner,
+    Box
 } from '@chakra-ui/react';
 import { FaEdit } from 'react-icons/fa';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ValidationUtils } from '../../utils/validation';
-import type { Activity } from '../../types';
+import { ActivityTypeService } from '../../graphql/services/activityTypeService';
+import type { Activity, ActivityType } from '../../types';
 
 interface EditActivityModalProps {
     isOpen: boolean;
     onClose: () => void;
     activity: Activity | null;
     onActivityUpdated?: () => void;
-    onUpdateActivity: (activityId: string, data: { value?: number; notes?: string; date: string }) => Promise<void>;
+    onUpdateActivity: (activityId: string, data: {
+        activityTypeId?: string;
+        value?: number;
+        notes?: string;
+        date: string
+    }) => Promise<void>;
 }
 
 export const EditActivityModal: React.FC<EditActivityModalProps> = ({
@@ -40,6 +49,9 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
 }) => {
     const [notes, setNotes] = useState('');
     const [date, setDate] = useState('');
+    const [selectedActivityTypeId, setSelectedActivityTypeId] = useState('');
+    const [challengeActivityTypes, setChallengeActivityTypes] = useState<ActivityType[]>([]);
+    const [isLoadingActivityTypes, setIsLoadingActivityTypes] = useState(false);
 
     const notifications = useNotifications();
     const { isLoading: isSubmitting, execute } = useAsyncState({
@@ -65,10 +77,35 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
     const [distance, setDistance] = useState('');
     const [duration, setDuration] = useState('');
 
+    // Load challenge activity types when modal opens
+    useEffect(() => {
+        const loadActivityTypes = async () => {
+            if (!activity || !isOpen) return;
+
+            try {
+                setIsLoadingActivityTypes(true);
+                // Get the challenge ID from the activity
+                const challengeId = activity.challengeId;
+                if (challengeId) {
+                    const types = await ActivityTypeService.getActivityTypesForChallenge(challengeId);
+                    setChallengeActivityTypes(types);
+                }
+            } catch (error) {
+                console.error('Failed to load activity types:', error);
+                notifications.error('Failed to load activity types');
+            } finally {
+                setIsLoadingActivityTypes(false);
+            }
+        };
+
+        loadActivityTypes();
+    }, [activity, isOpen]);
+
     useEffect(() => {
         if (activity) {
             setDate(activity.date);
             setNotes(activity.notes || '');
+            setSelectedActivityTypeId(activity.activityTypeId || '');
 
             // Handle the new structure with generic value field
             if (activity.value && activity.activityType) {
@@ -158,6 +195,7 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
             }
 
             await onUpdateActivity(activity.id, {
+                activityTypeId: selectedActivityTypeId !== activity.activityTypeId ? selectedActivityTypeId : undefined,
                 value: activityValue,
                 notes: finalNotes || undefined,
                 date
@@ -176,6 +214,8 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
         setDate('');
         setDistance('');
         setDuration('');
+        setSelectedActivityTypeId('');
+        setChallengeActivityTypes([]);
     };
 
     const handleClose = () => {
@@ -224,35 +264,79 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
                         </FormControl>
 
                         <FormControl>
-                            <FormLabel>
-                                {activity.activityType?.name || 'Activity Type'} ({activity.activityType?.unit || 'Value'})
-                            </FormLabel>
-                            {activity.activityType?.category === 'distance' || activity.activityType?.unit === 'km' || activity.activityType?.unit === 'miles' ? (
-                                <Input
-                                    type="number"
-                                    step="0.1"
-                                    value={distance}
-                                    onChange={(e) => setDistance(e.target.value)}
-                                    placeholder={`e.g., 5.5 ${activity.activityType?.unit || 'km'}`}
+                            <FormLabel>Activity Type</FormLabel>
+                            {isLoadingActivityTypes ? (
+                                <Box textAlign="center" py={4}>
+                                    <Spinner size="md" color="orange.500" />
+                                    <Text mt={2} fontSize="sm" color="gray.500">Loading activity types...</Text>
+                                </Box>
+                            ) : challengeActivityTypes.length > 1 ? (
+                                <Select
+                                    placeholder="Select activity type"
+                                    value={selectedActivityTypeId}
+                                    onChange={(e) => setSelectedActivityTypeId(e.target.value)}
                                     isDisabled={!isEditable || isSubmitting}
-                                />
-                            ) : activity.activityType?.category === 'time' || activity.activityType?.unit === 'minutes' || activity.activityType?.unit === 'hours' ? (
-                                <Input
-                                    type="number"
-                                    value={duration}
-                                    onChange={(e) => setDuration(e.target.value)}
-                                    placeholder={`e.g., 30 ${activity.activityType?.unit || 'minutes'}`}
-                                    isDisabled={!isEditable || isSubmitting}
-                                />
+                                >
+                                    {challengeActivityTypes.map((activityType) => (
+                                        <option key={activityType.id} value={activityType.id}>
+                                            {activityType.name} ({activityType.unitLabel})
+                                        </option>
+                                    ))}
+                                </Select>
+                            ) : challengeActivityTypes.length === 1 ? (
+                                <Text fontWeight="medium" color="gray.700">
+                                    {challengeActivityTypes[0].name} ({challengeActivityTypes[0].unitLabel})
+                                </Text>
                             ) : (
-                                <Input
-                                    type="number"
-                                    step="0.1"
-                                    value={activity.value?.toString() || ''}
-                                    placeholder={`Current: ${activity.value} ${activity.activityType?.unit || ''}`}
-                                    isDisabled={true}
-                                />
+                                <Text color="gray.500" fontSize="sm">
+                                    No activity types available for this challenge
+                                </Text>
                             )}
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel>
+                                {(() => {
+                                    const selectedType = challengeActivityTypes.find(at => at.id === selectedActivityTypeId) || activity.activityType;
+                                    return `${selectedType?.name || 'Activity Type'} (${selectedType?.unit || 'Value'})`;
+                                })()}
+                            </FormLabel>
+                            {(() => {
+                                const selectedType = challengeActivityTypes.find(at => at.id === selectedActivityTypeId) || activity.activityType;
+
+                                if (selectedType?.category === 'distance' || selectedType?.unit === 'km' || selectedType?.unit === 'miles') {
+                                    return (
+                                        <Input
+                                            type="number"
+                                            step="0.1"
+                                            value={distance}
+                                            onChange={(e) => setDistance(e.target.value)}
+                                            placeholder={`e.g., 5.5 ${selectedType?.unit || 'km'}`}
+                                            isDisabled={!isEditable || isSubmitting}
+                                        />
+                                    );
+                                } else if (selectedType?.category === 'time' || selectedType?.unit === 'minutes' || selectedType?.unit === 'hours') {
+                                    return (
+                                        <Input
+                                            type="number"
+                                            value={duration}
+                                            onChange={(e) => setDuration(e.target.value)}
+                                            placeholder={`e.g., 30 ${selectedType?.unit || 'minutes'}`}
+                                            isDisabled={!isEditable || isSubmitting}
+                                        />
+                                    );
+                                } else {
+                                    return (
+                                        <Input
+                                            type="number"
+                                            step="0.1"
+                                            value={activity.value?.toString() || ''}
+                                            placeholder={`Current: ${activity.value} ${selectedType?.unit || ''}`}
+                                            isDisabled={true}
+                                        />
+                                    );
+                                }
+                            })()}
                         </FormControl>
 
                         <FormControl>

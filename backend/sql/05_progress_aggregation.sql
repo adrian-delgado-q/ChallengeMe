@@ -7,7 +7,7 @@
 -- -----------------------------------------------------------------------------
 -- Upserts progress data when an activity is inserted or updated.
 CREATE
-OR REPLACE FUNCTION public.update_challenge_progress() RETURNS TRIGGER LANGUAGE plpgsql AS $ $ DECLARE v_challenge_id UUID;
+OR REPLACE FUNCTION public.update_challenge_progress() RETURNS TRIGGER LANGUAGE plpgsql AS $$ DECLARE v_challenge_id UUID;
 
 v_participant_id UUID;
 
@@ -88,7 +88,7 @@ RETURN NEW;
 
 END;
 
-$ $;
+$$;
 
 -- Reverses progress data when an activity is updated or deleted.
 CREATE
@@ -97,7 +97,7 @@ OR REPLACE FUNCTION public.reverse_challenge_progress(
     p_participant_id UUID,
     p_activity_type_id UUID,
     p_value FLOAT
-) RETURNS VOID LANGUAGE plpgsql AS $ $ DECLARE v_new_count INT;
+) RETURNS VOID LANGUAGE plpgsql AS $$ DECLARE v_new_count INT;
 
 BEGIN
 UPDATE
@@ -143,11 +143,11 @@ END IF;
 
 END;
 
-$ $;
+$$;
 
 -- Handles the DELETE trigger on the Activity table.
 CREATE
-OR REPLACE FUNCTION public.handle_activity_delete() RETURNS TRIGGER LANGUAGE plpgsql AS $ $ BEGIN PERFORM public.reverse_challenge_progress(
+OR REPLACE FUNCTION public.handle_activity_delete() RETURNS TRIGGER LANGUAGE plpgsql AS $$ BEGIN PERFORM public.reverse_challenge_progress(
     OLD."challengeId",
     OLD."participantId",
     OLD."activityTypeId",
@@ -158,11 +158,11 @@ RETURN OLD;
 
 END;
 
-$ $;
+$$;
 
 -- Function to rebuild progress data (for maintenance/repair).
 CREATE
-OR REPLACE FUNCTION public.rebuild_challenge_progress(p_challenge_id UUID DEFAULT NULL) RETURNS VOID LANGUAGE plpgsql AS $ $ BEGIN -- Clear existing progress data for the specific challenge or all.
+OR REPLACE FUNCTION public.rebuild_challenge_progress(p_challenge_id UUID DEFAULT NULL) RETURNS VOID LANGUAGE plpgsql AS $$ BEGIN -- Clear existing progress data for the specific challenge or all.
 IF p_challenge_id IS NOT NULL THEN
 DELETE FROM
     public.challenge_progress
@@ -215,7 +215,7 @@ GROUP BY
 
 END;
 
-$ $;
+$$;
 
 -- Section 2: Triggers & Indexes
 -- Connects functions to table events and adds performance indexes.

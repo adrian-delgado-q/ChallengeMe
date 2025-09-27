@@ -86,4 +86,41 @@ export class ActivityTypeService {
             createdAt: activityType.createdAt
         }));
     }
+
+    // Get activity types supported by a specific challenge
+    static async getActivityTypesForChallenge(challengeId: string): Promise<ActivityType[]> {
+        // First get all activity types supported by the challenge
+        const { data: challengeActivityTypes, error: challengeError } = await supabase
+            .from('ChallengeActivityType')
+            .select('activityTypeId')
+            .eq('challengeId', challengeId);
+
+        if (challengeError) throw new Error(challengeError.message);
+
+        if (!challengeActivityTypes || challengeActivityTypes.length === 0) return [];
+
+        const activityTypeIds = challengeActivityTypes.map(cat => cat.activityTypeId);
+
+        // Then get the full activity type details
+        const { data: activityTypes, error } = await supabase
+            .from('ActivityType')
+            .select('id, name, category, unit, unitLabel, description, isActive, createdAt')
+            .in('id', activityTypeIds)
+            .eq('isActive', true)
+            .order('category')
+            .order('name');
+
+        if (error) throw new Error(error.message);
+
+        return (activityTypes || []).map((activityType: any) => ({
+            id: activityType.id,
+            name: activityType.name,
+            category: activityType.category,
+            unit: activityType.unit,
+            unitLabel: activityType.unitLabel,
+            description: activityType.description,
+            isActive: activityType.isActive,
+            createdAt: activityType.createdAt
+        }));
+    }
 }

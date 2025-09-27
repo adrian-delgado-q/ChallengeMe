@@ -5,6 +5,22 @@ export type { ActivityInput };
 
 // Activity data service
 export class ActivityService {
+    // Helper function to validate if an activity type is supported by a challenge
+    static async validateActivityTypeForChallenge(challengeId: string, activityTypeId: string): Promise<boolean> {
+        const { data: supportedActivity, error } = await supabase
+            .from('ChallengeActivityType')
+            .select('id')
+            .eq('challengeId', challengeId)
+            .eq('activityTypeId', activityTypeId)
+            .single();
+
+        if (error && error.code !== 'PGRST116') { // PGRST116 is "not found" error
+            throw new Error(`Failed to validate activity type: ${error.message}`);
+        }
+
+        return !!supportedActivity; // Returns true if the activity type is supported
+    }
+
     // Get activities for a specific challenge
     static async getActivitiesForChallenge(challengeId: string) {
         // First get all participants for this challenge
@@ -203,6 +219,16 @@ export class ActivityService {
         if (participantError) throw new Error(participantError.message);
         if (!participant) throw new Error('Participant not found');
 
+        // Validate that the activity type is supported by this challenge
+        const isActivityTypeSupported = await this.validateActivityTypeForChallenge(
+            participant.challengeId, 
+            activityData.activityTypeId
+        );
+
+        if (!isActivityTypeSupported) {
+            throw new Error('This activity type is not supported by the current challenge. Please select a different activity type.');
+        }
+
         // Generate UUID for the activity
         const activityId = generateUUID();
 
@@ -241,16 +267,28 @@ export class ActivityService {
         if (fetchError) throw new Error(fetchError.message);
         if (!activity) throw new Error('Activity not found');
 
-        // Verify the user owns this activity through participant
+        // Verify the user owns this activity through participant and get challenge info
         const { data: participant, error: participantError } = await supabase
             .from('ChallengeParticipant')
-            .select('userId')
+            .select('userId, challengeId')
             .eq('id', activity.participantId)
             .single();
 
         if (participantError) throw new Error(participantError.message);
         if (participant.userId !== user.id) {
             throw new Error('You can only edit your own activities');
+        }
+
+        // If activityTypeId is being changed, validate it's supported by the challenge
+        if (activityData.activityTypeId !== undefined) {
+            const isActivityTypeSupported = await this.validateActivityTypeForChallenge(
+                participant.challengeId, 
+                activityData.activityTypeId
+            );
+
+            if (!isActivityTypeSupported) {
+                throw new Error('This activity type is not supported by the current challenge. Please select a different activity type.');
+            }
         }
 
         const { data: updatedActivity, error } = await supabase

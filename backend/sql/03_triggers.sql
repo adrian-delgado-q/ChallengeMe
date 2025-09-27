@@ -26,3 +26,10 @@ CREATE TRIGGER update_challenge_participant_count_trigger
 AFTER
 INSERT
     OR DELETE ON "public"."ChallengeParticipant" FOR EACH ROW EXECUTE FUNCTION public.update_challenge_participant_count();
+
+-- Trigger: Validate activity type is supported by challenge when creating/updating activities.
+CREATE TRIGGER validate_activity_challenge_agreement_trigger BEFORE
+INSERT
+    OR
+UPDATE
+    ON "public"."Activity" FOR EACH ROW EXECUTE FUNCTION public.validate_activity_challenge_agreement();

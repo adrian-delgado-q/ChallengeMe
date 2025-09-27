@@ -139,3 +139,50 @@ RETURN NULL;
 END;
 
 $$;
+
+-- =============================================================================
+-- Section 5: Activity Validation Functions
+-- Functions for enforcing activity-to-activity agreement.
+-- -----------------------------------------------------------------------------
+-- Validates that an activity's activity type is supported by its challenge.
+CREATE
+OR REPLACE FUNCTION public.validate_activity_challenge_agreement() RETURNS TRIGGER LANGUAGE plpgsql AS $$ BEGIN -- Check if this is an INSERT or UPDATE with activityTypeId change
+IF (
+    TG_OP = 'INSERT'
+    OR (
+        TG_OP = 'UPDATE'
+        AND NEW."activityTypeId" != OLD."activityTypeId"
+    )
+) THEN -- Get the challenge ID from the participant
+DECLARE challenge_id UUID;
+
+BEGIN
+SELECT
+    cp."challengeId" INTO challenge_id
+FROM
+    public."ChallengeParticipant" cp
+WHERE
+    cp.id = NEW."participantId";
+
+-- Verify the activity type is supported by the challenge
+IF NOT EXISTS (
+    SELECT
+        1
+    FROM
+        public."ChallengeActivityType" cat
+    WHERE
+        cat."challengeId" = challenge_id
+        AND cat."activityTypeId" = NEW."activityTypeId"
+) THEN RAISE EXCEPTION 'Activity type is not supported by this challenge. Only activities that match the challenge''s supported activity types can be recorded.';
+
+END IF;
+
+END;
+
+END IF;
+
+RETURN NEW;
+
+END;
+
+$$;
