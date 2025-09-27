@@ -1,20 +1,22 @@
 # ChallengeMe Database Migrations
 
-This directory contains the consolidated database migration files for ChallengeMe. The structure has been simplified to have minimal, organized files.
+This directory contains organized database migration files for ChallengeMe. The structure is clean, modular, and maintainable.
 
 ## 📁 File Structure
 
-### Core Migration Files
-- **`schema_updates.sql`** - SQL-only features (partial unique constraints, comments)
-- **`triggers_functions.sql`** - All database functions and triggers
-- **`rls_policies.sql`** - Row Level Security policies for all tables
-- **`apply_migrations.sql`** - Master migration script that applies everything
+### Core Migration Files (Applied in Order)
+- **`01_schema_enhancements.sql`** - Schema modifications that Prisma can't handle
+- **`02_functions.sql`** - All custom PL/pgSQL functions
+- **`03_triggers.sql`** - Database triggers that link events to functions
+- **`04_rls_policies.sql`** - Row Level Security policies for all tables
+- **`05_progress_aggregation.sql`** - Challenge progress aggregation system
+
+### Validation & Utilities
+- **`99_validation.sql`** - Validation script to verify successful migration
+- **`migrate.sh`** - Bash script for automated migration execution
 
 ### Schema Management
 - **`../prisma/schema.prisma`** - Main schema definition (tables, fields, enums, basic indexes)
-
-### Execution Scripts
-- **`migrate.sh`** - Bash script wrapper for easy execution
 
 ## 🎯 Prisma vs SQL Division
 
@@ -31,13 +33,17 @@ This directory contains the consolidated database migration files for ChallengeM
 - **Triggers & Functions** - Business logic and automatic counters
 - **RLS Policies** - Row-level security (Supabase-specific)
 - **Comments** - Database documentation
+- **Progress Aggregation** - Real-time challenge progress system
 
 ## 🚀 Quick Start
 
-### Option 1: Using the Bash Script (Recommended)
+### Option 1: Using the Migration Script (Recommended)
 ```bash
 # Navigate to the sql directory
-cd /home/adrian/dev/ChallengeMe/backend/sql
+cd backend/sql
+
+# Make the script executable (first time only)
+chmod +x migrate.sh
 
 # Run the migration script
 ./migrate.sh
@@ -45,8 +51,93 @@ cd /home/adrian/dev/ChallengeMe/backend/sql
 
 ### Option 2: Using psql directly
 ```bash
-# Make sure you have DATABASE_URL set in your environment
-export DATABASE_URL="your_database_connection_string"
+# Make sure you have SUPABASE_DB_URL set in your environment
+export SUPABASE_DB_URL="your_database_connection_string"
+
+# Apply migrations in order
+psql "$SUPABASE_DB_URL" -f 01_schema_enhancements.sql
+psql "$SUPABASE_DB_URL" -f 02_functions.sql
+psql "$SUPABASE_DB_URL" -f 03_triggers.sql
+psql "$SUPABASE_DB_URL" -f 04_rls_policies.sql
+psql "$SUPABASE_DB_URL" -f 05_progress_aggregation.sql
+
+# Validate the migration
+psql "$SUPABASE_DB_URL" -f 99_validation.sql
+```
+
+## 📋 Migration Steps
+
+The migration process follows this sequence:
+
+1. **Schema Enhancements** - Creates partial unique indexes and adds documentation comments
+2. **Functions** - Defines utility and trigger functions with optimized performance
+3. **Triggers** - Links database events to functions for automatic maintenance
+4. **RLS Policies** - Applies security policies for proper access control
+5. **Progress Aggregation** - Sets up real-time challenge progress tracking system
+6. **Validation** - Verifies all components were created successfully
+
+## 🔧 Key Features
+
+### Performance Optimizations
+- **Incremental Counters**: Team and challenge counts use +1/-1 instead of COUNT(*)
+- **UPSERT Operations**: Progress aggregation uses ON CONFLICT for concurrency
+- **Strategic Indexes**: Query-optimized indexes for trigger performance
+
+### Data Integrity
+- **Partial Unique Constraints**: Prevents duplicate user/team participation per challenge
+- **Cascade Handling**: Proper cleanup when activities are updated/deleted
+- **Atomic Operations**: All operations wrapped in safe transactions
+
+### Maintainability
+- **Modular Design**: Each file has a single, clear responsibility
+- **Documentation**: Extensive comments explain purpose and usage
+- **Validation**: Built-in checks ensure migration success
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **Permission Errors**: Make sure your database user has proper privileges
+2. **Missing Environment**: Check that `SUPABASE_DB_URL` is set correctly
+3. **Schema Drift**: Run `npx prisma db push` before SQL migrations
+4. **Trigger Conflicts**: The script drops existing triggers before creating new ones
+
+### Recovery Commands
+
+```bash
+# Rebuild challenge progress aggregation (if data looks inconsistent)
+psql "$SUPABASE_DB_URL" -c "SELECT public.rebuild_challenge_progress();"
+
+# Check validation status
+psql "$SUPABASE_DB_URL" -f 99_validation.sql
+```
+
+## 📚 File Documentation
+
+### 01_schema_enhancements.sql
+- Partial unique indexes for challenge participation
+- Column comments for database documentation
+
+### 02_functions.sql  
+- Random username/avatar generators
+- User profile creation logic
+- Counter maintenance functions (optimized)
+
+### 03_triggers.sql
+- New user profile creation trigger
+- Team member count maintenance
+- Challenge participant count maintenance
+
+### 04_rls_policies.sql
+- Comprehensive security policies for all tables
+- Proper access control for users, teams, challenges
+- View/edit permissions based on ownership and membership
+
+### 05_progress_aggregation.sql
+- Real-time activity aggregation system
+- Handles INSERT/UPDATE/DELETE operations on activities
+- Maintains totals, counts, bests, and dates per participant/activity type
+- Includes maintenance and rebuild functions
 
 # Run the migration
 psql "$DATABASE_URL" -f apply_migrations.sql

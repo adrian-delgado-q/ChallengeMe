@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ChallengeMe Database Migration Script
-# This script applies all database changes using the consolidated SQL files
+# This script applies all database changes using organized SQL files
 
 set -e
 
@@ -9,6 +9,7 @@ set -e
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 echo -e "${GREEN}🚀 ChallengeMe Database Migration${NC}"
@@ -37,12 +38,48 @@ fi
 echo -e "${GREEN}📊 Database:${NC} $(echo $SUPABASE_DB_URL | sed 's/:[^:]*@/@****@/')"
 echo ""
 
-# Run the migration
-echo -e "${YELLOW}🔄 Running database migration...${NC}"
-psql "$SUPABASE_DB_URL" -f apply_migrations.sql
+# Define migration files in order
+MIGRATION_FILES=(
+    "01_schema_enhancements.sql"
+    "02_functions.sql"
+    "03_triggers.sql"
+    "04_rls_policies.sql"
+    "05_progress_aggregation.sql"
+)
+
+# Run migrations in order
+echo -e "${BLUE}🔄 Running database migrations...${NC}"
+echo ""
+
+for file in "${MIGRATION_FILES[@]}"; do
+    if [ -f "$file" ]; then
+        echo -e "${YELLOW}📄 Applying $file...${NC}"
+        psql "$SUPABASE_DB_URL" -f "$file" || {
+            echo -e "${RED}❌ Failed to apply $file${NC}"
+            exit 1
+        }
+        echo -e "${GREEN}✅ $file applied successfully${NC}"
+        echo ""
+    else
+        echo -e "${RED}❌ File $file not found!${NC}"
+        exit 1
+    fi
+done
+
+# Run validation
+echo -e "${BLUE}🔍 Running validation checks...${NC}"
+if [ -f "99_validation.sql" ]; then
+    psql "$SUPABASE_DB_URL" -f "99_validation.sql"
+    echo ""
+else
+    echo -e "${YELLOW}⚠️ Validation file not found, skipping validation${NC}"
+fi
 
 echo ""
-echo -e "${GREEN}🎉 SQL migration completed successfully!${NC}"
-echo -e "${GREEN}   Schema: Managed by Prisma${NC}"
-echo -e "${GREEN}   SQL Features: Applied successfully${NC}"
-echo -e "${GREEN}   Your database is ready for ChallengeMe!${NC}"
+echo -e "${GREEN}🎉 All SQL migrations completed successfully!${NC}"
+echo -e "${GREEN}   ✅ Schema Enhancements: Applied${NC}"
+echo -e "${GREEN}   ✅ Functions: Created${NC}"
+echo -e "${GREEN}   ✅ Triggers: Configured${NC}"
+echo -e "${GREEN}   ✅ RLS Policies: Applied${NC}"
+echo -e "${GREEN}   ✅ Progress Aggregation: Enabled${NC}"
+echo -e "${GREEN}   🚀 Your database is ready for ChallengeMe!${NC}"

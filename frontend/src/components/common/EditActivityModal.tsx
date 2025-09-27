@@ -133,17 +133,17 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
         const result = await execute(async () => {
             // Determine the value based on activity type
             let activityValue: number | undefined = undefined;
-            
+
             if (activity && activity.activityType) {
                 const activityType = activity.activityType;
-                
+
                 if (distance && (activityType.category === 'distance' || activityType.unit === 'km' || activityType.unit === 'miles')) {
                     activityValue = parseFloat(distance);
                 } else if (duration && (activityType.category === 'time' || activityType.unit === 'minutes' || activityType.unit === 'hours')) {
                     activityValue = parseFloat(duration);
                 }
             }
-            
+
             // Create activity notes combining distance, duration, and user notes
             let finalNotes = '';
 
@@ -162,7 +162,7 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
                 notes: finalNotes || undefined,
                 date
             });
-        });        if (result !== null) {
+        }); if (result !== null) {
             // Close modal and trigger refresh
             handleClose();
             if (onActivityUpdated) {
