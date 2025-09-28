@@ -71,7 +71,7 @@ const ChallengeDashboardPage: React.FC = () => {
         <>
             <VStack spacing={8} align="stretch">
                 {/* Challenge Header with title, description, details, and action buttons */}
-                <ChallengeHeader 
+                <ChallengeHeader
                     challenge={challenge}
                     actionButtons={
                         <HStack spacing={2}>
@@ -82,7 +82,7 @@ const ChallengeDashboardPage: React.FC = () => {
                             <Button
                                 variant="outline"
                                 colorScheme="orange"
-                                onClick={() => navigate('/activities')}
+                                onClick={() => navigate(`/activities?challengeId=${challenge.id}`)}
                                 size="sm"
                             >
                                 Manage Activities

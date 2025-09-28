@@ -30,11 +30,11 @@ export const ChallengeHeader: React.FC<ChallengeHeaderProps> = ({ challenge, act
     useEffect(() => {
         const loadActivityTypes = async () => {
             if (!challenge.activityTypes || challenge.activityTypes.length === 0) return;
-            
+
             try {
                 setIsLoadingActivityTypes(true);
                 const allActivityTypes = await ActivityTypeService.getActivityTypes();
-                const filteredTypes = allActivityTypes.filter(at => 
+                const filteredTypes = allActivityTypes.filter(at =>
                     challenge.activityTypes!.includes(at.id)
                 );
                 setActivityTypeDetails(filteredTypes);
@@ -91,9 +91,9 @@ export const ChallengeHeader: React.FC<ChallengeHeaderProps> = ({ challenge, act
                     </Box>
 
                     {/* Right side: Challenge Details as 4x1 horizontal grid */}
-                    <Grid 
-                        templateColumns="repeat(4, 1fr)" 
-                        gap={2} 
+                    <Grid
+                        templateColumns="repeat(4, 1fr)"
+                        gap={2}
                         minW={{ lg: '280px' }}
                         alignItems="center"
                         bg="gray.50"
@@ -175,7 +175,7 @@ export const ChallengeHeader: React.FC<ChallengeHeaderProps> = ({ challenge, act
                                     )}
                                 </HStack>
                             </VStack>
-                            
+
                             {/* Action Buttons */}
                             {actionButtons && (
                                 <Box>
