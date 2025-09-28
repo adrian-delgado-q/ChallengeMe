@@ -28,12 +28,22 @@ export const ActivityTypeSelector: React.FC<ActivityTypeSelectorProps> = ({
     const listRef = useRef<HTMLDivElement>(null);
 
     // Filter activity types based on search term and exclude already selected ones
-    const filteredActivityTypes = activityTypes.filter(activityType =>
-        !selectedActivityTypeIds.includes(activityType.id) &&
-        (activityType.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            activityType.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            activityType.unitLabel.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    // Sort alphabetically within each filter result
+    const filteredActivityTypes = activityTypes
+        .filter(activityType =>
+            !selectedActivityTypeIds.includes(activityType.id) &&
+            (searchTerm === '' || // Show all when no search term (on focus)
+                activityType.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                activityType.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                activityType.unitLabel.toLowerCase().includes(searchTerm.toLowerCase()))
+        )
+        .sort((a, b) => {
+            // Sort by category first, then by name alphabetically
+            if (a.category !== b.category) {
+                return a.category.localeCompare(b.category);
+            }
+            return a.name.localeCompare(b.name);
+        });
 
     // Get selected activity type objects
     const selectedActivityTypes = selectedActivityTypeIds.map(id =>
@@ -58,15 +68,13 @@ export const ActivityTypeSelector: React.FC<ActivityTypeSelectorProps> = ({
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearchTerm(value);
-        setIsOpen(value.length > 0);
+        setIsOpen(true); // Keep dropdown open while typing
         setHighlightedIndex(-1);
     };
 
-    // Handle input focus
+    // Handle input focus - show all available activities
     const handleInputFocus = () => {
-        if (searchTerm.length > 0) {
-            setIsOpen(true);
-        }
+        setIsOpen(true); // Always open dropdown on focus to show available activities
     };
 
     // Handle activity type selection
@@ -114,6 +122,7 @@ export const ActivityTypeSelector: React.FC<ActivityTypeSelectorProps> = ({
     };
 
     // Group activity types by category for better display
+    // Categories are also sorted alphabetically
     const groupedActivityTypes = filteredActivityTypes.reduce((acc, activityType) => {
         if (!acc[activityType.category]) {
             acc[activityType.category] = [];
@@ -121,6 +130,9 @@ export const ActivityTypeSelector: React.FC<ActivityTypeSelectorProps> = ({
         acc[activityType.category].push(activityType);
         return acc;
     }, {} as Record<string, ActivityType[]>);
+
+    // Sort categories alphabetically
+    const sortedCategories = Object.keys(groupedActivityTypes).sort();
 
     return (
         <VStack spacing={4} align="stretch">
@@ -152,7 +164,7 @@ export const ActivityTypeSelector: React.FC<ActivityTypeSelectorProps> = ({
                     </InputLeftElement>
                     <Input
                         ref={inputRef}
-                        placeholder="Search for activity types (e.g., running, cycling, push-ups...)"
+                        placeholder="Click to see all activities, or start typing to search..."
                         value={searchTerm}
                         onChange={handleInputChange}
                         onFocus={handleInputFocus}
@@ -181,12 +193,12 @@ export const ActivityTypeSelector: React.FC<ActivityTypeSelectorProps> = ({
                         {filteredActivityTypes.length === 0 ? (
                             <Box p={4} textAlign="center">
                                 <Text color="gray.500" fontSize="sm">
-                                    {searchTerm ? 'No matching activity types found' : 'Start typing to search for activities'}
+                                    {searchTerm ? 'No matching activity types found' : 'No activities available'}
                                 </Text>
                             </Box>
                         ) : (
                             <VStack spacing={0} align="stretch">
-                                {Object.entries(groupedActivityTypes).map(([category, categoryActivityTypes]) => (
+                                {sortedCategories.map((category) => (
                                     <Box key={category}>
                                         <Text
                                             fontSize="xs"
@@ -199,7 +211,7 @@ export const ActivityTypeSelector: React.FC<ActivityTypeSelectorProps> = ({
                                         >
                                             {category}
                                         </Text>
-                                        {categoryActivityTypes.map((activityType) => {
+                                        {groupedActivityTypes[category].map((activityType) => {
                                             const globalIndex = filteredActivityTypes.indexOf(activityType);
                                             const isHighlighted = globalIndex === highlightedIndex;
 
