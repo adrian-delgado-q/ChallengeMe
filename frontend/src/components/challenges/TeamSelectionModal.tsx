@@ -68,9 +68,9 @@ export const TeamSelectionModal: React.FC<TeamSelectionModalProps> = ({
 
     if (isLoading) {
         return (
-            <Modal isOpen={isOpen} onClose={handleClose} size="md">
+            <Modal isOpen={isOpen} onClose={handleClose} size={{ base: "full", md: "md" }}>
                 <ModalOverlay />
-                <ModalContent>
+                <ModalContent mx={{ base: 4, md: 'auto' }} my={{ base: 4, md: 'auto' }}>
                     <ModalBody py={8}>
                         <Center>
                             <VStack spacing={4}>
@@ -85,9 +85,9 @@ export const TeamSelectionModal: React.FC<TeamSelectionModalProps> = ({
     }
 
     return (
-        <Modal isOpen={isOpen} onClose={handleClose} size="md">
+        <Modal isOpen={isOpen} onClose={handleClose} size={{ base: "full", md: "md" }}>
             <ModalOverlay />
-            <ModalContent>
+            <ModalContent mx={{ base: 4, md: 'auto' }} my={{ base: 4, md: 'auto' }}>
                 <ModalHeader>Select Team for Challenge</ModalHeader>
                 <ModalCloseButton />
 

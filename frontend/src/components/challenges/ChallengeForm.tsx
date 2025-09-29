@@ -252,7 +252,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                     value={challengeType}
                     isDisabled={isSubmitting}
                 >
-                    <HStack spacing={4}>
+                    <HStack spacing={{ base: 2, md: 4 }} flexWrap={{ base: 'wrap', md: 'nowrap' }}>
                         <Radio value="individual" colorScheme="orange">Individual Challenge</Radio>
                         <Radio value="team" colorScheme="orange">Team Challenge</Radio>
                     </HStack>
@@ -296,7 +296,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                 />
             </FormControl>
 
-            <Grid templateColumns={{ base: '1fr', md: challengeType === 'team' ? '1fr 1fr 1fr' : '1fr 1fr' }} gap={6}>
+            <Grid templateColumns={{ base: '1fr', sm: challengeType === 'team' ? '1fr 1fr' : '1fr', md: challengeType === 'team' ? '1fr 1fr 1fr' : '1fr 1fr' }} gap={{ base: 4, md: 6 }}>
                 <FormControl>
                     <FormLabel>Max {challengeType === 'team' ? 'Teams' : 'Participants'} (Optional)</FormLabel>
                     <Input
@@ -324,7 +324,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                 )}
             </Grid>
 
-            <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={6}>
+            <Grid templateColumns={{ base: '1fr', sm: '1fr 1fr' }} gap={{ base: 4, md: 6 }}>
                 <FormControl isRequired>
                     <FormLabel>Start Date</FormLabel>
                     <Input
@@ -405,12 +405,19 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                 </FormControl>
             )}
 
-            <HStack justify="flex-end" pt={4}>
+            <HStack 
+                justify={{ base: 'center', md: 'flex-end' }} 
+                pt={4} 
+                spacing={{ base: 2, md: 4 }}
+                flexWrap={{ base: 'wrap', md: 'nowrap' }}
+            >
                 {onCancel && (
                     <Button
                         variant="ghost"
                         onClick={onCancel}
                         isDisabled={isSubmitting}
+                        w={{ base: 'full', md: 'auto' }}
+                        order={{ base: 2, md: 1 }}
                     >
                         Cancel
                     </Button>
@@ -418,9 +425,11 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
                 <Button
                     type="submit"
                     colorScheme="orange"
-                    size="lg"
+                    size={{ base: 'md', md: 'lg' }}
                     isLoading={isSubmitting}
                     loadingText={isEditing ? 'Updating...' : 'Creating...'}
+                    w={{ base: 'full', md: 'auto' }}
+                    order={{ base: 1, md: 2 }}
                 >
                     {isEditing ? 'Update Challenge' : 'Create Challenge'}
                 </Button>

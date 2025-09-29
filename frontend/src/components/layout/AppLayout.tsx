@@ -9,7 +9,14 @@ interface AppLayoutProps {
 export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => (
     <Box minH="100vh" w="100vw" display="flex" flexDirection="column" bg="gray.50" color="gray.800">
         <Header />
-        <Container as="main" maxW="container.xl" py={{ base: 4, md: 8 }} flex="2" >
+        <Container 
+            as="main" 
+            maxW="container.xl" 
+            py={{ base: 4, md: 8 }} 
+            px={{ base: 4, md: 6 }}
+            flex="2"
+            w="full"
+        >
             {children}
         </Container>
     </Box>

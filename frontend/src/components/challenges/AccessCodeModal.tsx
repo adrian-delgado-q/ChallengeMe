@@ -71,9 +71,9 @@ export const AccessCodeModal: React.FC<AccessCodeModalProps> = ({
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={handleClose} isCentered>
+        <Modal isOpen={isOpen} onClose={handleClose} isCentered size={{ base: "full", md: "md" }}>
             <ModalOverlay />
-            <ModalContent>
+            <ModalContent mx={{ base: 4, md: 'auto' }} my={{ base: 4, md: 'auto' }}>
                 <ModalHeader>
                     <VStack spacing={2} align="start">
                         <Text display="flex" alignItems="center" gap={2}>
@@ -109,8 +109,15 @@ export const AccessCodeModal: React.FC<AccessCodeModalProps> = ({
                     </VStack>
                 </ModalBody>
 
-                <ModalFooter>
-                    <Button variant="ghost" mr={3} onClick={handleClose} disabled={isLoading}>
+                <ModalFooter flexDirection={{ base: 'column', md: 'row' }} gap={{ base: 2, md: 0 }}>
+                    <Button 
+                        variant="ghost" 
+                        mr={{ base: 0, md: 3 }} 
+                        onClick={handleClose} 
+                        disabled={isLoading}
+                        w={{ base: 'full', md: 'auto' }}
+                        order={{ base: 2, md: 1 }}
+                    >
                         Cancel
                     </Button>
                     <Button
@@ -119,6 +126,8 @@ export const AccessCodeModal: React.FC<AccessCodeModalProps> = ({
                         isLoading={isLoading}
                         loadingText="Joining..."
                         disabled={!accessCode.trim()}
+                        w={{ base: 'full', md: 'auto' }}
+                        order={{ base: 1, md: 2 }}
                     >
                         Join Challenge
                     </Button>

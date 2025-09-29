@@ -190,6 +190,7 @@ export const Header: React.FC = () => {
                             variant="outline"
                             aria-label="Open menu"
                             icon={<HamburgerIcon />}
+                            size="md"
                         />
                     </>
                 )}

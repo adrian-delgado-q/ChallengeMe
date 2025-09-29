@@ -31,6 +31,8 @@ const EditChallengePage: React.FC = () => {
             await ChallengeService.updateChallenge(challengeId, formData);
             notifications.success('Success!', 'Challenge updated successfully!');
             refetch();
+            // Navigate back to the challenge dashboard
+            navigate(`/challenges/${challengeId}`);
         } catch (err: any) {
             notifications.error('Update Failed', err.message || 'Failed to update challenge');
         }
@@ -78,6 +80,7 @@ const EditChallengePage: React.FC = () => {
 
                     <ChallengeForm
                         onSubmit={handleUpdateChallenge}
+                        onCancel={() => navigate(`/challenges/${challengeId}`)}
                         isEditing={true}
                         challengeToEdit={challenge}
                     />

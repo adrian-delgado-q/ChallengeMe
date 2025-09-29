@@ -23,12 +23,12 @@ const CreateChallengePage: React.FC = () => {
     };
 
     return (
-        <Box maxW="4xl" mx="auto">
-            <Card p={8}>
-                <VStack spacing={8}>
-                    <VStack textAlign="center">
-                        <Heading as="h2" size="xl">Create a New Challenge</Heading>
-                        <Text color="gray.600">Define the rules, set the goal, and invite others to join.</Text>
+        <Box maxW="4xl" mx="auto" w="full">
+            <Card p={{ base: 6, md: 8 }}>
+                <VStack spacing={{ base: 6, md: 8 }}>
+                    <VStack textAlign="center" spacing={{ base: 2, md: 4 }}>
+                        <Heading as="h2" size={{ base: "lg", md: "xl" }}>Create a New Challenge</Heading>
+                        <Text color="gray.600" fontSize={{ base: "sm", md: "md" }}>Define the rules, set the goal, and invite others to join.</Text>
                     </VStack>
                     <ChallengeForm
                         onSubmit={handleCreateChallenge}
