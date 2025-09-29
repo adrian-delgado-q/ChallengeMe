@@ -34,8 +34,8 @@ export const FormPageLayout: React.FC<FormPageLayoutProps> = ({
                             {title}
                         </Heading>
                         {description && (
-                            <Text 
-                                color="gray.600" 
+                            <Text
+                                color="gray.600"
                                 fontSize={{ base: "sm", md: "md" }}
                                 maxW="2xl"
                             >

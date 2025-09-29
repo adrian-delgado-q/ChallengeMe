@@ -44,10 +44,10 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
                 {message}
             </AlertDescription>
             {onRetry && (
-                <Button 
-                    mt={4} 
-                    colorScheme="red" 
-                    variant="outline" 
+                <Button
+                    mt={4}
+                    colorScheme="red"
+                    variant="outline"
                     size={compact ? "sm" : "md"}
                     onClick={onRetry}
                 >

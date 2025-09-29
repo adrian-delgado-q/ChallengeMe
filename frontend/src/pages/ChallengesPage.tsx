@@ -231,8 +231,8 @@ const ChallengesPage: React.FC = () => {
             </VStack>
 
             {/* Challenges Grid with Loading States */}
-            <Grid 
-                templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)', xl: 'repeat(4, 1fr)' }} 
+            <Grid
+                templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)', xl: 'repeat(4, 1fr)' }}
                 gap={{ base: 4, md: 6 }}
             >
                 {isFetching ? (
