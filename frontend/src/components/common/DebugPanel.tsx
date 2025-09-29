@@ -14,7 +14,7 @@ import {
     AlertIcon,
     useDisclosure
 } from '@chakra-ui/react';
-import { supabase, testSupabaseConnection, isSupabaseConfigured } from '../../supabase/client';
+import { supabase } from '../../supabase/client';
 import { useUser } from '../../contexts/AuthContext';
 
 interface ConnectionTest {
@@ -34,15 +34,18 @@ export const DebugPanel: React.FC = () => {
         setEnvVars({
             supabaseUrl: import.meta.env.VITE_SUPABASE_API_URL,
             hasApiKey: !!import.meta.env.VITE_SUPABASE_API_KEY,
-            isConfigured: isSupabaseConfigured,
             mode: import.meta.env.MODE,
             dev: import.meta.env.DEV,
         });
     }, []);
 
     const runConnectionTest = async () => {
-        const result = await testSupabaseConnection();
-        setConnectionTest(result);
+        try {
+            const { data, error } = await supabase.from('profiles').select('count').limit(1);
+            setConnectionTest(error ? { success: false, error: error.message } : { success: true, data });
+        } catch (err: any) {
+            setConnectionTest({ success: false, error: err.message });
+        }
     };
 
     const testAuth = async () => {

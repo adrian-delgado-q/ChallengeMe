@@ -16,7 +16,6 @@ import ManageChallengePage from './pages/ManageChallengePage';
 import MyChallengesPage from './pages/MyChallengesPage';
 import { ActivityManagementPage } from './pages/ActivityManagementPage';
 import { DebugPanel } from './components/common/DebugPanel';
-import { isSupabaseConfigured } from './supabase/client';
 
 // Protected route wrapper that requires authentication
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -53,24 +52,6 @@ const AuthenticatedLayout: React.FC<{ children: React.ReactNode }> = ({ children
 };
 
 const App: React.FC = () => {
-    // Show configuration warning if Supabase is not configured
-    if (!isSupabaseConfigured) {
-        return (
-            <div style={{
-                padding: '20px',
-                textAlign: 'center',
-                backgroundColor: '#fff3cd',
-                borderLeft: '4px solid #ffc107',
-                margin: '20px'
-            }}>
-                <h2>⚠️ Configuration Required</h2>
-                <p>Supabase environment variables are not configured.</p>
-                <p>Please check <strong>QUICK_AUTH_SETUP.md</strong> for setup instructions.</p>
-                {import.meta.env.DEV && <DebugPanel />}
-            </div>
-        );
-    }
-
     return (
         <Router>
             <Routes>
