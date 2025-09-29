@@ -1,7 +1,6 @@
 import React from 'react';
-import { Box, Heading, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { Card } from '../components/common/Card';
+import { FormPageLayout } from '../components/common/FormPageLayout';
 import { ChallengeForm } from '../components/challenges/ChallengeForm';
 
 const CreateChallengePage: React.FC = () => {
@@ -23,21 +22,16 @@ const CreateChallengePage: React.FC = () => {
     };
 
     return (
-        <Box maxW="4xl" mx="auto" w="full">
-            <Card p={{ base: 6, md: 8 }}>
-                <VStack spacing={{ base: 6, md: 8 }}>
-                    <VStack textAlign="center" spacing={{ base: 2, md: 4 }}>
-                        <Heading as="h2" size={{ base: "lg", md: "xl" }}>Create a New Challenge</Heading>
-                        <Text color="gray.600" fontSize={{ base: "sm", md: "md" }}>Define the rules, set the goal, and invite others to join.</Text>
-                    </VStack>
-                    <ChallengeForm
-                        onSubmit={handleCreateChallenge}
-                        onCancel={handleCancel}
-                        isEditing={false}
-                    />
-                </VStack>
-            </Card>
-        </Box>
+        <FormPageLayout
+            title="Create a New Challenge"
+            description="Define the rules, set the goal, and invite others to join."
+        >
+            <ChallengeForm
+                onSubmit={handleCreateChallenge}
+                onCancel={handleCancel}
+                isEditing={false}
+            />
+        </FormPageLayout>
     );
 };
 export default CreateChallengePage;

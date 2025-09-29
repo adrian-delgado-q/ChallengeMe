@@ -9,8 +9,7 @@ import { UserTeamIcon } from '../components/common/Icons';
 import { useUser } from '../contexts/AuthContext';
 import { useTeams } from '../hooks/useData';
 import { AuthPrompt } from '../components/common/AuthPrompt';
-import { LoadTeamsError } from '../components/common/LoadTeamsError';
-import { GenericError } from '../components/common/GenericError';
+import { ErrorDisplay } from '../components/common/ErrorDisplay';
 
 import type { Team } from '../types';
 
@@ -161,7 +160,7 @@ const TeamsPage: React.FC = () => {
     }
 
     if (fetchError) {
-        return <LoadTeamsError onRetry={fetchTeams} />;
+        return <ErrorDisplay title="Could not load teams" message="There was an issue fetching the team data. Please try again later." onRetry={fetchTeams} fullScreen />;
     }
 
     return (
@@ -251,12 +250,14 @@ const TeamsPage: React.FC = () => {
                     />
                 </VStack>
             ) : (
-                <GenericError
+                <ErrorDisplay
+                    title="No teams found"
                     message={
                         debouncedSearchTerm || visibilityFilter !== 'all' || memberCountFilter !== 'all'
                             ? "No teams match your current filters. Try adjusting your search criteria."
                             : "No teams found. Why not create one?"
                     }
+                    compact
                 />
             )}
         </VStack>
