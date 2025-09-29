@@ -1,6 +1,7 @@
 import { supabase } from '../../supabase/client';
 import { authService } from '../../services/optimizedAuthService';
 import { generateUUID } from '../../utils/uuid';
+import { ensureUserProfile } from '../../utils/profileUtils';
 
 // Types for team operations
 export interface TeamInput {
@@ -234,6 +235,9 @@ export class TeamService {
 		const user = await authService.getCurrentUser();
 		if (!user) throw new Error('User not authenticated');
 
+		// Ensure user profile exists before creating team
+		await ensureUserProfile();
+
 		// Generate UUID for the team
 		const teamId = generateUUID();
 
@@ -305,6 +309,9 @@ export class TeamService {
 	static async joinTeam(teamId: string, accessCode?: string) {
 		const user = await authService.getCurrentUser();
 		if (!user) throw new Error('User not authenticated');
+
+		// Ensure user profile exists before joining team
+		await ensureUserProfile();
 
 		// Check if team has member limit and if it's reached, and validate access for private teams
 		const { data: teamData, error: teamError } = await supabase
