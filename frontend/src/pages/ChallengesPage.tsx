@@ -130,12 +130,13 @@ const ChallengesPage: React.FC = () => {
             {/* Enhanced Filter Bar */}
             <VStack spacing={4} maxW="4xl" w="full" mx="auto">
                 {/* Search bar with clear button */}
-                <HStack w="full">
+                <HStack w="full" flexWrap={{ base: 'wrap', md: 'nowrap' }} spacing={{ base: 2, md: 4 }}>
                     <Input
-                        placeholder="Search challenges (e.g., 'Marathon Prep', 'running', '5K')"
+                        placeholder="Search challenges..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         flex="1"
+                        minW={{ base: "200px", md: "auto" }}
                         title="Press Escape to clear search, Ctrl+K to clear all filters"
                     />
                     {searchTerm && (
@@ -144,52 +145,59 @@ const ChallengesPage: React.FC = () => {
                             variant="ghost"
                             onClick={clearSearch}
                             title="Clear search (Esc)"
+                            minW="fit-content"
                         >
                             Clear
                         </Button>
                     )}
                 </HStack>
 
-                {/* Filter dropdowns */}
-                <HStack w="full" spacing={4}>
-                    <Box flex="1">
-                        <Select
-                            placeholder="All Activity Types"
-                            value={activityTypeFilter}
-                            onChange={(e) => setActivityTypeFilter(e.target.value)}
-                        >
-                            {activityTypes.map(type => (
-                                <option key={type} value={type}>
-                                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                                </option>
-                            ))}
-                        </Select>
-                    </Box>
+                {/* Filter dropdowns - Stack on mobile */}
+                <VStack w="full" spacing={{ base: 3, md: 4 }}>
+                    <HStack w="full" spacing={{ base: 2, md: 4 }} flexWrap={{ base: 'wrap', md: 'nowrap' }}>
+                        <Box flex="1" minW={{ base: "140px", md: "auto" }}>
+                            <Select
+                                placeholder="All Activity Types"
+                                value={activityTypeFilter}
+                                onChange={(e) => setActivityTypeFilter(e.target.value)}
+                                size={{ base: "md", md: "md" }}
+                            >
+                                {activityTypes.map(type => (
+                                    <option key={type} value={type}>
+                                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                                    </option>
+                                ))}
+                            </Select>
+                        </Box>
 
-                    <Box flex="1">
-                        <Select
-                            placeholder="All Challenge Types"
-                            value={challengeTypeFilter}
-                            onChange={(e) => setChallengeTypeFilter(e.target.value)}
-                        >
-                            <option value="individual">Individual</option>
-                            <option value="team">Team</option>
-                        </Select>
-                    </Box>
+                        <Box flex="1" minW={{ base: "140px", md: "auto" }}>
+                            <Select
+                                placeholder="All Challenge Types"
+                                value={challengeTypeFilter}
+                                onChange={(e) => setChallengeTypeFilter(e.target.value)}
+                                size={{ base: "md", md: "md" }}
+                            >
+                                <option value="individual">Individual</option>
+                                <option value="team">Team</option>
+                            </Select>
+                        </Box>
 
-                    {/* Clear All Filters button */}
-                    {hasActiveFilters && (
-                        <Button
-                            colorScheme="orange"
-                            variant="outline"
-                            onClick={clearAllFilters}
-                            minW="fit-content"
-                            title="Clear all filters (Ctrl+K)"
-                        >
-                            Clear All Filters
-                        </Button>
-                    )}
-                </HStack>
+                        {/* Clear All Filters button */}
+                        {hasActiveFilters && (
+                            <Button
+                                colorScheme="orange"
+                                variant="outline"
+                                onClick={clearAllFilters}
+                                minW="fit-content"
+                                title="Clear all filters (Ctrl+K)"
+                                size={{ base: "md", md: "md" }}
+                                w={{ base: "full", md: "auto" }}
+                            >
+                                Clear All Filters
+                            </Button>
+                        )}
+                    </HStack>
+                </VStack>
 
                 {/* Results count and active filters indicator */}
                 <HStack w="full" justify="space-between" align="center">
@@ -222,7 +230,10 @@ const ChallengesPage: React.FC = () => {
             </VStack>
 
             {/* Challenges Grid with Loading States */}
-            <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }} gap={6}>
+            <Grid 
+                templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)', xl: 'repeat(4, 1fr)' }} 
+                gap={{ base: 4, md: 6 }}
+            >
                 {isFetching ? (
                     // Show skeleton loading cards
                     <ChallengeSkeletonGrid count={itemsPerPage} />

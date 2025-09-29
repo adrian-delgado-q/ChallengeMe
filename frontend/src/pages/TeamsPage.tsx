@@ -21,7 +21,7 @@ interface TeamCardProps {
 
 const TeamCard: React.FC<TeamCardProps> = ({ team, onSelect }) => (
     <Card
-        p={6}
+        p={{ base: 4, md: 6 }}
         h="full"
         display="flex"
         flexDirection="column"
@@ -178,10 +178,10 @@ const TeamsPage: React.FC = () => {
                 {/* Search bar */}
                 <HStack w="full">
                     <Input
-                        placeholder="Search teams by name or description..."
+                        placeholder="Search teams..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        size="lg"
+                        size={{ base: "md", md: "lg" }}
                         bg="white"
                         borderColor="gray.200"
                         _focus={{ borderColor: 'orange.400', boxShadow: '0 0 0 1px orange.400' }}
@@ -189,7 +189,8 @@ const TeamsPage: React.FC = () => {
                 </HStack>
 
                 {/* Filter Controls */}
-                <HStack spacing={4} w="full" flexWrap="wrap">
+                <VStack spacing={{ base: 3, md: 4 }} w="full">
+                    <HStack spacing={{ base: 2, md: 4 }} w="full" flexWrap="wrap" justify="space-between">
                     {/* Visibility Filter */}
                     <Box minW="120px">
                         <Text fontSize="sm" fontWeight="medium" mb={1}>Visibility</Text>
@@ -225,7 +226,8 @@ const TeamsPage: React.FC = () => {
                             {isFetching ? 'Loading...' : `${totalCount} team${totalCount !== 1 ? 's' : ''} found`}
                         </Text>
                     </Box>
-                </HStack>
+                    </HStack>
+                </VStack>
             </VStack>
 
             {/* Teams Grid with Loading States */}
@@ -233,7 +235,7 @@ const TeamsPage: React.FC = () => {
                 <TeamSkeletonGrid count={itemsPerPage} />
             ) : teams.length > 0 ? (
                 <VStack spacing={8} align="stretch">
-                    <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={6}>
+                    <Grid templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={{ base: 4, md: 6 }}>
                         {teams.map(team => (
                             <TeamCard key={team.id} team={team} onSelect={() => navigate(`/teams/${team.id}`)} />
                         ))}
