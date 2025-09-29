@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Box, Grid, Heading, Text, VStack, Button, Flex, HStack,
-    Spinner, Center, Alert, AlertIcon, Avatar, Badge, Tag, Icon
+    Spinner, Center, Avatar, Badge, Tag, Icon, Alert, AlertIcon
 } from '@chakra-ui/react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '../components/common/Card';
@@ -11,6 +11,7 @@ import { useUser } from '../contexts/AuthContext';
 import { TeamService } from '../graphql/services';
 import { useNotifications } from '../utils/notifications';
 import { useAsyncState } from '../hooks/useAsyncState';
+import { AccessCodeModal } from '../components/teams/AccessCodeModal';
 
 const TeamDashboardPage: React.FC = () => {
     const { id: teamId } = useParams<{ id: string }>();
@@ -19,12 +20,20 @@ const TeamDashboardPage: React.FC = () => {
     const notifications = useNotifications();
     const { isLoading: isJoining, execute: executeJoin } = useAsyncState();
     const { isLoading: isLeaving, execute: executeLeave } = useAsyncState();
+    const [isAccessCodeModalOpen, setIsAccessCodeModalOpen] = useState(false);
 
     const { team, loading: teamLoading, error: teamError, refetch } = useTeamDetails(teamId || '');
 
     const handleJoinTeam = async () => {
-        if (!teamId) return;
+        if (!teamId || !team) return;
 
+        if (!team.isPublic) {
+            // Private team - show access code modal
+            setIsAccessCodeModalOpen(true);
+            return;
+        }
+
+        // Public team - join directly
         const result = await executeJoin(async () => {
             await TeamService.joinTeam(teamId);
             return true;
@@ -35,6 +44,23 @@ const TeamDashboardPage: React.FC = () => {
             refetch(); // Refresh team data to show updated member list
         }
     };
+
+    const handleAccessCodeSubmit = async (accessCode: string) => {
+        if (!teamId) return;
+
+        const result = await executeJoin(async () => {
+            await TeamService.joinTeam(teamId, accessCode);
+            return true;
+        });
+
+        if (result) {
+            notifications.success('Success!', 'You have successfully joined the private team.');
+            setIsAccessCodeModalOpen(false);
+            refetch(); // Refresh team data to show updated member list
+        }
+    };
+
+
 
     const handleLeaveTeam = async () => {
         if (!teamId) return;
@@ -95,7 +121,7 @@ const TeamDashboardPage: React.FC = () => {
                     </HStack>
                 </Box>
                 <HStack spacing={3}>
-                    {!isTeamMember && !isTeamCreator && team.isPublic && (
+                    {!isTeamMember && !isTeamCreator && (
                         <Button
                             colorScheme="orange"
                             size="md"
@@ -104,7 +130,12 @@ const TeamDashboardPage: React.FC = () => {
                             loadingText="Joining..."
                             isDisabled={team.maxMembers && team.memberCount >= team.maxMembers}
                         >
-                            {team.maxMembers && team.memberCount >= team.maxMembers ? 'Team Full' : 'Join Team'}
+                            {team.maxMembers && team.memberCount >= team.maxMembers 
+                                ? 'Team Full' 
+                                : team.isPublic 
+                                    ? 'Join Team' 
+                                    : 'Join Private Team'
+                            }
                         </Button>
                     )}
                     {isTeamCreator && (
@@ -237,6 +268,15 @@ const TeamDashboardPage: React.FC = () => {
                     </Card>
                 </VStack>
             </Grid>
+
+            <AccessCodeModal
+                isOpen={isAccessCodeModalOpen}
+                onClose={() => setIsAccessCodeModalOpen(false)}
+                onSubmit={handleAccessCodeSubmit}
+                isLoading={isJoining}
+                teamName={team.name}
+            />
+
         </VStack>
     );
 };

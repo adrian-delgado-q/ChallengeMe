@@ -1745,6 +1745,7 @@ export const TeamScalarFieldEnum = {
   description: 'description',
   avatarUrl: 'avatarUrl',
   isPublic: 'isPublic',
+  accessCode: 'accessCode',
   createdAt: 'createdAt',
   expiresAt: 'expiresAt',
   maxMembers: 'maxMembers',
