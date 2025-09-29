@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     Button,
     FormControl,
@@ -7,28 +7,22 @@ import {
     Textarea,
     VStack,
     HStack,
-    Switch,
+    Checkbox,
     FormHelperText,
     Avatar,
     Box,
     Text,
-    Checkbox,
-    CheckboxGroup,
-    SimpleGrid,
     IconButton,
     Flex
 } from '@chakra-ui/react';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { TeamService } from '../../graphql/services';
+import { ActivityTypeService } from '../../graphql/services/activityTypeService';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ValidationUtils, CommonValidationSchemas } from '../../utils/validation';
-
-// Available sports/activity types matching the platform
-const SPORTS_TYPES = [
-    "Running", "Walking", "Cycling", "Swimming", "Stair Climbing",
-    "Strength Training", "Yoga", "Hiking", "Rowing", "Meditation"
-];
+import { ActivityTypeSelector } from '../challenges/ActivityTypeSelector';
+import type { ActivityType } from '../../types';
 
 interface TeamFormProps {
     onSubmit: (team: any) => void;
@@ -47,13 +41,20 @@ export const TeamForm: React.FC<TeamFormProps> = ({
     hideButtons = false,
     onLoadingChange
 }) => {
+    // State for activity types
+    const [activityTypes, setActivityTypes] = useState<ActivityType[]>([]);
+    const [isLoadingActivityTypes, setIsLoadingActivityTypes] = useState(true);
+    const [selectedActivityTypeIds, setSelectedActivityTypeIds] = useState<string[]>(
+        initialData?.activityTypeIds || []
+    );
+
     const [formData, setFormData] = useState({
         name: initialData?.name || '',
         description: initialData?.description || '',
         avatarUrl: initialData?.avatarUrl || '',
         isPublic: initialData?.isPublic ?? true,
         maxMembers: initialData?.maxMembers || '',
-        sportsTypes: initialData?.sportsTypes || []
+        accessCode: initialData?.accessCode || ''
     });
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string>(initialData?.avatarUrl || '');
@@ -66,6 +67,28 @@ export const TeamForm: React.FC<TeamFormProps> = ({
         showErrorNotifications: !hideButtons, // Only show notifications for standalone usage
         errorContext: 'Team form submission'
     });
+
+    // Load activity types on component mount
+    useEffect(() => {
+        const loadActivityTypes = async () => {
+            try {
+                const types = await ActivityTypeService.getActivityTypes();
+                setActivityTypes(types);
+            } catch (error) {
+                console.error('Failed to load activity types:', error);
+                notifications.error('Failed to load activity types');
+            } finally {
+                setIsLoadingActivityTypes(false);
+            }
+        };
+
+        loadActivityTypes();
+    }, []);
+
+    // Handle activity type selection change
+    const handleActivityTypeChange = (selectedIds: string[]) => {
+        setSelectedActivityTypeIds(selectedIds);
+    };
 
     const handleInputChange = (field: string, value: any) => {
         setFormData(prev => ({
@@ -151,6 +174,18 @@ export const TeamForm: React.FC<TeamFormProps> = ({
             }
         }
 
+        // Validate access code for private teams
+        if (!formData.isPublic) {
+            if (!formData.accessCode || formData.accessCode.trim().length === 0) {
+                notifications.validationError('Access code is required for private teams');
+                return;
+            }
+            if (formData.accessCode.length < 3) {
+                notifications.validationError('Access code must be at least 3 characters long');
+                return;
+            }
+        }
+
         onLoadingChange?.(true);
 
         const result = await executeSubmit(async () => {
@@ -170,7 +205,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
                 ...formData,
                 avatarUrl: avatarUrl || undefined,
                 maxMembers: formData.maxMembers ? Number(formData.maxMembers) : undefined,
-                sportsTypes: formData.sportsTypes.length > 0 ? formData.sportsTypes : undefined
+                activityTypeIds: selectedActivityTypeIds.length > 0 ? selectedActivityTypeIds : undefined
             };
 
             if (isEditing && initialData?.id) {
@@ -291,55 +326,58 @@ export const TeamForm: React.FC<TeamFormProps> = ({
                     </FormHelperText>
                 </FormControl>
 
-                {/* Sports Types */}
+                {/* Privacy Settings */}
                 <FormControl>
-                    <FormLabel>Sports & Activities (Optional)</FormLabel>
+                    <FormLabel>Privacy</FormLabel>
+                    <Checkbox
+                        isChecked={!formData.isPublic}
+                        onChange={(e) => setFormData({ ...formData, isPublic: !e.target.checked })}
+                        isDisabled={isSubmitting}
+                    >
+                        Private Team
+                    </Checkbox>
+                    <FormHelperText>
+                        Private teams require an access code for others to join
+                    </FormHelperText>
+                </FormControl>
+
+                {/* Access Code for Private Teams */}
+                {!formData.isPublic && (
+                    <FormControl isRequired>
+                        <FormLabel>Access Code</FormLabel>
+                        <Input
+                            type="password"
+                            value={formData.accessCode}
+                            onChange={(e) => setFormData({ ...formData, accessCode: e.target.value })}
+                            placeholder="Enter access code for private team"
+                            minLength={3}
+                            isDisabled={isSubmitting}
+                        />
+                        <FormHelperText>
+                            Minimum 3 characters. Share this code with people you want to invite.
+                        </FormHelperText>
+                    </FormControl>
+                )}
+
+                {/* Activity Types */}
+                <FormControl>
+                    <FormLabel>Activities & Interests (Optional)</FormLabel>
                     <Text fontSize="sm" color="gray.600" mb={3}>
                         Select the types of activities your team focuses on:
                     </Text>
-                    <CheckboxGroup
-                        value={formData.sportsTypes}
-                        onChange={(values) => handleInputChange('sportsTypes', values)}
-                    >
-                        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={2}>
-                            {SPORTS_TYPES.map((sport) => (
-                                <Checkbox
-                                    key={sport}
-                                    value={sport}
-                                    colorScheme="orange"
-                                    isDisabled={isSubmitting}
-                                >
-                                    {sport}
-                                </Checkbox>
-                            ))}
-                        </SimpleGrid>
-                    </CheckboxGroup>
+                    <ActivityTypeSelector
+                        activityTypes={activityTypes}
+                        selectedActivityTypeIds={selectedActivityTypeIds}
+                        onSelectionChange={handleActivityTypeChange}
+                        isLoading={isLoadingActivityTypes}
+                        isDisabled={isSubmitting}
+                    />
                     <FormHelperText>
                         This helps other users find teams that match their interests
                     </FormHelperText>
                 </FormControl>
 
-                {/* Privacy Setting */}
-                <FormControl>
-                    <HStack justify="space-between">
-                        <Box>
-                            <FormLabel mb={1}>Team Visibility</FormLabel>
-                            <Text fontSize="sm" color="gray.600">
-                                {formData.isPublic
-                                    ? 'Anyone can find and join your team'
-                                    : 'Team is private and requires invitation'
-                                }
-                            </Text>
-                        </Box>
-                        <Switch
-                            isChecked={formData.isPublic}
-                            onChange={(e) => handleInputChange('isPublic', e.target.checked)}
-                            colorScheme="orange"
-                            size="lg"
-                            isDisabled={isSubmitting}
-                        />
-                    </HStack>
-                </FormControl>
+
 
                 {/* Form Actions */}
                 {!hideButtons && (

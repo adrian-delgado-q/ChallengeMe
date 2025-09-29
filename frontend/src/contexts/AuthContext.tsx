@@ -33,6 +33,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsLoading(false);
     }).catch((error) => {
       console.error('Auth session error:', error);
+      // If there's an invalid refresh token, clear the session
+      if (error.message?.includes('Invalid Refresh Token') || error.message?.includes('Refresh Token')) {
+        console.log('Clearing invalid session');
+        setSession(null);
+        setUser(null);
+        supabase.auth.signOut();
+      }
       setIsLoading(false);
     });
 

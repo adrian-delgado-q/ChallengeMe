@@ -8,7 +8,8 @@ export interface TeamInput {
     avatarUrl?: string;
     isPublic?: boolean;
     maxMembers?: number;
-    sportsTypes?: string[];
+    activityTypeIds?: string[];
+    accessCode?: string; // Optional access code for private teams
 }
 
 export interface TeamMembershipInput {
@@ -252,7 +253,8 @@ export class TeamService {
                 avatarUrl: teamData.avatarUrl || null,
                 isPublic: teamData.isPublic ?? true,
                 maxMembers: teamData.maxMembers || null,
-                sportsTypes: teamData.sportsTypes || null
+                sportsTypes: teamData.activityTypeIds || null, // Store activity type IDs in sportsTypes column for now
+                accessCode: teamData.accessCode || null // Optional access code for private teams
             })
             .select()
             .single();
@@ -308,18 +310,31 @@ export class TeamService {
     }
 
     // Join a team
-    static async joinTeam(teamId: string) {
+    static async joinTeam(teamId: string, accessCode?: string) {
         const user = await getCurrentUser();
         if (!user) throw new Error('User not authenticated');
 
-        // Check if team has member limit and if it's reached
+        // Check if team has member limit and if it's reached, and validate access for private teams
         const { data: teamData, error: teamError } = await supabase
             .from('Team')
-            .select('maxMembers')
+            .select('maxMembers, isPublic, accessCode')
             .eq('id', teamId)
             .single();
 
         if (teamError) throw new Error(teamError.message);
+
+        // Validate access for private teams
+        if (!teamData?.isPublic) {
+            if (!teamData.accessCode) {
+                throw new Error('This private team cannot be joined');
+            }
+            if (!accessCode) {
+                throw new Error('Access code is required to join this private team');
+            }
+            if (accessCode !== teamData.accessCode) {
+                throw new Error('Invalid access code');
+            }
+        }
 
         if (teamData?.maxMembers) {
             // Count current members

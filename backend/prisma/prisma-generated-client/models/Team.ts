@@ -42,6 +42,7 @@ export type TeamMinAggregateOutputType = {
   description: string | null
   avatarUrl: string | null
   isPublic: boolean | null
+  accessCode: string | null
   createdAt: Date | null
   expiresAt: Date | null
   maxMembers: number | null
@@ -55,6 +56,7 @@ export type TeamMaxAggregateOutputType = {
   description: string | null
   avatarUrl: string | null
   isPublic: boolean | null
+  accessCode: string | null
   createdAt: Date | null
   expiresAt: Date | null
   maxMembers: number | null
@@ -68,6 +70,7 @@ export type TeamCountAggregateOutputType = {
   description: number
   avatarUrl: number
   isPublic: number
+  accessCode: number
   createdAt: number
   expiresAt: number
   maxMembers: number
@@ -94,6 +97,7 @@ export type TeamMinAggregateInputType = {
   description?: true
   avatarUrl?: true
   isPublic?: true
+  accessCode?: true
   createdAt?: true
   expiresAt?: true
   maxMembers?: true
@@ -107,6 +111,7 @@ export type TeamMaxAggregateInputType = {
   description?: true
   avatarUrl?: true
   isPublic?: true
+  accessCode?: true
   createdAt?: true
   expiresAt?: true
   maxMembers?: true
@@ -120,6 +125,7 @@ export type TeamCountAggregateInputType = {
   description?: true
   avatarUrl?: true
   isPublic?: true
+  accessCode?: true
   createdAt?: true
   expiresAt?: true
   maxMembers?: true
@@ -221,6 +227,7 @@ export type TeamGroupByOutputType = {
   description: string | null
   avatarUrl: string | null
   isPublic: boolean
+  accessCode: string | null
   createdAt: Date
   expiresAt: Date | null
   maxMembers: number | null
@@ -258,6 +265,7 @@ export type TeamWhereInput = {
   description?: Prisma.StringNullableFilter<"Team"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"Team"> | string | null
   isPublic?: Prisma.BoolFilter<"Team"> | boolean
+  accessCode?: Prisma.StringNullableFilter<"Team"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Team"> | Date | string
   expiresAt?: Prisma.DateTimeNullableFilter<"Team"> | Date | string | null
   maxMembers?: Prisma.IntNullableFilter<"Team"> | number | null
@@ -275,6 +283,7 @@ export type TeamOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  accessCode?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   maxMembers?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -295,6 +304,7 @@ export type TeamWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Team"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"Team"> | string | null
   isPublic?: Prisma.BoolFilter<"Team"> | boolean
+  accessCode?: Prisma.StringNullableFilter<"Team"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Team"> | Date | string
   expiresAt?: Prisma.DateTimeNullableFilter<"Team"> | Date | string | null
   maxMembers?: Prisma.IntNullableFilter<"Team"> | number | null
@@ -312,6 +322,7 @@ export type TeamOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  accessCode?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   maxMembers?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -334,6 +345,7 @@ export type TeamScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Team"> | string | null
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"Team"> | string | null
   isPublic?: Prisma.BoolWithAggregatesFilter<"Team"> | boolean
+  accessCode?: Prisma.StringNullableWithAggregatesFilter<"Team"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Team"> | Date | string
   expiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Team"> | Date | string | null
   maxMembers?: Prisma.IntNullableWithAggregatesFilter<"Team"> | number | null
@@ -347,6 +359,7 @@ export type TeamCreateInput = {
   description?: string | null
   avatarUrl?: string | null
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
@@ -364,6 +377,7 @@ export type TeamUncheckedCreateInput = {
   description?: string | null
   avatarUrl?: string | null
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
@@ -379,6 +393,7 @@ export type TeamUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -396,6 +411,7 @@ export type TeamUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -412,6 +428,7 @@ export type TeamCreateManyInput = {
   description?: string | null
   avatarUrl?: string | null
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
@@ -425,6 +442,7 @@ export type TeamUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -439,6 +457,7 @@ export type TeamUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -471,6 +490,7 @@ export type TeamCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  accessCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   maxMembers?: Prisma.SortOrder
@@ -490,6 +510,7 @@ export type TeamMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  accessCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   maxMembers?: Prisma.SortOrder
@@ -503,6 +524,7 @@ export type TeamMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  accessCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   maxMembers?: Prisma.SortOrder
@@ -635,6 +657,7 @@ export type TeamCreateWithoutCreatorInput = {
   description?: string | null
   avatarUrl?: string | null
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
@@ -650,6 +673,7 @@ export type TeamUncheckedCreateWithoutCreatorInput = {
   description?: string | null
   avatarUrl?: string | null
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
@@ -695,6 +719,7 @@ export type TeamScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Team"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"Team"> | string | null
   isPublic?: Prisma.BoolFilter<"Team"> | boolean
+  accessCode?: Prisma.StringNullableFilter<"Team"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Team"> | Date | string
   expiresAt?: Prisma.DateTimeNullableFilter<"Team"> | Date | string | null
   maxMembers?: Prisma.IntNullableFilter<"Team"> | number | null
@@ -708,6 +733,7 @@ export type TeamCreateWithoutTeamMembershipsInput = {
   description?: string | null
   avatarUrl?: string | null
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
@@ -724,6 +750,7 @@ export type TeamUncheckedCreateWithoutTeamMembershipsInput = {
   description?: string | null
   avatarUrl?: string | null
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
@@ -754,6 +781,7 @@ export type TeamUpdateWithoutTeamMembershipsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -770,6 +798,7 @@ export type TeamUncheckedUpdateWithoutTeamMembershipsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -784,6 +813,7 @@ export type TeamCreateWithoutChallengeEntriesInput = {
   description?: string | null
   avatarUrl?: string | null
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
@@ -800,6 +830,7 @@ export type TeamUncheckedCreateWithoutChallengeEntriesInput = {
   description?: string | null
   avatarUrl?: string | null
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
@@ -830,6 +861,7 @@ export type TeamUpdateWithoutChallengeEntriesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -846,6 +878,7 @@ export type TeamUncheckedUpdateWithoutChallengeEntriesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -860,6 +893,7 @@ export type TeamCreateManyCreatorInput = {
   description?: string | null
   avatarUrl?: string | null
   isPublic?: boolean
+  accessCode?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
   maxMembers?: number | null
@@ -873,6 +907,7 @@ export type TeamUpdateWithoutCreatorInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -888,6 +923,7 @@ export type TeamUncheckedUpdateWithoutCreatorInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -903,6 +939,7 @@ export type TeamUncheckedUpdateManyWithoutCreatorInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -957,6 +994,7 @@ export type TeamSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   description?: boolean
   avatarUrl?: boolean
   isPublic?: boolean
+  accessCode?: boolean
   createdAt?: boolean
   expiresAt?: boolean
   maxMembers?: boolean
@@ -975,6 +1013,7 @@ export type TeamSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   description?: boolean
   avatarUrl?: boolean
   isPublic?: boolean
+  accessCode?: boolean
   createdAt?: boolean
   expiresAt?: boolean
   maxMembers?: boolean
@@ -990,6 +1029,7 @@ export type TeamSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   description?: boolean
   avatarUrl?: boolean
   isPublic?: boolean
+  accessCode?: boolean
   createdAt?: boolean
   expiresAt?: boolean
   maxMembers?: boolean
@@ -1005,6 +1045,7 @@ export type TeamSelectScalar = {
   description?: boolean
   avatarUrl?: boolean
   isPublic?: boolean
+  accessCode?: boolean
   createdAt?: boolean
   expiresAt?: boolean
   maxMembers?: boolean
@@ -1012,7 +1053,7 @@ export type TeamSelectScalar = {
   sportsTypes?: boolean
 }
 
-export type TeamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "name" | "description" | "avatarUrl" | "isPublic" | "createdAt" | "expiresAt" | "maxMembers" | "memberCount" | "sportsTypes", ExtArgs["result"]["team"]>
+export type TeamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "name" | "description" | "avatarUrl" | "isPublic" | "accessCode" | "createdAt" | "expiresAt" | "maxMembers" | "memberCount" | "sportsTypes", ExtArgs["result"]["team"]>
 export type TeamInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   challengeEntries?: boolean | Prisma.Team$challengeEntriesArgs<ExtArgs>
   creator?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
@@ -1040,6 +1081,7 @@ export type $TeamPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     description: string | null
     avatarUrl: string | null
     isPublic: boolean
+    accessCode: string | null
     createdAt: Date
     expiresAt: Date | null
     maxMembers: number | null
@@ -1477,6 +1519,7 @@ export interface TeamFieldRefs {
   readonly description: Prisma.FieldRef<"Team", 'String'>
   readonly avatarUrl: Prisma.FieldRef<"Team", 'String'>
   readonly isPublic: Prisma.FieldRef<"Team", 'Boolean'>
+  readonly accessCode: Prisma.FieldRef<"Team", 'String'>
   readonly createdAt: Prisma.FieldRef<"Team", 'DateTime'>
   readonly expiresAt: Prisma.FieldRef<"Team", 'DateTime'>
   readonly maxMembers: Prisma.FieldRef<"Team", 'Int'>

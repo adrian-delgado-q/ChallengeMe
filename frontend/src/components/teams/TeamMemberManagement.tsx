@@ -76,7 +76,7 @@ export const TeamMemberManagement: React.FC<TeamMemberManagementProps> = ({
         } finally {
             setLoading(false);
         }
-    }, [teamId, notifications]);
+    }, [teamId]); // Remove notifications from dependencies to prevent infinite loop
 
     useEffect(() => {
         fetchMembers();

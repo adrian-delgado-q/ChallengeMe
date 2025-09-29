@@ -75,6 +75,7 @@ export interface Team {
   isPublic: boolean;
   maxMembers?: number;
   sportsTypes?: string[];
+  accessCode?: string;
   createdAt?: string;
   expiresAt?: string;
   creator?: {
