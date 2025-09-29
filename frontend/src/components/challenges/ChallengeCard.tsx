@@ -343,7 +343,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
               navigate(`/challenges/${challenge.id}/manage`);
             }}
           >
-            Manage Challenge
+            Manage
           </Button>
         ) : (
           // Show join/leave buttons for other users

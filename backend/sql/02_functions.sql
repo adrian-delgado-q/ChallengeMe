@@ -7,7 +7,7 @@
 -- -----------------------------------------------------------------------------
 -- Generates a unique, random username for new users.
 CREATE
-OR REPLACE FUNCTION public.generate_random_username() RETURNS TEXT LANGUAGE plpgsql AS $$ DECLARE adjectives TEXT [] := ARRAY ['Swift', 'Strong', 'Fast', 'Fit', 'Bold', 'Active', 'Power', 'Elite', 'Peak', 'Max', 'Pro', 'Iron', 'Steel', 'Mighty', 'Super', 'Ultra', 'Dynamic'];
+OR REPLACE FUNCTION public.generate_random_username() RETURNS TEXT LANGUAGE plpgsql AS $ $ DECLARE adjectives TEXT [] := ARRAY ['Swift', 'Strong', 'Fast', 'Fit', 'Bold', 'Active', 'Power', 'Elite', 'Peak', 'Max', 'Pro', 'Iron', 'Steel', 'Mighty', 'Super', 'Ultra', 'Dynamic'];
 
 nouns TEXT [] := ARRAY ['Runner', 'Lifter', 'Fighter', 'Athlete', 'Champion', 'Warrior', 'Hero', 'Legend', 'Master', 'Crusher', 'Force', 'Machine', 'Ninja', 'Striker', 'Titan'];
 
@@ -31,11 +31,11 @@ END LOOP;
 
 END;
 
-$$;
+$ $;
 
 -- Generates a random avatar URL using the DiceBear API.
 CREATE
-OR REPLACE FUNCTION public.get_random_avatar_url() RETURNS TEXT LANGUAGE plpgsql AS $$ DECLARE styles TEXT [] := ARRAY ['avataaars', 'bottts', 'fun-emoji', 'icons', 'identicon', 'initials', 'lorelei', 'micah', 'miniavs', 'open-peeps', 'personas', 'pixel-art'];
+OR REPLACE FUNCTION public.get_random_avatar_url() RETURNS TEXT LANGUAGE plpgsql AS $ $ DECLARE styles TEXT [] := ARRAY ['avataaars', 'bottts', 'fun-emoji', 'icons', 'identicon', 'initials', 'lorelei', 'micah', 'miniavs', 'open-peeps', 'personas', 'pixel-art'];
 
 random_style TEXT;
 
@@ -49,21 +49,23 @@ RETURN 'https://api.dicebear.com/7.x/' || random_style || '/svg?seed=' || random
 
 END;
 
-$$;
+$ $;
 
 -- Section 2: Trigger Functions
 -- Functions executed by triggers in response to database events.
 -- -----------------------------------------------------------------------------
 -- Creates a user profile upon new user signup in `auth.users`.
 CREATE
-OR REPLACE FUNCTION public.handle_new_user() RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN
+OR REPLACE FUNCTION public.handle_new_user() RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $ $ BEGIN
 INSERT INTO
-    public.profiles (id, username, avatar_url)
+    public.profiles (id, username, avatar_url, created_at, updated_at)
 VALUES
     (
         NEW.id,
         public.generate_random_username(),
-        public.get_random_avatar_url()
+        public.get_random_avatar_url(),
+        NOW(),
+        NOW()
     ) ON CONFLICT (id) DO NOTHING;
 
 RETURN NEW;
@@ -77,12 +79,12 @@ RETURN NEW;
 
 END;
 
-$$;
+$ $;
 
 -- Updates the memberCount on the Team table.
 -- Uses increment/decrement for better performance than COUNT(*).
 CREATE
-OR REPLACE FUNCTION public.update_team_member_count() RETURNS TRIGGER LANGUAGE plpgsql AS $$ BEGIN IF (TG_OP = 'INSERT') THEN
+OR REPLACE FUNCTION public.update_team_member_count() RETURNS TRIGGER LANGUAGE plpgsql AS $ $ BEGIN IF (TG_OP = 'INSERT') THEN
 UPDATE
     "public"."Team"
 SET
@@ -108,11 +110,11 @@ RETURN NULL;
 
 END;
 
-$$;
+$ $;
 
 -- Updates the participantCount on the Challenge table.
 CREATE
-OR REPLACE FUNCTION public.update_challenge_participant_count() RETURNS TRIGGER LANGUAGE plpgsql AS $$ BEGIN IF (TG_OP = 'INSERT') THEN
+OR REPLACE FUNCTION public.update_challenge_participant_count() RETURNS TRIGGER LANGUAGE plpgsql AS $ $ BEGIN IF (TG_OP = 'INSERT') THEN
 UPDATE
     "public"."Challenge"
 SET
@@ -138,7 +140,7 @@ RETURN NULL;
 
 END;
 
-$$;
+$ $;
 
 -- =============================================================================
 -- Section 5: Activity Validation Functions
@@ -146,7 +148,7 @@ $$;
 -- -----------------------------------------------------------------------------
 -- Validates that an activity's activity type is supported by its challenge.
 CREATE
-OR REPLACE FUNCTION public.validate_activity_challenge_agreement() RETURNS TRIGGER LANGUAGE plpgsql AS $$ BEGIN -- Check if this is an INSERT or UPDATE with activityTypeId change
+OR REPLACE FUNCTION public.validate_activity_challenge_agreement() RETURNS TRIGGER LANGUAGE plpgsql AS $ $ BEGIN -- Check if this is an INSERT or UPDATE with activityTypeId change
 IF (
     TG_OP = 'INSERT'
     OR (
@@ -185,4 +187,4 @@ RETURN NEW;
 
 END;
 
-$$;
+$ $;

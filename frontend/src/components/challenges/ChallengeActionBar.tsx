@@ -205,15 +205,7 @@ export const ChallengeActionBar: React.FC<ChallengeActionBarProps> = ({
                 <Badge colorScheme="purple" variant="subtle" px={3} py={1} borderRadius="full">
                     <Text fontSize="xs" fontWeight="medium">Creator</Text>
                 </Badge>
-                <Button
-                    colorScheme="blue"
-                    leftIcon={<ManageIcon />}
-                    onClick={() => navigate(`/challenges/${challenge.id}/edit`)}
-                    size="sm"
-                    variant="outline"
-                >
-                    Manage Challenge
-                </Button>
+
                 <Button
                     colorScheme="orange"
                     leftIcon={<LogActivityIcon />}
