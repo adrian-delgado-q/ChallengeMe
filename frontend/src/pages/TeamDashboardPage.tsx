@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import {
-  Box,
-  Grid,
-  Heading,
-  Text,
-  VStack,
-  Button,
-  Flex,
-  HStack,
-  Spinner,
-  Center,
-  Avatar,
-  Badge,
-  Tag,
-  Icon,
-  Alert,
-  AlertIcon,
+	Box,
+	Grid,
+	Heading,
+	Text,
+	VStack,
+	Button,
+	Flex,
+	HStack,
+	Spinner,
+	Center,
+	Avatar,
+	Badge,
+	Tag,
+	Icon,
+	Alert,
+	AlertIcon,
 } from '@chakra-ui/react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '../components/common/Card';
@@ -28,273 +28,273 @@ import { useAsyncState } from '../hooks/useAsyncState';
 import { AccessCodeModal } from '../components/teams/AccessCodeModal';
 
 const TeamDashboardPage: React.FC = () => {
-  const { id: teamId } = useParams<{ id: string }>();
-  const { user } = useUser();
-  const navigate = useNavigate();
-  const notifications = useNotifications();
-  const { isLoading: isJoining, execute: executeJoin } = useAsyncState();
-  const { isLoading: isLeaving, execute: executeLeave } = useAsyncState();
-  const [isAccessCodeModalOpen, setIsAccessCodeModalOpen] = useState(false);
+	const { id: teamId } = useParams<{ id: string }>();
+	const { user } = useUser();
+	const navigate = useNavigate();
+	const notifications = useNotifications();
+	const { isLoading: isJoining, execute: executeJoin } = useAsyncState();
+	const { isLoading: isLeaving, execute: executeLeave } = useAsyncState();
+	const [isAccessCodeModalOpen, setIsAccessCodeModalOpen] = useState(false);
 
-  const { team, loading: teamLoading, error: teamError, refetch } = useTeamDetails(teamId || '');
+	const { team, loading: teamLoading, error: teamError, refetch } = useTeamDetails(teamId || '');
 
-  const handleJoinTeam = async () => {
-    if (!teamId || !team) return;
+	const handleJoinTeam = async () => {
+		if (!teamId || !team) return;
 
-    if (!team.isPublic) {
-      // Private team - show access code modal
-      setIsAccessCodeModalOpen(true);
-      return;
-    }
+		if (!team.isPublic) {
+			// Private team - show access code modal
+			setIsAccessCodeModalOpen(true);
+			return;
+		}
 
-    // Public team - join directly
-    const result = await executeJoin(async () => {
-      await TeamService.joinTeam(teamId);
-      return true;
-    });
+		// Public team - join directly
+		const result = await executeJoin(async () => {
+			await TeamService.joinTeam(teamId);
+			return true;
+		});
 
-    if (result) {
-      notifications.success('Success!', 'You have successfully joined the team.');
-      refetch(); // Refresh team data to show updated member list
-    }
-  };
+		if (result) {
+			notifications.success('Success!', 'You have successfully joined the team.');
+			refetch(); // Refresh team data to show updated member list
+		}
+	};
 
-  const handleAccessCodeSubmit = async (accessCode: string) => {
-    if (!teamId) return;
+	const handleAccessCodeSubmit = async (accessCode: string) => {
+		if (!teamId) return;
 
-    const result = await executeJoin(async () => {
-      await TeamService.joinTeam(teamId, accessCode);
-      return true;
-    });
+		const result = await executeJoin(async () => {
+			await TeamService.joinTeam(teamId, accessCode);
+			return true;
+		});
 
-    if (result) {
-      notifications.success('Success!', 'You have successfully joined the private team.');
-      setIsAccessCodeModalOpen(false);
-      refetch(); // Refresh team data to show updated member list
-    }
-  };
+		if (result) {
+			notifications.success('Success!', 'You have successfully joined the private team.');
+			setIsAccessCodeModalOpen(false);
+			refetch(); // Refresh team data to show updated member list
+		}
+	};
 
-  const handleLeaveTeam = async () => {
-    if (!teamId) return;
+	const handleLeaveTeam = async () => {
+		if (!teamId) return;
 
-    const result = await executeLeave(async () => {
-      await TeamService.leaveTeam(teamId);
-      return true;
-    });
+		const result = await executeLeave(async () => {
+			await TeamService.leaveTeam(teamId);
+			return true;
+		});
 
-    if (result) {
-      notifications.info('Left Team', 'You have left the team.');
-      refetch(); // Refresh team data to show updated member list
-    }
-  };
+		if (result) {
+			notifications.info('Left Team', 'You have left the team.');
+			refetch(); // Refresh team data to show updated member list
+		}
+	};
 
-  if (teamLoading) {
-    return (
-      <Center h="200px">
-        <Spinner size="xl" color="orange.500" />
-      </Center>
-    );
-  }
+	if (teamLoading) {
+		return (
+			<Center h="200px">
+				<Spinner size="xl" color="orange.500" />
+			</Center>
+		);
+	}
 
-  if (teamError || !team) {
-    return (
-      <Alert status="error">
-        <AlertIcon />
-        {teamError || 'Team not found'}
-      </Alert>
-    );
-  }
+	if (teamError || !team) {
+		return (
+			<Alert status="error">
+				<AlertIcon />
+				{teamError || 'Team not found'}
+			</Alert>
+		);
+	}
 
-  // Check if current user is a member of this team
-  const isTeamMember = team.memberList?.some((member: any) => member.userId === user?.id);
-  const isTeamCreator = team.creatorId === user?.id;
+	// Check if current user is a member of this team
+	const isTeamMember = team.memberList?.some((member: any) => member.userId === user?.id);
+	const isTeamCreator = team.creatorId === user?.id;
 
-  return (
-    <VStack spacing={8} align="stretch">
-      <Flex justify="space-between" align="center" wrap="wrap" gap={4}>
-        <Box>
-          <HStack spacing={4} align="center" mb={2}>
-            <Avatar size="lg" name={team.name} src={team.avatarUrl} />
-            <Box>
-              <HStack spacing={3} align="center">
-                <Heading as="h2" size="xl">
-                  {team.name}
-                </Heading>
-                <Tag size="md" colorScheme={team.isPublic ? 'green' : 'gray'}>
-                  {team.isPublic ? 'Public' : 'Private'}
-                </Tag>
-              </HStack>
-              <Text color="gray.600" mt={1}>
-                {team.description || 'Ready to take on challenges together!'}
-              </Text>
-            </Box>
-          </HStack>
-        </Box>
-        <HStack spacing={3}>
-          {!isTeamMember && !isTeamCreator && (
-            <Button
-              colorScheme="orange"
-              size="md"
-              onClick={handleJoinTeam}
-              isLoading={isJoining}
-              loadingText="Joining..."
-              isDisabled={team.maxMembers && team.memberCount >= team.maxMembers}
-            >
-              {team.maxMembers && team.memberCount >= team.maxMembers
-                ? 'Team Full'
-                : team.isPublic
-                  ? 'Join Team'
-                  : 'Join Private Team'}
-            </Button>
-          )}
-          {isTeamCreator && (
-            <Button variant="outline" size="md" onClick={() => navigate(`/teams/${teamId}/edit`)}>
-              Manage Team
-            </Button>
-          )}
-          {isTeamMember && !isTeamCreator && (
-            <Button
-              variant="outline"
-              colorScheme="red"
-              size="md"
-              onClick={handleLeaveTeam}
-              isLoading={isLeaving}
-              loadingText="Leaving..."
-            >
-              Leave Team
-            </Button>
-          )}
-        </HStack>
-      </Flex>
+	return (
+		<VStack spacing={8} align="stretch">
+			<Flex justify="space-between" align="center" wrap="wrap" gap={4}>
+				<Box>
+					<HStack spacing={4} align="center" mb={2}>
+						<Avatar size="lg" name={team.name} src={team.avatarUrl} />
+						<Box>
+							<HStack spacing={3} align="center">
+								<Heading as="h2" size="xl">
+									{team.name}
+								</Heading>
+								<Tag size="md" colorScheme={team.isPublic ? 'green' : 'gray'}>
+									{team.isPublic ? 'Public' : 'Private'}
+								</Tag>
+							</HStack>
+							<Text color="gray.600" mt={1}>
+								{team.description || 'Ready to take on challenges together!'}
+							</Text>
+						</Box>
+					</HStack>
+				</Box>
+				<HStack spacing={3}>
+					{!isTeamMember && !isTeamCreator && (
+						<Button
+							colorScheme="orange"
+							size="md"
+							onClick={handleJoinTeam}
+							isLoading={isJoining}
+							loadingText="Joining..."
+							isDisabled={team.maxMembers && team.memberCount >= team.maxMembers}
+						>
+							{team.maxMembers && team.memberCount >= team.maxMembers
+								? 'Team Full'
+								: team.isPublic
+									? 'Join Team'
+									: 'Join Private Team'}
+						</Button>
+					)}
+					{isTeamCreator && (
+						<Button variant="outline" size="md" onClick={() => navigate(`/teams/${teamId}/edit`)}>
+							Manage Team
+						</Button>
+					)}
+					{isTeamMember && !isTeamCreator && (
+						<Button
+							variant="outline"
+							colorScheme="red"
+							size="md"
+							onClick={handleLeaveTeam}
+							isLoading={isLeaving}
+							loadingText="Leaving..."
+						>
+							Leave Team
+						</Button>
+					)}
+				</HStack>
+			</Flex>
 
-      <Grid templateColumns={{ base: '1fr', lg: '1fr 2fr' }} gap={8} alignItems="start">
-        <VStack spacing={8} align="stretch">
-          {/* Team Details */}
-          <Card p={6}>
-            <Heading as="h3" size="md" mb={4}>
-              Team Details
-            </Heading>
-            <VStack spacing={3} align="stretch">
-              <HStack>
-                <Icon as={UserTeamIcon} w={6} h={6} color="blue.500" />
-                <Text>
-                  <Box as="span" fontWeight="bold">
-                    {team.memberCount || 0}
-                    {team.maxMembers ? `/${team.maxMembers}` : ''}
-                  </Box>{' '}
-                  Members
-                  {team.maxMembers && team.memberCount >= team.maxMembers && (
-                    <Tag size="sm" colorScheme="red" ml={2}>
-                      Full
-                    </Tag>
-                  )}
-                </Text>
-              </HStack>
-              <HStack>
-                <Icon as={CalendarIcon} w={6} h={6} color="red.500" />
-                <Text>
-                  Created:{' '}
-                  <Box as="span" fontWeight="bold">
-                    {team.createdAt ? new Date(team.createdAt).toLocaleDateString() : 'Unknown'}
-                  </Box>
-                </Text>
-              </HStack>
-              {team.creator && (
-                <HStack>
-                  <Avatar size="sm" src={team.creator.avatarUrl} name={team.creator.username} />
-                  <Text>
-                    Creator:{' '}
-                    <Box as="span" fontWeight="bold">
-                      {team.creator.username}
-                    </Box>
-                  </Text>
-                </HStack>
-              )}
-              {team.sportsTypes && team.sportsTypes.length > 0 && (
-                <VStack align="stretch" spacing={2}>
-                  <Text fontWeight="medium" fontSize="sm">
-                    Focus Areas:
-                  </Text>
-                  <HStack wrap="wrap" spacing={1}>
-                    {team.sportsTypes.map((sport: string) => (
-                      <Tag key={sport} size="sm" colorScheme="orange" variant="subtle">
-                        {sport}
-                      </Tag>
-                    ))}
-                  </HStack>
-                </VStack>
-              )}
-            </VStack>
-          </Card>
+			<Grid templateColumns={{ base: '1fr', lg: '1fr 2fr' }} gap={8} alignItems="start">
+				<VStack spacing={8} align="stretch">
+					{/* Team Details */}
+					<Card p={6}>
+						<Heading as="h3" size="md" mb={4}>
+							Team Details
+						</Heading>
+						<VStack spacing={3} align="stretch">
+							<HStack>
+								<Icon as={UserTeamIcon} w={6} h={6} color="blue.500" />
+								<Text>
+									<Box as="span" fontWeight="bold">
+										{team.memberCount || 0}
+										{team.maxMembers ? `/${team.maxMembers}` : ''}
+									</Box>{' '}
+									Members
+									{team.maxMembers && team.memberCount >= team.maxMembers && (
+										<Tag size="sm" colorScheme="red" ml={2}>
+											Full
+										</Tag>
+									)}
+								</Text>
+							</HStack>
+							<HStack>
+								<Icon as={CalendarIcon} w={6} h={6} color="red.500" />
+								<Text>
+									Created:{' '}
+									<Box as="span" fontWeight="bold">
+										{team.createdAt ? new Date(team.createdAt).toLocaleDateString() : 'Unknown'}
+									</Box>
+								</Text>
+							</HStack>
+							{team.creator && (
+								<HStack>
+									<Avatar size="sm" src={team.creator.avatarUrl} name={team.creator.username} />
+									<Text>
+										Creator:{' '}
+										<Box as="span" fontWeight="bold">
+											{team.creator.username}
+										</Box>
+									</Text>
+								</HStack>
+							)}
+							{team.sportsTypes && team.sportsTypes.length > 0 && (
+								<VStack align="stretch" spacing={2}>
+									<Text fontWeight="medium" fontSize="sm">
+										Focus Areas:
+									</Text>
+									<HStack wrap="wrap" spacing={1}>
+										{team.sportsTypes.map((sport: string) => (
+											<Tag key={sport} size="sm" colorScheme="orange" variant="subtle">
+												{sport}
+											</Tag>
+										))}
+									</HStack>
+								</VStack>
+							)}
+						</VStack>
+					</Card>
 
-          {/* Team Members */}
-          <Card p={6}>
-            <Heading as="h3" size="md" mb={4}>
-              Team Members
-            </Heading>
-            <VStack spacing={4} align="stretch">
-              {team.memberList && team.memberList.length > 0 ? (
-                team.memberList.map((member: any) => (
-                  <HStack key={member.id} spacing={4} justify="space-between">
-                    <HStack spacing={3}>
-                      <Avatar
-                        size="sm"
-                        src={member.user?.avatarUrl}
-                        name={member.user?.username || 'Unknown User'}
-                      />
-                      <Box>
-                        <Text fontWeight="semibold">{member.user?.username || 'Unknown User'}</Text>
-                        <Text fontSize="xs" color="gray.500">
-                          Joined {new Date(member.joinedAt).toLocaleDateString()}
-                        </Text>
-                      </Box>
-                    </HStack>
-                    <Badge colorScheme={member.role === 'ADMIN' ? 'purple' : 'gray'} size="sm">
-                      {member.role}
-                    </Badge>
-                  </HStack>
-                ))
-              ) : (
-                <Text color="gray.500" textAlign="center" py={4}>
-                  No members found
-                </Text>
-              )}
-            </VStack>
-          </Card>
-        </VStack>
+					{/* Team Members */}
+					<Card p={6}>
+						<Heading as="h3" size="md" mb={4}>
+							Team Members
+						</Heading>
+						<VStack spacing={4} align="stretch">
+							{team.memberList && team.memberList.length > 0 ? (
+								team.memberList.map((member: any) => (
+									<HStack key={member.id} spacing={4} justify="space-between">
+										<HStack spacing={3}>
+											<Avatar
+												size="sm"
+												src={member.user?.avatarUrl}
+												name={member.user?.username || 'Unknown User'}
+											/>
+											<Box>
+												<Text fontWeight="semibold">{member.user?.username || 'Unknown User'}</Text>
+												<Text fontSize="xs" color="gray.500">
+													Joined {new Date(member.joinedAt).toLocaleDateString()}
+												</Text>
+											</Box>
+										</HStack>
+										<Badge colorScheme={member.role === 'ADMIN' ? 'purple' : 'gray'} size="sm">
+											{member.role}
+										</Badge>
+									</HStack>
+								))
+							) : (
+								<Text color="gray.500" textAlign="center" py={4}>
+									No members found
+								</Text>
+							)}
+						</VStack>
+					</Card>
+				</VStack>
 
-        <VStack spacing={8} align="stretch">
-          {/* Team Challenges */}
-          <Card p={6}>
-            <Heading as="h3" size="md" mb={4}>
-              Team Challenges
-            </Heading>
-            <Text color="gray.500" textAlign="center" py={8}>
-              No active challenges yet. Join a team challenge to get started!
-            </Text>
-          </Card>
+				<VStack spacing={8} align="stretch">
+					{/* Team Challenges */}
+					<Card p={6}>
+						<Heading as="h3" size="md" mb={4}>
+							Team Challenges
+						</Heading>
+						<Text color="gray.500" textAlign="center" py={8}>
+							No active challenges yet. Join a team challenge to get started!
+						</Text>
+					</Card>
 
-          {/* Team Activity */}
-          <Card p={6}>
-            <Heading as="h3" size="md" mb={4}>
-              Recent Activity
-            </Heading>
-            <Text color="gray.500" textAlign="center" py={8}>
-              No recent activity. Start a challenge to see team updates here!
-            </Text>
-          </Card>
-        </VStack>
-      </Grid>
+					{/* Team Activity */}
+					<Card p={6}>
+						<Heading as="h3" size="md" mb={4}>
+							Recent Activity
+						</Heading>
+						<Text color="gray.500" textAlign="center" py={8}>
+							No recent activity. Start a challenge to see team updates here!
+						</Text>
+					</Card>
+				</VStack>
+			</Grid>
 
-      <AccessCodeModal
-        isOpen={isAccessCodeModalOpen}
-        onClose={() => setIsAccessCodeModalOpen(false)}
-        onSubmit={handleAccessCodeSubmit}
-        isLoading={isJoining}
-        teamName={team.name}
-      />
-    </VStack>
-  );
+			<AccessCodeModal
+				isOpen={isAccessCodeModalOpen}
+				onClose={() => setIsAccessCodeModalOpen(false)}
+				onSubmit={handleAccessCodeSubmit}
+				isLoading={isJoining}
+				teamName={team.name}
+			/>
+		</VStack>
+	);
 };
 
 export default TeamDashboardPage;

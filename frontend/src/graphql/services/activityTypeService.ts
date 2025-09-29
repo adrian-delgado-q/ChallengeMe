@@ -4,127 +4,127 @@ import type { ActivityType } from '../../types';
 // Activity Type data service with exponential backoff
 
 export class ActivityTypeService {
-  // Get all active activity types
-  static async getActivityTypes(): Promise<ActivityType[]> {
-    const { data: activityTypes, error } = await supabase
-      .from('ActivityType')
-      .select('id, name, category, unit, unitLabel, description, isActive, createdAt')
-      .eq('isActive', true)
-      .order('category')
-      .order('name');
+	// Get all active activity types
+	static async getActivityTypes(): Promise<ActivityType[]> {
+		const { data: activityTypes, error } = await supabase
+			.from('ActivityType')
+			.select('id, name, category, unit, unitLabel, description, isActive, createdAt')
+			.eq('isActive', true)
+			.order('category')
+			.order('name');
 
-    if (error) throw new Error(error.message);
+		if (error) throw new Error(error.message);
 
-    return (activityTypes || []).map((activityType: any) => ({
-      id: activityType.id,
-      name: activityType.name,
-      category: activityType.category,
-      unit: activityType.unit,
-      unitLabel: activityType.unitLabel,
-      description: activityType.description,
-      isActive: activityType.isActive,
-      createdAt: activityType.createdAt,
-    }));
-  }
+		return (activityTypes || []).map((activityType: any) => ({
+			id: activityType.id,
+			name: activityType.name,
+			category: activityType.category,
+			unit: activityType.unit,
+			unitLabel: activityType.unitLabel,
+			description: activityType.description,
+			isActive: activityType.isActive,
+			createdAt: activityType.createdAt,
+		}));
+	}
 
-  // Get activity types by category
-  static async getActivityTypesByCategory(): Promise<Record<string, ActivityType[]>> {
-    const activityTypes = await this.getActivityTypes();
+	// Get activity types by category
+	static async getActivityTypesByCategory(): Promise<Record<string, ActivityType[]>> {
+		const activityTypes = await this.getActivityTypes();
 
-    return activityTypes.reduce(
-      (acc, activityType) => {
-        if (!acc[activityType.category]) {
-          acc[activityType.category] = [];
-        }
-        acc[activityType.category].push(activityType);
-        return acc;
-      },
-      {} as Record<string, ActivityType[]>
-    );
-  }
+		return activityTypes.reduce(
+			(acc, activityType) => {
+				if (!acc[activityType.category]) {
+					acc[activityType.category] = [];
+				}
+				acc[activityType.category].push(activityType);
+				return acc;
+			},
+			{} as Record<string, ActivityType[]>
+		);
+	}
 
-  // Get a specific activity type by ID
-  static async getActivityType(id: string): Promise<ActivityType | null> {
-    const { data: activityType, error } = await supabase
-      .from('ActivityType')
-      .select('id, name, category, unit, unitLabel, description, isActive, createdAt')
-      .eq('id', id)
-      .single();
+	// Get a specific activity type by ID
+	static async getActivityType(id: string): Promise<ActivityType | null> {
+		const { data: activityType, error } = await supabase
+			.from('ActivityType')
+			.select('id, name, category, unit, unitLabel, description, isActive, createdAt')
+			.eq('id', id)
+			.single();
 
-    if (error) {
-      if (error.code === 'PGRST116') return null; // Not found
-      throw new Error(error.message);
-    }
+		if (error) {
+			if (error.code === 'PGRST116') return null; // Not found
+			throw new Error(error.message);
+		}
 
-    return {
-      id: activityType.id,
-      name: activityType.name,
-      category: activityType.category,
-      unit: activityType.unit,
-      unitLabel: activityType.unitLabel,
-      description: activityType.description,
-      isActive: activityType.isActive,
-      createdAt: activityType.createdAt,
-    };
-  }
+		return {
+			id: activityType.id,
+			name: activityType.name,
+			category: activityType.category,
+			unit: activityType.unit,
+			unitLabel: activityType.unitLabel,
+			description: activityType.description,
+			isActive: activityType.isActive,
+			createdAt: activityType.createdAt,
+		};
+	}
 
-  // Get activity types by IDs
-  static async getActivityTypesByIds(ids: string[]): Promise<ActivityType[]> {
-    if (ids.length === 0) return [];
+	// Get activity types by IDs
+	static async getActivityTypesByIds(ids: string[]): Promise<ActivityType[]> {
+		if (ids.length === 0) return [];
 
-    const { data: activityTypes, error } = await supabase
-      .from('ActivityType')
-      .select('id, name, category, unit, unitLabel, description, isActive, createdAt')
-      .in('id', ids);
+		const { data: activityTypes, error } = await supabase
+			.from('ActivityType')
+			.select('id, name, category, unit, unitLabel, description, isActive, createdAt')
+			.in('id', ids);
 
-    if (error) throw new Error(error.message);
+		if (error) throw new Error(error.message);
 
-    return (activityTypes || []).map((activityType: any) => ({
-      id: activityType.id,
-      name: activityType.name,
-      category: activityType.category,
-      unit: activityType.unit,
-      unitLabel: activityType.unitLabel,
-      description: activityType.description,
-      isActive: activityType.isActive,
-      createdAt: activityType.createdAt,
-    }));
-  }
+		return (activityTypes || []).map((activityType: any) => ({
+			id: activityType.id,
+			name: activityType.name,
+			category: activityType.category,
+			unit: activityType.unit,
+			unitLabel: activityType.unitLabel,
+			description: activityType.description,
+			isActive: activityType.isActive,
+			createdAt: activityType.createdAt,
+		}));
+	}
 
-  // Get activity types supported by a specific challenge
-  static async getActivityTypesForChallenge(challengeId: string): Promise<ActivityType[]> {
-    // First get all activity types supported by the challenge
-    const { data: challengeActivityTypes, error: challengeError } = await supabase
-      .from('ChallengeActivityType')
-      .select('activityTypeId')
-      .eq('challengeId', challengeId);
+	// Get activity types supported by a specific challenge
+	static async getActivityTypesForChallenge(challengeId: string): Promise<ActivityType[]> {
+		// First get all activity types supported by the challenge
+		const { data: challengeActivityTypes, error: challengeError } = await supabase
+			.from('ChallengeActivityType')
+			.select('activityTypeId')
+			.eq('challengeId', challengeId);
 
-    if (challengeError) throw new Error(challengeError.message);
+		if (challengeError) throw new Error(challengeError.message);
 
-    if (!challengeActivityTypes || challengeActivityTypes.length === 0) return [];
+		if (!challengeActivityTypes || challengeActivityTypes.length === 0) return [];
 
-    const activityTypeIds = challengeActivityTypes.map(cat => cat.activityTypeId);
+		const activityTypeIds = challengeActivityTypes.map(cat => cat.activityTypeId);
 
-    // Then get the full activity type details
-    const { data: activityTypes, error } = await supabase
-      .from('ActivityType')
-      .select('id, name, category, unit, unitLabel, description, isActive, createdAt')
-      .in('id', activityTypeIds)
-      .eq('isActive', true)
-      .order('category')
-      .order('name');
+		// Then get the full activity type details
+		const { data: activityTypes, error } = await supabase
+			.from('ActivityType')
+			.select('id, name, category, unit, unitLabel, description, isActive, createdAt')
+			.in('id', activityTypeIds)
+			.eq('isActive', true)
+			.order('category')
+			.order('name');
 
-    if (error) throw new Error(error.message);
+		if (error) throw new Error(error.message);
 
-    return (activityTypes || []).map((activityType: any) => ({
-      id: activityType.id,
-      name: activityType.name,
-      category: activityType.category,
-      unit: activityType.unit,
-      unitLabel: activityType.unitLabel,
-      description: activityType.description,
-      isActive: activityType.isActive,
-      createdAt: activityType.createdAt,
-    }));
-  }
+		return (activityTypes || []).map((activityType: any) => ({
+			id: activityType.id,
+			name: activityType.name,
+			category: activityType.category,
+			unit: activityType.unit,
+			unitLabel: activityType.unitLabel,
+			description: activityType.description,
+			isActive: activityType.isActive,
+			createdAt: activityType.createdAt,
+		}));
+	}
 }

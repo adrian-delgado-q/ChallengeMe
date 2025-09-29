@@ -6,11 +6,11 @@ import './index.css';
 import App from './App.tsx';
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <ChakraProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </ChakraProvider>
-  </StrictMode>
+	<StrictMode>
+		<ChakraProvider>
+			<AuthProvider>
+				<App />
+			</AuthProvider>
+		</ChakraProvider>
+	</StrictMode>
 );

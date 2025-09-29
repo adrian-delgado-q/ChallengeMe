@@ -9,339 +9,339 @@ export type TeamRole = 'ADMIN' | 'MEMBER';
 
 // --- Activity Types ---
 export interface ActivityType {
-  id: string;
-  name: string;
-  category: string;
-  unit: string;
-  unitLabel: string;
-  description?: string;
-  isActive: boolean;
-  createdAt: string;
+	id: string;
+	name: string;
+	category: string;
+	unit: string;
+	unitLabel: string;
+	description?: string;
+	isActive: boolean;
+	createdAt: string;
 }
 
 // --- Challenge & Team Structures ---
 export interface Milestone {
-  name: string;
-  value: number;
-  activityTypeId: string; // ActivityType ID this milestone is for
-  activityType?: ActivityType; // Populated ActivityType data
+	name: string;
+	value: number;
+	activityTypeId: string; // ActivityType ID this milestone is for
+	activityType?: ActivityType; // Populated ActivityType data
 }
 
 export interface RuleSet {
-  minDuration?: number;
-  minRepetitions?: number;
+	minDuration?: number;
+	minRepetitions?: number;
 }
 
 export interface ChallengeRulesProps {
-  rules: RuleSet;
+	rules: RuleSet;
 }
 
 export type ChallengeStatus = 'ACTIVE' | 'CLOSED' | 'CANCELLED';
 
 export interface Challenge {
-  id: string; // Changed from number to string to match UUID
-  creatorId?: string;
-  title: string;
-  description?: string;
-  type?: string; // Activity type (running, cycling, etc.) - kept for backward compatibility
-  activityTypes?: string[]; // Array of supported activity types for mixed challenges
-  challengeType: ChallengeType;
-  status?: ChallengeStatus; // Challenge status for management
-  participants?: number; // Count of participants
-  maxParticipants?: number;
-  maxTeamSize?: number; // For TEAM challenges: max members per team
-  startDate?: string;
-  endDate: string;
-  progress?: number; // UI calculated progress
-  isPublic: boolean;
-  accessCode?: string; // Optional access code for private challenges
-  milestones?: Milestone[];
-  rules?: RuleSet;
-  createdAt?: string;
-  creator?: {
-    id: string;
-    username: string;
-    avatarUrl?: string;
-  };
+	id: string; // Changed from number to string to match UUID
+	creatorId?: string;
+	title: string;
+	description?: string;
+	type?: string; // Activity type (running, cycling, etc.) - kept for backward compatibility
+	activityTypes?: string[]; // Array of supported activity types for mixed challenges
+	challengeType: ChallengeType;
+	status?: ChallengeStatus; // Challenge status for management
+	participants?: number; // Count of participants
+	maxParticipants?: number;
+	maxTeamSize?: number; // For TEAM challenges: max members per team
+	startDate?: string;
+	endDate: string;
+	progress?: number; // UI calculated progress
+	isPublic: boolean;
+	accessCode?: string; // Optional access code for private challenges
+	milestones?: Milestone[];
+	rules?: RuleSet;
+	createdAt?: string;
+	creator?: {
+		id: string;
+		username: string;
+		avatarUrl?: string;
+	};
 }
 
 export interface Team {
-  id: string;
-  creatorId?: string;
-  name: string;
-  description?: string;
-  avatarUrl?: string;
-  memberCount: number;
-  isPublic: boolean;
-  maxMembers?: number;
-  sportsTypes?: string[];
-  accessCode?: string;
-  createdAt?: string;
-  expiresAt?: string;
-  creator?: {
-    id: string;
-    username: string;
-    avatarUrl?: string;
-  };
-  members?: TeamMembership[];
+	id: string;
+	creatorId?: string;
+	name: string;
+	description?: string;
+	avatarUrl?: string;
+	memberCount: number;
+	isPublic: boolean;
+	maxMembers?: number;
+	sportsTypes?: string[];
+	accessCode?: string;
+	createdAt?: string;
+	expiresAt?: string;
+	creator?: {
+		id: string;
+		username: string;
+		avatarUrl?: string;
+	};
+	members?: TeamMembership[];
 }
 
 // --- User & Membership ---
 export interface User {
-  id: string;
-  name?: string;
-  username?: string;
-  email?: string;
-  avatar?: string;
-  avatarUrl?: string;
-  bio?: string;
+	id: string;
+	name?: string;
+	username?: string;
+	email?: string;
+	avatar?: string;
+	avatarUrl?: string;
+	bio?: string;
 }
 
 export interface Profile {
-  id: string;
-  username?: string;
-  avatarUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-  createdTeamsCount?: number;
-  createdChallengesCount?: number;
-  teamMembershipsCount?: number;
-  activitiesCount?: number;
+	id: string;
+	username?: string;
+	avatarUrl?: string;
+	createdAt: string;
+	updatedAt: string;
+	createdTeamsCount?: number;
+	createdChallengesCount?: number;
+	teamMembershipsCount?: number;
+	activitiesCount?: number;
 }
 
 export interface TeamMembership {
-  id: string;
-  userId: string;
-  teamId: string;
-  role: TeamRole;
-  joinedAt: string;
-  user?: {
-    id: string;
-    username?: string;
-    avatarUrl?: string;
-  };
+	id: string;
+	userId: string;
+	teamId: string;
+	role: TeamRole;
+	joinedAt: string;
+	user?: {
+		id: string;
+		username?: string;
+		avatarUrl?: string;
+	};
 }
 
 export interface ChallengeParticipant {
-  id: string;
-  challengeId: string;
-  userId?: string;
-  teamId?: string;
-  joinedAt: string;
-  user?: {
-    id: string;
-    username?: string;
-    avatarUrl?: string;
-  };
-  team?: {
-    id: string;
-    name: string;
-    avatarUrl?: string;
-  };
+	id: string;
+	challengeId: string;
+	userId?: string;
+	teamId?: string;
+	joinedAt: string;
+	user?: {
+		id: string;
+		username?: string;
+		avatarUrl?: string;
+	};
+	team?: {
+		id: string;
+		name: string;
+		avatarUrl?: string;
+	};
 }
 
 // --- Activity & Social ---
 export interface Activity {
-  id: string;
-  participantId?: string; // Reference to ChallengeParticipant
-  userId?: string; // For backward compatibility
-  user?: {
-    id: string;
-    username?: string;
-    avatarUrl?: string;
-  };
-  challengeId?: string; // For backward compatibility
-  challenge?: {
-    id: string;
-    title: string;
-  };
-  team?: {
-    id: string;
-    name: string;
-  };
-  activityTypeId: string; // Reference to ActivityType
-  activityType?: ActivityType; // Populated ActivityType data
-  value: number; // Single value based on activity type's unit
-  action?: string; // e.g., "logged a 10km run" - for UI display
-  notes?: string;
-  date: string; // Date of the activity
-  timestamp?: string; // ISO 8601 timestamp - for backward compatibility
-  uploadedAt: string; // When it was uploaded
-  time?: string; // User-friendly time, e.g., "2h ago"
-  avatar?: string; // For backward compatibility
-  isEditable?: boolean; // Whether the activity can be edited (within 48h)
+	id: string;
+	participantId?: string; // Reference to ChallengeParticipant
+	userId?: string; // For backward compatibility
+	user?: {
+		id: string;
+		username?: string;
+		avatarUrl?: string;
+	};
+	challengeId?: string; // For backward compatibility
+	challenge?: {
+		id: string;
+		title: string;
+	};
+	team?: {
+		id: string;
+		name: string;
+	};
+	activityTypeId: string; // Reference to ActivityType
+	activityType?: ActivityType; // Populated ActivityType data
+	value: number; // Single value based on activity type's unit
+	action?: string; // e.g., "logged a 10km run" - for UI display
+	notes?: string;
+	date: string; // Date of the activity
+	timestamp?: string; // ISO 8601 timestamp - for backward compatibility
+	uploadedAt: string; // When it was uploaded
+	time?: string; // User-friendly time, e.g., "2h ago"
+	avatar?: string; // For backward compatibility
+	isEditable?: boolean; // Whether the activity can be edited (within 48h)
 }
 
 export interface ActivityInput {
-  participantId: string;
-  activityTypeId: string; // Reference to ActivityType
-  value: number; // Single value based on activity type's unit
-  notes?: string;
-  date: string;
+	participantId: string;
+	activityTypeId: string; // Reference to ActivityType
+	value: number; // Single value based on activity type's unit
+	notes?: string;
+	date: string;
 }
 
 export interface Post {
-  id: string;
-  participantId: string;
-  content?: string;
-  imageUrl?: string;
-  createdAt: string;
-  user?: {
-    id: string;
-    username?: string;
-    avatarUrl?: string;
-  };
-  challenge?: {
-    id: string;
-    title: string;
-  };
-  comments: Comment[];
+	id: string;
+	participantId: string;
+	content?: string;
+	imageUrl?: string;
+	createdAt: string;
+	user?: {
+		id: string;
+		username?: string;
+		avatarUrl?: string;
+	};
+	challenge?: {
+		id: string;
+		title: string;
+	};
+	comments: Comment[];
 }
 
 export interface Comment {
-  id: string;
-  postId: string;
-  authorId: string;
-  content: string;
-  createdAt: string;
-  author: {
-    id: string;
-    username?: string;
-    avatarUrl?: string;
-  };
-  // Legacy format for backward compatibility
-  user?: {
-    name: string;
-    avatar: string;
-  };
-  timestamp?: string;
+	id: string;
+	postId: string;
+	authorId: string;
+	content: string;
+	createdAt: string;
+	author: {
+		id: string;
+		username?: string;
+		avatarUrl?: string;
+	};
+	// Legacy format for backward compatibility
+	user?: {
+		name: string;
+		avatar: string;
+	};
+	timestamp?: string;
 }
 
 // --- New Discussion System Types ---
 export interface DiscussionPost {
-  id: string;
-  challengeId: string;
-  authorId: string;
-  content: string;
-  isPinned: boolean;
-  isDeleted: boolean;
-  createdAt: string;
-  updatedAt: string;
-  replyCount: number;
-  lastReplyAt?: string;
-  author: {
-    id: string;
-    username?: string;
-    avatarUrl?: string;
-  };
-  replies?: DiscussionReply[];
-  canEdit?: boolean;
-  canDelete?: boolean;
-  canPin?: boolean;
+	id: string;
+	challengeId: string;
+	authorId: string;
+	content: string;
+	isPinned: boolean;
+	isDeleted: boolean;
+	createdAt: string;
+	updatedAt: string;
+	replyCount: number;
+	lastReplyAt?: string;
+	author: {
+		id: string;
+		username?: string;
+		avatarUrl?: string;
+	};
+	replies?: DiscussionReply[];
+	canEdit?: boolean;
+	canDelete?: boolean;
+	canPin?: boolean;
 }
 
 export interface DiscussionReply {
-  id: string;
-  postId: string;
-  parentId?: string;
-  authorId: string;
-  content: string;
-  isDeleted: boolean;
-  createdAt: string;
-  updatedAt: string;
-  author: {
-    id: string;
-    username?: string;
-    avatarUrl?: string;
-  };
-  replies?: DiscussionReply[];
-  canEdit?: boolean;
-  canDelete?: boolean;
+	id: string;
+	postId: string;
+	parentId?: string;
+	authorId: string;
+	content: string;
+	isDeleted: boolean;
+	createdAt: string;
+	updatedAt: string;
+	author: {
+		id: string;
+		username?: string;
+		avatarUrl?: string;
+	};
+	replies?: DiscussionReply[];
+	canEdit?: boolean;
+	canDelete?: boolean;
 }
 
 export interface DiscussionModerator {
-  id: string;
-  challengeId: string;
-  userId: string;
-  role: ModeratorRole;
-  grantedAt: string;
-  grantedById: string;
-  user: {
-    id: string;
-    username?: string;
-    avatarUrl?: string;
-  };
+	id: string;
+	challengeId: string;
+	userId: string;
+	role: ModeratorRole;
+	grantedAt: string;
+	grantedById: string;
+	user: {
+		id: string;
+		username?: string;
+		avatarUrl?: string;
+	};
 }
 
 export interface DiscussionBan {
-  id: string;
-  challengeId: string;
-  userId: string;
-  reason?: string;
-  bannedAt: string;
-  expiresAt?: string;
-  bannedById: string;
-  isActive: boolean;
-  user: {
-    id: string;
-    username?: string;
-    avatarUrl?: string;
-  };
+	id: string;
+	challengeId: string;
+	userId: string;
+	reason?: string;
+	bannedAt: string;
+	expiresAt?: string;
+	bannedById: string;
+	isActive: boolean;
+	user: {
+		id: string;
+		username?: string;
+		avatarUrl?: string;
+	};
 }
 
 export interface DiscussionPermissions {
-  canPost: boolean;
-  canReply: boolean;
-  canEdit: boolean;
-  canDelete: boolean;
-  canPin: boolean;
-  canModerate: boolean;
-  canBan: boolean;
-  isBanned: boolean;
-  banReason?: string;
-  banExpiresAt?: string;
+	canPost: boolean;
+	canReply: boolean;
+	canEdit: boolean;
+	canDelete: boolean;
+	canPin: boolean;
+	canModerate: boolean;
+	canBan: boolean;
+	isBanned: boolean;
+	banReason?: string;
+	banExpiresAt?: string;
 }
 
 export type ModeratorRole = 'MODERATOR' | 'ADMIN';
 
 // --- UI & Other ---
 export interface LeaderboardEntry {
-  rank: number;
-  id?: string; // User ID
-  name: string;
-  value: string;
-  avatar: string;
+	rank: number;
+	id?: string; // User ID
+	name: string;
+	value: string;
+	avatar: string;
 }
 
 // --- GraphQL Query Responses ---
 export interface TeamsQueryResponse {
-  teamCollection: {
-    edges: {
-      node: Team;
-    }[];
-  };
+	teamCollection: {
+		edges: {
+			node: Team;
+		}[];
+	};
 }
 
 export interface ChallengesQueryResponse {
-  challengeCollection: {
-    edges: {
-      node: Challenge;
-    }[];
-  };
+	challengeCollection: {
+		edges: {
+			node: Challenge;
+		}[];
+	};
 }
 
 export interface ActivitiesQueryResponse {
-  activityCollection: {
-    edges: {
-      node: Activity;
-    }[];
-  };
+	activityCollection: {
+		edges: {
+			node: Activity;
+		}[];
+	};
 }
 
 export interface PostsQueryResponse {
-  postCollection: {
-    edges: {
-      node: Post;
-    }[];
-  };
+	postCollection: {
+		edges: {
+			node: Post;
+		}[];
+	};
 }

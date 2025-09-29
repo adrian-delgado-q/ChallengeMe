@@ -8,204 +8,204 @@
 import { useState, useCallback } from 'react';
 import { authService } from '../services/optimizedAuthService';
 import type {
-  SignInCredentials,
-  SignUpCredentials,
-  AuthResult,
+	SignInCredentials,
+	SignUpCredentials,
+	AuthResult,
 } from '../services/optimizedAuthService';
 
 export interface UseAuthReturn {
-  // State
-  isLoading: boolean;
-  error: string | null;
+	// State
+	isLoading: boolean;
+	error: string | null;
 
-  // Actions
-  signIn: (credentials: SignInCredentials) => Promise<AuthResult>;
-  signUp: (credentials: SignUpCredentials) => Promise<AuthResult>;
-  signInWithGoogle: () => Promise<AuthResult>;
-  signInWithGithub: () => Promise<AuthResult>;
-  signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<boolean>;
-  updatePassword: (password: string) => Promise<boolean>;
-  refreshSession: () => Promise<AuthResult>;
-  getCurrentUser: () => Promise<AuthResult>;
+	// Actions
+	signIn: (credentials: SignInCredentials) => Promise<AuthResult>;
+	signUp: (credentials: SignUpCredentials) => Promise<AuthResult>;
+	signInWithGoogle: () => Promise<AuthResult>;
+	signInWithGithub: () => Promise<AuthResult>;
+	signOut: () => Promise<void>;
+	resetPassword: (email: string) => Promise<boolean>;
+	updatePassword: (password: string) => Promise<boolean>;
+	refreshSession: () => Promise<AuthResult>;
+	getCurrentUser: () => Promise<AuthResult>;
 
-  // Utilities
-  clearError: () => void;
+	// Utilities
+	clearError: () => void;
 }
 
 /**
  * Enhanced auth hook with singleton pattern and exponential backoff
  */
 export function useAuth(): UseAuthReturn {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
-  const clearError = useCallback(() => {
-    setError(null);
-  }, []);
+	const clearError = useCallback(() => {
+		setError(null);
+	}, []);
 
-  const handleAuthOperation = useCallback(
-    async <T>(operation: () => Promise<T>, successMessage?: string): Promise<T> => {
-      setIsLoading(true);
-      setError(null);
+	const handleAuthOperation = useCallback(
+		async <T>(operation: () => Promise<T>, successMessage?: string): Promise<T> => {
+			setIsLoading(true);
+			setError(null);
 
-      try {
-        const result = await operation();
+			try {
+				const result = await operation();
 
-        if (successMessage) {
-          console.log(successMessage);
-        }
+				if (successMessage) {
+					console.log(successMessage);
+				}
 
-        return result;
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
-        setError(errorMessage);
-        console.error('Auth operation failed:', errorMessage);
-        throw err;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    []
-  );
+				return result;
+			} catch (err) {
+				const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+				setError(errorMessage);
+				console.error('Auth operation failed:', errorMessage);
+				throw err;
+			} finally {
+				setIsLoading(false);
+			}
+		},
+		[]
+	);
 
-  const signIn = useCallback(
-    async (credentials: SignInCredentials): Promise<AuthResult> => {
-      return handleAuthOperation(async () => {
-        const result = await authService.signIn(credentials);
+	const signIn = useCallback(
+		async (credentials: SignInCredentials): Promise<AuthResult> => {
+			return handleAuthOperation(async () => {
+				const result = await authService.signIn(credentials);
 
-        if (result.error) {
-          throw new Error(result.error.message);
-        }
+				if (result.error) {
+					throw new Error(result.error.message);
+				}
 
-        return result;
-      }, 'User signed in successfully');
-    },
-    [handleAuthOperation]
-  );
+				return result;
+			}, 'User signed in successfully');
+		},
+		[handleAuthOperation]
+	);
 
-  const signUp = useCallback(
-    async (credentials: SignUpCredentials): Promise<AuthResult> => {
-      return handleAuthOperation(async () => {
-        const result = await authService.signUp(credentials);
+	const signUp = useCallback(
+		async (credentials: SignUpCredentials): Promise<AuthResult> => {
+			return handleAuthOperation(async () => {
+				const result = await authService.signUp(credentials);
 
-        if (result.error) {
-          throw new Error(result.error.message);
-        }
+				if (result.error) {
+					throw new Error(result.error.message);
+				}
 
-        return result;
-      }, 'User signed up successfully');
-    },
-    [handleAuthOperation]
-  );
+				return result;
+			}, 'User signed up successfully');
+		},
+		[handleAuthOperation]
+	);
 
-  const signInWithGoogle = useCallback(async (): Promise<AuthResult> => {
-    return handleAuthOperation(async () => {
-      const result = await authService.signInWithOAuth('google');
+	const signInWithGoogle = useCallback(async (): Promise<AuthResult> => {
+		return handleAuthOperation(async () => {
+			const result = await authService.signInWithOAuth('google');
 
-      if (result.error) {
-        throw new Error(result.error.message);
-      }
+			if (result.error) {
+				throw new Error(result.error.message);
+			}
 
-      return result;
-    }, 'Initiating Google sign in');
-  }, [handleAuthOperation]);
+			return result;
+		}, 'Initiating Google sign in');
+	}, [handleAuthOperation]);
 
-  const signInWithGithub = useCallback(async (): Promise<AuthResult> => {
-    return handleAuthOperation(async () => {
-      const result = await authService.signInWithOAuth('github');
+	const signInWithGithub = useCallback(async (): Promise<AuthResult> => {
+		return handleAuthOperation(async () => {
+			const result = await authService.signInWithOAuth('github');
 
-      if (result.error) {
-        throw new Error(result.error.message);
-      }
+			if (result.error) {
+				throw new Error(result.error.message);
+			}
 
-      return result;
-    }, 'Initiating GitHub sign in');
-  }, [handleAuthOperation]);
+			return result;
+		}, 'Initiating GitHub sign in');
+	}, [handleAuthOperation]);
 
-  const signOut = useCallback(async (): Promise<void> => {
-    return handleAuthOperation(async () => {
-      const { error } = await authService.signOut();
+	const signOut = useCallback(async (): Promise<void> => {
+		return handleAuthOperation(async () => {
+			const { error } = await authService.signOut();
 
-      if (error) {
-        throw new Error(error.message);
-      }
-    }, 'User signed out successfully');
-  }, [handleAuthOperation]);
+			if (error) {
+				throw new Error(error.message);
+			}
+		}, 'User signed out successfully');
+	}, [handleAuthOperation]);
 
-  const resetPassword = useCallback(
-    async (email: string): Promise<boolean> => {
-      return handleAuthOperation(async () => {
-        const { error } = await authService.resetPassword(email);
+	const resetPassword = useCallback(
+		async (email: string): Promise<boolean> => {
+			return handleAuthOperation(async () => {
+				const { error } = await authService.resetPassword(email);
 
-        if (error) {
-          throw new Error(error.message);
-        }
+				if (error) {
+					throw new Error(error.message);
+				}
 
-        return true;
-      }, 'Password reset email sent');
-    },
-    [handleAuthOperation]
-  );
+				return true;
+			}, 'Password reset email sent');
+		},
+		[handleAuthOperation]
+	);
 
-  const updatePassword = useCallback(
-    async (password: string): Promise<boolean> => {
-      return handleAuthOperation(async () => {
-        const result = await authService.updatePassword(password);
+	const updatePassword = useCallback(
+		async (password: string): Promise<boolean> => {
+			return handleAuthOperation(async () => {
+				const result = await authService.updatePassword(password);
 
-        if (result.error) {
-          throw new Error(result.error.message);
-        }
+				if (result.error) {
+					throw new Error(result.error.message);
+				}
 
-        return true;
-      }, 'Password updated successfully');
-    },
-    [handleAuthOperation]
-  );
+				return true;
+			}, 'Password updated successfully');
+		},
+		[handleAuthOperation]
+	);
 
-  const refreshSession = useCallback(async (): Promise<AuthResult> => {
-    return handleAuthOperation(async () => {
-      const result = await authService.refreshSession();
+	const refreshSession = useCallback(async (): Promise<AuthResult> => {
+		return handleAuthOperation(async () => {
+			const result = await authService.refreshSession();
 
-      if (result.error) {
-        throw new Error(result.error.message);
-      }
+			if (result.error) {
+				throw new Error(result.error.message);
+			}
 
-      return result;
-    }, 'Session refreshed successfully');
-  }, [handleAuthOperation]);
+			return result;
+		}, 'Session refreshed successfully');
+	}, [handleAuthOperation]);
 
-  const getCurrentUser = useCallback(async (): Promise<AuthResult> => {
-    return handleAuthOperation(async () => {
-      const result = await authService.getSession();
+	const getCurrentUser = useCallback(async (): Promise<AuthResult> => {
+		return handleAuthOperation(async () => {
+			const result = await authService.getSession();
 
-      if (result.error) {
-        throw new Error(result.error.message);
-      }
+			if (result.error) {
+				throw new Error(result.error.message);
+			}
 
-      return result;
-    });
-  }, [handleAuthOperation]);
+			return result;
+		});
+	}, [handleAuthOperation]);
 
-  return {
-    // State
-    isLoading,
-    error,
+	return {
+		// State
+		isLoading,
+		error,
 
-    // Actions
-    signIn,
-    signUp,
-    signInWithGoogle,
-    signInWithGithub,
-    signOut,
-    resetPassword,
-    updatePassword,
-    refreshSession,
-    getCurrentUser,
+		// Actions
+		signIn,
+		signUp,
+		signInWithGoogle,
+		signInWithGithub,
+		signOut,
+		resetPassword,
+		updatePassword,
+		refreshSession,
+		getCurrentUser,
 
-    // Utilities
-    clearError,
-  };
+		// Utilities
+		clearError,
+	};
 }
 
 export default useAuth;
