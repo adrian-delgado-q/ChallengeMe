@@ -130,10 +130,10 @@ const TeamDashboardPage: React.FC = () => {
                             loadingText="Joining..."
                             isDisabled={team.maxMembers && team.memberCount >= team.maxMembers}
                         >
-                            {team.maxMembers && team.memberCount >= team.maxMembers 
-                                ? 'Team Full' 
-                                : team.isPublic 
-                                    ? 'Join Team' 
+                            {team.maxMembers && team.memberCount >= team.maxMembers
+                                ? 'Team Full'
+                                : team.isPublic
+                                    ? 'Join Team'
                                     : 'Join Private Team'
                             }
                         </Button>
