@@ -309,7 +309,7 @@ const MyChallengesPage: React.FC = () => {
                                     size="sm"
                                     onClick={() => navigate(`/challenges/${challenge.id}/manage`)}
                                 >
-                                    Manage Challenge
+                                    Manage
                                 </Button>
                             </VStack>
                         </Card>

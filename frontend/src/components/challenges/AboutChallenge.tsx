@@ -6,11 +6,15 @@ import {
     HStack,
     Text,
     Icon,
-    Badge
+    Badge,
+    Button
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { SettingsIcon } from '@chakra-ui/icons';
 import { Card } from '../common/Card';
 import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../common/Icons';
 import { ActivityTypeService } from '../../graphql/services/activityTypeService';
+import { useUser } from '../../contexts/AuthContext';
 import type { Challenge, ActivityType } from '../../types';
 
 interface AboutChallengeProps {
@@ -18,8 +22,12 @@ interface AboutChallengeProps {
 }
 
 export const AboutChallenge: React.FC<AboutChallengeProps> = ({ challenge }) => {
+    const navigate = useNavigate();
+    const { user } = useUser();
     const [activityTypeDetails, setActivityTypeDetails] = useState<ActivityType[]>([]);
     const [isLoadingActivityTypes, setIsLoadingActivityTypes] = useState(false);
+
+    const isCurrentUserCreator = user?.id === challenge.creatorId;
 
     // Load activity type details when component mounts
     useEffect(() => {
@@ -54,9 +62,22 @@ export const AboutChallenge: React.FC<AboutChallengeProps> = ({ challenge }) => 
     return (
         <Card p={6}>
             <VStack spacing={4} align="stretch">
-                <Heading as="h3" size="md" color="gray.800">
-                    About This Challenge
-                </Heading>
+                <HStack justify="space-between" align="center">
+                    <Heading as="h3" size="md" color="gray.800">
+                        About This Challenge
+                    </Heading>
+                    {isCurrentUserCreator && (
+                        <Button
+                            size="sm"
+                            colorScheme="blue"
+                            variant="outline"
+                            leftIcon={<SettingsIcon />}
+                            onClick={() => navigate(`/challenges/${challenge.id}/manage`)}
+                        >
+                            Manage
+                        </Button>
+                    )}
+                </HStack>
 
                 <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }} gap={6}>
                     {/* Challenge Type */}
