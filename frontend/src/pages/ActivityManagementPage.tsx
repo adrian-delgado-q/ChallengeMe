@@ -25,15 +25,20 @@ import {
     AlertDialogHeader,
     AlertDialogBody,
     AlertDialogFooter,
-    useToast
+    useToast,
+    Input,
+    InputGroup,
+    InputLeftElement,
+    SimpleGrid
 } from '@chakra-ui/react';
-import { FaEdit, FaTrash, FaClock, FaFilter } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaClock, FaFilter, FaSearch } from 'react-icons/fa';
 import { Card } from '../components/common/Card';
 import { EditActivityModal } from '../components/common/EditActivityModal';
 import { ActivityService } from '../graphql/services/activityService';
-import type { Activity } from '../types';
+import type { Activity, ActivityType } from '../types';
 import { ChallengeService } from '../graphql/services';
-import { useNavigate } from 'react-router-dom';
+import { ActivityTypeService } from '../graphql/services/activityTypeService';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 interface Challenge {
     id: string;
@@ -43,7 +48,12 @@ interface Challenge {
 export const ActivityManagementPage: React.FC = () => {
     const [allActivities, setAllActivities] = useState<Activity[]>([]);
     const [challenges, setChallenges] = useState<Challenge[]>([]);
+    const [activityTypes, setActivityTypes] = useState<ActivityType[]>([]);
     const [selectedChallenge, setSelectedChallenge] = useState<string>('all');
+    const [selectedActivityType, setSelectedActivityType] = useState<string>('all');
+    const [searchText, setSearchText] = useState<string>('');
+    const [dateFrom, setDateFrom] = useState<string>('');
+    const [dateTo, setDateTo] = useState<string>('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
@@ -54,20 +64,67 @@ export const ActivityManagementPage: React.FC = () => {
     const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
 
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const toast = useToast();
     const cardBg = useColorModeValue('white', 'gray.800');
     const borderColor = useColorModeValue('gray.200', 'gray.600');
     const deleteRef = React.useRef<HTMLButtonElement>(null);
 
-    // Filter activities based on selected challenge
-    const filteredActivities = useMemo(() => {
-        if (selectedChallenge === 'all') {
-            return allActivities;
+    // Get challengeId from URL parameters
+    const challengeIdFromUrl = searchParams.get('challengeId');
+
+    // Initialize selectedChallenge from URL parameter
+    useEffect(() => {
+        if (challengeIdFromUrl) {
+            setSelectedChallenge(challengeIdFromUrl);
         }
-        return allActivities.filter(activity =>
-            activity.challenge && activity.challenge.id === selectedChallenge
-        );
-    }, [allActivities, selectedChallenge]);
+    }, [challengeIdFromUrl]);
+
+    // Filter activities based on all criteria
+    const filteredActivities = useMemo(() => {
+        let filtered = allActivities;
+
+        // Filter by challenge
+        if (selectedChallenge !== 'all') {
+            filtered = filtered.filter(activity =>
+                activity.challenge && activity.challenge.id === selectedChallenge
+            );
+        }
+
+        // Filter by activity type
+        if (selectedActivityType !== 'all') {
+            filtered = filtered.filter(activity =>
+                activity.activityType && activity.activityType.id === selectedActivityType
+            );
+        }
+
+        // Filter by search text (searches in challenge title, notes, activity type name)
+        if (searchText.trim()) {
+            const searchLower = searchText.toLowerCase();
+            filtered = filtered.filter(activity => {
+                const challengeTitle = activity.challenge?.title?.toLowerCase() || '';
+                const notes = activity.notes?.toLowerCase() || '';
+                const activityTypeName = activity.activityType?.name?.toLowerCase() || '';
+                return challengeTitle.includes(searchLower) ||
+                    notes.includes(searchLower) ||
+                    activityTypeName.includes(searchLower);
+            });
+        }
+
+        // Filter by date range
+        if (dateFrom) {
+            filtered = filtered.filter(activity =>
+                new Date(activity.date) >= new Date(dateFrom)
+            );
+        }
+        if (dateTo) {
+            filtered = filtered.filter(activity =>
+                new Date(activity.date) <= new Date(dateTo)
+            );
+        }
+
+        return filtered;
+    }, [allActivities, selectedChallenge, selectedActivityType, searchText, dateFrom, dateTo]);
 
     // Fetch all activities (without filtering)
     const fetchActivities = useCallback(async () => {
@@ -101,11 +158,22 @@ export const ActivityManagementPage: React.FC = () => {
         }
     }, []);
 
+    // Fetch activity types for filtering
+    const fetchActivityTypes = useCallback(async () => {
+        try {
+            const data = await ActivityTypeService.getActivityTypes();
+            setActivityTypes(data || []);
+        } catch (err: any) {
+            console.error('Failed to fetch activity types:', err);
+        }
+    }, []);
+
     // Load data on mount
     useEffect(() => {
         fetchActivities();
         fetchChallenges();
-    }, [fetchActivities, fetchChallenges]);
+        fetchActivityTypes();
+    }, [fetchActivities, fetchChallenges, fetchActivityTypes]);
 
     // Handle activity edit
     const handleEditActivity = (activity: Activity) => {
@@ -173,6 +241,15 @@ export const ActivityManagementPage: React.FC = () => {
         await fetchActivities(); // Refresh the list
     };
 
+    // Clear all filters
+    const clearFilters = () => {
+        setSelectedChallenge('all');
+        setSelectedActivityType('all');
+        setSearchText('');
+        setDateFrom('');
+        setDateTo('');
+    };
+
     // Format date for display
     const formatDate = (dateStr: string) => {
         return new Date(dateStr).toLocaleDateString('en-US', {
@@ -229,36 +306,127 @@ export const ActivityManagementPage: React.FC = () => {
                 {/* Header */}
                 <Box>
                     <Heading as="h1" size="xl" mb={2}>
-                        My Activities
+                        {challengeIdFromUrl ? 'Challenge Activities' : 'My Activities'}
                     </Heading>
                     <Text color="gray.600">
-                        Manage and view all your logged activities. You can edit activities within 48 hours of logging them.
+                        {challengeIdFromUrl
+                            ? 'Viewing activities for a specific challenge. You can edit activities within 48 hours of logging them.'
+                            : 'Manage and view all your logged activities. You can edit activities within 48 hours of logging them.'
+                        }
                     </Text>
                 </Box>
 
-                {/* Filters */}
-                <Card p={4}>
-                    <HStack spacing={4} align="center">
-                        <HStack>
-                            <FaFilter />
-                            <Text fontWeight="medium">Filter by Challenge:</Text>
+                {/* Enhanced Filters */}
+                <Card p={6}>
+                    <VStack spacing={6} align="stretch">
+                        <HStack justify="space-between">
+                            <HStack>
+                                <FaFilter />
+                                <Text fontWeight="medium" fontSize="lg">Filter Activities</Text>
+                            </HStack>
+                            <HStack spacing={2}>
+                                <Text fontSize="sm" color="gray.500">
+                                    {filteredActivities.length} of {allActivities.length} activities
+                                </Text>
+                                <Button size="sm" variant="outline" onClick={clearFilters}>
+                                    Clear Filters
+                                </Button>
+                            </HStack>
                         </HStack>
-                        <Select
-                            value={selectedChallenge}
-                            onChange={(e) => setSelectedChallenge(e.target.value)}
-                            maxW="300px"
-                        >
-                            <option value="all">All Challenges</option>
-                            {challenges.map((challenge) => (
-                                <option key={challenge.id} value={challenge.id}>
-                                    {challenge.title}
-                                </option>
-                            ))}
-                        </Select>
-                        <Text fontSize="sm" color="gray.500">
-                            {filteredActivities.length} activities found
-                        </Text>
-                    </HStack>
+
+                        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
+                            {/* Challenge Filter */}
+                            <Box>
+                                <Text fontWeight="medium" mb={2} fontSize="sm">Challenge</Text>
+                                <Select
+                                    value={selectedChallenge}
+                                    onChange={(e) => setSelectedChallenge(e.target.value)}
+                                    size="sm"
+                                >
+                                    <option value="all">All Challenges</option>
+                                    {challenges.map((challenge) => (
+                                        <option key={challenge.id} value={challenge.id}>
+                                            {challenge.title}
+                                        </option>
+                                    ))}
+                                </Select>
+                            </Box>
+
+                            {/* Activity Type Filter */}
+                            <Box>
+                                <Text fontWeight="medium" mb={2} fontSize="sm">Activity Type</Text>
+                                <Select
+                                    value={selectedActivityType}
+                                    onChange={(e) => setSelectedActivityType(e.target.value)}
+                                    size="sm"
+                                >
+                                    <option value="all">All Activity Types</option>
+                                    {activityTypes.map((type) => (
+                                        <option key={type.id} value={type.id}>
+                                            {type.name}
+                                        </option>
+                                    ))}
+                                </Select>
+                            </Box>
+
+                            {/* Search */}
+                            <Box>
+                                <Text fontWeight="medium" mb={2} fontSize="sm">Search</Text>
+                                <InputGroup size="sm">
+                                    <InputLeftElement>
+                                        <FaSearch color="gray.400" />
+                                    </InputLeftElement>
+                                    <Input
+                                        placeholder="Search challenges, notes, activities..."
+                                        value={searchText}
+                                        onChange={(e) => setSearchText(e.target.value)}
+                                    />
+                                </InputGroup>
+                            </Box>
+
+                            {/* Date From */}
+                            <Box>
+                                <Text fontWeight="medium" mb={2} fontSize="sm">From Date</Text>
+                                <Input
+                                    type="date"
+                                    size="sm"
+                                    value={dateFrom}
+                                    onChange={(e) => setDateFrom(e.target.value)}
+                                />
+                            </Box>
+
+                            {/* Date To */}
+                            <Box>
+                                <Text fontWeight="medium" mb={2} fontSize="sm">To Date</Text>
+                                <Input
+                                    type="date"
+                                    size="sm"
+                                    value={dateTo}
+                                    onChange={(e) => setDateTo(e.target.value)}
+                                />
+                            </Box>
+                        </SimpleGrid>
+
+                        {/* Show "View All Activities" button when filtering by specific challenge */}
+                        {challengeIdFromUrl && (
+                            <Alert status="info" variant="left-accent">
+                                <AlertIcon />
+                                <HStack justify="space-between" width="100%">
+                                    <Text fontSize="sm">
+                                        You're viewing activities for a specific challenge.
+                                    </Text>
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        colorScheme="blue"
+                                        onClick={() => navigate('/activities')}
+                                    >
+                                        View All Activities
+                                    </Button>
+                                </HStack>
+                            </Alert>
+                        )}
+                    </VStack>
                 </Card>
 
                 {/* Error state */}
@@ -318,7 +486,14 @@ export const ActivityManagementPage: React.FC = () => {
 
                                             <VStack align="start" spacing={2} flex={1}>
                                                 <HStack spacing={2} align="center">
-                                                    <Text fontWeight="bold">
+                                                    <Text
+                                                        fontWeight="bold"
+                                                        color={activity.challenge?.id ? "blue.600" : "gray.800"}
+                                                        cursor={activity.challenge?.id ? "pointer" : "default"}
+                                                        onClick={() => activity.challenge?.id && navigate(`/challenges/${activity.challenge.id}`)}
+                                                        _hover={activity.challenge?.id ? { color: "blue.800", textDecoration: "underline" } : {}}
+                                                        transition="all 0.2s"
+                                                    >
                                                         {activity.challenge?.title || 'Unknown Challenge'}
                                                     </Text>
                                                     <Badge
@@ -332,13 +507,23 @@ export const ActivityManagementPage: React.FC = () => {
                                                     </Badge>
                                                 </HStack>
 
+                                                {/* Activity Type and Value */}
+                                                <HStack spacing={2} align="center">
+                                                    <Text fontSize="md" fontWeight="medium" color="orange.600">
+                                                        {activity.activityType?.name || 'Unknown Activity'}
+                                                    </Text>
+                                                    <Badge colorScheme="blue" variant="outline">
+                                                        {activity.value} {activity.activityType?.unitLabel || activity.activityType?.unit || 'units'}
+                                                    </Badge>
+                                                </HStack>
+
                                                 <Text color="gray.600" fontSize="sm">
                                                     Activity Date: {formatDate(activity.date)}
                                                 </Text>
 
                                                 {activity.notes && (
-                                                    <Text>
-                                                        {activity.notes}
+                                                    <Text fontSize="sm" color="gray.700" fontStyle="italic">
+                                                        "{activity.notes}"
                                                     </Text>
                                                 )}
 
