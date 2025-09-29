@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Button, Grid, Heading, Input, Text, VStack, HStack, Spinner, Center, Select, Box } from '@chakra-ui/react';
+import { Button, Grid, Heading, Input, Text, VStack, HStack, Select, Box } from '@chakra-ui/react';
+import { LoadingErrorWrapper } from '../components/common/LoadingErrorWrapper';
 import { useNavigate } from 'react-router-dom';
 import { ChallengeCard } from '../components/challenges/ChallengeCard';
 import { ChallengeSkeletonGrid } from '../components/challenges/ChallengeCardSkeleton';
@@ -7,7 +8,7 @@ import { Pagination } from '../components/common/Pagination';
 import { useChallenges } from '../hooks/useData';
 import { useUser } from '../contexts/AuthContext';
 import { AuthPrompt } from '../components/common/AuthPrompt';
-import { GenericError } from '../components/common/GenericError';
+import { ErrorDisplay } from '../components/common/ErrorDisplay';
 
 const ChallengesPage: React.FC = () => {
     const navigate = useNavigate();
@@ -109,7 +110,7 @@ const ChallengesPage: React.FC = () => {
     }, [clearAllFilters, clearSearch]);
 
     if (isAuthLoading) {
-        return <Center h="50vh"><Spinner size="xl" color="orange.500" /></Center>;
+        return <LoadingErrorWrapper isLoading={true} error={null} fullScreen><></></LoadingErrorWrapper>;
     }
 
     if (!user) {
@@ -117,7 +118,7 @@ const ChallengesPage: React.FC = () => {
     }
 
     if (error) {
-        return <GenericError message={error} />;
+        return <ErrorDisplay message={error} fullScreen />;
     }
 
     return (
