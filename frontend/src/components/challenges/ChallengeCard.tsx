@@ -1,5 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Badge, Box, Heading, Progress, Text, VStack, HStack, Icon, Tag, Wrap, WrapItem, Button, useDisclosure } from '@chakra-ui/react';
+import {
+  Badge,
+  Box,
+  Heading,
+  Progress,
+  Text,
+  VStack,
+  HStack,
+  Icon,
+  Tag,
+  Wrap,
+  WrapItem,
+  Button,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import type { Challenge, Team } from '../../types';
 import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../common/Icons';
@@ -13,18 +27,39 @@ import { ChallengeService } from '../../graphql/services';
 
 // A new icon for the Individual type
 const UserIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className={className}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+    />
   </svg>
 );
 
 // Activity type icon
 const ActivityIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className={className}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"
+    />
   </svg>
 );
-
 
 interface ChallengeCardProps {
   challenge: Challenge;
@@ -39,21 +74,29 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
   const navigate = useNavigate();
 
   // Team selection modal
-  const { isOpen: isTeamModalOpen, onOpen: onTeamModalOpen, onClose: onTeamModalClose } = useDisclosure();
+  const {
+    isOpen: isTeamModalOpen,
+    onOpen: onTeamModalOpen,
+    onClose: onTeamModalClose,
+  } = useDisclosure();
 
   // Access code modal
-  const { isOpen: isAccessCodeModalOpen, onOpen: onAccessCodeModalOpen, onClose: onAccessCodeModalClose } = useDisclosure();
+  const {
+    isOpen: isAccessCodeModalOpen,
+    onOpen: onAccessCodeModalOpen,
+    onClose: onAccessCodeModalClose,
+  } = useDisclosure();
 
   const [isParticipating, setIsParticipating] = useState(false);
   const [participantTeam, setParticipantTeam] = useState<Team | null>(null);
   const [pendingTeamId, setPendingTeamId] = useState<string | null>(null); // For team challenges requiring access code
 
   const { isLoading: isJoining, execute: executeJoin } = useAsyncState({
-    successMessage: 'Successfully joined challenge!'
+    successMessage: 'Successfully joined challenge!',
   });
 
   const { isLoading: isLeaving, execute: executeLeave } = useAsyncState({
-    successMessage: 'Successfully left challenge!'
+    successMessage: 'Successfully left challenge!',
   });
 
   // Check participation status
@@ -77,7 +120,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
             description: '',
             maxMembers: undefined,
             sportsTypes: [],
-            createdAt: ''
+            createdAt: '',
           };
           setParticipantTeam(teamData);
         }
@@ -221,24 +264,27 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
                 const hasStarted = !startDate || startDate <= now;
 
                 if (startDate && !hasStarted) {
-                  return (
-                    <Badge colorScheme="yellow">
-                      Starting Soon
-                    </Badge>
-                  );
+                  return <Badge colorScheme="yellow">Starting Soon</Badge>;
                 }
                 return null;
               })()}
             </HStack>
           </WrapItem>
           <WrapItem>
-            <Tag size="sm" variant="subtle" colorScheme={challenge.challengeType === 'team' ? 'purple' : 'blue'}>
+            <Tag
+              size="sm"
+              variant="subtle"
+              colorScheme={challenge.challengeType === 'team' ? 'purple' : 'blue'}
+            >
               <HStack spacing={1}>
                 <Icon
                   as={challenge.challengeType === 'team' ? UserTeamIcon : UserIcon}
-                  w={3} h={3}
+                  w={3}
+                  h={3}
                 />
-                <Text fontSize="xs">{challenge.challengeType === 'team' ? 'Team' : 'Individual'}</Text>
+                <Text fontSize="xs">
+                  {challenge.challengeType === 'team' ? 'Team' : 'Individual'}
+                </Text>
               </HStack>
             </Tag>
           </WrapItem>
@@ -249,12 +295,16 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
           <Tag size="sm" variant="solid" colorScheme="green" alignSelf="flex-start">
             <HStack spacing={1}>
               <Icon as={ActivityIcon} w={3} h={3} />
-              <Text fontSize="xs">{challenge.type.charAt(0).toUpperCase() + challenge.type.slice(1)}</Text>
+              <Text fontSize="xs">
+                {challenge.type.charAt(0).toUpperCase() + challenge.type.slice(1)}
+              </Text>
             </HStack>
           </Tag>
         )}
 
-        <Heading as="h3" size="sm">{challenge.title}</Heading>
+        <Heading as="h3" size="sm">
+          {challenge.title}
+        </Heading>
 
         {/* Description if available */}
         {challenge.description && (
@@ -270,8 +320,9 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
             <Text fontSize="xs">
               {challenge.milestones && challenge.milestones.length > 0 ? (
                 <>
-                  {challenge.milestones.length} milestone{challenge.milestones.length > 1 ? 's' : ''}
-                  {' '}(up to {Math.max(...challenge.milestones.map(m => m.value))} pts)
+                  {challenge.milestones.length} milestone
+                  {challenge.milestones.length > 1 ? 's' : ''} (up to{' '}
+                  {Math.max(...challenge.milestones.map(m => m.value))} pts)
                 </>
               ) : (
                 'No milestones set'
@@ -281,7 +332,10 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 
           <HStack>
             <Icon as={UserTeamIcon} w={4} h={4} color="blue.400" />
-            <Text fontSize="xs">{challenge.participants || 0} {challenge.challengeType === 'team' ? 'Teams' : 'Participants'}</Text>
+            <Text fontSize="xs">
+              {challenge.participants || 0}{' '}
+              {challenge.challengeType === 'team' ? 'Teams' : 'Participants'}
+            </Text>
           </HStack>
 
           {/* Team size info for team challenges */}
@@ -305,17 +359,26 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
                 {/* Always show start date if available */}
                 {startDate && (
                   <HStack>
-                    <Icon as={CalendarIcon} w={4} h={4} color={!hasStarted ? "green.400" : "blue.400"} />
-                    <Text fontSize="xs" fontWeight="medium" color={!hasStarted ? "green.600" : "blue.600"}>
-                      {!hasStarted ? "Starts" : "Started"}: {startDate.toLocaleDateString()}
+                    <Icon
+                      as={CalendarIcon}
+                      w={4}
+                      h={4}
+                      color={!hasStarted ? 'green.400' : 'blue.400'}
+                    />
+                    <Text
+                      fontSize="xs"
+                      fontWeight="medium"
+                      color={!hasStarted ? 'green.600' : 'blue.600'}
+                    >
+                      {!hasStarted ? 'Starts' : 'Started'}: {startDate.toLocaleDateString()}
                     </Text>
                   </HStack>
                 )}
                 {/* Always show end date */}
                 <HStack>
-                  <Icon as={CalendarIcon} w={4} h={4} color={hasEnded ? "red.400" : "orange.400"} />
-                  <Text fontSize="xs" color={hasEnded ? "red.600" : "gray.600"}>
-                    {hasEnded ? "Ended" : "Ends"}: {endDate.toLocaleDateString()}
+                  <Icon as={CalendarIcon} w={4} h={4} color={hasEnded ? 'red.400' : 'orange.400'} />
+                  <Text fontSize="xs" color={hasEnded ? 'red.600' : 'gray.600'}>
+                    {hasEnded ? 'Ended' : 'Ends'}: {endDate.toLocaleDateString()}
                   </Text>
                 </HStack>
               </VStack>
@@ -326,7 +389,9 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 
       <Box mt={4}>
         <Progress value={challenge.progress || 0} colorScheme="orange" size="sm" rounded="full" />
-        <Text textAlign="right" fontSize="xs" color="gray.500" mt={1}>{challenge.progress || 0}% complete</Text>
+        <Text textAlign="right" fontSize="xs" color="gray.500" mt={1}>
+          {challenge.progress || 0}% complete
+        </Text>
       </Box>
 
       {/* Action Buttons */}
@@ -338,7 +403,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
             colorScheme="blue"
             variant="outline"
             width="full"
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               navigate(`/challenges/${challenge.id}/manage`);
             }}
@@ -367,7 +432,8 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
                 const now = new Date();
                 const startDate = challenge.startDate ? new Date(challenge.startDate) : null;
                 const hasStarted = !startDate || startDate <= now;
-                const isDisabled = challenge.status === 'CLOSED' || challenge.status === 'CANCELLED' || !hasStarted;
+                const isDisabled =
+                  challenge.status === 'CLOSED' || challenge.status === 'CANCELLED' || !hasStarted;
 
                 let buttonText = 'Join Challenge';
                 if (challenge.status === 'CLOSED') buttonText = 'Challenge Closed';
@@ -377,7 +443,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
                 return (
                   <Button
                     size="sm"
-                    colorScheme={!hasStarted ? "gray" : "orange"}
+                    colorScheme={!hasStarted ? 'gray' : 'orange'}
                     width="full"
                     onClick={handleJoinChallenge}
                     isLoading={isJoining}

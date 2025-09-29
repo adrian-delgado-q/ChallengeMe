@@ -24,19 +24,19 @@ export function generateUUID(): string {
 function generateUUIDPolyfill(): string {
   // Use crypto.getRandomValues if available (modern browsers)
   if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
       const array = new Uint8Array(1);
       crypto.getRandomValues(array);
       const r = array[0] % 16;
-      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
   }
 
   // Final fallback using Math.random (less secure but functional)
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
@@ -48,7 +48,7 @@ function generateUUIDPolyfill(): string {
 export function generateShortId(length: number = 8): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
-  
+
   if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
     const array = new Uint8Array(length);
     crypto.getRandomValues(array);
@@ -61,6 +61,6 @@ export function generateShortId(length: number = 8): string {
       result += chars[Math.floor(Math.random() * chars.length)];
     }
   }
-  
+
   return result;
 }

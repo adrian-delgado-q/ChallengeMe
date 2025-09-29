@@ -150,7 +150,7 @@ export interface Activity {
     username?: string;
     avatarUrl?: string;
   };
-  challengeId?: string; // For backward compatibility  
+  challengeId?: string; // For backward compatibility
   challenge?: {
     id: string;
     title: string;

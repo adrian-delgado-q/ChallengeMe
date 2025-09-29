@@ -1,0 +1,45 @@
+# Prettier ignore file
+# Dependencies
+node_modules/
+dist/
+build/
+
+# Generated files
+*.min.js
+*.min.css
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Package manager
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Prisma generated files
+**/prisma-generated-client/**
+
+# Build outputs
+.next/
+.nuxt/
+.vite/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation that should not be formatted
+CHANGELOG.md
+LICENSE.md
+CONTRIBUTING.md

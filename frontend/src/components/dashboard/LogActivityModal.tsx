@@ -21,7 +21,7 @@ import {
   AlertIcon,
   Select,
   Spinner,
-  Box
+  Box,
 } from '@chakra-ui/react';
 import { useActivities, useChallenges, useTeams } from '../../hooks/useData';
 import { ChallengeService } from '../../graphql/services';
@@ -42,7 +42,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
   isOpen,
   onClose,
   challengeId,
-  onActivityLogged
+  onActivityLogged,
 }) => {
   // State for activity types
   const [challengeActivityTypes, setChallengeActivityTypes] = useState<ActivityType[]>([]);
@@ -59,10 +59,14 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
   const { joinChallenge } = useChallenges();
   const { teams } = useTeams();
   const notifications = useNotifications();
-  const { isOpen: isTeamModalOpen, onOpen: onTeamModalOpen, onClose: onTeamModalClose } = useDisclosure();
+  const {
+    isOpen: isTeamModalOpen,
+    onOpen: onTeamModalOpen,
+    onClose: onTeamModalClose,
+  } = useDisclosure();
   const { isLoading: isSubmitting, execute } = useAsyncState({
     showSuccessNotifications: true,
-    successMessage: 'Activity logged successfully!'
+    successMessage: 'Activity logged successfully!',
   });
   const initialRef = React.useRef(null);
 
@@ -125,7 +129,9 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
       return;
     }
 
-    const selectedActivityType = challengeActivityTypes.find(at => at.id === selectedActivityTypeId);
+    const selectedActivityType = challengeActivityTypes.find(
+      at => at.id === selectedActivityTypeId
+    );
     if (!selectedActivityType) {
       notifications.error('Error', 'Selected activity type not found');
       return;
@@ -153,7 +159,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
             activityTypeId: selectedActivityTypeId,
             value: numericValue,
             notes,
-            date: new Date().toISOString().split('T')[0] // Today's date
+            date: new Date().toISOString().split('T')[0], // Today's date
           });
         }
       } else {
@@ -163,7 +169,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
           activityTypeId: selectedActivityTypeId,
           value: numericValue,
           notes,
-          date: new Date().toISOString().split('T')[0] // Today's date
+          date: new Date().toISOString().split('T')[0], // Today's date
         });
       }
 
@@ -189,7 +195,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
         activityTypeId: selectedActivityTypeId,
         value: numericValue,
         notes,
-        date: new Date().toISOString().split('T')[0] // Today's date
+        date: new Date().toISOString().split('T')[0], // Today's date
       });
 
       return true;
@@ -226,7 +232,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
         activityTypeId: selectedActivityTypeId,
         value: numericValue,
         notes,
-        date: new Date().toISOString().split('T')[0] // Today's date
+        date: new Date().toISOString().split('T')[0], // Today's date
       });
 
       return true;
@@ -277,8 +283,8 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
                         Join Challenge to Log Activity
                       </Text>
                       <Text fontSize="sm">
-                        You need to join "{challenge.title}" before you can log activities.
-                        This is a team challenge - would you like to join as an individual or select a team?
+                        You need to join "{challenge.title}" before you can log activities. This is
+                        a team challenge - would you like to join as an individual or select a team?
                       </Text>
                     </VStack>
                   </Alert>
@@ -302,11 +308,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
                     >
                       Join with Team
                     </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={handleCancelJoin}
-                      size="sm"
-                    >
+                    <Button variant="ghost" onClick={handleCancelJoin} size="sm">
                       Cancel
                     </Button>
                   </VStack>
@@ -317,7 +319,9 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
                   {isLoadingActivityTypes ? (
                     <Box textAlign="center" py={4}>
                       <Spinner size="md" color="orange.500" />
-                      <Text mt={2} fontSize="sm" color="gray.500">Loading activity types...</Text>
+                      <Text mt={2} fontSize="sm" color="gray.500">
+                        Loading activity types...
+                      </Text>
                     </Box>
                   ) : challengeActivityTypes.length > 1 ? (
                     <FormControl isRequired>
@@ -325,10 +329,10 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
                       <Select
                         placeholder="Select activity type"
                         value={selectedActivityTypeId}
-                        onChange={(e) => setSelectedActivityTypeId(e.target.value)}
+                        onChange={e => setSelectedActivityTypeId(e.target.value)}
                         isDisabled={isSubmitting}
                       >
-                        {challengeActivityTypes.map((activityType) => (
+                        {challengeActivityTypes.map(activityType => (
                           <option key={activityType.id} value={activityType.id}>
                             {activityType.name}
                           </option>
@@ -346,9 +350,9 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 
                   {/* Value input - shows appropriate unit based on selected activity type */}
                   {(() => {
-                    const currentActivityType = challengeActivityTypes.find(at =>
-                      at.id === selectedActivityTypeId
-                    ) || (challengeActivityTypes.length === 1 ? challengeActivityTypes[0] : null);
+                    const currentActivityType =
+                      challengeActivityTypes.find(at => at.id === selectedActivityTypeId) ||
+                      (challengeActivityTypes.length === 1 ? challengeActivityTypes[0] : null);
 
                     if (!currentActivityType) return null;
 
@@ -362,7 +366,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
                             step="0.1"
                             placeholder={`Enter ${currentActivityType.unitLabel}`}
                             value={value}
-                            onChange={(e) => setValue(e.target.value)}
+                            onChange={e => setValue(e.target.value)}
                             isDisabled={isSubmitting}
                           />
                           <InputRightAddon>{currentActivityType.unitLabel}</InputRightAddon>
@@ -376,7 +380,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
                     <Textarea
                       placeholder="How did it go?"
                       value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
+                      onChange={e => setNotes(e.target.value)}
                       isDisabled={isSubmitting}
                     />
                   </FormControl>
@@ -386,12 +390,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
           </ModalBody>
           {!showJoinPrompt && (
             <ModalFooter>
-              <Button
-                variant="ghost"
-                mr={3}
-                onClick={handleClose}
-                isDisabled={isSubmitting}
-              >
+              <Button variant="ghost" mr={3} onClick={handleClose} isDisabled={isSubmitting}>
                 Cancel
               </Button>
               <Button

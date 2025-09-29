@@ -68,13 +68,16 @@ button:focus-visible {
     -webkit-user-select: none;
     user-select: none;
   }
-  
+
   /* Make clickable elements more accessible on mobile */
-  button, [role="button"], input[type="button"], input[type="submit"] {
+  button,
+  [role='button'],
+  input[type='button'],
+  input[type='submit'] {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   /* Prevent horizontal scrolling */
   body {
     overflow-x: hidden;
