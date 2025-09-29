@@ -59,7 +59,7 @@ export const LoadingErrorWrapper: React.FC<LoadingErrorWrapperProps> = ({
 
     if (error) {
         const errorMsg = typeof error === 'string' ? error : error.message || 'An error occurred';
-        
+
         return (
             <ErrorDisplay
                 title={errorTitle}

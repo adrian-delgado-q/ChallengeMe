@@ -190,41 +190,41 @@ const TeamsPage: React.FC = () => {
                 {/* Filter Controls */}
                 <VStack spacing={{ base: 3, md: 4 }} w="full">
                     <HStack spacing={{ base: 2, md: 4 }} w="full" flexWrap="wrap" justify="space-between">
-                    {/* Visibility Filter */}
-                    <Box minW="120px">
-                        <Text fontSize="sm" fontWeight="medium" mb={1}>Visibility</Text>
-                        <Select
-                            value={visibilityFilter}
-                            onChange={(e) => handleFilterChange('visibility', e.target.value as any)}
-                            size="sm"
-                        >
-                            <option value="all">All Teams</option>
-                            <option value="public">Public Only</option>
-                            <option value="private">Private Only</option>
-                        </Select>
-                    </Box>
+                        {/* Visibility Filter */}
+                        <Box minW="120px">
+                            <Text fontSize="sm" fontWeight="medium" mb={1}>Visibility</Text>
+                            <Select
+                                value={visibilityFilter}
+                                onChange={(e) => handleFilterChange('visibility', e.target.value as any)}
+                                size="sm"
+                            >
+                                <option value="all">All Teams</option>
+                                <option value="public">Public Only</option>
+                                <option value="private">Private Only</option>
+                            </Select>
+                        </Box>
 
-                    {/* Member Count Filter */}
-                    <Box minW="120px">
-                        <Text fontSize="sm" fontWeight="medium" mb={1}>Team Size</Text>
-                        <Select
-                            value={memberCountFilter}
-                            onChange={(e) => handleFilterChange('memberCount', e.target.value as any)}
-                            size="sm"
-                        >
-                            <option value="all">Any Size</option>
-                            <option value="1-5">1-5 Members</option>
-                            <option value="6-15">6-15 Members</option>
-                            <option value="16+">16+ Members</option>
-                        </Select>
-                    </Box>
+                        {/* Member Count Filter */}
+                        <Box minW="120px">
+                            <Text fontSize="sm" fontWeight="medium" mb={1}>Team Size</Text>
+                            <Select
+                                value={memberCountFilter}
+                                onChange={(e) => handleFilterChange('memberCount', e.target.value as any)}
+                                size="sm"
+                            >
+                                <option value="all">Any Size</option>
+                                <option value="1-5">1-5 Members</option>
+                                <option value="6-15">6-15 Members</option>
+                                <option value="16+">16+ Members</option>
+                            </Select>
+                        </Box>
 
-                    {/* Results Summary */}
-                    <Box flex="1" textAlign="right">
-                        <Text fontSize="sm" color="gray.600">
-                            {isFetching ? 'Loading...' : `${totalCount} team${totalCount !== 1 ? 's' : ''} found`}
-                        </Text>
-                    </Box>
+                        {/* Results Summary */}
+                        <Box flex="1" textAlign="right">
+                            <Text fontSize="sm" color="gray.600">
+                                {isFetching ? 'Loading...' : `${totalCount} team${totalCount !== 1 ? 's' : ''} found`}
+                            </Text>
+                        </Box>
                     </HStack>
                 </VStack>
             </VStack>

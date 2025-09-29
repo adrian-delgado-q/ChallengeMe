@@ -66,7 +66,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
             <ModalContent mx={{ base: 4, md: 'auto' }} my={{ base: 4, md: 'auto' }}>
                 {title && <ModalHeader>{title}</ModalHeader>}
                 {!hideCloseButton && <ModalCloseButton />}
-                
+
                 <ModalBody py={title ? 4 : 8}>
                     {children}
                 </ModalBody>
