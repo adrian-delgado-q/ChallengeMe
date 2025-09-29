@@ -1,6 +1,7 @@
 import { supabase } from '../../supabase/client';
 import { authService } from '../../services/optimizedAuthService';
 import { generateUUID } from '../../utils/uuid';
+import { ensureUserProfile } from '../../utils/profileUtils';
 import type { ActivityInput } from '../../types';
 export type { ActivityInput };
 
@@ -221,6 +222,9 @@ export class ActivityService {
 	static async createActivity(activityData: ActivityInput) {
 		const user = await authService.getCurrentUser();
 		if (!user) throw new Error('User not authenticated');
+
+		// Ensure user profile exists before creating activity
+		await ensureUserProfile();
 
 		// Get the challengeId from the participant
 		const { data: participant, error: participantError } = await supabase

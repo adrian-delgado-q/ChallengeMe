@@ -10,7 +10,7 @@ const CreateChallengePage: React.FC = () => {
 		// Navigate to the challenges list or the new challenge detail page
 		if (challenge && challenge.id) {
 			// Navigate to the new challenge detail page
-			navigate(`/challenge/${challenge.id}`);
+			navigate(`/challenges/${challenge.id}`);
 		} else {
 			// Fallback to challenges list
 			navigate('/challenges');

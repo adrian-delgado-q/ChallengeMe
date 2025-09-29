@@ -1,6 +1,8 @@
 import { supabase } from '../../supabase/client';
 import { authService } from '../../services/optimizedAuthService';
 import { generateUUID } from '../../utils/uuid';
+import { ensureUserProfile } from '../../utils/profileUtils';
+import { handleAuthError } from '../../utils/authUtils';
 
 // Types for challenge operations
 export interface ChallengeInput {
@@ -35,31 +37,20 @@ export class ChallengeService {
 	private static handleError(error: any, operation: string) {
 		console.error(`ChallengeService.${operation} error:`, error);
 
-		if (error.message?.includes('permission denied')) {
-			throw new Error(
-				`Database permission denied. This usually means:\n` +
-					`1. Row Level Security (RLS) policies need to be set up\n` +
-					`2. User authentication failed\n` +
-					`3. Database connection issues\n\n` +
-					`Please check AUTHENTICATION_FIX.md for solutions.\n\n` +
-					`Original error: ${error.message}`
-			);
+		// Handle authentication errors with better messaging
+		if (
+			error?.message?.toLowerCase().includes('auth') ||
+			error?.status === 401 ||
+			error?.message?.toLowerCase().includes('not authenticated')
+		) {
+			handleAuthError(error, operation);
 		}
 
-		if (error.message?.includes('relation') && error.message?.includes('does not exist')) {
-			throw new Error(
-				`Database table not found. This means:\n` +
-					`1. Database schema hasn't been created\n` +
-					`2. Wrong database connection\n\n` +
-					`Please run the schema creation scripts.\n\n` +
-					`Original error: ${error.message}`
-			);
-		}
-
-		throw new Error(error.message || `Failed to ${operation}`);
-	}
-
-	// Get all public challenges with pagination support
+		// For other errors, re-throw with context
+		const enhancedError = new Error(error.message || `Failed to ${operation}`);
+		(enhancedError as any).originalError = error;
+		throw enhancedError;
+	} // Get all public challenges with pagination support
 	static async getChallenges(options?: {
 		isPublic?: boolean;
 		page?: number;
@@ -354,6 +345,9 @@ export class ChallengeService {
 		try {
 			const user = await authService.getCurrentUser();
 			if (!user) throw new Error('User not authenticated');
+
+			// Ensure user profile exists before creating challenge
+			await ensureUserProfile();
 
 			// Generate UUID for the challenge
 			const challengeId = generateUUID();
@@ -748,6 +742,9 @@ export class ChallengeService {
 			const user = await authService.getCurrentUser();
 			if (!user) throw new Error('User not authenticated');
 
+			// Ensure user profile exists before joining challenge
+			await ensureUserProfile();
+
 			// Get challenge details to check privacy and access code
 			const { data: challenge, error: challengeError } = await supabase
 				.from('Challenge')
@@ -769,26 +766,6 @@ export class ChallengeService {
 				if (accessCode !== challenge.accessCode) {
 					throw new Error('Invalid access code');
 				}
-			}
-
-			// First, ensure the user has a profile
-			const { data: profile, error: profileError } = await supabase
-				.from('profiles')
-				.select('id')
-				.eq('id', user.id)
-				.maybeSingle();
-
-			if (profileError) throw profileError;
-
-			if (!profile) {
-				// Create profile if it doesn't exist
-				const { error: createProfileError } = await supabase.from('profiles').insert({
-					id: user.id,
-					username: user.email?.split('@')[0] || 'user',
-					avatar_url: null,
-				});
-
-				if (createProfileError) throw createProfileError;
 			}
 
 			// Generate UUID for the participant
@@ -817,6 +794,9 @@ export class ChallengeService {
 		try {
 			const user = await authService.getCurrentUser();
 			if (!user) throw new Error('User not authenticated');
+
+			// Ensure user profile exists before joining challenge
+			await ensureUserProfile();
 
 			// Get challenge details to check maxTeamSize constraint and access code
 			const { data: challenge, error: challengeError } = await supabase
