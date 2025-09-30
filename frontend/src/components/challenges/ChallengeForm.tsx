@@ -81,6 +81,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
 	// Form state
 	const [title, setTitle] = useState(challengeToEdit?.title || '');
 	const [description, setDescription] = useState(challengeToEdit?.description || '');
+	const [instructions, setInstructions] = useState(challengeToEdit?.instructions || '');
 	const [imageUrl, setImageUrl] = useState(challengeToEdit?.imageUrl || '');
 	const [selectedActivityTypeIds, setSelectedActivityTypeIds] = useState<string[]>(
 		challengeToEdit?.activityTypes || []
@@ -258,6 +259,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
 			const challengeData = {
 				title: title.trim(),
 				description: description.trim() || undefined,
+				instructions: instructions.trim() || undefined,
 				imageUrl: imageUrl || undefined,
 				activityTypes: selectedActivityTypeIds,
 				challengeType: challengeType.toUpperCase() as 'INDIVIDUAL' | 'TEAM',
@@ -320,15 +322,29 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
 			<FormControl>
 				<FormLabel>Description</FormLabel>
 				<Textarea
-					placeholder="Describe your mixed challenge. Include what activities are allowed and any special rules. Supports **bold**, *italic*, [links](url), bullet points, and tables."
+					placeholder="Brief description of your challenge (shown in the header and cards)"
 					value={description}
 					onChange={e => setDescription(e.target.value)}
+					isDisabled={isSubmitting}
+					minH="80px"
+				/>
+				<Text fontSize="xs" color="gray.500" mt={1}>
+					Brief overview shown in challenge header and cards. Markdown formatting supported.
+				</Text>
+			</FormControl>
+
+			<FormControl>
+				<FormLabel>Instructions</FormLabel>
+				<Textarea
+					placeholder="Detailed instructions for participants. Include rules, requirements, and how to participate effectively."
+					value={instructions}
+					onChange={e => setInstructions(e.target.value)}
 					isDisabled={isSubmitting}
 					minH="120px"
 				/>
 				<Text fontSize="xs" color="gray.500" mt={1}>
-					Markdown formatting supported: **bold**, *italic*, [links](url), bullet points (- item),
-					tables, etc.
+					Detailed instructions shown in the "About Challenge" section. Markdown formatting supported:
+					**bold**, *italic*, [links](url), bullet points (- item), tables, etc.
 				</Text>
 			</FormControl>
 

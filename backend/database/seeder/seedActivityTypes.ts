@@ -158,6 +158,27 @@ const activityTypes = [
     unitLabel: 'repetitions',
     description: 'Explosive full-body exercise using a kettlebell.'
   },
+  {
+    name: 'Bicep Curls',
+    category: 'Strength',
+    unit: 'reps',
+    unitLabel: 'repetitions',
+    description: 'Bicep curls using dumbbells, barbells, or resistance bands.'
+  },
+  {
+    name: 'Tricep Reps',
+    category: 'Strength',
+    unit: 'reps',
+    unitLabel: 'repetitions',
+    description: 'Tricep dips or extensions to strengthen the back of the arms.'
+  },
+  {
+    name: 'Grip Holds',
+    category: 'Strength',
+    unit: 'minutes',
+    unitLabel: 'minutes',
+    description: 'Timed holds to improve grip strength using tools like hand grippers or hanging from a bar.'
+  },
 
   // --- Flexibility & Mind-Body ---
   {

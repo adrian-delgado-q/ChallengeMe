@@ -17,7 +17,23 @@ v_value FLOAT;
 
 v_date DATE;
 
-BEGIN IF (TG_OP = 'UPDATE') THEN -- Reverse the old values before applying the new ones.
+BEGIN -- Get values from the new or updated row.
+v_challenge_id := NEW."challengeId";
+
+-- Check if the challenge still exists before updating progress
+-- This prevents errors when the challenge is being deleted
+IF NOT EXISTS (
+    SELECT
+        1
+    FROM
+        "public"."Challenge"
+    WHERE
+        id = v_challenge_id
+) THEN RETURN NEW;
+
+END IF;
+
+IF (TG_OP = 'UPDATE') THEN -- Reverse the old values before applying the new ones.
 PERFORM public.reverse_challenge_progress(
     OLD."challengeId",
     OLD."participantId",
@@ -26,9 +42,6 @@ PERFORM public.reverse_challenge_progress(
 );
 
 END IF;
-
--- Get values from the new or updated row.
-v_challenge_id := NEW."challengeId";
 
 v_participant_id := NEW."participantId";
 
@@ -99,7 +112,19 @@ OR REPLACE FUNCTION public.reverse_challenge_progress(
     p_value FLOAT
 ) RETURNS VOID LANGUAGE plpgsql AS $$ DECLARE v_new_count INT;
 
-BEGIN
+BEGIN -- Check if the challenge still exists before updating progress
+-- This prevents errors when the challenge is being deleted
+IF NOT EXISTS (
+    SELECT
+        1
+    FROM
+        "public"."Challenge"
+    WHERE
+        id = p_challenge_id
+) THEN RETURN;
+
+END IF;
+
 UPDATE
     public.challenge_progress
 SET

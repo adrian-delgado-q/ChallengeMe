@@ -1,6 +1,6 @@
--- Supabase/SQL Migrations: Row-Level Security (RLS)
--- Description: Defines all RLS policies for the application tables.
--- It starts by cleaning up existing policies and enabling RLS.
+-- Supabase/SQL Migrations: Row-Level Security (RLS) - FIXED VERSION
+-- Description: Defines all RLS policies for the application tables with proper fallbacks.
+-- It starts by cleaning up existing policies and enabling RLS with public access fallbacks.
 -- =============================================================================
 -- Section 1: Cleanup and Enable RLS
 -- Prepares the database for new policy definitions.
@@ -62,8 +62,8 @@ ALTER TABLE
 ALTER TABLE
     "public"."challenge_progress" ENABLE ROW LEVEL SECURITY;
 
--- Section 2: Policy Definitions
--- Define access policies for each table.
+-- Section 2: Policy Definitions with Public Access Fallbacks
+-- Define access policies for each table with proper public access where needed.
 -- -----------------------------------------------------------------------------
 -- Profiles
 CREATE POLICY "Public profiles are viewable by everyone." ON "public"."profiles" FOR
@@ -78,88 +78,158 @@ CREATE POLICY "Users can update their own profile." ON "public"."profiles" FOR
 UPDATE
     USING (auth.uid() = id);
 
--- Teams
-CREATE POLICY "Teams are viewable by authenticated users." ON "public"."Team" FOR
+-- Teams - Allow public read access for basic functionality
+CREATE POLICY "Teams are publicly viewable." ON "public"."Team" FOR
 SELECT
-    USING (auth.uid() IS NOT NULL);
+    USING (true);
 
 CREATE POLICY "Users can create teams." ON "public"."Team" FOR
 INSERT
-    WITH CHECK (auth.uid() = "creatorId");
+    WITH CHECK (
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN auth.uid() = "creatorId"
+            ELSE false
+        END
+    );
 
 CREATE POLICY "Team creators can update their teams." ON "public"."Team" FOR
 UPDATE
-    USING (auth.uid() = "creatorId");
+    USING (
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN auth.uid() = "creatorId"
+            ELSE false
+        END
+    );
 
-CREATE POLICY "Team creators can delete their teams." ON "public"."Team" FOR DELETE USING (auth.uid() = "creatorId");
+CREATE POLICY "Team creators can delete their teams." ON "public"."Team" FOR DELETE USING (
+    CASE
+        WHEN auth.uid() IS NOT NULL THEN auth.uid() = "creatorId"
+        ELSE false
+    END
+);
 
--- Team Memberships
-CREATE POLICY "Team memberships are viewable by authenticated users." ON "public"."TeamMembership" FOR
+-- Team Memberships - Allow public read access for team composition
+CREATE POLICY "Team memberships are publicly viewable." ON "public"."TeamMembership" FOR
 SELECT
-    USING (auth.uid() IS NOT NULL);
+    USING (true);
 
 CREATE POLICY "Users can join teams or be added by creators." ON "public"."TeamMembership" FOR
 INSERT
     WITH CHECK (
-        (auth.uid() = "userId")
-        OR (
-            EXISTS (
-                SELECT
-                    1
-                FROM
-                    "public"."Team"
-                WHERE
-                    id = "teamId"
-                    AND "creatorId" = auth.uid()
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN (auth.uid() = "userId")
+            OR (
+                EXISTS (
+                    SELECT
+                        1
+                    FROM
+                        "public"."Team"
+                    WHERE
+                        id = "teamId"
+                        AND "creatorId" = auth.uid()
+                )
             )
-        )
+            ELSE false
+        END
     );
 
-CREATE POLICY "Users can leave teams." ON "public"."TeamMembership" FOR DELETE USING (auth.uid() = "userId");
-
-CREATE POLICY "Team creators can remove members." ON "public"."TeamMembership" FOR DELETE USING (
-    EXISTS (
-        SELECT
-            1
-        FROM
-            "public"."Team"
-        WHERE
-            id = "teamId"
-            AND "creatorId" = auth.uid()
-    )
+CREATE POLICY "Users can leave teams." ON "public"."TeamMembership" FOR DELETE USING (
+    CASE
+        WHEN auth.uid() IS NOT NULL THEN auth.uid() = "userId"
+        ELSE false
+    END
 );
 
--- Challenges
-CREATE POLICY "Challenges are viewable by authenticated users." ON "public"."Challenge" FOR
+CREATE POLICY "Team creators can remove members." ON "public"."TeamMembership" FOR DELETE USING (
+    CASE
+        WHEN auth.uid() IS NOT NULL THEN EXISTS (
+            SELECT
+                1
+            FROM
+                "public"."Team"
+            WHERE
+                id = "teamId"
+                AND "creatorId" = auth.uid()
+        )
+        ELSE false
+    END
+);
+
+-- Challenges - CRITICAL: Allow public read access to challenges
+CREATE POLICY "Challenges are publicly viewable." ON "public"."Challenge" FOR
 SELECT
-    USING (auth.uid() IS NOT NULL);
+    USING (true);
 
 CREATE POLICY "Users can create challenges." ON "public"."Challenge" FOR
 INSERT
-    WITH CHECK (auth.uid() = "creatorId");
+    WITH CHECK (
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN auth.uid() = "creatorId"
+            ELSE false
+        END
+    );
 
 CREATE POLICY "Challenge creators can update their challenges." ON "public"."Challenge" FOR
 UPDATE
-    USING (auth.uid() = "creatorId");
+    USING (
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN auth.uid() = "creatorId"
+            ELSE false
+        END
+    );
 
-CREATE POLICY "Challenge creators can delete their challenges." ON "public"."Challenge" FOR DELETE USING (auth.uid() = "creatorId");
+CREATE POLICY "Challenge creators can delete their challenges." ON "public"."Challenge" FOR DELETE USING (
+    CASE
+        WHEN auth.uid() IS NOT NULL THEN auth.uid() = "creatorId"
+        ELSE false
+    END
+);
 
--- Challenge Participants
-CREATE POLICY "Challenge participants are viewable by authenticated users." ON "public"."ChallengeParticipant" FOR
+-- Challenge Participants - Allow public read access for leaderboards
+CREATE POLICY "Challenge participants are publicly viewable." ON "public"."ChallengeParticipant" FOR
 SELECT
-    USING (auth.uid() IS NOT NULL);
+    USING (true);
 
 CREATE POLICY "Users can join challenges individually." ON "public"."ChallengeParticipant" FOR
 INSERT
     WITH CHECK (
-        auth.uid() = "userId"
-        AND "teamId" IS NULL
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN auth.uid() = "userId"
+            AND "teamId" IS NULL
+            ELSE false
+        END
     );
 
 CREATE POLICY "Team members can join challenges for their team." ON "public"."ChallengeParticipant" FOR
 INSERT
     WITH CHECK (
-        "teamId" IS NOT NULL
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN "teamId" IS NOT NULL
+            AND "userId" IS NULL
+            AND EXISTS (
+                SELECT
+                    1
+                FROM
+                    "public"."TeamMembership" tm
+                WHERE
+                    tm."teamId" = "ChallengeParticipant"."teamId"
+                    AND tm."userId" = auth.uid()
+            )
+            ELSE false
+        END
+    );
+
+CREATE POLICY "Users can leave individual challenges." ON "public"."ChallengeParticipant" FOR DELETE USING (
+    CASE
+        WHEN auth.uid() IS NOT NULL THEN auth.uid() = "userId"
+        AND "teamId" IS NULL
+        ELSE false
+    END
+);
+
+CREATE POLICY "Team members can remove their team from challenges." ON "public"."ChallengeParticipant" FOR DELETE USING (
+    CASE
+        WHEN auth.uid() IS NOT NULL THEN "teamId" IS NOT NULL
         AND "userId" IS NULL
         AND EXISTS (
             SELECT
@@ -170,106 +240,139 @@ INSERT
                 tm."teamId" = "ChallengeParticipant"."teamId"
                 AND tm."userId" = auth.uid()
         )
-    );
-
-CREATE POLICY "Users can leave individual challenges." ON "public"."ChallengeParticipant" FOR DELETE USING (
-    auth.uid() = "userId"
-    AND "teamId" IS NULL
+        ELSE false
+    END
 );
 
-CREATE POLICY "Team members can remove their team from challenges." ON "public"."ChallengeParticipant" FOR DELETE USING (
-    "teamId" IS NOT NULL
-    AND "userId" IS NULL
-    AND EXISTS (
-        SELECT
-            1
-        FROM
-            "public"."TeamMembership" tm
-        WHERE
-            tm."teamId" = "ChallengeParticipant"."teamId"
-            AND tm."userId" = auth.uid()
-    )
-);
-
--- Activities
-CREATE POLICY "Activities are viewable by authenticated users." ON "public"."Activity" FOR
+-- Activities - Allow public read access for activity feeds
+CREATE POLICY "Activities are publicly viewable." ON "public"."Activity" FOR
 SELECT
-    USING (auth.uid() IS NOT NULL);
+    USING (true);
 
 CREATE POLICY "Challenge participants can log activities." ON "public"."Activity" FOR ALL USING (
-    EXISTS (
-        SELECT
-            1
-        FROM
-            "public"."ChallengeParticipant"
-        WHERE
-            id = "participantId"
-            AND "userId" = auth.uid()
-    )
+    CASE
+        WHEN auth.uid() IS NOT NULL THEN EXISTS (
+            SELECT
+                1
+            FROM
+                "public"."ChallengeParticipant"
+            WHERE
+                id = "participantId"
+                AND "userId" = auth.uid()
+        )
+        ELSE false
+    END
 );
 
--- Posts
-CREATE POLICY "Posts are viewable by everyone." ON "public"."Post" FOR
+-- Posts - Allow public read access for social features
+CREATE POLICY "Posts are publicly viewable." ON "public"."Post" FOR
 SELECT
     USING (true);
 
 CREATE POLICY "Challenge participants can create, update, and delete posts." ON "public"."Post" FOR ALL USING (
-    EXISTS (
-        SELECT
-            1
-        FROM
-            "public"."ChallengeParticipant"
-        WHERE
-            id = "participantId"
-            AND "userId" = auth.uid()
-    )
+    CASE
+        WHEN auth.uid() IS NOT NULL THEN EXISTS (
+            SELECT
+                1
+            FROM
+                "public"."ChallengeParticipant"
+            WHERE
+                id = "participantId"
+                AND "userId" = auth.uid()
+        )
+        ELSE false
+    END
 );
 
--- Comments
-CREATE POLICY "Comments are viewable by everyone." ON "public"."Comment" FOR
+-- Comments - Allow public read access for discussions
+CREATE POLICY "Comments are publicly viewable." ON "public"."Comment" FOR
 SELECT
     USING (true);
 
 CREATE POLICY "Users can create comments." ON "public"."Comment" FOR
 INSERT
-    WITH CHECK (auth.uid() = "authorId");
+    WITH CHECK (
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN auth.uid() = "authorId"
+            ELSE false
+        END
+    );
 
 CREATE POLICY "Users can update their own comments." ON "public"."Comment" FOR
 UPDATE
-    USING (auth.uid() = "authorId");
+    USING (
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN auth.uid() = "authorId"
+            ELSE false
+        END
+    );
 
-CREATE POLICY "Users can delete their own comments." ON "public"."Comment" FOR DELETE USING (auth.uid() = "authorId");
+CREATE POLICY "Users can delete their own comments." ON "public"."Comment" FOR DELETE USING (
+    CASE
+        WHEN auth.uid() IS NOT NULL THEN auth.uid() = "authorId"
+        ELSE false
+    END
+);
 
--- Activity Types
-CREATE POLICY "Activity types are viewable by authenticated users." ON "public"."ActivityType" FOR
+-- Activity Types - Allow public read access for challenge configuration
+CREATE POLICY "Activity types are publicly viewable." ON "public"."ActivityType" FOR
 SELECT
-    USING (auth.uid() IS NOT NULL);
+    USING (true);
 
-CREATE POLICY "System can manage activity types." ON "public"."ActivityType" FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "System can manage activity types." ON "public"."ActivityType" FOR ALL USING (
+    CASE
+        WHEN auth.uid() IS NOT NULL THEN true
+        ELSE false
+    END
+) WITH CHECK (
+    CASE
+        WHEN auth.uid() IS NOT NULL THEN true
+        ELSE false
+    END
+);
 
--- Challenge Activity Types
-CREATE POLICY "Challenge activity types are viewable by authenticated users." ON "public"."ChallengeActivityType" FOR
+-- Challenge Activity Types - Allow public read access
+CREATE POLICY "Challenge activity types are publicly viewable." ON "public"."ChallengeActivityType" FOR
 SELECT
-    USING (auth.uid() IS NOT NULL);
+    USING (true);
 
 CREATE POLICY "Challenge creators can manage activity types." ON "public"."ChallengeActivityType" FOR
 INSERT
     WITH CHECK (
-        EXISTS (
-            SELECT
-                1
-            FROM
-                "public"."Challenge"
-            WHERE
-                id = "challengeId"
-                AND "creatorId" = auth.uid()
-        )
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN EXISTS (
+                SELECT
+                    1
+                FROM
+                    "public"."Challenge"
+                WHERE
+                    id = "challengeId"
+                    AND "creatorId" = auth.uid()
+            )
+            ELSE false
+        END
     );
 
 CREATE POLICY "Challenge creators can update activity types." ON "public"."ChallengeActivityType" FOR
 UPDATE
     USING (
-        EXISTS (
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN EXISTS (
+                SELECT
+                    1
+                FROM
+                    "public"."Challenge"
+                WHERE
+                    id = "challengeId"
+                    AND "creatorId" = auth.uid()
+            )
+            ELSE false
+        END
+    );
+
+CREATE POLICY "Challenge creators can delete activity types." ON "public"."ChallengeActivityType" FOR DELETE USING (
+    CASE
+        WHEN auth.uid() IS NOT NULL THEN EXISTS (
             SELECT
                 1
             FROM
@@ -278,43 +381,52 @@ UPDATE
                 id = "challengeId"
                 AND "creatorId" = auth.uid()
         )
-    );
-
-CREATE POLICY "Challenge creators can delete activity types." ON "public"."ChallengeActivityType" FOR DELETE USING (
-    EXISTS (
-        SELECT
-            1
-        FROM
-            "public"."Challenge"
-        WHERE
-            id = "challengeId"
-            AND "creatorId" = auth.uid()
-    )
+        ELSE false
+    END
 );
 
--- Milestones
-CREATE POLICY "Milestones are viewable by authenticated users." ON "public"."Milestone" FOR
+-- Milestones - Allow public read access for challenge structure
+CREATE POLICY "Milestones are publicly viewable." ON "public"."Milestone" FOR
 SELECT
-    USING (auth.uid() IS NOT NULL);
+    USING (true);
 
 CREATE POLICY "Challenge creators can create milestones." ON "public"."Milestone" FOR
 INSERT
     WITH CHECK (
-        EXISTS (
-            SELECT
-                1
-            FROM
-                "public"."Challenge"
-            WHERE
-                id = "challengeId"
-                AND "creatorId" = auth.uid()
-        )
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN EXISTS (
+                SELECT
+                    1
+                FROM
+                    "public"."Challenge"
+                WHERE
+                    id = "challengeId"
+                    AND "creatorId" = auth.uid()
+            )
+            ELSE false
+        END
     );
 
 CREATE POLICY "Challenge creators can update milestones." ON "public"."Milestone" FOR
 UPDATE
     USING (
-        EXISTS (
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN EXISTS (
+                SELECT
+                    1
+                FROM
+                    "public"."Challenge"
+                WHERE
+                    id = "challengeId"
+                    AND "creatorId" = auth.uid()
+            )
+            ELSE false
+        END
+    );
+
+CREATE POLICY "Challenge creators can delete milestones." ON "public"."Milestone" FOR DELETE USING (
+    CASE
+        WHEN auth.uid() IS NOT NULL THEN EXISTS (
             SELECT
                 1
             FROM
@@ -323,60 +435,88 @@ UPDATE
                 id = "challengeId"
                 AND "creatorId" = auth.uid()
         )
-    );
-
-CREATE POLICY "Challenge creators can delete milestones." ON "public"."Milestone" FOR DELETE USING (
-    EXISTS (
-        SELECT
-            1
-        FROM
-            "public"."Challenge"
-        WHERE
-            id = "challengeId"
-            AND "creatorId" = auth.uid()
-    )
+        ELSE false
+    END
 );
 
--- Milestone Progress
-CREATE POLICY "Milestone progress is viewable by authenticated users." ON "public"."MilestoneProgress" FOR
+-- Milestone Progress - Allow public read access for progress tracking
+CREATE POLICY "Milestone progress is publicly viewable." ON "public"."MilestoneProgress" FOR
 SELECT
-    USING (auth.uid() IS NOT NULL);
+    USING (true);
 
 CREATE POLICY "Participants can create their milestone progress." ON "public"."MilestoneProgress" FOR
 INSERT
     WITH CHECK (
-        EXISTS (
-            SELECT
-                1
-            FROM
-                "public"."ChallengeParticipant"
-            WHERE
-                id = "participantId"
-                AND "userId" = auth.uid()
-        )
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN EXISTS (
+                SELECT
+                    1
+                FROM
+                    "public"."ChallengeParticipant"
+                WHERE
+                    id = "participantId"
+                    AND "userId" = auth.uid()
+            )
+            ELSE false
+        END
     );
 
 CREATE POLICY "Participants can update their milestone progress." ON "public"."MilestoneProgress" FOR
 UPDATE
     USING (
-        EXISTS (
-            SELECT
-                1
-            FROM
-                "public"."ChallengeParticipant"
-            WHERE
-                id = "participantId"
-                AND "userId" = auth.uid()
-        )
+        CASE
+            WHEN auth.uid() IS NOT NULL THEN EXISTS (
+                SELECT
+                    1
+                FROM
+                    "public"."ChallengeParticipant"
+                WHERE
+                    id = "participantId"
+                    AND "userId" = auth.uid()
+            )
+            ELSE false
+        END
     );
 
 CREATE POLICY "System can manage milestone progress." ON "public"."MilestoneProgress" FOR ALL USING (true) WITH CHECK (true);
 
--- Challenge Progress (Aggregation Table)
--- This table is automatically maintained by database triggers.
--- Users can view progress data, but only system/triggers can modify it.
-CREATE POLICY "Challenge progress is viewable by everyone." ON "public"."challenge_progress" FOR
+-- Challenge Progress (Aggregation Table) - Allow public read access for leaderboards
+CREATE POLICY "Challenge progress is publicly viewable." ON "public"."challenge_progress" FOR
 SELECT
     USING (true);
 
 CREATE POLICY "System can manage challenge progress." ON "public"."challenge_progress" FOR ALL USING (true) WITH CHECK (true);
+
+-- Add additional emergency bypass policy for service role
+-- This ensures that even if auth fails, service operations can still work
+CREATE POLICY "Service role bypass for challenges." ON "public"."Challenge" FOR ALL USING (
+    current_setting('request.jwt.claims', true) :: json ->> 'role' = 'service_role'
+) WITH CHECK (
+    current_setting('request.jwt.claims', true) :: json ->> 'role' = 'service_role'
+);
+
+-- CRITICAL: Grant schema usage permissions first
+-- This is essential for anon and authenticated roles to access any tables
+GRANT USAGE ON SCHEMA public TO anon,
+authenticated;
+
+-- Final verification: Grant necessary permissions to authenticated and anon roles
+GRANT
+SELECT
+    ON ALL TABLES IN SCHEMA public TO authenticated,
+    anon;
+
+GRANT
+INSERT
+,
+UPDATE
+,
+    DELETE ON ALL TABLES IN SCHEMA public TO authenticated;
+
+-- Ensure sequences are accessible
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO authenticated,
+anon;
+
+-- Refresh the schema cache
+NOTIFY pgrst,
+'reload schema';

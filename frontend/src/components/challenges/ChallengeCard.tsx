@@ -241,11 +241,12 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 			transition="all 0.2s ease-in-out"
 			_hover={{ transform: 'translateY(-4px)', shadow: 'lg' }}
 			onClick={handleCardClick}
-			minW="300px" // Extend card width by 20%
+			minW="320px"
+			maxW="400px" // Constrain maximum width to prevent excessive stretching
 		>
-			<HStack spacing={4} align="stretch" flex="1">
+			<HStack spacing={4} align="flex-start" flex="1">
 				{/* Main content */}
-				<VStack spacing={3} align="stretch" flex="1">
+				<VStack spacing={3} align="stretch" flex="1" minW="0">
 					{/* Header with badges */}
 					<Wrap justify="space-between" align="center">
 						<WrapItem>
@@ -298,7 +299,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 						</Tag>
 					)}
 
-					<Heading as="h3" size="sm">
+					<Heading as="h3" size="sm" noOfLines={2} lineHeight="1.3">
 						{challenge.title}
 					</Heading>
 
@@ -376,25 +377,25 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 
 				{/* Challenge Image */}
 				{challenge.imageUrl && (
-					<Box flexShrink={0} w="120px" h="full">
+					<Box flexShrink={0} w="80px" h="80px">
 						<Image
 							src={challenge.imageUrl}
 							alt={challenge.title}
-							w="full"
-							h="200px"
+							w="80px"
+							h="80px"
 							objectFit="cover"
-							borderRadius="lg"
+							borderRadius="md"
 							fallback={
 								<Box
-									w="full"
-									h="200px"
+									w="80px"
+									h="80px"
 									bg="gray.100"
-									borderRadius="lg"
+									borderRadius="md"
 									display="flex"
 									alignItems="center"
 									justifyContent="center"
 									color="gray.400"
-									fontSize="sm"
+									fontSize="xs"
 								>
 									No Image
 								</Box>

@@ -124,13 +124,24 @@ WHERE
 
 RETURN NEW;
 
-ELSIF (TG_OP = 'DELETE') THEN
+ELSIF (TG_OP = 'DELETE') THEN -- Check if the challenge still exists before updating
+-- This prevents errors when the challenge is being deleted
+IF EXISTS (
+    SELECT
+        1
+    FROM
+        "public"."Challenge"
+    WHERE
+        id = OLD."challengeId"
+) THEN
 UPDATE
     "public"."Challenge"
 SET
     "participantCount" = "participantCount" - 1
 WHERE
     id = OLD."challengeId";
+
+END IF;
 
 RETURN OLD;
 

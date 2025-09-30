@@ -47,6 +47,7 @@ MIGRATION_FILES=(
     "05_progress_aggregation.sql"
     "06_discussion_rls_policies.sql"
     "07_fix_updated_at_defaults.sql"
+    "08_storage_setup.sql"
 )
 
 # Run migrations in order

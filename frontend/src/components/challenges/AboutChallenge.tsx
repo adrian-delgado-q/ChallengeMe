@@ -80,14 +80,14 @@ export const AboutChallenge: React.FC<AboutChallengeProps> = ({ challenge }) => 
 					)}
 				</HStack>
 
-				{/* Challenge Description */}
-				{challenge.description && (
+				{/* Challenge Instructions */}
+				{challenge.instructions && (
 					<Box>
 						<Text fontSize="sm" color="gray.500" fontWeight="semibold" textTransform="uppercase" mb={3}>
-							Description
+							Instructions
 						</Text>
 						<MarkdownRenderer
-							content={challenge.description}
+							content={challenge.instructions}
 							fontSize="sm"
 							color="gray.700"
 							lineHeight="1.5"

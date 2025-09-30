@@ -69,6 +69,7 @@ model Challenge {
   creatorId           String                   @db.Uuid
   title               String
   description         String?
+  instructions        String? // Detailed instructions for the challenge
   imageUrl            String? // Challenge image for cards and detail pages
   challengeType       ChallengeParticipantType @default(INDIVIDUAL)
   maxParticipants     Int?
