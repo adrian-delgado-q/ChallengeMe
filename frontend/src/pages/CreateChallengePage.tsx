@@ -6,11 +6,14 @@ import { ChallengeForm } from '../components/challenges/ChallengeForm';
 const CreateChallengePage: React.FC = () => {
 	const navigate = useNavigate();
 
-	const handleCreateChallenge = (challenge: any) => {
+	const handleCreateChallenge = async (challenge: any) => {
 		// Navigate to the challenges list or the new challenge detail page
 		if (challenge && challenge.id) {
-			// Navigate to the new challenge detail page
-			navigate(`/challenges/${challenge.id}`);
+			// Add a small delay to ensure the challenge is available in the database
+			// before navigating to its detail page
+			setTimeout(() => {
+				navigate(`/challenges/${challenge.id}`);
+			}, 500);
 		} else {
 			// Fallback to challenges list
 			navigate('/challenges');

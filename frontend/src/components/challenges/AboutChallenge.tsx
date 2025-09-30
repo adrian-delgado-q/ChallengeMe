@@ -1,8 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Heading, Grid, VStack, HStack, Text, Icon, Badge, Button } from '@chakra-ui/react';
+import {
+	Heading,
+	Grid,
+	VStack,
+	HStack,
+	Text,
+	Icon,
+	Badge,
+	Button,
+	Box,
+	Divider,
+} from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { SettingsIcon } from '@chakra-ui/icons';
 import { Card } from '../common/Card';
+import { MarkdownRenderer } from '../common/MarkdownRenderer';
 import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../common/Icons';
 import { ActivityTypeService } from '../../graphql/services/activityTypeService';
 import { useUser } from '../../contexts/AuthContext';
@@ -67,6 +79,22 @@ export const AboutChallenge: React.FC<AboutChallengeProps> = ({ challenge }) => 
 						</Button>
 					)}
 				</HStack>
+
+				{/* Challenge Description */}
+				{challenge.description && (
+					<Box>
+						<Text fontSize="sm" color="gray.500" fontWeight="semibold" textTransform="uppercase" mb={3}>
+							Description
+						</Text>
+						<MarkdownRenderer
+							content={challenge.description}
+							fontSize="sm"
+							color="gray.700"
+							lineHeight="1.5"
+						/>
+						<Divider mt={4} />
+					</Box>
+				)}
 
 				<Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }} gap={6}>
 					{/* Challenge Type */}

@@ -13,7 +13,7 @@ import {
 	IconButton,
 } from '@chakra-ui/react';
 import { RepeatIcon } from '@chakra-ui/icons';
-import { useActivities } from '../../hooks/useData';
+import { useActivities } from '../../hooks/useActivitiesQuery';
 import { useActivityUpdates } from '../../hooks/useActivityUpdates';
 import { Card } from '../common/Card';
 

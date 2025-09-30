@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { TeamService, ChallengeService, ActivityService, PostService } from '../graphql/services';
 import { useUser } from '../contexts/AuthContext';
 
@@ -166,6 +166,12 @@ export const useChallenges = (options?: {
 		itemsPerPage: 12,
 	});
 
+	// Memoize options to prevent unnecessary re-renders
+	const memoizedOptions = useMemo(
+		() => options,
+		[options?.page, options?.limit, options?.search, options?.activityType, options?.challengeType]
+	);
+
 	const fetchChallenges = useCallback(async () => {
 		setLoading(true);
 		setError(null);
@@ -174,7 +180,7 @@ export const useChallenges = (options?: {
 		setChallenges([]);
 
 		try {
-			const result = await ChallengeService.getChallenges(options);
+			const result = await ChallengeService.getChallenges(memoizedOptions);
 
 			// Only update state when we have complete data
 			setChallenges(result.challenges || []);
@@ -185,18 +191,13 @@ export const useChallenges = (options?: {
 				itemsPerPage: result.itemsPerPage || 12,
 			});
 		} catch (err: any) {
+			console.error('fetchChallenges error:', err);
 			setError(err.message || 'Failed to fetch challenges');
 			setChallenges([]); // Clear challenges on error
 		} finally {
 			setLoading(false);
 		}
-	}, [
-		options?.page,
-		options?.limit,
-		options?.search,
-		options?.activityType,
-		options?.challengeType,
-	]);
+	}, [memoizedOptions]);
 
 	const createChallenge = useCallback(
 		async (challengeData: any) => {
@@ -259,6 +260,58 @@ export const useChallenges = (options?: {
 	};
 };
 
+// Separate hook for challenge actions without fetching challenges
+export const useChallengeActions = () => {
+	// Dummy fetchChallenges that doesn't actually fetch
+	const fetchChallenges = useCallback(async () => {
+		// This is a no-op function for action-only components
+	}, []);
+
+	const createChallenge = useCallback(async (challengeData: any) => {
+		try {
+			const newChallenge = await ChallengeService.createChallenge(challengeData);
+			return newChallenge;
+		} catch (err: any) {
+			throw new Error(err.message || 'Failed to create challenge');
+		}
+	}, []);
+
+	const joinChallenge = useCallback(
+		async (challengeId: string, asTeam?: string, accessCode?: string) => {
+			try {
+				if (asTeam) {
+					await ChallengeService.joinChallengeAsTeam(challengeId, asTeam, accessCode);
+				} else {
+					await ChallengeService.joinChallengeAsIndividual(challengeId, accessCode);
+				}
+			} catch (err: any) {
+				throw new Error(err.message || 'Failed to join challenge');
+			}
+		},
+		[]
+	);
+
+	const updateChallenge = useCallback(async (challengeId: string, challengeData: any) => {
+		try {
+			const updatedChallenge = await ChallengeService.updateChallenge(challengeId, challengeData);
+			return updatedChallenge;
+		} catch (err: any) {
+			throw new Error(err.message || 'Failed to update challenge');
+		}
+	}, []);
+
+	return {
+		challenges: [],
+		loading: false,
+		error: null,
+		pagination: { totalCount: 0, totalPages: 0, currentPage: 1, itemsPerPage: 12 },
+		refetch: fetchChallenges,
+		createChallenge,
+		updateChallenge,
+		joinChallenge,
+	};
+};
+
 // Custom hook for challenge details
 export const useChallengeDetails = (challengeId: string) => {
 	const [challenge, setChallenge] = useState<any>(null);
@@ -277,10 +330,29 @@ export const useChallengeDetails = (challengeId: string) => {
 		try {
 			const data = await ChallengeService.getChallengeById(challengeId);
 			setChallenge(data);
-		} catch (err: any) {
-			setError(err.message || 'Failed to fetch challenge details');
-		} finally {
 			setLoading(false);
+		} catch (err: any) {
+			console.error('Error fetching challenge details:', err);
+			const errorMessage = err.message || 'Failed to fetch challenge details';
+
+			// If the challenge is not found and might be newly created, retry once after a delay
+			if (errorMessage.includes('not found') && errorMessage.includes('just created')) {
+				setTimeout(() => {
+					ChallengeService.getChallengeById(challengeId)
+						.then(data => {
+							setChallenge(data);
+							setError(null);
+							setLoading(false);
+						})
+						.catch(retryErr => {
+							setError(retryErr.message || 'Failed to fetch challenge details');
+							setLoading(false);
+						});
+				}, 1000);
+			} else {
+				setError(errorMessage);
+				setLoading(false);
+			}
 		}
 	}, [challengeId]);
 

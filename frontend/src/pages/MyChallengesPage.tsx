@@ -155,11 +155,7 @@ const MyChallengesPage: React.FC = () => {
 					<Text color="gray.600">Manage and monitor your created challenges</Text>
 				</VStack>
 
-				<Button
-					leftIcon={<AddIcon />}
-					colorScheme="orange"
-					onClick={() => navigate('/challenges/create')}
-				>
+				<Button leftIcon={<AddIcon />} colorScheme="orange" onClick={() => navigate('/create')}>
 					Create New Challenge
 				</Button>
 			</Flex>
@@ -206,7 +202,7 @@ const MyChallengesPage: React.FC = () => {
 							leftIcon={<AddIcon />}
 							colorScheme="orange"
 							size="lg"
-							onClick={() => navigate('/challenges/create')}
+							onClick={() => navigate('/create')}
 						>
 							Create Your First Challenge
 						</Button>

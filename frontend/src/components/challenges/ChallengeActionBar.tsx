@@ -16,7 +16,8 @@ import { useUser } from '../../contexts/AuthContext';
 import { ChallengeService } from '../../graphql/services';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { useChallenges, useTeams } from '../../hooks/useData';
+import { useChallengeActions } from '../../hooks/useData';
+import { useTeams } from '../../hooks/useTeamsQuery';
 import { TeamSelectionModal } from './TeamSelectionModal';
 import { AccessCodeModal } from './AccessCodeModal';
 import type { Challenge, Team } from '../../types';
@@ -67,7 +68,7 @@ export const ChallengeActionBar: React.FC<ChallengeActionBarProps> = ({
 	onRefresh,
 }) => {
 	const { user } = useUser();
-	const { joinChallenge } = useChallenges();
+	const { joinChallenge } = useChallengeActions();
 	const { teams } = useTeams();
 	const notifications = useNotifications();
 

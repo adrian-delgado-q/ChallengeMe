@@ -20,7 +20,8 @@ import type { Challenge, Team } from '../../types';
 import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../common/Icons';
 import { TeamSelectionModal } from './TeamSelectionModal';
 import { AccessCodeModal } from './AccessCodeModal';
-import { useChallenges, useTeams } from '../../hooks/useData';
+import { useChallengeActions } from '../../hooks/useData';
+import { useTeams } from '../../hooks/useTeamsQuery';
 import { useUser } from '../../contexts/AuthContext';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
@@ -69,7 +70,7 @@ interface ChallengeCardProps {
 
 export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelect }) => {
 	const { user } = useUser();
-	const { joinChallenge } = useChallenges();
+	const { joinChallenge } = useChallengeActions();
 	const { teams } = useTeams();
 	const notifications = useNotifications();
 	const navigate = useNavigate();
@@ -100,38 +101,35 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 		successMessage: 'Successfully left challenge!',
 	});
 
-	// Check participation status
+	// Check participation status using pre-fetched data
 	useEffect(() => {
-		const checkParticipation = async () => {
-			if (!user || !challenge.id) return;
+		if (!user || !challenge.participation) {
+			setIsParticipating(false);
+			setParticipantTeam(null);
+			return;
+		}
 
-			try {
-				const participationDetails = await ChallengeService.getMyParticipationDetails(challenge.id);
-				setIsParticipating(participationDetails.isParticipating);
+		setIsParticipating(challenge.participation.isParticipating);
 
-				if (participationDetails.team) {
-					// Convert the team data to match our Team interface
-					const teamData: Team = {
-						id: participationDetails.team.id,
-						name: participationDetails.team.name,
-						avatarUrl: participationDetails.team.avatarUrl,
-						memberCount: 0, // We don't have this info from the participation details
-						isPublic: true, // Default assumption
-						creatorId: '', // We don't have this info
-						description: '',
-						maxMembers: undefined,
-						sportsTypes: [],
-						createdAt: '',
-					};
-					setParticipantTeam(teamData);
-				}
-			} catch (error) {
-				console.error('Error checking participation:', error);
-			}
-		};
-
-		checkParticipation();
-	}, [user, challenge.id, challenge.challengeType]);
+		if (challenge.participation.team) {
+			// Convert the team data to match our Team interface
+			const teamData: Team = {
+				id: challenge.participation.team.id,
+				name: challenge.participation.team.name,
+				avatarUrl: challenge.participation.team.avatarUrl,
+				memberCount: 0, // We don't have this info from the participation details
+				isPublic: true, // Default assumption
+				creatorId: '', // We don't have this info
+				description: '',
+				maxMembers: undefined,
+				sportsTypes: [],
+				createdAt: '',
+			};
+			setParticipantTeam(teamData);
+		} else {
+			setParticipantTeam(null);
+		}
+	}, [user, challenge.participation]);
 
 	const handleJoinChallenge = async (e: React.MouseEvent) => {
 		e.stopPropagation(); // Prevent card click

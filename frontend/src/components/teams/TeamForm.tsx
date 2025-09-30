@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { ImageUploadField } from '../common/ImageUploadField';
 import { FileUploadService } from '../../services/fileUploadService';
-import { TeamService } from '../../graphql/services';
+import { useTeamMutations } from '../../hooks/useTeamsQuery';
 import { ActivityTypeService } from '../../graphql/services/activityTypeService';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
@@ -62,6 +62,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
 		showErrorNotifications: !hideButtons, // Only show notifications for standalone usage
 		errorContext: 'Team form submission',
 	});
+	const { createTeam, updateTeam } = useTeamMutations();
 
 	// Load activity types on component mount
 	useEffect(() => {
@@ -158,9 +159,9 @@ export const TeamForm: React.FC<TeamFormProps> = ({
 				};
 
 				if (isEditing && initialData?.id) {
-					return await TeamService.updateTeam(initialData.id, teamData);
+					return await updateTeam.mutateAsync({ teamId: initialData.id, teamData });
 				} else {
-					return await TeamService.createTeam(teamData);
+					return await createTeam.mutateAsync(teamData);
 				}
 			},
 			{
