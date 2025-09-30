@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { useUser } from './contexts/AuthContext';
 import { AppLayout } from './components/layout/AppLayout';
 import AuthPage from './pages/AuthPage';
+import AuthCallbackPage from './pages/AuthCallbackPage';
 import ChallengesPage from './pages/ChallengesPage';
 import TeamsPage from './pages/TeamsPage';
 import TeamDashboardPage from './pages/TeamDashboardPage';
@@ -59,6 +60,7 @@ const App: React.FC = () => {
 			<Routes>
 				{/* Public routes */}
 				<Route path="/auth" element={<AuthPage />} />
+				<Route path="/auth/callback" element={<AuthCallbackPage />} />
 
 				{/* Protected routes - each wrapped individually */}
 				<Route

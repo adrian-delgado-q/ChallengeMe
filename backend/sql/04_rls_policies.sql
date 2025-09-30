@@ -6,7 +6,7 @@
 -- Prepares the database for new policy definitions.
 -- -----------------------------------------------------------------------------
 -- Drop all existing policies in the public schema to prevent conflicts.
-DO $ $ DECLARE r RECORD;
+DO $$ DECLARE r RECORD;
 
 BEGIN FOR r IN (
     SELECT
@@ -20,7 +20,7 @@ BEGIN FOR r IN (
 
 END LOOP;
 
-END $ $;
+END $$;
 
 -- Enable RLS on all relevant tables.
 ALTER TABLE
