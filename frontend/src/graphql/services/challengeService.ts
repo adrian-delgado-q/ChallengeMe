@@ -8,6 +8,7 @@ import { handleAuthError } from '../../utils/authUtils';
 export interface ChallengeInput {
 	title: string;
 	description?: string;
+	instructions?: string; // Detailed instructions for the challenge
 	imageUrl?: string; // Challenge image for cards and detail pages
 	activityTypes?: string[]; // Array of supported activity types for mixed challenges
 	challengeType: 'INDIVIDUAL' | 'TEAM';

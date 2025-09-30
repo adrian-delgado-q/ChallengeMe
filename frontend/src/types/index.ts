@@ -43,6 +43,7 @@ export interface Challenge {
 	creatorId?: string;
 	title: string;
 	description?: string;
+	instructions?: string; // Detailed instructions for the challenge
 	imageUrl?: string; // Challenge image for cards and detail pages
 	type?: string; // Activity type (running, cycling, etc.) - kept for backward compatibility
 	activityTypes?: string[]; // Array of supported activity types for mixed challenges

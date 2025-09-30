@@ -42,6 +42,7 @@ export type ChallengeMinAggregateOutputType = {
   creatorId: string | null
   title: string | null
   description: string | null
+  instructions: string | null
   imageUrl: string | null
   challengeType: $Enums.ChallengeParticipantType | null
   maxParticipants: number | null
@@ -61,6 +62,7 @@ export type ChallengeMaxAggregateOutputType = {
   creatorId: string | null
   title: string | null
   description: string | null
+  instructions: string | null
   imageUrl: string | null
   challengeType: $Enums.ChallengeParticipantType | null
   maxParticipants: number | null
@@ -80,6 +82,7 @@ export type ChallengeCountAggregateOutputType = {
   creatorId: number
   title: number
   description: number
+  instructions: number
   imageUrl: number
   challengeType: number
   maxParticipants: number
@@ -113,6 +116,7 @@ export type ChallengeMinAggregateInputType = {
   creatorId?: true
   title?: true
   description?: true
+  instructions?: true
   imageUrl?: true
   challengeType?: true
   maxParticipants?: true
@@ -132,6 +136,7 @@ export type ChallengeMaxAggregateInputType = {
   creatorId?: true
   title?: true
   description?: true
+  instructions?: true
   imageUrl?: true
   challengeType?: true
   maxParticipants?: true
@@ -151,6 +156,7 @@ export type ChallengeCountAggregateInputType = {
   creatorId?: true
   title?: true
   description?: true
+  instructions?: true
   imageUrl?: true
   challengeType?: true
   maxParticipants?: true
@@ -257,6 +263,7 @@ export type ChallengeGroupByOutputType = {
   creatorId: string
   title: string
   description: string | null
+  instructions: string | null
   imageUrl: string | null
   challengeType: $Enums.ChallengeParticipantType
   maxParticipants: number | null
@@ -299,6 +306,7 @@ export type ChallengeWhereInput = {
   creatorId?: Prisma.UuidFilter<"Challenge"> | string
   title?: Prisma.StringFilter<"Challenge"> | string
   description?: Prisma.StringNullableFilter<"Challenge"> | string | null
+  instructions?: Prisma.StringNullableFilter<"Challenge"> | string | null
   imageUrl?: Prisma.StringNullableFilter<"Challenge"> | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFilter<"Challenge"> | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.IntNullableFilter<"Challenge"> | number | null
@@ -328,6 +336,7 @@ export type ChallengeOrderByWithRelationInput = {
   creatorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  instructions?: Prisma.SortOrderInput | Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   challengeType?: Prisma.SortOrder
   maxParticipants?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -360,6 +369,7 @@ export type ChallengeWhereUniqueInput = Prisma.AtLeast<{
   creatorId?: Prisma.UuidFilter<"Challenge"> | string
   title?: Prisma.StringFilter<"Challenge"> | string
   description?: Prisma.StringNullableFilter<"Challenge"> | string | null
+  instructions?: Prisma.StringNullableFilter<"Challenge"> | string | null
   imageUrl?: Prisma.StringNullableFilter<"Challenge"> | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFilter<"Challenge"> | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.IntNullableFilter<"Challenge"> | number | null
@@ -389,6 +399,7 @@ export type ChallengeOrderByWithAggregationInput = {
   creatorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  instructions?: Prisma.SortOrderInput | Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   challengeType?: Prisma.SortOrder
   maxParticipants?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -416,6 +427,7 @@ export type ChallengeScalarWhereWithAggregatesInput = {
   creatorId?: Prisma.UuidWithAggregatesFilter<"Challenge"> | string
   title?: Prisma.StringWithAggregatesFilter<"Challenge"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Challenge"> | string | null
+  instructions?: Prisma.StringNullableWithAggregatesFilter<"Challenge"> | string | null
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"Challenge"> | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeWithAggregatesFilter<"Challenge"> | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.IntNullableWithAggregatesFilter<"Challenge"> | number | null
@@ -434,6 +446,7 @@ export type ChallengeCreateInput = {
   id?: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -463,6 +476,7 @@ export type ChallengeUncheckedCreateInput = {
   creatorId: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -490,6 +504,7 @@ export type ChallengeUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -519,6 +534,7 @@ export type ChallengeUncheckedUpdateInput = {
   creatorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -547,6 +563,7 @@ export type ChallengeCreateManyInput = {
   creatorId: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -565,6 +582,7 @@ export type ChallengeUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -584,6 +602,7 @@ export type ChallengeUncheckedUpdateManyInput = {
   creatorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -613,6 +632,7 @@ export type ChallengeCountOrderByAggregateInput = {
   creatorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  instructions?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   challengeType?: Prisma.SortOrder
   maxParticipants?: Prisma.SortOrder
@@ -638,6 +658,7 @@ export type ChallengeMaxOrderByAggregateInput = {
   creatorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  instructions?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   challengeType?: Prisma.SortOrder
   maxParticipants?: Prisma.SortOrder
@@ -657,6 +678,7 @@ export type ChallengeMinOrderByAggregateInput = {
   creatorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  instructions?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   challengeType?: Prisma.SortOrder
   maxParticipants?: Prisma.SortOrder
@@ -871,6 +893,7 @@ export type ChallengeCreateWithoutCreatorInput = {
   id?: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -898,6 +921,7 @@ export type ChallengeUncheckedCreateWithoutCreatorInput = {
   id?: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -955,6 +979,7 @@ export type ChallengeScalarWhereInput = {
   creatorId?: Prisma.UuidFilter<"Challenge"> | string
   title?: Prisma.StringFilter<"Challenge"> | string
   description?: Prisma.StringNullableFilter<"Challenge"> | string | null
+  instructions?: Prisma.StringNullableFilter<"Challenge"> | string | null
   imageUrl?: Prisma.StringNullableFilter<"Challenge"> | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFilter<"Challenge"> | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.IntNullableFilter<"Challenge"> | number | null
@@ -973,6 +998,7 @@ export type ChallengeCreateWithoutSupportedActivitiesInput = {
   id?: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1001,6 +1027,7 @@ export type ChallengeUncheckedCreateWithoutSupportedActivitiesInput = {
   creatorId: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1043,6 +1070,7 @@ export type ChallengeUpdateWithoutSupportedActivitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1071,6 +1099,7 @@ export type ChallengeUncheckedUpdateWithoutSupportedActivitiesInput = {
   creatorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1097,6 +1126,7 @@ export type ChallengeCreateWithoutMilestonesInput = {
   id?: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1125,6 +1155,7 @@ export type ChallengeUncheckedCreateWithoutMilestonesInput = {
   creatorId: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1167,6 +1198,7 @@ export type ChallengeUpdateWithoutMilestonesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1195,6 +1227,7 @@ export type ChallengeUncheckedUpdateWithoutMilestonesInput = {
   creatorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1221,6 +1254,7 @@ export type ChallengeCreateWithoutParticipantsInput = {
   id?: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1249,6 +1283,7 @@ export type ChallengeUncheckedCreateWithoutParticipantsInput = {
   creatorId: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1291,6 +1326,7 @@ export type ChallengeUpdateWithoutParticipantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1319,6 +1355,7 @@ export type ChallengeUncheckedUpdateWithoutParticipantsInput = {
   creatorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1345,6 +1382,7 @@ export type ChallengeCreateWithoutActivitiesInput = {
   id?: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1373,6 +1411,7 @@ export type ChallengeUncheckedCreateWithoutActivitiesInput = {
   creatorId: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1415,6 +1454,7 @@ export type ChallengeUpdateWithoutActivitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1443,6 +1483,7 @@ export type ChallengeUncheckedUpdateWithoutActivitiesInput = {
   creatorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1469,6 +1510,7 @@ export type ChallengeCreateWithoutProgressInput = {
   id?: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1497,6 +1539,7 @@ export type ChallengeUncheckedCreateWithoutProgressInput = {
   creatorId: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1539,6 +1582,7 @@ export type ChallengeUpdateWithoutProgressInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1567,6 +1611,7 @@ export type ChallengeUncheckedUpdateWithoutProgressInput = {
   creatorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1593,6 +1638,7 @@ export type ChallengeCreateWithoutPostsInput = {
   id?: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1621,6 +1667,7 @@ export type ChallengeUncheckedCreateWithoutPostsInput = {
   creatorId: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1663,6 +1710,7 @@ export type ChallengeUpdateWithoutPostsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1691,6 +1739,7 @@ export type ChallengeUncheckedUpdateWithoutPostsInput = {
   creatorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1717,6 +1766,7 @@ export type ChallengeCreateWithoutDiscussionPostsInput = {
   id?: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1745,6 +1795,7 @@ export type ChallengeUncheckedCreateWithoutDiscussionPostsInput = {
   creatorId: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1787,6 +1838,7 @@ export type ChallengeUpdateWithoutDiscussionPostsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1815,6 +1867,7 @@ export type ChallengeUncheckedUpdateWithoutDiscussionPostsInput = {
   creatorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1841,6 +1894,7 @@ export type ChallengeCreateWithoutDiscussionModeratorsInput = {
   id?: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1869,6 +1923,7 @@ export type ChallengeUncheckedCreateWithoutDiscussionModeratorsInput = {
   creatorId: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1911,6 +1966,7 @@ export type ChallengeUpdateWithoutDiscussionModeratorsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1939,6 +1995,7 @@ export type ChallengeUncheckedUpdateWithoutDiscussionModeratorsInput = {
   creatorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1965,6 +2022,7 @@ export type ChallengeCreateWithoutDiscussionBansInput = {
   id?: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -1993,6 +2051,7 @@ export type ChallengeUncheckedCreateWithoutDiscussionBansInput = {
   creatorId: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -2035,6 +2094,7 @@ export type ChallengeUpdateWithoutDiscussionBansInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2063,6 +2123,7 @@ export type ChallengeUncheckedUpdateWithoutDiscussionBansInput = {
   creatorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2089,6 +2150,7 @@ export type ChallengeCreateManyCreatorInput = {
   id?: string
   title: string
   description?: string | null
+  instructions?: string | null
   imageUrl?: string | null
   challengeType?: $Enums.ChallengeParticipantType
   maxParticipants?: number | null
@@ -2107,6 +2169,7 @@ export type ChallengeUpdateWithoutCreatorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2134,6 +2197,7 @@ export type ChallengeUncheckedUpdateWithoutCreatorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2161,6 +2225,7 @@ export type ChallengeUncheckedUpdateManyWithoutCreatorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeType?: Prisma.EnumChallengeParticipantTypeFieldUpdateOperationsInput | $Enums.ChallengeParticipantType
   maxParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2283,6 +2348,7 @@ export type ChallengeSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   creatorId?: boolean
   title?: boolean
   description?: boolean
+  instructions?: boolean
   imageUrl?: boolean
   challengeType?: boolean
   maxParticipants?: boolean
@@ -2313,6 +2379,7 @@ export type ChallengeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   creatorId?: boolean
   title?: boolean
   description?: boolean
+  instructions?: boolean
   imageUrl?: boolean
   challengeType?: boolean
   maxParticipants?: boolean
@@ -2333,6 +2400,7 @@ export type ChallengeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   creatorId?: boolean
   title?: boolean
   description?: boolean
+  instructions?: boolean
   imageUrl?: boolean
   challengeType?: boolean
   maxParticipants?: boolean
@@ -2353,6 +2421,7 @@ export type ChallengeSelectScalar = {
   creatorId?: boolean
   title?: boolean
   description?: boolean
+  instructions?: boolean
   imageUrl?: boolean
   challengeType?: boolean
   maxParticipants?: boolean
@@ -2367,7 +2436,7 @@ export type ChallengeSelectScalar = {
   status?: boolean
 }
 
-export type ChallengeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "title" | "description" | "imageUrl" | "challengeType" | "maxParticipants" | "participantCount" | "startDate" | "endDate" | "isPublic" | "accessCode" | "createdAt" | "expiresAt" | "maxTeamSize" | "status", ExtArgs["result"]["challenge"]>
+export type ChallengeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "title" | "description" | "instructions" | "imageUrl" | "challengeType" | "maxParticipants" | "participantCount" | "startDate" | "endDate" | "isPublic" | "accessCode" | "createdAt" | "expiresAt" | "maxTeamSize" | "status", ExtArgs["result"]["challenge"]>
 export type ChallengeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | Prisma.Challenge$activitiesArgs<ExtArgs>
   creator?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
@@ -2407,6 +2476,7 @@ export type $ChallengePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     creatorId: string
     title: string
     description: string | null
+    instructions: string | null
     imageUrl: string | null
     challengeType: $Enums.ChallengeParticipantType
     maxParticipants: number | null
@@ -2856,6 +2926,7 @@ export interface ChallengeFieldRefs {
   readonly creatorId: Prisma.FieldRef<"Challenge", 'String'>
   readonly title: Prisma.FieldRef<"Challenge", 'String'>
   readonly description: Prisma.FieldRef<"Challenge", 'String'>
+  readonly instructions: Prisma.FieldRef<"Challenge", 'String'>
   readonly imageUrl: Prisma.FieldRef<"Challenge", 'String'>
   readonly challengeType: Prisma.FieldRef<"Challenge", 'ChallengeParticipantType'>
   readonly maxParticipants: Prisma.FieldRef<"Challenge", 'Int'>
