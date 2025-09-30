@@ -21,7 +21,7 @@ import { MilestonesDisplay } from '../components/dashboard/MilestonesDisplay';
 import { ChallengeHeader } from '../components/challenges/ChallengeHeader';
 import { AboutChallenge } from '../components/challenges/AboutChallenge';
 import { ChallengeActionBar } from '../components/challenges/ChallengeActionBar';
-import { useChallengeDetails } from '../hooks/useData';
+import { useChallengeQuery } from '../hooks/useChallengesQuery';
 import { useParams } from 'react-router-dom';
 import { RealTimeDebug } from '../components/debug/RealTimeDebug';
 
@@ -30,11 +30,11 @@ const ChallengeDashboardPage: React.FC = () => {
 	const { id: challengeId } = useParams<{ id: string }>();
 
 	const {
-		challenge,
-		loading: challengeLoading,
+		data: challenge,
+		isLoading: challengeLoading,
 		error: challengeError,
 		refetch,
-	} = useChallengeDetails(challengeId || '');
+	} = useChallengeQuery(challengeId || '');
 
 	// Function to refresh challenge data and activity feeds
 	const handleActivityLogged = () => {
@@ -54,7 +54,7 @@ const ChallengeDashboardPage: React.FC = () => {
 		return (
 			<Alert status="error">
 				<AlertIcon />
-				{challengeError || 'Challenge not found'}
+				{challengeError?.message || 'Challenge not found'}
 			</Alert>
 		);
 	}
@@ -75,8 +75,53 @@ const ChallengeDashboardPage: React.FC = () => {
 				{/* About This Challenge Section */}
 				<AboutChallenge challenge={challenge} />
 
-				{/* Grid layout: Main content (2fr) | Compact sidebar (1fr) */}
-				<Grid templateColumns={{ base: '1fr', lg: '2fr 1fr' }} gap={6} alignItems="start">
+				{/* Mobile Layout: Show milestones first, then progress chart */}
+				<Box display={{ base: 'block', lg: 'none' }}>
+					<VStack spacing={6} align="stretch">
+						{/* Mobile: Milestones first */}
+						<MilestonesDisplay
+							milestones={challenge.milestones}
+							currentProgress={challenge.progress || 0}
+							progressByActivityType={challenge.progressByActivityType || {}}
+						/>
+
+						{/* Mobile: Progress Chart second */}
+						<ProgressChart challengeId={challengeId} />
+
+						{/* Mobile: Leaderboard */}
+						{challengeId ? (
+							<Leaderboard challengeId={challengeId} />
+						) : (
+							<Card p={4}>
+								<Center>
+									<Text fontSize="sm">No challenge selected</Text>
+								</Center>
+							</Card>
+						)}
+
+						{/* Mobile: Latest Updates */}
+						{challengeId ? (
+							<ActivityFeed challengeId={challengeId} />
+						) : (
+							<Card p={4}>
+								<Center>
+									<Text fontSize="sm">No challenge selected</Text>
+								</Center>
+							</Card>
+						)}
+
+						{/* Mobile: Comments */}
+						{challengeId && <CommentsForum challengeId={challengeId} />}
+					</VStack>
+				</Box>
+
+				{/* Desktop Layout: Grid layout with Progress Chart + Discussion on left, Sidebar on right */}
+				<Grid
+					templateColumns={{ base: '1fr', lg: '2fr 1fr' }}
+					gap={6}
+					alignItems="start"
+					display={{ base: 'none', lg: 'grid' }}
+				>
 					{/* Left Column: Main Content (Progress Chart + Discussion) */}
 					<VStack spacing={6} align="stretch">
 						<ProgressChart challengeId={challengeId} />

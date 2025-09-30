@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
 	Avatar,
 	Box,
@@ -18,34 +18,26 @@ import { useNavigate } from 'react-router-dom';
 import { ChallengeCard } from '../components/challenges/ChallengeCard';
 import { Card } from '../components/common/Card';
 import { EditProfileModal } from '../components/common/EditProfileModal';
-import { useChallenges } from '../hooks/useData';
+import { useChallengesQuery } from '../hooks/useChallengesQuery';
+import { useCurrentProfileQuery } from '../hooks/useProfilesQuery';
 import { useUser } from '../contexts/AuthContext';
-import { ProfileService } from '../graphql/services';
 
 const ProfilePage: React.FC = () => {
 	const navigate = useNavigate();
 	const { user } = useUser();
-	const { challenges, loading: challengesLoading, error: challengesError } = useChallenges();
-	const [profile, setProfile] = useState<any>(null);
-	const [profileLoading, setProfileLoading] = useState(true);
+	const {
+		data: challengeData,
+		isLoading: challengesLoading,
+		error: challengesError,
+	} = useChallengesQuery();
+	const challenges = Array.isArray(challengeData) ? challengeData : challengeData?.challenges || [];
+	const { data: profile, isLoading: profileLoading } = useCurrentProfileQuery();
 	const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
 
-	// Fetch user profile
-	useEffect(() => {
-		if (user) {
-			ProfileService.getCurrentProfile()
-				.then(setProfile)
-				.catch(() => {}) // Ignore errors for now
-				.finally(() => setProfileLoading(false));
-		}
-	}, [user]);
-
 	// Handle profile update
-	const handleProfileUpdate = (updatedProfile: any) => {
-		setProfile((prevProfile: any) => ({
-			...prevProfile,
-			...updatedProfile,
-		}));
+	const handleProfileUpdate = () => {
+		// Profile will be updated automatically via React Query
+		onEditClose();
 	};
 
 	if (!user) {
@@ -125,7 +117,7 @@ const ProfilePage: React.FC = () => {
 				) : challengesError ? (
 					<Alert status="error">
 						<AlertIcon />
-						{challengesError}
+						{challengesError?.message}
 					</Alert>
 				) : userChallenges.length === 0 ? (
 					<Text color="gray.500" textAlign="center" py={8}>

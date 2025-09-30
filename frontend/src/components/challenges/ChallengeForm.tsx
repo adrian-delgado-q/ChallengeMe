@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { ImageUploadField } from '../common/ImageUploadField';
 import { FileUploadService } from '../../services/fileUploadService';
-import { useChallenges } from '../../hooks/useData';
+import { useChallengeActions } from '../../hooks/useData';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { CommonValidationSchemas } from '../../utils/validation';
@@ -40,7 +40,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
 	const [activityTypes, setActivityTypes] = useState<ActivityType[]>([]);
 	const [isLoadingActivityTypes, setIsLoadingActivityTypes] = useState(true);
 
-	const { createChallenge, updateChallenge } = useChallenges();
+	const { createChallenge, updateChallenge } = useChallengeActions();
 	const notifications = useNotifications();
 	const { isLoading: isSubmitting, execute } = useAsyncState({
 		showSuccessNotifications: true,
@@ -320,11 +320,16 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
 			<FormControl>
 				<FormLabel>Description</FormLabel>
 				<Textarea
-					placeholder="Describe your mixed challenge. Include what activities are allowed and any special rules."
+					placeholder="Describe your mixed challenge. Include what activities are allowed and any special rules. Supports **bold**, *italic*, [links](url), bullet points, and tables."
 					value={description}
 					onChange={e => setDescription(e.target.value)}
 					isDisabled={isSubmitting}
+					minH="120px"
 				/>
+				<Text fontSize="xs" color="gray.500" mt={1}>
+					Markdown formatting supported: **bold**, *italic*, [links](url), bullet points (- item),
+					tables, etc.
+				</Text>
 			</FormControl>
 
 			<ImageUploadField

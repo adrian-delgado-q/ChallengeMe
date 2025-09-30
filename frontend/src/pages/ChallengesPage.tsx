@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChallengeCard } from '../components/challenges/ChallengeCard';
 import { ChallengeSkeletonGrid } from '../components/challenges/ChallengeCardSkeleton';
 import { Pagination } from '../components/common/Pagination';
-import { useChallenges } from '../hooks/useData';
+import { useChallenges } from '../hooks/useChallengesQuery';
 import { useUser } from '../contexts/AuthContext';
 import { AuthPrompt } from '../components/common/AuthPrompt';
 import { ErrorDisplay } from '../components/common/ErrorDisplay';
@@ -22,19 +22,20 @@ const ChallengesPage: React.FC = () => {
 	const [activityTypeFilter, setActivityTypeFilter] = useState('all');
 	const [challengeTypeFilter, setChallengeTypeFilter] = useState('all');
 
+	// Memoize options to prevent infinite re-renders
+	const challengeOptions = useMemo(
+		() => ({
+			page: currentPage,
+			limit: itemsPerPage,
+			search: debouncedSearchTerm || undefined,
+			activityType: activityTypeFilter !== 'all' ? activityTypeFilter : undefined,
+			challengeType: challengeTypeFilter !== 'all' ? challengeTypeFilter : undefined,
+		}),
+		[currentPage, itemsPerPage, debouncedSearchTerm, activityTypeFilter, challengeTypeFilter]
+	);
+
 	// Use the updated hook with pagination
-	const {
-		challenges,
-		loading: isFetching,
-		error,
-		pagination,
-	} = useChallenges({
-		page: currentPage,
-		limit: itemsPerPage,
-		search: debouncedSearchTerm || undefined,
-		activityType: activityTypeFilter !== 'all' ? activityTypeFilter : undefined,
-		challengeType: challengeTypeFilter !== 'all' ? challengeTypeFilter : undefined,
-	});
+	const { challenges, loading: isFetching, error, pagination } = useChallenges(challengeOptions);
 
 	// Debounce search term for better performance
 	useEffect(() => {
@@ -279,7 +280,7 @@ const ChallengesPage: React.FC = () => {
 								Clear All Filters
 							</Button>
 						) : (
-							<Button colorScheme="orange" onClick={() => navigate('/challenges/create')}>
+							<Button colorScheme="orange" onClick={() => navigate('/create')}>
 								Create Your First Challenge
 							</Button>
 						)}

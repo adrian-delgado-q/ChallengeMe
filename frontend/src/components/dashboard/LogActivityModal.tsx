@@ -23,7 +23,9 @@ import {
 	Spinner,
 	Box,
 } from '@chakra-ui/react';
-import { useActivities, useChallenges, useTeams } from '../../hooks/useData';
+import { useActivities } from '../../hooks/useActivitiesQuery';
+import { useChallengeActions } from '../../hooks/useData';
+import { useTeams } from '../../hooks/useTeamsQuery';
 import { ChallengeService } from '../../graphql/services';
 import { ActivityTypeService } from '../../graphql/services/activityTypeService';
 import { useNotifications } from '../../utils/notifications';
@@ -56,7 +58,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 	const [showJoinPrompt, setShowJoinPrompt] = useState(false);
 
 	const { createActivity } = useActivities();
-	const { joinChallenge } = useChallenges();
+	const { joinChallenge } = useChallengeActions();
 	const { teams } = useTeams();
 	const notifications = useNotifications();
 	const {

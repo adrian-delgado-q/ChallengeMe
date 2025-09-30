@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Box, Heading, Spinner, Center, Text, Alert, AlertIcon } from '@chakra-ui/react';
 import { Line } from 'react-chartjs-2';
 import {
@@ -13,7 +13,7 @@ import {
 	Filler,
 } from 'chart.js';
 import { Card } from '../common/Card';
-import { ChallengeService } from '../../graphql/services/challengeService';
+import { useChallengeProgressQuery } from '../../hooks/useChallengesQuery';
 
 ChartJS.register(
 	CategoryScale,
@@ -39,43 +39,15 @@ interface ProgressDataPoint {
 	milestoneLevel: number;
 }
 
-interface MilestoneData {
-	name: string;
-	targetValue: number;
-	activityTypeId: string;
-	order: number;
-}
-
 export const ProgressChart: React.FC<ProgressChartProps> = ({ challengeId }) => {
-	const [progressData, setProgressData] = useState<ProgressDataPoint[]>([]);
-	const [milestones, setMilestones] = useState<MilestoneData[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+	const {
+		data: progressResult,
+		isLoading: loading,
+		error,
+	} = useChallengeProgressQuery(challengeId || '');
 
-	useEffect(() => {
-		const fetchProgressData = async () => {
-			if (!challengeId) {
-				setLoading(false);
-				return;
-			}
-
-			try {
-				setLoading(true);
-				setError(null);
-
-				const result = await ChallengeService.getChallengeProgressOverTime(challengeId);
-				setProgressData(result.progressData);
-				setMilestones(result.milestones);
-			} catch (err: any) {
-				console.error('Error fetching progress data:', err);
-				setError(err.message || 'Failed to load progress data');
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		fetchProgressData();
-	}, [challengeId]);
+	const progressData = progressResult?.progressData || [];
+	const milestones = progressResult?.milestones || [];
 
 	// Group progress data by activity type
 	const getChartData = () => {
@@ -261,7 +233,7 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({ challengeId }) => 
 				</Heading>
 				<Alert status="error">
 					<AlertIcon />
-					{error}
+					{error?.message}
 				</Alert>
 			</Card>
 		);

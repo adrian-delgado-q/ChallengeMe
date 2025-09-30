@@ -64,6 +64,16 @@ export interface Challenge {
 		username: string;
 		avatarUrl?: string;
 	};
+	participation?: {
+		isParticipating: boolean;
+		participantId: string | null;
+		participationType: 'individual' | 'team' | null;
+		team: {
+			id: string;
+			name: string;
+			avatarUrl?: string;
+		} | null;
+	};
 }
 
 export interface Team {

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Button, useDisclosure, Icon } from '@chakra-ui/react';
 import { TeamSelectionModal } from './TeamSelectionModal';
 import { AccessCodeModal } from './AccessCodeModal';
-import { useChallenges, useTeams } from '../../hooks/useData';
+import { useChallengeActions } from '../../hooks/useData';
+import { useTeams } from '../../hooks/useTeamsQuery';
 import { useUser } from '../../contexts/AuthContext';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
@@ -55,7 +56,7 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
 	onJoinSuccess,
 }) => {
 	const { user } = useUser();
-	const { joinChallenge } = useChallenges();
+	const { joinChallenge } = useChallengeActions();
 	const { teams } = useTeams();
 	const notifications = useNotifications();
 

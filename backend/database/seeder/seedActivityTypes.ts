@@ -304,7 +304,27 @@ const activityTypes = [
     unitLabel: 'sessions',
     description: 'Indoor or outdoor rock climbing and bouldering sessions.'
   },
-
+  {
+    name: 'Pickleball',
+    category: 'Sports',
+    unit: 'sessions',
+    unitLabel: 'sessions',
+    description: 'Estimated total sessions completed.'
+  },
+  {
+    name: 'Volleyball',
+    category: 'Sports',
+    unit: 'sessions',
+    unitLabel: 'sessions',
+    description: 'Estimated total sessions completed.'
+  },
+  {
+    name: 'Golf',
+    category: 'Sports',
+    unit: 'sessions',
+    unitLabel: 'sessions',
+    description: 'Estimated total sessions completed.'
+  },
   // --- Daily Activity ---
   {
     name: 'Steps',

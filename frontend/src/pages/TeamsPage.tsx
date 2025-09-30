@@ -20,7 +20,7 @@ import { Pagination } from '../components/common/Pagination';
 
 import { UserTeamIcon } from '../components/common/Icons';
 import { useUser } from '../contexts/AuthContext';
-import { useTeams } from '../hooks/useData';
+import { useTeams } from '../hooks/useTeamsQuery';
 import { AuthPrompt } from '../components/common/AuthPrompt';
 import { ErrorDisplay } from '../components/common/ErrorDisplay';
 

@@ -116,11 +116,78 @@ export class ChallengeService {
 				.select('id, username, avatar_url')
 				.in('id', creatorIds);
 
+			// Get current user for participation checks
+			const loggedInUser = await authService.getCurrentUser();
+
 			// Batch fetch all participant counts at once
 			const { data: allParticipants } = await supabase
 				.from('ChallengeParticipant')
 				.select('challengeId')
 				.in('challengeId', challengeIds);
+
+			// If user is logged in, batch fetch their participation data
+			let myParticipations: any[] = [];
+			let myTeamMemberships: any[] = [];
+
+			if (loggedInUser) {
+				// Batch fetch current user's individual participations
+				const { data: userParticipations } = await supabase
+					.from('ChallengeParticipant')
+					.select('id, challengeId, teamId')
+					.eq('userId', loggedInUser.id)
+					.in('challengeId', challengeIds);
+
+				myParticipations = userParticipations || [];
+
+				// Batch fetch all team participations for these challenges
+				const { data: allTeamParticipations } = await supabase
+					.from('ChallengeParticipant')
+					.select(
+						`
+						id,
+						challengeId,
+						teamId,
+						Team (
+							id,
+							name,
+							avatarUrl
+						)
+					`
+					)
+					.in('challengeId', challengeIds)
+					.not('teamId', 'is', null);
+
+				// Get all unique team IDs from participating teams
+				const participatingTeamIds = [
+					...new Set((allTeamParticipations || []).map(p => p.teamId).filter(Boolean)),
+				];
+
+				if (participatingTeamIds.length > 0) {
+					// Batch fetch user's memberships in all participating teams
+					const { data: teamMemberships } = await supabase
+						.from('TeamMembership')
+						.select('teamId, userId')
+						.in('teamId', participatingTeamIds);
+
+					myTeamMemberships = (teamMemberships || []).filter(m => m.userId === loggedInUser.id);
+
+					// Add team participation info to myParticipations
+					for (const teamParticipation of allTeamParticipations || []) {
+						const isUserInTeam = myTeamMemberships.some(m => m.teamId === teamParticipation.teamId);
+						if (isUserInTeam) {
+							myParticipations.push({
+								id: teamParticipation.id,
+								challengeId: teamParticipation.challengeId,
+								teamId: teamParticipation.teamId,
+								team: Array.isArray(teamParticipation.Team)
+									? teamParticipation.Team[0]
+									: teamParticipation.Team,
+								participationType: 'team',
+							});
+						}
+					}
+				}
+			}
 
 			// Batch fetch all milestones at once
 			const { data: allMilestones } = await supabase
@@ -155,8 +222,19 @@ export class ChallengeService {
 				});
 			});
 
-			// Get current user for progress calculation (batch this too if needed)
-			const currentUser = await authService.getCurrentUser();
+			// Create participation lookup map
+			const participationMap = new Map();
+			myParticipations.forEach(participation => {
+				participationMap.set(participation.challengeId, {
+					isParticipating: true,
+					participantId: participation.id,
+					participationType: participation.teamId ? 'team' : 'individual',
+					team: participation.team || null,
+				});
+			});
+
+			// Get current user for progress calculation (reuse the one we already fetched)
+			const currentUser = loggedInUser;
 
 			// Batch fetch user progress if user is authenticated
 			const userProgressMap = new Map();
@@ -196,6 +274,12 @@ export class ChallengeService {
 				const milestones = milestonesMap.get(challenge.id) || [];
 				const userProgress = userProgressMap.get(challenge.id) || 0;
 				const activityType = this.generateSampleActivityType(challenge.title);
+				const participation = participationMap.get(challenge.id) || {
+					isParticipating: false,
+					participantId: null,
+					participationType: null,
+					team: null,
+				};
 
 				return {
 					...challenge,
@@ -205,6 +289,8 @@ export class ChallengeService {
 					milestones,
 					progress: userProgress,
 					type: activityType,
+					// Add participation data to each challenge
+					participation,
 				};
 			});
 
@@ -225,8 +311,15 @@ export class ChallengeService {
 	static async getChallengeById(id: string) {
 		try {
 			const { data, error } = await supabase.from('Challenge').select('*').eq('id', id).single();
-
-			if (error) throw error;
+			if (error) {
+				if (error.code === 'PGRST116') {
+					// Row not found error - might be a newly created challenge not yet available
+					throw new Error(
+						'Challenge not found. If you just created this challenge, please try refreshing in a moment.'
+					);
+				}
+				throw error;
+			}
 			if (!data) throw new Error('Challenge not found');
 
 			// Get creator info
@@ -1054,6 +1147,8 @@ export class ChallengeService {
 	}
 
 	// Get current user's participation details for a challenge (including team info)
+	// NOTE: This method is now deprecated in favor of batch participation data in getChallenges
+	// Kept for backward compatibility with individual challenge pages
 	static async getMyParticipationDetails(challengeId: string) {
 		try {
 			const user = await authService.getCurrentUser();
