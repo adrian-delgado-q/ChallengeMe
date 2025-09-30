@@ -53,7 +53,10 @@ export const AboutChallenge: React.FC<AboutChallengeProps> = ({ challenge }) => 
 	}, [challenge.activityTypes]);
 
 	const formatDate = (dateString: string) => {
-		return new Date(dateString).toLocaleDateString('en-US', {
+		// Parse the date string as local date to avoid timezone issues
+		// If the date is in YYYY-MM-DD format, we need to parse it carefully
+		const date = new Date(dateString + 'T00:00:00');
+		return date.toLocaleDateString('en-US', {
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric',

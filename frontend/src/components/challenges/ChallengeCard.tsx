@@ -346,8 +346,8 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 						{/* Date information */}
 						{(() => {
 							const now = new Date();
-							const startDate = challenge.startDate ? new Date(challenge.startDate) : null;
-							const endDate = new Date(challenge.endDate);
+							const startDate = challenge.startDate ? new Date(challenge.startDate + 'T00:00:00') : null;
+							const endDate = new Date(challenge.endDate + 'T00:00:00');
 							const hasStarted = !startDate || startDate <= now;
 							const hasEnded = endDate < now;
 
@@ -448,7 +448,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 						) : (
 							(() => {
 								const now = new Date();
-								const startDate = challenge.startDate ? new Date(challenge.startDate) : null;
+								const startDate = challenge.startDate ? new Date(challenge.startDate + 'T00:00:00') : null;
 								const hasStarted = !startDate || startDate <= now;
 								const isDisabled =
 									challenge.status === 'CLOSED' || challenge.status === 'CANCELLED' || !hasStarted;
