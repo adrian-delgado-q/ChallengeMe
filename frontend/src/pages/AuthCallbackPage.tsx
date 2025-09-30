@@ -12,11 +12,11 @@ const AuthCallbackPage: React.FC = () => {
 			try {
 				// Get the code from URL params
 				const code = searchParams.get('code');
-				
+
 				if (code) {
 					// Exchange code for session
 					const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-					
+
 					if (error) {
 						console.error('Auth callback error:', error);
 						// Redirect to auth page with error
