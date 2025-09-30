@@ -197,6 +197,12 @@ export class ChallengeService {
 				.in('challengeId', challengeIds)
 				.order('order', { ascending: true });
 
+			// Batch fetch all activity types for challenges
+			const { data: allChallengeActivityTypes } = await supabase
+				.from('ChallengeActivityType')
+				.select('challengeId, activityTypeId')
+				.in('challengeId', challengeIds);
+
 			// Create lookup maps for efficient data access
 			const creatorMap = new Map();
 			(creators || []).forEach(creator => {
@@ -221,6 +227,17 @@ export class ChallengeService {
 					name: milestone.name,
 					value: milestone.targetValue,
 				});
+			});
+
+			// Create activity types lookup map
+			const activityTypesMap = new Map();
+			(allChallengeActivityTypes || []).forEach(challengeActivityType => {
+				if (!activityTypesMap.has(challengeActivityType.challengeId)) {
+					activityTypesMap.set(challengeActivityType.challengeId, []);
+				}
+				activityTypesMap
+					.get(challengeActivityType.challengeId)
+					.push(challengeActivityType.activityTypeId);
 			});
 
 			// Create participation lookup map
@@ -273,6 +290,7 @@ export class ChallengeService {
 				const creator = creatorMap.get(challenge.creatorId) || null;
 				const participantCount = participantCountMap.get(challenge.id) || 0;
 				const milestones = milestonesMap.get(challenge.id) || [];
+				const activityTypes = activityTypesMap.get(challenge.id) || [];
 				const userProgress = userProgressMap.get(challenge.id) || 0;
 				const activityType = this.generateSampleActivityType(challenge.title);
 				const participation = participationMap.get(challenge.id) || {
@@ -288,6 +306,7 @@ export class ChallengeService {
 					creator,
 					participants: participantCount,
 					milestones,
+					activityTypes, // Add the activity types array
 					progress: userProgress,
 					type: activityType,
 					// Add participation data to each challenge

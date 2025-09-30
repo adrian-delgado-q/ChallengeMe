@@ -284,6 +284,20 @@ export class DiscussionService {
 			};
 		}
 
+		// Check if user is challenge creator first
+		let isCreator = false;
+		try {
+			const { data: challenge } = await supabase
+				.from('Challenge')
+				.select('creatorId')
+				.eq('id', challengeId)
+				.single();
+
+			isCreator = challenge?.creatorId === userId;
+		} catch (error) {
+			console.warn('Could not check challenge creator:', error);
+		}
+
 		// Check if user is participant
 		const { data: participant } = await supabase
 			.from('ChallengeParticipant')
@@ -292,7 +306,8 @@ export class DiscussionService {
 			.eq('userId', userId)
 			.maybeSingle();
 
-		if (!participant) {
+		// User must be either a participant or the creator
+		if (!participant && !isCreator) {
 			return {
 				canPost: false,
 				canReply: false,
@@ -352,19 +367,7 @@ export class DiscussionService {
 			console.warn('Could not check moderator status:', error);
 		}
 
-		// Check if user is challenge creator
-		let isCreator = false;
-		try {
-			const { data: challenge } = await supabase
-				.from('Challenge')
-				.select('creatorId')
-				.eq('id', challengeId)
-				.single();
-
-			isCreator = challenge?.creatorId === userId;
-		} catch (error) {
-			console.warn('Could not check challenge creator:', error);
-		}
+		// isCreator is already determined above
 
 		// Calculate final permissions
 		const canModerate = isModerator || isCreator;
