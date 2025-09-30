@@ -13,7 +13,12 @@ async function main() {
     "a7fff1cc-7bb3-42f0-a9ae-b5ab20561e76",
     "0e6c0881-f6d4-4ad5-a25e-e77ddf2286b2",
     "7418754c-f62e-4613-a866-5800d38d8c8f",
-    "2ff8dc27-4efa-4477-8bd9-490b7030b282"
+    "2ff8dc27-4efa-4477-8bd9-490b7030b282",
+    "d2bb8690-7ca1-449c-bd2f-2a05cdcfba14",
+    "6dddf689-f488-4863-94d4-84bba3055335",
+    "799623d5-43ab-4ffb-90d7-af8729a7f204",
+    "fbeb6d5e-8bf2-4250-8e75-e38a0a7ba137",
+    "2a8a8841-8b70-48b0-805f-14d5c7ea2647"
   ];
 
   // --- 1. Create or Update Profiles with Usernames and Avatars ---
@@ -46,7 +51,7 @@ async function main() {
 
   // --- 2. Create Teams ---
   const teams = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 3; i++) {
     const team = await prisma.team.create({
       data: {
         creatorId: faker.helpers.arrayElement(profiles).id,
@@ -190,11 +195,25 @@ async function main() {
 
 
   // --- 6. Create Activities ---
-  // Use the activity types we already fetched
   const activities = [];
   for (let i = 0; i < 20; i++) {
     const participant = faker.helpers.arrayElement(challengeParticipants);
-    const activityType = faker.helpers.arrayElement(allActivityTypes);
+    
+    // Get the supported activity types for this participant's challenge
+    const supportedActivityTypes = await prisma.challengeActivityType.findMany({
+      where: { challengeId: participant.challengeId },
+      include: { activityType: true }
+    });
+    
+    // Skip if no supported activity types (shouldn't happen with our seeded data)
+    if (supportedActivityTypes.length === 0) {
+      console.log(`No supported activity types for challenge ${participant.challengeId}`);
+      continue;
+    }
+    
+    // Pick a random activity type from the supported ones
+    const randomSupportedType = faker.helpers.arrayElement(supportedActivityTypes);
+    const activityType = randomSupportedType.activityType;
     
     // Generate appropriate value based on activity type
     let value: number;
@@ -213,6 +232,32 @@ async function main() {
         break;
       case 'steps':
         value = faker.number.int({ min: 1000, max: 15000 });
+        break;
+      case 'seconds':
+        value = faker.number.int({ min: 30, max: 300 });
+        break;
+      case 'meters':
+        value = faker.number.int({ min: 100, max: 2000 });
+        break;
+      case 'liters':
+        value = faker.number.float({ min: 1, max: 4, fractionDigits: 1 });
+        break;
+      case 'glasses':
+        value = faker.number.int({ min: 4, max: 12 });
+        break;
+      case 'hours':
+        value = faker.number.int({ min: 6, max: 10 });
+        break;
+      case 'sessions':
+      case 'entries':
+      case 'meals':
+      case 'floors':
+      case 'kcal':
+      case 'eaches':
+        value = faker.number.int({ min: 1, max: 10 });
+        break;
+      case 'pages':
+        value = faker.number.int({ min: 5, max: 50 });
         break;
       default:
         value = faker.number.int({ min: 1, max: 100 });

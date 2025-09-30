@@ -1773,6 +1773,7 @@ export const ChallengeScalarFieldEnum = {
   creatorId: 'creatorId',
   title: 'title',
   description: 'description',
+  imageUrl: 'imageUrl',
   challengeType: 'challengeType',
   maxParticipants: 'maxParticipants',
   participantCount: 'participantCount',

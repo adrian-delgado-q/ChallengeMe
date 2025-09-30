@@ -25,8 +25,15 @@ import {
 	InputGroup,
 	InputRightElement,
 	Icon,
+	Tabs,
+	TabList,
+	TabPanels,
+	Tab,
+	TabPanel,
 } from '@chakra-ui/react';
 import { CheckIcon, WarningIcon } from '@chakra-ui/icons';
+import { ImageUploadField } from './ImageUploadField';
+import { FileUploadService } from '../../services/fileUploadService';
 
 interface EditProfileModalProps {
 	isOpen: boolean;
@@ -222,6 +229,19 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 		}
 	};
 
+	const handleAvatarUpload = async (file: File, result: any) => {
+		const uploadResult = await FileUploadService.uploadAvatar(file);
+		// Update the result object passed by reference
+		result.success = uploadResult.success;
+		result.url = uploadResult.url;
+		result.error = uploadResult.error;
+
+		// Set the uploaded avatar as selected
+		if (uploadResult.success && uploadResult.url) {
+			setSelectedAvatar(uploadResult.url);
+		}
+	};
+
 	return (
 		<Modal isOpen={isOpen} onClose={handleClose} size="lg" closeOnOverlayClick={!isLoading}>
 			<ModalOverlay />
@@ -291,35 +311,69 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 							</HStack>
 						</FormControl>
 
-						{/* Avatar Options */}
+						{/* Avatar Selection Tabs */}
 						<FormControl>
 							<FormLabel>Choose Avatar</FormLabel>
-							{isGeneratingAvatars ? (
-								<Center py={8}>
-									<Spinner size="lg" color="orange.500" />
-								</Center>
-							) : (
-								<Grid templateColumns="repeat(4, 1fr)" gap={3}>
-									{avatarOptions.map((avatarUrl, index) => (
-										<Box
-											key={index}
-											borderWidth={selectedAvatar === avatarUrl ? '3px' : '1px'}
-											borderColor={selectedAvatar === avatarUrl ? 'orange.500' : 'gray.200'}
-											borderRadius="md"
-											p={2}
-											cursor="pointer"
-											onClick={() => !isLoading && setSelectedAvatar(avatarUrl)}
-											transition="all 0.2s"
-											_hover={{
-												borderColor: 'orange.300',
-												transform: 'scale(1.05)',
-											}}
-										>
-											<Avatar size="md" src={avatarUrl} />
-										</Box>
-									))}
-								</Grid>
-							)}
+							<Tabs variant="enclosed" colorScheme="orange">
+								<TabList>
+									<Tab>Upload Image</Tab>
+									<Tab>Generated Avatars</Tab>
+								</TabList>
+								<TabPanels>
+									<TabPanel px={0}>
+										<ImageUploadField
+											label=""
+											value={selectedAvatar}
+											onChange={url => setSelectedAvatar(url || '')}
+											onUpload={handleAvatarUpload}
+											isDisabled={isLoading}
+											placeholder={username}
+											variant="avatar"
+											size="xl"
+											maxSizeMB={2}
+										/>
+									</TabPanel>
+									<TabPanel px={0}>
+										{isGeneratingAvatars ? (
+											<Center py={8}>
+												<Spinner size="lg" color="orange.500" />
+											</Center>
+										) : (
+											<VStack spacing={4}>
+												<Button
+													size="sm"
+													variant="outline"
+													onClick={generateAvatarOptions}
+													isLoading={isGeneratingAvatars}
+													isDisabled={isLoading}
+												>
+													Generate New Options
+												</Button>
+												<Grid templateColumns="repeat(4, 1fr)" gap={3}>
+													{avatarOptions.map((avatarUrl, index) => (
+														<Box
+															key={index}
+															borderWidth={selectedAvatar === avatarUrl ? '3px' : '1px'}
+															borderColor={selectedAvatar === avatarUrl ? 'orange.500' : 'gray.200'}
+															borderRadius="md"
+															p={2}
+															cursor="pointer"
+															onClick={() => !isLoading && setSelectedAvatar(avatarUrl)}
+															transition="all 0.2s"
+															_hover={{
+																borderColor: 'orange.300',
+																transform: 'scale(1.05)',
+															}}
+														>
+															<Avatar size="md" src={avatarUrl} />
+														</Box>
+													))}
+												</Grid>
+											</VStack>
+										)}
+									</TabPanel>
+								</TabPanels>
+							</Tabs>
 						</FormControl>
 					</VStack>
 				</ModalBody>

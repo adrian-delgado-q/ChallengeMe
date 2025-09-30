@@ -156,7 +156,6 @@ export const useChallenges = (options?: {
 	activityType?: string;
 	challengeType?: string;
 }) => {
-	const { user } = useUser();
 	const [challenges, setChallenges] = useState<any[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -168,11 +167,6 @@ export const useChallenges = (options?: {
 	});
 
 	const fetchChallenges = useCallback(async () => {
-		if (!user) {
-			setLoading(false);
-			return;
-		}
-
 		setLoading(true);
 		setError(null);
 
@@ -197,7 +191,6 @@ export const useChallenges = (options?: {
 			setLoading(false);
 		}
 	}, [
-		user,
 		options?.page,
 		options?.limit,
 		options?.search,

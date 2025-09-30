@@ -8,6 +8,7 @@ import { handleAuthError } from '../../utils/authUtils';
 export interface ChallengeInput {
 	title: string;
 	description?: string;
+	imageUrl?: string; // Challenge image for cards and detail pages
 	activityTypes?: string[]; // Array of supported activity types for mixed challenges
 	challengeType: 'INDIVIDUAL' | 'TEAM';
 	maxParticipants?: number;
@@ -41,7 +42,8 @@ export class ChallengeService {
 		if (
 			error?.message?.toLowerCase().includes('auth') ||
 			error?.status === 401 ||
-			error?.message?.toLowerCase().includes('not authenticated')
+			error?.message?.toLowerCase().includes('not authenticated') ||
+			error?.message?.toLowerCase().includes('permission denied')
 		) {
 			handleAuthError(error, operation);
 		}
@@ -359,6 +361,7 @@ export class ChallengeService {
 					creatorId: user.id,
 					title: challengeData.title,
 					description: challengeData.description || null,
+					imageUrl: challengeData.imageUrl || null,
 					challengeType: challengeData.challengeType,
 					maxParticipants: challengeData.maxParticipants || null,
 					maxTeamSize: challengeData.maxTeamSize || null,

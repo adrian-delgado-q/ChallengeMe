@@ -69,6 +69,7 @@ model Challenge {
   creatorId           String                   @db.Uuid
   title               String
   description         String?
+  imageUrl            String? // Challenge image for cards and detail pages
   challengeType       ChallengeParticipantType @default(INDIVIDUAL)
   maxParticipants     Int?
   participantCount    Int                      @default(0) // Add this field that triggers maintain

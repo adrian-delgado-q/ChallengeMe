@@ -6,7 +6,7 @@
 -- Prepares the database for new policy definitions.
 -- -----------------------------------------------------------------------------
 -- Drop all existing policies in the public schema to prevent conflicts.
-DO $$ DECLARE r RECORD;
+DO $ $ DECLARE r RECORD;
 
 BEGIN FOR r IN (
     SELECT
@@ -20,7 +20,7 @@ BEGIN FOR r IN (
 
 END LOOP;
 
-END $$;
+END $ $;
 
 -- Enable RLS on all relevant tables.
 ALTER TABLE
@@ -79,9 +79,9 @@ UPDATE
     USING (auth.uid() = id);
 
 -- Teams
-CREATE POLICY "Teams are viewable by everyone." ON "public"."Team" FOR
+CREATE POLICY "Teams are viewable by authenticated users." ON "public"."Team" FOR
 SELECT
-    USING (true);
+    USING (auth.uid() IS NOT NULL);
 
 CREATE POLICY "Users can create teams." ON "public"."Team" FOR
 INSERT
@@ -94,9 +94,9 @@ UPDATE
 CREATE POLICY "Team creators can delete their teams." ON "public"."Team" FOR DELETE USING (auth.uid() = "creatorId");
 
 -- Team Memberships
-CREATE POLICY "Team memberships are viewable by everyone." ON "public"."TeamMembership" FOR
+CREATE POLICY "Team memberships are viewable by authenticated users." ON "public"."TeamMembership" FOR
 SELECT
-    USING (true);
+    USING (auth.uid() IS NOT NULL);
 
 CREATE POLICY "Users can join teams or be added by creators." ON "public"."TeamMembership" FOR
 INSERT
@@ -130,9 +130,9 @@ CREATE POLICY "Team creators can remove members." ON "public"."TeamMembership" F
 );
 
 -- Challenges
-CREATE POLICY "Challenges are viewable by everyone." ON "public"."Challenge" FOR
+CREATE POLICY "Challenges are viewable by authenticated users." ON "public"."Challenge" FOR
 SELECT
-    USING (true);
+    USING (auth.uid() IS NOT NULL);
 
 CREATE POLICY "Users can create challenges." ON "public"."Challenge" FOR
 INSERT
@@ -145,9 +145,9 @@ UPDATE
 CREATE POLICY "Challenge creators can delete their challenges." ON "public"."Challenge" FOR DELETE USING (auth.uid() = "creatorId");
 
 -- Challenge Participants
-CREATE POLICY "Challenge participants are viewable by everyone." ON "public"."ChallengeParticipant" FOR
+CREATE POLICY "Challenge participants are viewable by authenticated users." ON "public"."ChallengeParticipant" FOR
 SELECT
-    USING (true);
+    USING (auth.uid() IS NOT NULL);
 
 CREATE POLICY "Users can join challenges individually." ON "public"."ChallengeParticipant" FOR
 INSERT
@@ -192,9 +192,9 @@ CREATE POLICY "Team members can remove their team from challenges." ON "public".
 );
 
 -- Activities
-CREATE POLICY "Activities are viewable by everyone." ON "public"."Activity" FOR
+CREATE POLICY "Activities are viewable by authenticated users." ON "public"."Activity" FOR
 SELECT
-    USING (true);
+    USING (auth.uid() IS NOT NULL);
 
 CREATE POLICY "Challenge participants can log activities." ON "public"."Activity" FOR ALL USING (
     EXISTS (
@@ -241,16 +241,16 @@ UPDATE
 CREATE POLICY "Users can delete their own comments." ON "public"."Comment" FOR DELETE USING (auth.uid() = "authorId");
 
 -- Activity Types
-CREATE POLICY "Activity types are viewable by everyone." ON "public"."ActivityType" FOR
+CREATE POLICY "Activity types are viewable by authenticated users." ON "public"."ActivityType" FOR
 SELECT
-    USING (true);
+    USING (auth.uid() IS NOT NULL);
 
 CREATE POLICY "System can manage activity types." ON "public"."ActivityType" FOR ALL USING (true) WITH CHECK (true);
 
 -- Challenge Activity Types
-CREATE POLICY "Challenge activity types are viewable by everyone." ON "public"."ChallengeActivityType" FOR
+CREATE POLICY "Challenge activity types are viewable by authenticated users." ON "public"."ChallengeActivityType" FOR
 SELECT
-    USING (true);
+    USING (auth.uid() IS NOT NULL);
 
 CREATE POLICY "Challenge creators can manage activity types." ON "public"."ChallengeActivityType" FOR
 INSERT
@@ -293,9 +293,9 @@ CREATE POLICY "Challenge creators can delete activity types." ON "public"."Chall
 );
 
 -- Milestones
-CREATE POLICY "Milestones are viewable by everyone." ON "public"."Milestone" FOR
+CREATE POLICY "Milestones are viewable by authenticated users." ON "public"."Milestone" FOR
 SELECT
-    USING (true);
+    USING (auth.uid() IS NOT NULL);
 
 CREATE POLICY "Challenge creators can create milestones." ON "public"."Milestone" FOR
 INSERT
@@ -338,9 +338,9 @@ CREATE POLICY "Challenge creators can delete milestones." ON "public"."Milestone
 );
 
 -- Milestone Progress
-CREATE POLICY "Milestone progress is viewable by everyone." ON "public"."MilestoneProgress" FOR
+CREATE POLICY "Milestone progress is viewable by authenticated users." ON "public"."MilestoneProgress" FOR
 SELECT
-    USING (true);
+    USING (auth.uid() IS NOT NULL);
 
 CREATE POLICY "Participants can create their milestone progress." ON "public"."MilestoneProgress" FOR
 INSERT
