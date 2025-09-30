@@ -13,6 +13,7 @@ import {
 	WrapItem,
 	Button,
 	useDisclosure,
+	Image,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import type { Challenge, Team } from '../../types';
@@ -242,132 +243,168 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 			transition="all 0.2s ease-in-out"
 			_hover={{ transform: 'translateY(-4px)', shadow: 'lg' }}
 			onClick={handleCardClick}
+			minW="300px" // Extend card width by 20%
 		>
-			<VStack spacing={3} align="stretch" flex="1">
-				{/* Header with badges */}
-				<Wrap justify="space-between" align="center">
-					<WrapItem>
-						<HStack spacing={2}>
-							<Badge colorScheme={challenge.isPublic ? 'teal' : 'gray'}>
-								{challenge.isPublic ? 'Public' : 'Private'}
-							</Badge>
-							{/* Challenge Status Badge */}
-							{challenge.status && challenge.status !== 'ACTIVE' && (
-								<Badge colorScheme={challenge.status === 'CLOSED' ? 'orange' : 'red'}>
-									{challenge.status === 'CLOSED' ? 'Closed' : 'Cancelled'}
+			<HStack spacing={4} align="stretch" flex="1">
+				{/* Main content */}
+				<VStack spacing={3} align="stretch" flex="1">
+					{/* Header with badges */}
+					<Wrap justify="space-between" align="center">
+						<WrapItem>
+							<HStack spacing={2}>
+								<Badge colorScheme={challenge.isPublic ? 'teal' : 'gray'}>
+									{challenge.isPublic ? 'Public' : 'Private'}
 								</Badge>
-							)}
-							{/* Start Date Status Badge */}
-							{(() => {
-								const now = new Date();
-								const startDate = challenge.startDate ? new Date(challenge.startDate) : null;
-								const hasStarted = !startDate || startDate <= now;
+								{/* Challenge Status Badge */}
+								{challenge.status && challenge.status !== 'ACTIVE' && (
+									<Badge colorScheme={challenge.status === 'CLOSED' ? 'orange' : 'red'}>
+										{challenge.status === 'CLOSED' ? 'Closed' : 'Cancelled'}
+									</Badge>
+								)}
+								{/* Start Date Status Badge */}
+								{(() => {
+									const now = new Date();
+									const startDate = challenge.startDate ? new Date(challenge.startDate) : null;
+									const hasStarted = !startDate || startDate <= now;
 
-								if (startDate && !hasStarted) {
-									return <Badge colorScheme="yellow">Starting Soon</Badge>;
-								}
-								return null;
-							})()}
-						</HStack>
-					</WrapItem>
-					<WrapItem>
-						<Tag
-							size="sm"
-							variant="subtle"
-							colorScheme={challenge.challengeType === 'team' ? 'purple' : 'blue'}
-						>
+									if (startDate && !hasStarted) {
+										return <Badge colorScheme="yellow">Starting Soon</Badge>;
+									}
+									return null;
+								})()}
+							</HStack>
+						</WrapItem>
+						<WrapItem>
+							<Tag
+								size="sm"
+								variant="subtle"
+								colorScheme={challenge.challengeType === 'team' ? 'purple' : 'blue'}
+							>
+								<HStack spacing={1}>
+									<Icon as={challenge.challengeType === 'team' ? UserTeamIcon : UserIcon} w={3} h={3} />
+									<Text fontSize="xs">{challenge.challengeType === 'team' ? 'Team' : 'Individual'}</Text>
+								</HStack>
+							</Tag>
+						</WrapItem>
+					</Wrap>
+
+					{/* Activity type tag */}
+					{challenge.type && (
+						<Tag size="sm" variant="solid" colorScheme="green" alignSelf="flex-start">
 							<HStack spacing={1}>
-								<Icon as={challenge.challengeType === 'team' ? UserTeamIcon : UserIcon} w={3} h={3} />
-								<Text fontSize="xs">{challenge.challengeType === 'team' ? 'Team' : 'Individual'}</Text>
+								<Icon as={ActivityIcon} w={3} h={3} />
+								<Text fontSize="xs">
+									{challenge.type.charAt(0).toUpperCase() + challenge.type.slice(1)}
+								</Text>
 							</HStack>
 						</Tag>
-					</WrapItem>
-				</Wrap>
-
-				{/* Activity type tag */}
-				{challenge.type && (
-					<Tag size="sm" variant="solid" colorScheme="green" alignSelf="flex-start">
-						<HStack spacing={1}>
-							<Icon as={ActivityIcon} w={3} h={3} />
-							<Text fontSize="xs">{challenge.type.charAt(0).toUpperCase() + challenge.type.slice(1)}</Text>
-						</HStack>
-					</Tag>
-				)}
-
-				<Heading as="h3" size="sm">
-					{challenge.title}
-				</Heading>
-
-				{/* Description if available */}
-				{challenge.description && (
-					<Text fontSize="xs" color="gray.500" noOfLines={2}>
-						{challenge.description}
-					</Text>
-				)}
-
-				<VStack spacing={2} align="stretch" fontSize="sm" color="gray.600">
-					{/* Milestones summary */}
-					<HStack>
-						<Icon as={TrophyIcon} w={4} h={4} color="orange.400" />
-						<Text fontSize="xs">
-							{challenge.milestones && challenge.milestones.length > 0 ? (
-								<>
-									{challenge.milestones.length} milestone
-									{challenge.milestones.length > 1 ? 's' : ''} (up to{' '}
-									{Math.max(...challenge.milestones.map(m => m.value))} pts)
-								</>
-							) : (
-								'No milestones set'
-							)}
-						</Text>
-					</HStack>
-
-					<HStack>
-						<Icon as={UserTeamIcon} w={4} h={4} color="blue.400" />
-						<Text fontSize="xs">
-							{challenge.participants || 0} {challenge.challengeType === 'team' ? 'Teams' : 'Participants'}
-						</Text>
-					</HStack>
-
-					{/* Team size info for team challenges */}
-					{challenge.challengeType === 'team' && challenge.maxTeamSize && (
-						<HStack>
-							<Icon as={UserIcon} w={4} h={4} color="purple.400" />
-							<Text fontSize="xs">Max {challenge.maxTeamSize} members per team</Text>
-						</HStack>
 					)}
 
-					{/* Date information */}
-					{(() => {
-						const now = new Date();
-						const startDate = challenge.startDate ? new Date(challenge.startDate) : null;
-						const endDate = new Date(challenge.endDate);
-						const hasStarted = !startDate || startDate <= now;
-						const hasEnded = endDate < now;
+					<Heading as="h3" size="sm">
+						{challenge.title}
+					</Heading>
 
-						return (
-							<VStack spacing={1} align="start">
-								{/* Always show start date if available */}
-								{startDate && (
+					{/* Description if available */}
+					{challenge.description && (
+						<Text fontSize="xs" color="gray.500" noOfLines={2}>
+							{challenge.description}
+						</Text>
+					)}
+
+					<VStack spacing={2} align="stretch" fontSize="sm" color="gray.600">
+						{/* Milestones summary */}
+						<HStack>
+							<Icon as={TrophyIcon} w={4} h={4} color="orange.400" />
+							<Text fontSize="xs">
+								{challenge.milestones && challenge.milestones.length > 0 ? (
+									<>
+										{challenge.milestones.length} milestone
+										{challenge.milestones.length > 1 ? 's' : ''} (up to{' '}
+										{Math.max(...challenge.milestones.map(m => m.value))} pts)
+									</>
+								) : (
+									'No milestones set'
+								)}
+							</Text>
+						</HStack>
+
+						<HStack>
+							<Icon as={UserTeamIcon} w={4} h={4} color="blue.400" />
+							<Text fontSize="xs">
+								{challenge.participants || 0}{' '}
+								{challenge.challengeType === 'team' ? 'Teams' : 'Participants'}
+							</Text>
+						</HStack>
+
+						{/* Team size info for team challenges */}
+						{challenge.challengeType === 'team' && challenge.maxTeamSize && (
+							<HStack>
+								<Icon as={UserIcon} w={4} h={4} color="purple.400" />
+								<Text fontSize="xs">Max {challenge.maxTeamSize} members per team</Text>
+							</HStack>
+						)}
+
+						{/* Date information */}
+						{(() => {
+							const now = new Date();
+							const startDate = challenge.startDate ? new Date(challenge.startDate) : null;
+							const endDate = new Date(challenge.endDate);
+							const hasStarted = !startDate || startDate <= now;
+							const hasEnded = endDate < now;
+
+							return (
+								<VStack spacing={1} align="start">
+									{/* Always show start date if available */}
+									{startDate && (
+										<HStack>
+											<Icon as={CalendarIcon} w={4} h={4} color={!hasStarted ? 'green.400' : 'blue.400'} />
+											<Text fontSize="xs" fontWeight="medium" color={!hasStarted ? 'green.600' : 'blue.600'}>
+												{!hasStarted ? 'Starts' : 'Started'}: {startDate.toLocaleDateString()}
+											</Text>
+										</HStack>
+									)}
+									{/* Always show end date */}
 									<HStack>
-										<Icon as={CalendarIcon} w={4} h={4} color={!hasStarted ? 'green.400' : 'blue.400'} />
-										<Text fontSize="xs" fontWeight="medium" color={!hasStarted ? 'green.600' : 'blue.600'}>
-											{!hasStarted ? 'Starts' : 'Started'}: {startDate.toLocaleDateString()}
+										<Icon as={CalendarIcon} w={4} h={4} color={hasEnded ? 'red.400' : 'orange.400'} />
+										<Text fontSize="xs" color={hasEnded ? 'red.600' : 'gray.600'}>
+											{hasEnded ? 'Ended' : 'Ends'}: {endDate.toLocaleDateString()}
 										</Text>
 									</HStack>
-								)}
-								{/* Always show end date */}
-								<HStack>
-									<Icon as={CalendarIcon} w={4} h={4} color={hasEnded ? 'red.400' : 'orange.400'} />
-									<Text fontSize="xs" color={hasEnded ? 'red.600' : 'gray.600'}>
-										{hasEnded ? 'Ended' : 'Ends'}: {endDate.toLocaleDateString()}
-									</Text>
-								</HStack>
-							</VStack>
-						);
-					})()}
+								</VStack>
+							);
+						})()}
+					</VStack>
 				</VStack>
-			</VStack>
+
+				{/* Challenge Image */}
+				{challenge.imageUrl && (
+					<Box flexShrink={0} w="120px" h="full">
+						<Image
+							src={challenge.imageUrl}
+							alt={challenge.title}
+							w="full"
+							h="200px"
+							objectFit="cover"
+							borderRadius="lg"
+							fallback={
+								<Box
+									w="full"
+									h="200px"
+									bg="gray.100"
+									borderRadius="lg"
+									display="flex"
+									alignItems="center"
+									justifyContent="center"
+									color="gray.400"
+									fontSize="sm"
+								>
+									No Image
+								</Box>
+							}
+						/>
+					</Box>
+				)}
+			</HStack>
 
 			<Box mt={4}>
 				<Progress value={challenge.progress || 0} colorScheme="orange" size="sm" rounded="full" />

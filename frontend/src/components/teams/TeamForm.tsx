@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	Button,
 	FormControl,
@@ -9,13 +9,11 @@ import {
 	HStack,
 	Checkbox,
 	FormHelperText,
-	Avatar,
 	Box,
 	Text,
-	IconButton,
-	Flex,
 } from '@chakra-ui/react';
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { ImageUploadField } from '../common/ImageUploadField';
+import { FileUploadService } from '../../services/fileUploadService';
 import { TeamService } from '../../graphql/services';
 import { ActivityTypeService } from '../../graphql/services/activityTypeService';
 import { useNotifications } from '../../utils/notifications';
@@ -56,9 +54,6 @@ export const TeamForm: React.FC<TeamFormProps> = ({
 		maxMembers: initialData?.maxMembers || '',
 		accessCode: initialData?.accessCode || '',
 	});
-	const [avatarFile, setAvatarFile] = useState<File | null>(null);
-	const [avatarPreview, setAvatarPreview] = useState<string>(initialData?.avatarUrl || '');
-	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	// Note: Admin management is handled separately in TeamMemberManagement component
 
@@ -97,55 +92,15 @@ export const TeamForm: React.FC<TeamFormProps> = ({
 		}));
 	};
 
-	const handleAvatarFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0];
-		if (file) {
-			// Validate file type
-			if (!file.type.startsWith('image/')) {
-				notifications.validationError('Please select an image file.');
-				return;
-			}
-
-			// Validate file size (max 5MB)
-			if (file.size > 5 * 1024 * 1024) {
-				notifications.validationError('Please select an image smaller than 5MB.');
-				return;
-			}
-
-			setAvatarFile(file);
-
-			// Create preview URL
-			const reader = new FileReader();
-			reader.onload = e => {
-				setAvatarPreview(e.target?.result as string);
-			};
-			reader.readAsDataURL(file);
-		}
-	};
-
-	const handleRemoveAvatar = () => {
-		setAvatarFile(null);
-		setAvatarPreview('');
-		setFormData(prev => ({ ...prev, avatarUrl: '' }));
-		if (fileInputRef.current) {
-			fileInputRef.current.value = '';
-		}
+	const handleAvatarUpload = async (file: File, result: any) => {
+		const uploadResult = await FileUploadService.uploadTeamAvatar(file);
+		// Update the result object passed by reference
+		result.success = uploadResult.success;
+		result.url = uploadResult.url;
+		result.error = uploadResult.error;
 	};
 
 	// Note: Admin search functionality removed - handled in TeamMemberManagement component
-
-	const uploadAvatarFile = async (file: File): Promise<string> => {
-		// Note: This is a placeholder for file upload functionality
-		// In a real implementation, you would upload to your storage service
-		// For now, we'll use a data URL as a fallback
-		return new Promise(resolve => {
-			const reader = new FileReader();
-			reader.onload = e => {
-				resolve(e.target?.result as string);
-			};
-			reader.readAsDataURL(file);
-		});
-	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -195,21 +150,9 @@ export const TeamForm: React.FC<TeamFormProps> = ({
 
 		const result = await executeSubmit(
 			async () => {
-				let avatarUrl = formData.avatarUrl;
-
-				// Upload avatar file if one was selected
-				if (avatarFile) {
-					try {
-						avatarUrl = await uploadAvatarFile(avatarFile);
-					} catch (uploadError) {
-						console.warn('Avatar upload failed, proceeding without avatar:', uploadError);
-						avatarUrl = '';
-					}
-				}
-
 				const teamData = {
 					...formData,
-					avatarUrl: avatarUrl || undefined,
+					avatarUrl: formData.avatarUrl || undefined,
 					maxMembers: formData.maxMembers ? Number(formData.maxMembers) : undefined,
 					activityTypeIds: selectedActivityTypeIds.length > 0 ? selectedActivityTypeIds : undefined,
 				};
@@ -240,46 +183,17 @@ export const TeamForm: React.FC<TeamFormProps> = ({
 		<Box as="form" onSubmit={handleSubmit}>
 			<VStack spacing={6} align="stretch">
 				{/* Team Avatar Upload */}
-				<FormControl>
-					<FormLabel>Team Avatar</FormLabel>
-					<Flex align="center" gap={4}>
-						<Avatar size="xl" src={avatarPreview} name={formData.name} />
-						<VStack align="stretch" flex="1" spacing={2}>
-							<HStack>
-								<Button
-									size="sm"
-									leftIcon={<EditIcon />}
-									onClick={() => fileInputRef.current?.click()}
-									variant="outline"
-									isDisabled={isSubmitting}
-								>
-									{avatarPreview ? 'Change Image' : 'Upload Image'}
-								</Button>
-								{avatarPreview && (
-									<IconButton
-										size="sm"
-										icon={<DeleteIcon />}
-										onClick={handleRemoveAvatar}
-										variant="outline"
-										colorScheme="red"
-										aria-label="Remove avatar"
-										isDisabled={isSubmitting}
-									/>
-								)}
-							</HStack>
-							<Input
-								ref={fileInputRef}
-								type="file"
-								accept="image/*"
-								onChange={handleAvatarFileChange}
-								display="none"
-							/>
-							<FormHelperText fontSize="xs">
-								Upload an image for your team (max 5MB). Supported formats: JPG, PNG, GIF
-							</FormHelperText>
-						</VStack>
-					</Flex>
-				</FormControl>
+				<ImageUploadField
+					label="Team Avatar"
+					value={formData.avatarUrl}
+					onChange={url => setFormData(prev => ({ ...prev, avatarUrl: url || '' }))}
+					onUpload={handleAvatarUpload}
+					isDisabled={isSubmitting}
+					placeholder={formData.name}
+					variant="avatar"
+					size="xl"
+					maxSizeMB={2}
+				/>
 
 				{/* Team Name */}
 				<FormControl isRequired>

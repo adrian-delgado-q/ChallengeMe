@@ -12,6 +12,8 @@ import {
 	Textarea,
 	VStack,
 } from '@chakra-ui/react';
+import { ImageUploadField } from '../common/ImageUploadField';
+import { FileUploadService } from '../../services/fileUploadService';
 import { useChallenges } from '../../hooks/useData';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
@@ -79,6 +81,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
 	// Form state
 	const [title, setTitle] = useState(challengeToEdit?.title || '');
 	const [description, setDescription] = useState(challengeToEdit?.description || '');
+	const [imageUrl, setImageUrl] = useState(challengeToEdit?.imageUrl || '');
 	const [selectedActivityTypeIds, setSelectedActivityTypeIds] = useState<string[]>(
 		challengeToEdit?.activityTypes || []
 	);
@@ -178,6 +181,17 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
 		}
 	};
 
+	const handleImageUpload = async (file: File, result: any) => {
+		const uploadResult = await FileUploadService.uploadChallengeImage(file);
+		if (uploadResult.success && uploadResult.url) {
+			setImageUrl(uploadResult.url);
+		}
+		// Update the result object passed by reference
+		result.success = uploadResult.success;
+		result.url = uploadResult.url;
+		result.error = uploadResult.error;
+	};
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -244,6 +258,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
 			const challengeData = {
 				title: title.trim(),
 				description: description.trim() || undefined,
+				imageUrl: imageUrl || undefined,
 				activityTypes: selectedActivityTypeIds,
 				challengeType: challengeType.toUpperCase() as 'INDIVIDUAL' | 'TEAM',
 				maxParticipants: maxParticipants ? parseInt(maxParticipants) : undefined,
@@ -311,6 +326,19 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
 					isDisabled={isSubmitting}
 				/>
 			</FormControl>
+
+			<ImageUploadField
+				label="Challenge Image"
+				value={imageUrl}
+				onChange={url => setImageUrl(url || '')}
+				onUpload={handleImageUpload}
+				isDisabled={isSubmitting}
+				placeholder="Add an image to make your challenge more appealing"
+				variant="image"
+				aspectRatio="16/9"
+				width="300px"
+				maxSizeMB={2}
+			/>
 
 			<FormControl isRequired={selectedActivityTypeIds.length === 0}>
 				<FormLabel>Activity Types</FormLabel>
