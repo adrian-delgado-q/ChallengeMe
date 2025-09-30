@@ -6,14 +6,12 @@ import {
 	Progress,
 	Text,
 	VStack,
-	HStack,
 	Icon,
-	Tag,
-	Wrap,
-	WrapItem,
 	Button,
 	useDisclosure,
 	Image,
+	Flex,
+	SimpleGrid,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import type { Challenge, Team } from '../../types';
@@ -27,24 +25,6 @@ import { useUser } from '../../contexts/AuthContext';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ChallengeService } from '../../graphql/services';
-
-// A new icon for the Individual type
-const UserIcon: React.FC<{ className?: string }> = ({ className }) => (
-	<svg
-		xmlns="http://www.w3.org/2000/svg"
-		fill="none"
-		viewBox="0 0 24 24"
-		strokeWidth={1.5}
-		stroke="currentColor"
-		className={className}
-	>
-		<path
-			strokeLinecap="round"
-			strokeLinejoin="round"
-			d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-		/>
-	</svg>
-);
 
 // Activity type icon
 const ActivityIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -237,271 +217,315 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 		<Box
 			cursor="pointer"
 			bg="white"
-			rounded="xl"
-			shadow="sm"
-			p={{ base: 4, md: 6 }}
-			h="full"
-			display="flex"
-			flexDirection="column"
+			rounded="2xl"
+			shadow="lg"
+			overflow="hidden"
+			border="1px"
+			borderColor="gray.200"
+			maxW="md"
+			mx="auto"
 			transition="all 0.2s ease-in-out"
-			_hover={{ transform: 'translateY(-4px)', shadow: 'lg' }}
+			_hover={{ transform: 'translateY(-2px)', shadow: 'xl' }}
 			onClick={handleCardClick}
-			minW="320px"
-			maxW="400px" // Constrain maximum width to prevent excessive stretching
 		>
-			<HStack spacing={4} align="flex-start" flex="1">
-				{/* Main content */}
-				<VStack spacing={3} align="stretch" flex="1" minW="0">
-					{/* Header with badges */}
-					<Wrap justify="space-between" align="center">
-						<WrapItem>
-							<HStack spacing={2}>
-								<Badge colorScheme={challenge.isPublic ? 'teal' : 'gray'}>
-									{challenge.isPublic ? 'Public' : 'Private'}
-								</Badge>
-								{/* Challenge Status Badge */}
-								{challenge.status && challenge.status !== 'ACTIVE' && (
-									<Badge colorScheme={challenge.status === 'CLOSED' ? 'orange' : 'red'}>
-										{challenge.status === 'CLOSED' ? 'Closed' : 'Cancelled'}
+			{/* Banner with image */}
+			<Box position="relative">
+				<Image
+					src={
+						challenge.imageUrl ||
+						'https://images.unsplash.com/photo-1606788075761-5a81c9db1e36?q=80&w=1200'
+					}
+					alt="Challenge Banner"
+					w="full"
+					h="160px"
+					objectFit="cover"
+					fallback={
+						<Box
+							w="full"
+							h="160px"
+							bg="gray.100"
+							display="flex"
+							alignItems="center"
+							justifyContent="center"
+							color="gray.400"
+						>
+							<Text>Challenge Image</Text>
+						</Box>
+					}
+				/>
+				<Box position="absolute" top={2} left={2}>
+					<Flex gap={2}>
+						<Badge
+							px={2}
+							py={1}
+							fontSize="xs"
+							rounded="md"
+							bg="gray.100"
+							color="gray.800"
+							fontWeight="medium"
+						>
+							{challenge.isPublic ? 'PUBLIC' : 'PRIVATE'}
+						</Badge>
+						{(() => {
+							const now = new Date();
+							const startDate = challenge.startDate ? new Date(challenge.startDate) : null;
+							const hasStarted = !startDate || startDate <= now;
+
+							if (startDate && !hasStarted) {
+								return (
+									<Badge
+										px={2}
+										py={1}
+										fontSize="xs"
+										rounded="md"
+										bg="yellow.200"
+										color="yellow.800"
+										fontWeight="medium"
+									>
+										STARTING SOON
 									</Badge>
-								)}
-								{/* Start Date Status Badge */}
-								{(() => {
-									const now = new Date();
-									const startDate = challenge.startDate ? new Date(challenge.startDate) : null;
-									const hasStarted = !startDate || startDate <= now;
-
-									if (startDate && !hasStarted) {
-										return <Badge colorScheme="yellow">Starting Soon</Badge>;
-									}
-									return null;
-								})()}
-							</HStack>
-						</WrapItem>
-						<WrapItem>
-							<Tag
-								size="sm"
-								variant="subtle"
-								colorScheme={challenge.challengeType === 'team' ? 'purple' : 'blue'}
-							>
-								<HStack spacing={1}>
-									<Icon as={challenge.challengeType === 'team' ? UserTeamIcon : UserIcon} w={3} h={3} />
-									<Text fontSize="xs">{challenge.challengeType === 'team' ? 'Team' : 'Individual'}</Text>
-								</HStack>
-							</Tag>
-						</WrapItem>
-					</Wrap>
-
-					{/* Activity types badges */}
-					{challenge.activityTypes && challenge.activityTypes.length > 0 && (
-						<VStack align="start" spacing={1}>
-							<HStack spacing={2} align="center">
-								<Icon as={ActivityIcon} w={3} h={3} color="blue.500" />
-								<Text fontSize="xs" color="gray.500" fontWeight="semibold" textTransform="uppercase">
-									Activities
-								</Text>
-							</HStack>
-							<HStack spacing={1} flexWrap="wrap">
-								{isLoadingActivityTypes ? (
-									<Badge colorScheme="blue" variant="subtle" fontSize="xs">
-										Loading...
+								);
+							}
+							if (challenge.status === 'CLOSED') {
+								return (
+									<Badge
+										px={2}
+										py={1}
+										fontSize="xs"
+										rounded="md"
+										bg="orange.200"
+										color="orange.800"
+										fontWeight="medium"
+									>
+										CLOSED
 									</Badge>
-								) : activityTypeDetails.length > 0 ? (
-									activityTypeDetails.map(activityType => (
-										<Badge key={activityType.id} colorScheme="blue" variant="subtle" fontSize="xs">
-											{activityType.name}
-										</Badge>
-									))
-								) : (
-									challenge.activityTypes.map((activityTypeId, index) => (
-										<Badge key={index} colorScheme="blue" variant="subtle" fontSize="xs">
-											{activityTypeId}
-										</Badge>
-									))
-								)}
-							</HStack>
-						</VStack>
-					)}
+								);
+							}
+							if (challenge.status === 'CANCELLED') {
+								return (
+									<Badge
+										px={2}
+										py={1}
+										fontSize="xs"
+										rounded="md"
+										bg="red.200"
+										color="red.800"
+										fontWeight="medium"
+									>
+										CANCELLED
+									</Badge>
+								);
+							}
+							return null;
+						})()}
+					</Flex>
+				</Box>
+			</Box>
 
-					<Heading as="h3" size="sm" noOfLines={2} lineHeight="1.3">
-						{challenge.title}
-					</Heading>
+			{/* Content */}
+			<Box p={5}>
+				{/* Title & Description */}
+				<Heading as="h2" size="lg" fontWeight="bold" color="gray.900" noOfLines={2}>
+					{challenge.title}
+				</Heading>
+				{challenge.description && (
+					<Text color="gray.600" fontSize="sm" mt={1} noOfLines={2}>
+						{challenge.description}
+					</Text>
+				)}
 
-					{/* Description if available */}
-					{challenge.description && (
-						<Text fontSize="xs" color="gray.500" noOfLines={2}>
-							{challenge.description}
-						</Text>
-					)}
-
-					<VStack spacing={2} align="stretch" fontSize="sm" color="gray.600">
-						{/* Milestones summary */}
-						<HStack>
-							<Icon as={TrophyIcon} w={4} h={4} color="orange.400" />
-							<Text fontSize="xs">
-								{challenge.milestones && challenge.milestones.length > 0 ? (
-									<>
-										{challenge.milestones.length} milestone
-										{challenge.milestones.length > 1 ? 's' : ''} (up to{' '}
-										{Math.max(...challenge.milestones.map(m => m.value))} pts)
-									</>
-								) : (
-									'No milestones set'
-								)}
+				{/* Grid Info */}
+				<SimpleGrid columns={2} spacing={4} mt={4} fontSize="sm">
+					<Flex align="center" gap={2}>
+						<Icon as={TrophyIcon} w={5} h={5} color="green.500" />
+						<Box>
+							<Text fontWeight="bold">{challenge.milestones?.length || 0} Milestones</Text>
+							<Text fontSize="xs" color="gray.500">
+								({challenge.milestones?.length ? Math.max(...challenge.milestones.map(m => m.value)) : 0}{' '}
+								pts)
 							</Text>
-						</HStack>
-
-						<HStack>
-							<Icon as={UserTeamIcon} w={4} h={4} color="blue.400" />
-							<Text fontSize="xs">
+						</Box>
+					</Flex>
+					<Flex align="center" gap={2}>
+						<Icon as={UserTeamIcon} w={5} h={5} color="blue.500" />
+						<Box>
+							<Text fontWeight="bold">
 								{challenge.participants || 0}{' '}
 								{challenge.challengeType === 'team' ? 'Teams' : 'Participants'}
 							</Text>
-						</HStack>
+						</Box>
+					</Flex>
+					{(() => {
+						const startDate = challenge.startDate ? new Date(challenge.startDate + 'T00:00:00') : null;
+						const endDate = new Date(challenge.endDate + 'T00:00:00');
 
-						{/* Team size info for team challenges */}
-						{challenge.challengeType === 'team' && challenge.maxTeamSize && (
-							<HStack>
-								<Icon as={UserIcon} w={4} h={4} color="purple.400" />
-								<Text fontSize="xs">Max {challenge.maxTeamSize} members per team</Text>
-							</HStack>
-						)}
-
-						{/* Date information */}
-						{(() => {
-							const now = new Date();
-							const startDate = challenge.startDate ? new Date(challenge.startDate + 'T00:00:00') : null;
-							const endDate = new Date(challenge.endDate + 'T00:00:00');
-							const hasStarted = !startDate || startDate <= now;
-							const hasEnded = endDate < now;
-
-							return (
-								<VStack spacing={1} align="start">
-									{/* Always show start date if available */}
-									{startDate && (
-										<HStack>
-											<Icon as={CalendarIcon} w={4} h={4} color={!hasStarted ? 'green.400' : 'blue.400'} />
-											<Text fontSize="xs" fontWeight="medium" color={!hasStarted ? 'green.600' : 'blue.600'}>
-												{!hasStarted ? 'Starts' : 'Started'}: {startDate.toLocaleDateString()}
+						return (
+							<>
+								{startDate && (
+									<Flex align="center" gap={2}>
+										<Icon as={CalendarIcon} w={5} h={5} color="gray.500" />
+										<Box>
+											<Text fontWeight="bold">Starts:</Text>
+											<Text fontSize="xs" color="gray.500">
+												{startDate.toLocaleDateString()}
 											</Text>
-										</HStack>
-									)}
-									{/* Always show end date */}
-									<HStack>
-										<Icon as={CalendarIcon} w={4} h={4} color={hasEnded ? 'red.400' : 'orange.400'} />
-										<Text fontSize="xs" color={hasEnded ? 'red.600' : 'gray.600'}>
-											{hasEnded ? 'Ended' : 'Ends'}: {endDate.toLocaleDateString()}
+										</Box>
+									</Flex>
+								)}
+								<Flex align="center" gap={2}>
+									<Icon as={CalendarIcon} w={5} h={5} color="gray.500" />
+									<Box>
+										<Text fontWeight="bold">Ends:</Text>
+										<Text fontSize="xs" color="gray.500">
+											{endDate.toLocaleDateString()}
 										</Text>
-									</HStack>
-								</VStack>
-							);
-						})()}
-					</VStack>
-				</VStack>
+									</Box>
+								</Flex>
+							</>
+						);
+					})()}
+				</SimpleGrid>
 
-				{/* Challenge Image */}
-				{challenge.imageUrl && (
-					<Box flexShrink={0} w="80px" h="80px">
-						<Image
-							src={challenge.imageUrl}
-							alt={challenge.title}
-							w="80px"
-							h="80px"
-							objectFit="cover"
-							borderRadius="md"
-							fallback={
-								<Box
-									w="80px"
-									h="80px"
-									bg="gray.100"
-									borderRadius="md"
-									display="flex"
-									alignItems="center"
-									justifyContent="center"
-									color="gray.400"
-									fontSize="xs"
-								>
-									No Image
-								</Box>
-							}
-						/>
+				{/* Activities */}
+				{challenge.activityTypes && challenge.activityTypes.length > 0 && (
+					<Box mt={5}>
+						<Heading as="h3" size="sm" fontWeight="semibold" color="gray.800">
+							Activities
+						</Heading>
+						<VStack mt={2} spacing={2} align="start" fontSize="sm">
+							{isLoadingActivityTypes ? (
+								<Text fontSize="xs" color="gray.500">
+									Loading activities...
+								</Text>
+							) : activityTypeDetails.length > 0 ? (
+								<>
+									{activityTypeDetails.slice(0, 3).map(activityType => (
+										<Flex key={activityType.id} align="center" gap={2}>
+											<Icon as={ActivityIcon} w={5} h={5} color="gray.600" />
+											<Box>
+												<Text fontWeight="medium">{activityType.name}</Text>
+												<Text color="gray.500" fontSize="xs">
+													{activityType.category}
+												</Text>
+											</Box>
+										</Flex>
+									))}
+									{activityTypeDetails.length > 3 && (
+										<Text
+											color="blue.600"
+											fontSize="sm"
+											cursor="pointer"
+											_hover={{ textDecoration: 'underline' }}
+											onClick={e => e.stopPropagation()}
+										>
+											+ View {activityTypeDetails.length - 3} More
+										</Text>
+									)}
+								</>
+							) : (
+								challenge.activityTypes.slice(0, 3).map((activityTypeId, index) => (
+									<Flex key={index} align="center" gap={2}>
+										<Icon as={ActivityIcon} w={5} h={5} color="gray.600" />
+										<Box>
+											<Text fontWeight="medium">{activityTypeId}</Text>
+											<Text color="gray.500" fontSize="xs">
+												Activity
+											</Text>
+										</Box>
+									</Flex>
+								))
+							)}
+						</VStack>
 					</Box>
 				)}
-			</HStack>
 
-			<Box mt={4}>
-				<Progress value={challenge.progress || 0} colorScheme="orange" size="sm" rounded="full" />
-				<Text textAlign="right" fontSize="xs" color="gray.500" mt={1}>
-					{challenge.progress || 0}% complete
-				</Text>
-			</Box>
-
-			{/* Action Buttons */}
-			<Box mt={4}>
-				{isCurrentUserCreator ? (
-					// Show manage button for challenge creators
-					<Button
-						size="sm"
+				{/* Progress */}
+				<Box mt={5}>
+					<Progress
+						value={challenge.progress || 0}
 						colorScheme="blue"
-						variant="outline"
-						width="full"
-						onClick={e => {
-							e.stopPropagation();
-							navigate(`/challenges/${challenge.id}/manage`);
-						}}
-					>
-						Manage
-					</Button>
-				) : (
-					// Show join/leave buttons for other users
-					<>
-						{isParticipating ? (
-							<Button
-								size="sm"
-								variant="outline"
-								colorScheme="red"
-								width="full"
-								onClick={handleLeaveChallenge}
-								isLoading={isLeaving}
-								loadingText="Leaving..."
-								isDisabled={challenge.status === 'CLOSED' || challenge.status === 'CANCELLED'}
-							>
-								Leave Challenge
-								{participantTeam && ` (${participantTeam.name})`}
-							</Button>
-						) : (
-							(() => {
-								const now = new Date();
-								const startDate = challenge.startDate ? new Date(challenge.startDate + 'T00:00:00') : null;
-								const hasStarted = !startDate || startDate <= now;
-								const isDisabled =
-									challenge.status === 'CLOSED' || challenge.status === 'CANCELLED' || !hasStarted;
+						size="sm"
+						rounded="full"
+						bg="gray.200"
+					/>
+					<Text fontSize="xs" color="gray.600" mt={1}>
+						{challenge.progress || 0}% Complete
+					</Text>
+				</Box>
 
-								let buttonText = 'Join Challenge';
-								if (challenge.status === 'CLOSED') buttonText = 'Challenge Closed';
-								else if (challenge.status === 'CANCELLED') buttonText = 'Challenge Cancelled';
-								else if (!hasStarted) buttonText = `Starts ${startDate?.toLocaleDateString()}`;
+				{/* Button */}
+				<Box mt={5}>
+					{isCurrentUserCreator ? (
+						<Button
+							w="full"
+							colorScheme="blue"
+							fontWeight="medium"
+							py={2}
+							px={4}
+							rounded="xl"
+							onClick={e => {
+								e.stopPropagation();
+								navigate(`/challenges/${challenge.id}/manage`);
+							}}
+						>
+							Manage
+						</Button>
+					) : (
+						<>
+							{isParticipating ? (
+								<Button
+									w="full"
+									variant="outline"
+									colorScheme="red"
+									fontWeight="medium"
+									py={2}
+									px={4}
+									rounded="xl"
+									onClick={handleLeaveChallenge}
+									isLoading={isLeaving}
+									loadingText="Leaving..."
+									isDisabled={challenge.status === 'CLOSED' || challenge.status === 'CANCELLED'}
+								>
+									Leave Challenge
+									{participantTeam && ` (${participantTeam.name})`}
+								</Button>
+							) : (
+								(() => {
+									const now = new Date();
+									const startDate = challenge.startDate ? new Date(challenge.startDate + 'T00:00:00') : null;
+									const hasStarted = !startDate || startDate <= now;
+									const isDisabled =
+										challenge.status === 'CLOSED' || challenge.status === 'CANCELLED' || !hasStarted;
 
-								return (
-									<Button
-										size="sm"
-										colorScheme={!hasStarted ? 'gray' : 'orange'}
-										width="full"
-										onClick={handleJoinChallenge}
-										isLoading={isJoining}
-										loadingText="Joining..."
-										isDisabled={isDisabled}
-									>
-										{buttonText}
-									</Button>
-								);
-							})()
-						)}
-					</>
-				)}
+									let buttonText = 'Join Challenge';
+									if (challenge.status === 'CLOSED') buttonText = 'Challenge Closed';
+									else if (challenge.status === 'CANCELLED') buttonText = 'Challenge Cancelled';
+									else if (!hasStarted) buttonText = `Starts ${startDate?.toLocaleDateString()}`;
+
+									return (
+										<Button
+											w="full"
+											colorScheme={!hasStarted ? 'gray' : 'blue'}
+											fontWeight="medium"
+											py={2}
+											px={4}
+											rounded="xl"
+											onClick={handleJoinChallenge}
+											isLoading={isJoining}
+											loadingText="Joining..."
+											isDisabled={isDisabled}
+											_hover={!isDisabled ? { bg: 'blue.700' } : {}}
+										>
+											{buttonText}
+										</Button>
+									);
+								})()
+							)}
+						</>
+					)}
+				</Box>
 			</Box>
 
-			{/* Team Selection Modal */}
 			{/* Team Selection Modal */}
 			{challenge.challengeType === 'team' && (
 				<TeamSelectionModal
