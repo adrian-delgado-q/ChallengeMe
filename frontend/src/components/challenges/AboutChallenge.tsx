@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
 	Heading,
 	Grid,
@@ -16,9 +16,9 @@ import { SettingsIcon } from '@chakra-ui/icons';
 import { Card } from '../common/Card';
 import { MarkdownRenderer } from '../common/MarkdownRenderer';
 import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../common/Icons';
-import { ActivityTypeService } from '../../graphql/services/activityTypeService';
+import { useActivityTypesByIdsQuery } from '../../hooks/useActivityTypesQuery';
 import { useUser } from '../../contexts/AuthContext';
-import type { Challenge, ActivityType } from '../../types';
+import type { Challenge } from '../../types';
 
 interface AboutChallengeProps {
 	challenge: Challenge;
@@ -27,30 +27,12 @@ interface AboutChallengeProps {
 export const AboutChallenge: React.FC<AboutChallengeProps> = ({ challenge }) => {
 	const navigate = useNavigate();
 	const { user } = useUser();
-	const [activityTypeDetails, setActivityTypeDetails] = useState<ActivityType[]>([]);
-	const [isLoadingActivityTypes, setIsLoadingActivityTypes] = useState(false);
 
 	const isCurrentUserCreator = user?.id === challenge.creatorId;
 
-	// Load activity type details when component mounts
-	useEffect(() => {
-		const loadActivityTypes = async () => {
-			if (!challenge.activityTypes || challenge.activityTypes.length === 0) return;
-
-			try {
-				setIsLoadingActivityTypes(true);
-				const allActivityTypes = await ActivityTypeService.getActivityTypes();
-				const filteredTypes = allActivityTypes.filter(at => challenge.activityTypes!.includes(at.id));
-				setActivityTypeDetails(filteredTypes);
-			} catch (error) {
-				console.error('Failed to load activity types:', error);
-			} finally {
-				setIsLoadingActivityTypes(false);
-			}
-		};
-
-		loadActivityTypes();
-	}, [challenge.activityTypes]);
+	// Load activity types using React Query
+	const { data: activityTypeDetails = [], isLoading: isLoadingActivityTypes } =
+		useActivityTypesByIdsQuery(challenge.activityTypes || []);
 
 	const formatDate = (dateString: string) => {
 		// Parse the date string as local date to avoid timezone issues

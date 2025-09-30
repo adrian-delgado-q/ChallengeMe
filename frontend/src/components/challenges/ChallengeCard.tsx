@@ -18,6 +18,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import type { Challenge, Team } from '../../types';
 import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../common/Icons';
+import { useActivityTypesByIdsQuery } from '../../hooks/useActivityTypesQuery';
 import { TeamSelectionModal } from './TeamSelectionModal';
 import { AccessCodeModal } from './AccessCodeModal';
 import { useChallengeActions } from '../../hooks/useData';
@@ -92,6 +93,10 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 	const [isParticipating, setIsParticipating] = useState(false);
 	const [participantTeam, setParticipantTeam] = useState<Team | null>(null);
 	const [pendingTeamId, setPendingTeamId] = useState<string | null>(null); // For team challenges requiring access code
+
+	// Load activity types using React Query
+	const { data: activityTypeDetails = [], isLoading: isLoadingActivityTypes } =
+		useActivityTypesByIdsQuery(challenge.activityTypes || []);
 
 	const { isLoading: isJoining, execute: executeJoin } = useAsyncState({
 		successMessage: 'Successfully joined challenge!',
@@ -287,16 +292,35 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 						</WrapItem>
 					</Wrap>
 
-					{/* Activity type tag */}
-					{challenge.type && (
-						<Tag size="sm" variant="solid" colorScheme="green" alignSelf="flex-start">
-							<HStack spacing={1}>
-								<Icon as={ActivityIcon} w={3} h={3} />
-								<Text fontSize="xs">
-									{challenge.type.charAt(0).toUpperCase() + challenge.type.slice(1)}
+					{/* Activity types badges */}
+					{challenge.activityTypes && challenge.activityTypes.length > 0 && (
+						<VStack align="start" spacing={1}>
+							<HStack spacing={2} align="center">
+								<Icon as={ActivityIcon} w={3} h={3} color="blue.500" />
+								<Text fontSize="xs" color="gray.500" fontWeight="semibold" textTransform="uppercase">
+									Activities
 								</Text>
 							</HStack>
-						</Tag>
+							<HStack spacing={1} flexWrap="wrap">
+								{isLoadingActivityTypes ? (
+									<Badge colorScheme="blue" variant="subtle" fontSize="xs">
+										Loading...
+									</Badge>
+								) : activityTypeDetails.length > 0 ? (
+									activityTypeDetails.map(activityType => (
+										<Badge key={activityType.id} colorScheme="blue" variant="subtle" fontSize="xs">
+											{activityType.name}
+										</Badge>
+									))
+								) : (
+									challenge.activityTypes.map((activityTypeId, index) => (
+										<Badge key={index} colorScheme="blue" variant="subtle" fontSize="xs">
+											{activityTypeId}
+										</Badge>
+									))
+								)}
+							</HStack>
+						</VStack>
 					)}
 
 					<Heading as="h3" size="sm" noOfLines={2} lineHeight="1.3">
