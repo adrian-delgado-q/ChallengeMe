@@ -72,20 +72,20 @@ const ChallengeDashboardPage: React.FC = () => {
 
 				{challenge.rules && <ChallengeRules rules={challenge.rules} />}
 
-				{/* About This Challenge Section */}
-				<AboutChallenge challenge={challenge} />
-
-				{/* Mobile Layout: Show milestones first, then progress chart */}
+				{/* Mobile Layout: About Challenge + all components in vertical stack */}
 				<Box display={{ base: 'block', lg: 'none' }}>
 					<VStack spacing={6} align="stretch">
-						{/* Mobile: Milestones first */}
+						{/* About This Challenge Section */}
+						<AboutChallenge challenge={challenge} />
+
+						{/* Mobile: Milestones */}
 						<MilestonesDisplay
 							milestones={challenge.milestones}
 							currentProgress={challenge.progress || 0}
 							progressByActivityType={challenge.progressByActivityType || {}}
 						/>
 
-						{/* Mobile: Progress Chart second */}
+						{/* Mobile: Progress Chart */}
 						<ProgressChart challengeId={challengeId} />
 
 						{/* Mobile: Leaderboard */}
@@ -115,35 +115,37 @@ const ChallengeDashboardPage: React.FC = () => {
 					</VStack>
 				</Box>
 
-				{/* Desktop Layout: Grid layout with Progress Chart + Discussion on left, Sidebar on right */}
+				{/* Desktop Layout: About + Milestones side by side, Progress under About, Sidebar on right */}
 				<Grid
-					templateColumns={{ base: '1fr', lg: '2fr 1fr' }}
+					templateColumns="2fr 1fr"
 					gap={6}
 					alignItems="start"
 					display={{ base: 'none', lg: 'grid' }}
 				>
-					{/* Left Column: Main Content (Progress Chart + Discussion) */}
+					{/* Left Column: About Challenge + Progress Chart */}
 					<VStack spacing={6} align="stretch">
+						{/* About Challenge */}
+						<AboutChallenge challenge={challenge} />
+
+						{/* Progress Chart under About Challenge */}
 						<ProgressChart challengeId={challengeId} />
+
+						{/* Discussion Forum */}
 						{challengeId && <CommentsForum challengeId={challengeId} />}
 					</VStack>
 
-					{/* Right Column: Compact Sidebar */}
-					<VStack spacing={4} align="stretch">
-						{/* Compact Milestones Display */}
-						<Box>
-							<MilestonesDisplay
-								milestones={challenge.milestones}
-								currentProgress={challenge.progress || 0}
-								progressByActivityType={challenge.progressByActivityType || {}}
-							/>
-						</Box>
+					{/* Right Column: Milestones + Leaderboard + Activity Feed */}
+					<VStack spacing={6} align="stretch">
+						{/* Milestones (same dimensions as before) */}
+						<MilestonesDisplay
+							milestones={challenge.milestones}
+							currentProgress={challenge.progress || 0}
+							progressByActivityType={challenge.progressByActivityType || {}}
+						/>
 
-						{/* Compact Leaderboard */}
+						{/* Leaderboard */}
 						{challengeId ? (
-							<Box>
-								<Leaderboard challengeId={challengeId} />
-							</Box>
+							<Leaderboard challengeId={challengeId} />
 						) : (
 							<Card p={4}>
 								<Center>
@@ -152,11 +154,9 @@ const ChallengeDashboardPage: React.FC = () => {
 							</Card>
 						)}
 
-						{/* Compact Latest Updates */}
+						{/* Activity Feed */}
 						{challengeId ? (
-							<Box>
-								<ActivityFeed challengeId={challengeId} />
-							</Box>
+							<ActivityFeed challengeId={challengeId} />
 						) : (
 							<Card p={4}>
 								<Center>
