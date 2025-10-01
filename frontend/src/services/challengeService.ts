@@ -68,9 +68,9 @@ export class ChallengeService {
 			// Calculate offset for pagination
 			const offset = (page - 1) * limit;
 
-			// Build the main query with pagination
+			// Build the main query with pagination from the view
 			let query = supabase
-				.from('Challenge')
+				.from('challenge_details_view')
 				.select('*', { count: 'exact' })
 				.order('createdAt', { ascending: false });
 
@@ -107,24 +107,11 @@ export class ChallengeService {
 				};
 			}
 
-			// Extract all unique creator IDs and challenge IDs for batch fetching
-			const creatorIds = [...new Set(challenges.map(c => c.creatorId))];
+			// The view already provides creator and participant count, so we just need to get the challenge IDs.
 			const challengeIds = challenges.map(c => c.id);
-
-			// Batch fetch all creators at once
-			const { data: creators } = await supabase
-				.from('profiles')
-				.select('id, username, avatar_url')
-				.in('id', creatorIds);
 
 			// Get current user for participation checks
 			const loggedInUser = await authService.getCurrentUser();
-
-			// Batch fetch all participant counts at once
-			const { data: allParticipants } = await supabase
-				.from('ChallengeParticipant')
-				.select('challengeId')
-				.in('challengeId', challengeIds);
 
 			// If user is logged in, batch fetch their participation data
 			let myParticipations: any[] = [];
@@ -204,20 +191,6 @@ export class ChallengeService {
 				.in('challengeId', challengeIds);
 
 			// Create lookup maps for efficient data access
-			const creatorMap = new Map();
-			(creators || []).forEach(creator => {
-				creatorMap.set(creator.id, {
-					...creator,
-					avatarUrl: creator.avatar_url,
-				});
-			});
-
-			const participantCountMap = new Map();
-			(allParticipants || []).forEach(participant => {
-				const count = participantCountMap.get(participant.challengeId) || 0;
-				participantCountMap.set(participant.challengeId, count + 1);
-			});
-
 			const milestonesMap = new Map();
 			(allMilestones || []).forEach(milestone => {
 				if (!milestonesMap.has(milestone.challengeId)) {
@@ -287,8 +260,12 @@ export class ChallengeService {
 
 			// Now process all challenges with pre-fetched data
 			const challengesWithDetails = challenges.map((challenge: any) => {
-				const creator = creatorMap.get(challenge.creatorId) || null;
-				const participantCount = participantCountMap.get(challenge.id) || 0;
+				const creator = {
+					id: challenge.creatorId,
+					username: challenge.creator_username,
+					avatarUrl: challenge.creator_avatar_url,
+				};
+				const participantCount = challenge.participant_count || 0;
 				const milestones = milestonesMap.get(challenge.id) || [];
 				const activityTypes = activityTypesMap.get(challenge.id) || [];
 				const userProgress = userProgressMap.get(challenge.id) || 0;
@@ -330,7 +307,11 @@ export class ChallengeService {
 	// Get challenge by ID with full details
 	static async getChallengeById(id: string) {
 		try {
-			const { data, error } = await supabase.from('Challenge').select('*').eq('id', id).single();
+			const { data, error } = await supabase
+				.from('challenge_details_view')
+				.select('*')
+				.eq('id', id)
+				.single();
 			if (error) {
 				if (error.code === 'PGRST116') {
 					// Row not found error - might be a newly created challenge not yet available
@@ -341,13 +322,6 @@ export class ChallengeService {
 				throw error;
 			}
 			if (!data) throw new Error('Challenge not found');
-
-			// Get creator info
-			const { data: creator } = await supabase
-				.from('profiles')
-				.select('id, username, avatar_url')
-				.eq('id', data.creatorId)
-				.single();
 
 			// Get participants
 			const { data: participants, error: participantsError } = await supabase
@@ -434,13 +408,12 @@ export class ChallengeService {
 			return {
 				...data,
 				challengeType: data.challengeType?.toLowerCase() as 'individual' | 'team', // Convert to lowercase
-				creator: creator
-					? {
-							...creator,
-							avatarUrl: creator.avatar_url, // Map database column to frontend expectation
-						}
-					: null,
-				participantCount: participants?.length || 0,
+				creator: {
+					id: data.creatorId,
+					username: data.creator_username,
+					avatarUrl: data.creator_avatar_url,
+				},
+				participantCount: data.participant_count || 0,
 				participantList,
 				milestones: formattedMilestones,
 				activityTypes, // Array of activity type IDs

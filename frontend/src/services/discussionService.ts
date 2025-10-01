@@ -21,13 +21,8 @@ export class DiscussionService {
 	// Get all posts for a challenge with replies
 	static async getDiscussionForChallenge(challengeId: string): Promise<DiscussionPost[]> {
 		const { data: posts, error } = await supabase
-			.from('discussion_posts')
-			.select(
-				`
-                *,
-                author:profiles(id, username, avatar_url)
-            `
-			)
+			.from('discussion_post_details_view')
+			.select('*')
 			.eq('challengeId', challengeId)
 			.eq('isDeleted', false)
 			.order('isPinned', { ascending: false })
@@ -44,8 +39,9 @@ export class DiscussionService {
 				return {
 					...post,
 					author: {
-						...post.author,
-						avatarUrl: post.author.avatar_url,
+						id: post.authorId,
+						username: post.author_username,
+						avatarUrl: post.author_avatar_url,
 					},
 					replies,
 				} as DiscussionPost;
@@ -58,13 +54,8 @@ export class DiscussionService {
 	// Get replies for a specific post (with threading)
 	static async getRepliesForPost(postId: string): Promise<DiscussionReply[]> {
 		const { data: replies, error } = await supabase
-			.from('discussion_replies')
-			.select(
-				`
-                *,
-                author:profiles(id, username, avatar_url)
-            `
-			)
+			.from('discussion_reply_details_view')
+			.select('*')
 			.eq('postId', postId)
 			.eq('isDeleted', false)
 			.order('createdAt', { ascending: true });
@@ -86,8 +77,9 @@ export class DiscussionService {
 			const replyObj: DiscussionReply = {
 				...reply,
 				author: {
-					...reply.author,
-					avatarUrl: reply.author.avatar_url,
+					id: reply.authorId,
+					username: reply.author_username,
+					avatarUrl: reply.author_avatar_url,
 				},
 				replies: [],
 			};

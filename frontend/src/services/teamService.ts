@@ -33,7 +33,7 @@ export class TeamService {
 	}) {
 		const { isPublic, page = 1, limit = 12, search, minMembers, maxMembers } = options || {};
 
-		let query = supabase.from('Team').select('*', { count: 'exact' });
+		let query = supabase.from('team_details_view').select('*', { count: 'exact' });
 
 		// Apply filters
 		if (isPublic !== undefined) {
@@ -42,6 +42,14 @@ export class TeamService {
 
 		if (search) {
 			query = query.or(`name.ilike.%${search}%, description.ilike.%${search}%`);
+		}
+
+		if (minMembers !== undefined) {
+			query = query.gte('member_count', minMembers);
+		}
+
+		if (maxMembers !== undefined) {
+			query = query.lte('member_count', maxMembers);
 		}
 
 		// Apply pagination
@@ -63,57 +71,15 @@ export class TeamService {
 			};
 		}
 
-		// Batch fetch all required data
-		const teamIds = teams.map((team: any) => team.id);
-		const creatorIds = teams.map((team: any) => team.creatorId);
-
-		// Batch fetch creators
-		const { data: creators } = await supabase
-			.from('profiles')
-			.select('id, username, avatar_url')
-			.in('id', creatorIds);
-
-		// Batch fetch member counts
-		const { data: allMemberships } = await supabase
-			.from('TeamMembership')
-			.select('teamId, userId')
-			.in('teamId', teamIds);
-
-		// Create lookup maps
-		const creatorMap = new Map();
-		(creators || []).forEach(creator => {
-			creatorMap.set(creator.id, {
-				...creator,
-				avatarUrl: creator.avatar_url,
-			});
-		});
-
-		const memberCountMap = new Map();
-		(allMemberships || []).forEach(membership => {
-			const count = memberCountMap.get(membership.teamId) || 0;
-			memberCountMap.set(membership.teamId, count + 1);
-		});
-
-		// Process teams with pre-fetched data
-		let teamsWithDetails = teams.map((team: any) => {
-			const creator = creatorMap.get(team.creatorId) || null;
-			const memberCount = memberCountMap.get(team.id) || 0;
-
-			return {
-				...team,
-				creator,
-				memberCount,
-			};
-		});
-
-		// Apply member count filters after getting the data
-		if (minMembers !== undefined || maxMembers !== undefined) {
-			teamsWithDetails = teamsWithDetails.filter(team => {
-				if (minMembers !== undefined && team.memberCount < minMembers) return false;
-				if (maxMembers !== undefined && team.memberCount > maxMembers) return false;
-				return true;
-			});
-		}
+		const teamsWithDetails = teams.map((team: any) => ({
+			...team,
+			creator: {
+				id: team.creatorId,
+				username: team.creator_username,
+				avatarUrl: team.creator_avatar_url,
+			},
+			memberCount: team.member_count,
+		}));
 
 		return {
 			teams: teamsWithDetails,
@@ -136,57 +102,40 @@ export class TeamService {
 
 		if (error) throw new Error(error.message);
 
-		// Get team details for each membership
-		const teamsWithDetails = await Promise.all(
-			(memberships || []).map(async (membership: any) => {
-				const { data: team } = await supabase
-					.from('Team')
-					.select('*')
-					.eq('id', membership.teamId)
-					.single();
+		const teamIds = (memberships || []).map((m: any) => m.teamId);
 
-				// Get creator info
-				const { data: creator } = await supabase
-					.from('profiles')
-					.select('id, username, avatar_url')
-					.eq('id', team?.creatorId)
-					.single();
+		if (teamIds.length === 0) {
+			return [];
+		}
 
-				// Get member count
-				const { count } = await supabase
-					.from('TeamMembership')
-					.select('*', { count: 'exact', head: true })
-					.eq('teamId', team?.id);
+		const { data: teams, error: teamsError } = await supabase
+			.from('team_details_view')
+			.select('*')
+			.in('id', teamIds);
 
-				return {
-					...team,
-					creator: creator
-						? {
-								...creator,
-								avatarUrl: creator.avatar_url, // Map database column to frontend expectation
-							}
-						: null,
-					memberCount: count || 0,
-				};
-			})
-		);
+		if (teamsError) throw new Error(teamsError.message);
 
-		return teamsWithDetails;
+		return (teams || []).map((team: any) => ({
+			...team,
+			creator: {
+				id: team.creatorId,
+				username: team.creator_username,
+				avatarUrl: team.creator_avatar_url,
+			},
+			memberCount: team.member_count,
+		}));
 	}
 
 	// Get team by ID with full details including members
 	static async getTeamById(id: string) {
-		const { data, error } = await supabase.from('Team').select('*').eq('id', id).single();
+		const { data, error } = await supabase
+			.from('team_details_view')
+			.select('*')
+			.eq('id', id)
+			.single();
 
 		if (error) throw new Error(error.message);
 		if (!data) throw new Error('Team not found');
-
-		// Get creator info
-		const { data: creator } = await supabase
-			.from('profiles')
-			.select('id, username, avatar_url')
-			.eq('id', data.creatorId)
-			.single();
 
 		// Get team memberships
 		const { data: memberships, error: membershipsError } = await supabase
@@ -219,13 +168,12 @@ export class TeamService {
 
 		return {
 			...data,
-			creator: creator
-				? {
-						...creator,
-						avatarUrl: creator.avatar_url, // Map database column to frontend expectation
-					}
-				: null,
-			memberCount: memberships?.length || 0,
+			creator: {
+				id: data.creatorId,
+				username: data.creator_username,
+				avatarUrl: data.creator_avatar_url,
+			},
+			memberCount: data.member_count,
 			memberList,
 		};
 	}

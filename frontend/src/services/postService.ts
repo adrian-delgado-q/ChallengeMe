@@ -20,45 +20,15 @@ export class PostService {
 	// Get posts for a specific challenge
 	static async getPostsForChallenge(challengeId: string) {
 		const { data: posts, error } = await supabase
-			.from('Post')
+			.from('post_details_view')
 			.select('*')
 			.eq('challengeId', challengeId);
 
 		if (error) throw new Error(error.message);
 
-		// Get participant and user info for each post
+		// Get comments for each post
 		const postsWithDetails = await Promise.all(
 			(posts || []).map(async (post: any) => {
-				// Get participant info
-				const { data: participant } = await supabase
-					.from('ChallengeParticipant')
-					.select('userId, challengeId, teamId')
-					.eq('id', post.participantId)
-					.single();
-
-				let user = null;
-				let challenge = null;
-
-				if (participant) {
-					// Get user info
-					if (participant.userId) {
-						const { data: userData } = await supabase
-							.from('profiles')
-							.select('id, username, avatarUrl')
-							.eq('id', participant.userId)
-							.single();
-						user = userData;
-					}
-
-					// Get challenge info
-					const { data: challengeData } = await supabase
-						.from('Challenge')
-						.select('id, title')
-						.eq('id', participant.challengeId)
-						.single();
-					challenge = challengeData;
-				}
-
 				// Get comments
 				const { data: comments } = await supabase.from('Comment').select('*').eq('postId', post.id);
 
@@ -67,8 +37,15 @@ export class PostService {
 					content: post.content,
 					imageUrl: post.imageUrl,
 					createdAt: post.createdAt,
-					user,
-					challenge,
+					user: {
+						id: post.userId,
+						username: post.username,
+						avatarUrl: post.avatar_url,
+					},
+					challenge: {
+						id: post.challengeId,
+						title: post.challenge_title,
+					},
 					comments: comments || [],
 				};
 			})
@@ -126,46 +103,16 @@ export class PostService {
 	// Get recent posts across all challenges (social feed)
 	static async getRecentPosts(limit: number = 20) {
 		const { data: posts, error } = await supabase
-			.from('Post')
+			.from('post_details_view')
 			.select('*')
 			.order('createdAt', { ascending: false })
 			.limit(limit);
 
 		if (error) throw new Error(error.message);
 
-		// Get participant and user info for each post
+		// Get comments for each post
 		const postsWithDetails = await Promise.all(
 			(posts || []).map(async (post: any) => {
-				// Get participant info
-				const { data: participant } = await supabase
-					.from('ChallengeParticipant')
-					.select('userId, challengeId, teamId')
-					.eq('id', post.participantId)
-					.single();
-
-				let user = null;
-				let challenge = null;
-
-				if (participant) {
-					// Get user info
-					if (participant.userId) {
-						const { data: userData } = await supabase
-							.from('profiles')
-							.select('id, username, avatarUrl')
-							.eq('id', participant.userId)
-							.single();
-						user = userData;
-					}
-
-					// Get challenge info
-					const { data: challengeData } = await supabase
-						.from('Challenge')
-						.select('id, title')
-						.eq('id', participant.challengeId)
-						.single();
-					challenge = challengeData;
-				}
-
 				// Get comments
 				const { data: comments } = await supabase.from('Comment').select('*').eq('postId', post.id);
 
@@ -174,8 +121,15 @@ export class PostService {
 					content: post.content,
 					imageUrl: post.imageUrl,
 					createdAt: post.createdAt,
-					user,
-					challenge,
+					user: {
+						id: post.userId,
+						username: post.username,
+						avatarUrl: post.avatar_url,
+					},
+					challenge: {
+						id: post.challengeId,
+						title: post.challenge_title,
+					},
 					comments: comments || [],
 				};
 			})
