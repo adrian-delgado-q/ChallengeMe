@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Avatar, Heading, HStack, Text, VStack, Spinner, Center } from '@chakra-ui/react';
-import { ActivityService } from '../../graphql/services';
+import { ActivityService } from '../../services';
 import { useUser } from '../../contexts/AuthContext';
 import { useActivityUpdates } from '../../hooks/useActivityUpdates';
 import { Card } from '../common/Card';

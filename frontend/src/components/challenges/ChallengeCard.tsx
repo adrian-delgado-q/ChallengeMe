@@ -24,6 +24,7 @@ import { useChallengeMutations, useChallengeActions } from '../../hooks/useChall
 import { useUser } from '../../contexts/AuthContext';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import templateImage from '../../assets/template_challenge.png';
 
 // Activity type icon
 const ActivityIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -234,10 +235,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 			{/* Banner with image */}
 			<Box position="relative">
 				<Image
-					src={
-						challenge.imageUrl ||
-						'https://images.unsplash.com/photo-1606788075761-5a81c9db1e36?q=80&w=1200'
-					}
+					src={challenge.imageUrl || templateImage}
 					alt="Challenge Banner"
 					w="full"
 					h="160px"

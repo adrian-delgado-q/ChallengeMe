@@ -1,6 +1,6 @@
-import { supabase } from '../../supabase/client';
-import { authService } from '../../services/optimizedAuthService';
-import { generateUUID } from '../../utils/uuid';
+import { supabase } from '../supabase/client';
+import { authService } from './optimizedAuthService';
+import { generateUUID } from '../utils/uuid';
 
 // Types for post and comment operations
 export interface PostInput {

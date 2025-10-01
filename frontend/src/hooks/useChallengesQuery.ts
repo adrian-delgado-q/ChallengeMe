@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ChallengeService } from '../graphql/services/challengeService';
+import { ChallengeService } from '../services/challengeService';
 import { queryKeys } from '../lib/queryKeys';
-import type { ChallengeInput } from '../graphql/services/challengeService';
+import type { ChallengeInput } from '../services/challengeService';
 
 // Optimized challenges hook using React Query
 export const useChallengesQuery = (options?: {

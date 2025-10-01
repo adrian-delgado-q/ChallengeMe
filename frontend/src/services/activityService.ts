@@ -1,8 +1,8 @@
-import { supabase } from '../../supabase/client';
-import { authService } from '../../services/optimizedAuthService';
-import { generateUUID } from '../../utils/uuid';
-import { ensureUserProfile } from '../../utils/profileUtils';
-import type { ActivityInput } from '../../types';
+import { supabase } from '../supabase/client';
+import { authService } from './optimizedAuthService';
+import { generateUUID } from '../utils/uuid';
+import { ensureUserProfile } from '../utils/profileUtils';
+import type { ActivityInput } from '../types';
 export type { ActivityInput };
 
 // Activity data service with exponential backoff

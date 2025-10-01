@@ -56,6 +56,13 @@ export {
 // File Upload hooks
 export { useFileUpload, useImageUpload } from './useFileUpload';
 
+// Discussion hooks
+export {
+	useDiscussionQuery,
+	useDiscussionPermissionsQuery,
+	useDiscussionMutations,
+} from './useDiscussionQuery';
+
 // Query keys for manual cache management
 export { queryKeys } from '../lib/queryKeys';
 

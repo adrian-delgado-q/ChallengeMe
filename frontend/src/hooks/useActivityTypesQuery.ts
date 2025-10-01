@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ActivityTypeService } from '../graphql/services/activityTypeService';
+import { ActivityTypeService } from '../services/activityTypeService';
 import { queryKeys } from '../lib/queryKeys';
 
 // Hook to get all activity types

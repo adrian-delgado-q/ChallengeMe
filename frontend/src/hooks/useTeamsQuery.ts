@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { TeamService } from '../graphql/services/teamService';
+import { TeamService } from '../services/teamService';
 import { queryKeys } from '../lib/queryKeys';
 
 // Teams Query Hook
@@ -91,11 +91,32 @@ export const useTeamMutations = () => {
 		},
 	});
 
+	const deleteTeamMutation = useMutation({
+		mutationFn: (teamId: string) => TeamService.deleteTeam(teamId),
+		onSuccess: () => {
+			// Invalidate all team queries since the team is deleted
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.all });
+		},
+	});
+
+	const joinTeamWithAccessCodeMutation = useMutation({
+		mutationFn: ({ teamId, accessCode }: { teamId: string; accessCode: string }) =>
+			TeamService.joinTeam(teamId, accessCode),
+		onSuccess: (_data, variables) => {
+			// Invalidate team lists, my teams, and the specific team
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.lists() });
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.userTeams('current') });
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.detail(variables.teamId) });
+		},
+	});
+
 	return {
 		createTeam: createTeamMutation,
 		joinTeam: joinTeamMutation,
+		joinTeamWithAccessCode: joinTeamWithAccessCodeMutation,
 		leaveTeam: leaveTeamMutation,
 		updateTeam: updateTeamMutation,
+		deleteTeam: deleteTeamMutation,
 	};
 };
 

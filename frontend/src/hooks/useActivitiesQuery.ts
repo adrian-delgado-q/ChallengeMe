@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ActivityService } from '../graphql/services/activityService';
+import { ActivityService } from '../services/activityService';
 import { queryKeys } from '../lib/queryKeys';
 
 // Activities for Challenge Query Hook

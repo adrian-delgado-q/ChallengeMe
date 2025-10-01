@@ -65,6 +65,8 @@ export const queryKeys = {
 		detail: (id: string) => [...queryKeys.discussions.details(), id] as const,
 		challengeDiscussions: (challengeId: string) =>
 			[...queryKeys.discussions.all, 'challenge', challengeId] as const,
+		permissions: (challengeId: string, userId: string) =>
+			[...queryKeys.discussions.all, 'permissions', challengeId, userId] as const,
 	},
 
 	// Posts

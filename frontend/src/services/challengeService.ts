@@ -1,8 +1,8 @@
-import { supabase } from '../../supabase/client';
-import { authService } from '../../services/optimizedAuthService';
-import { generateUUID } from '../../utils/uuid';
-import { ensureUserProfile } from '../../utils/profileUtils';
-import { handleAuthError } from '../../utils/authUtils';
+import { supabase } from '../supabase/client';
+import { authService } from './optimizedAuthService';
+import { generateUUID } from '../utils/uuid';
+import { ensureUserProfile } from '../utils/profileUtils';
+import { handleAuthError } from '../utils/authUtils';
 
 // Types for challenge operations
 export interface ChallengeInput {

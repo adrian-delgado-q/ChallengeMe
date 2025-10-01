@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ProfileService } from '../graphql/services/profileService';
+import { ProfileService } from '../services/profileService';
 import { queryKeys } from '../lib/queryKeys';
 
 // Current User Profile Query Hook

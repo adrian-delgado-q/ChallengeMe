@@ -24,7 +24,7 @@ import { FaEdit } from 'react-icons/fa';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ValidationUtils } from '../../utils/validation';
-import { ActivityTypeService } from '../../graphql/services/activityTypeService';
+import { ActivityTypeService } from '../../services/activityTypeService';
 import type { Activity, ActivityType } from '../../types';
 
 interface EditActivityModalProps {

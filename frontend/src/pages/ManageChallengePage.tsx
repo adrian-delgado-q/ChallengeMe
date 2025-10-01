@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
 	Box,
 	Heading,
@@ -43,48 +43,13 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { EditIcon, DeleteIcon, ViewIcon, SettingsIcon } from '@chakra-ui/icons';
-import { ChallengeService } from '../graphql/services';
 import { useUser } from '../contexts/AuthContext';
 import { useAsyncState } from '../hooks/useAsyncState';
-import { useNotifications } from '../utils/notifications';
-
-interface Challenge {
-	id: string;
-	creatorId?: string;
-	title: string;
-	description?: string;
-	type?: string;
-	challengeType: 'individual' | 'team';
-	status?: 'ACTIVE' | 'CLOSED' | 'CANCELLED';
-	participants?: number;
-	maxParticipants?: number;
-	maxTeamSize?: number;
-	startDate?: string;
-	endDate: string;
-	progress?: number;
-	isPublic: boolean;
-	milestones?: Array<{ name: string; value: number }>;
-	createdAt?: string;
-	creator?: {
-		id: string;
-		username: string;
-		avatarUrl?: string;
-	};
-}
-
-interface ChallengeAnalytics {
-	challenge: {
-		id: any;
-		title: any;
-		createdAt: any;
-		challengeType: any;
-	};
-	totalParticipants: number;
-	totalActivities: number;
-	activitiesByDate: Record<string, number>;
-	participantsByDate: Record<string, number>;
-	averageActivitiesPerParticipant: string;
-}
+import {
+	useChallengeQuery,
+	useChallengeAnalyticsQuery,
+	useChallengeActions,
+} from '../hooks/useChallengesQuery';
 
 interface Participant {
 	id: string;
@@ -107,12 +72,20 @@ const ManageChallengePage: React.FC = () => {
 	const { id: challengeId } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const { user } = useUser();
-	const notifications = useNotifications();
 
-	const [challenge, setChallenge] = useState<Challenge | null>(null);
-	const [analytics, setAnalytics] = useState<ChallengeAnalytics | null>(null);
-	const [participants, setParticipants] = useState<Participant[]>([]);
-	const [loading, setLoading] = useState(true);
+	// React Query hooks for data fetching
+	const {
+		data: challenge,
+		isLoading: challengeLoading,
+		error: challengeError,
+	} = useChallengeQuery(challengeId || '');
+	const { data: analytics, isLoading: analyticsLoading } = useChallengeAnalyticsQuery(
+		challengeId || ''
+	);
+	const { updateChallengeStatus, removeParticipant } = useChallengeActions();
+
+	const loading = challengeLoading || analyticsLoading;
+	const participants = challenge?.participantList || [];
 	const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
 
 	const { isOpen: isStatusOpen, onOpen: onStatusOpen, onClose: onStatusClose } = useDisclosure();
@@ -130,45 +103,13 @@ const ManageChallengePage: React.FC = () => {
 		successMessage: 'Participant removed successfully!',
 	});
 
-	// Fetch challenge data and analytics
-	useEffect(() => {
-		const fetchData = async () => {
-			if (!challengeId) return;
-
-			try {
-				setLoading(true);
-				const [challengeData, analyticsData] = await Promise.all([
-					ChallengeService.getChallengeById(challengeId),
-					ChallengeService.getChallengeAnalytics(challengeId),
-				]);
-
-				if (challengeData) {
-					setChallenge(challengeData);
-					setParticipants(challengeData.participantList || []);
-				}
-
-				if (analyticsData) {
-					setAnalytics(analyticsData);
-				}
-			} catch (error) {
-				console.error('Error fetching challenge data:', error);
-				notifications.error('Error', 'Failed to load challenge data');
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		fetchData();
-	}, [challengeId]); // Remove notifications from dependency array
+	// Data is loaded automatically via React Query hooks
 
 	const handleStatusUpdate = async (newStatus: 'ACTIVE' | 'CLOSED' | 'CANCELLED') => {
 		if (!challengeId) return;
 
 		await executeStatusUpdate(async () => {
-			await ChallengeService.updateChallengeStatus(challengeId, newStatus);
-			if (challenge) {
-				setChallenge({ ...challenge, status: newStatus });
-			}
+			await updateChallengeStatus.mutateAsync({ challengeId, status: newStatus });
 		});
 		onStatusClose();
 	};
@@ -177,14 +118,7 @@ const ManageChallengePage: React.FC = () => {
 		if (!challengeId || !selectedParticipant) return;
 
 		await executeRemove(async () => {
-			await ChallengeService.removeParticipant(challengeId, selectedParticipant.id);
-			setParticipants(prev => prev.filter(p => p.id !== selectedParticipant.id));
-			if (analytics) {
-				setAnalytics({
-					...analytics,
-					totalParticipants: analytics.totalParticipants - 1,
-				});
-			}
+			await removeParticipant.mutateAsync({ challengeId, participantId: selectedParticipant.id });
 		});
 		onRemoveClose();
 		setSelectedParticipant(null);
@@ -218,12 +152,18 @@ const ManageChallengePage: React.FC = () => {
 
 	if (loading) {
 		return (
-			<Center h="400px">
-				<VStack spacing={4}>
-					<Spinner size="xl" color="orange.500" />
-					<Text>Loading challenge management...</Text>
-				</VStack>
+			<Center py={10}>
+				<Spinner size="xl" />
 			</Center>
+		);
+	}
+
+	if (challengeError) {
+		return (
+			<Alert status="error">
+				<AlertIcon />
+				{challengeError.message || 'Failed to load challenge data'}
+			</Alert>
 		);
 	}
 
@@ -234,9 +174,7 @@ const ManageChallengePage: React.FC = () => {
 				Challenge not found or you don't have permission to manage it.
 			</Alert>
 		);
-	}
-
-	// Check if user is the creator
+	} // Check if user is the creator
 	if (challenge.creatorId !== user?.id) {
 		return (
 			<Alert status="error">
@@ -348,7 +286,7 @@ const ManageChallengePage: React.FC = () => {
 								{Math.round(
 									((new Date().getTime() - new Date(challenge.startDate || '').getTime()) /
 										(new Date(challenge.endDate).getTime() - new Date(challenge.startDate || '').getTime())) *
-										100
+									100
 								)}
 								%
 							</Text>
@@ -406,7 +344,7 @@ const ManageChallengePage: React.FC = () => {
 								</Tr>
 							</Thead>
 							<Tbody>
-								{participants.map(participant => (
+								{participants.map((participant: any) => (
 									<Tr key={participant.id}>
 										<Td>
 											<HStack spacing={3}>
