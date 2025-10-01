@@ -1,4 +1,8 @@
-CREATE OR REPLACE VIEW team_details_view AS
+-- Drop the existing view first to avoid column structure conflicts
+DROP VIEW IF EXISTS team_details_view;
+
+-- Recreate the view with all necessary columns
+CREATE VIEW team_details_view AS
 SELECT
     t.id,
     t.name,

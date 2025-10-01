@@ -1,4 +1,8 @@
-CREATE OR REPLACE VIEW post_details_view AS
+-- Drop the existing view first to avoid column structure conflicts
+DROP VIEW IF EXISTS post_details_view;
+
+-- Recreate the view with all necessary columns
+CREATE VIEW post_details_view AS
 SELECT
     post.id,
     post."createdAt",

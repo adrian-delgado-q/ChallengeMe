@@ -1,4 +1,9 @@
-CREATE OR REPLACE VIEW discussion_post_details_view AS
+-- Drop existing views first to avoid column structure conflicts
+DROP VIEW IF EXISTS discussion_post_details_view;
+DROP VIEW IF EXISTS discussion_reply_details_view;
+
+-- Recreate the discussion post details view
+CREATE VIEW discussion_post_details_view AS
 SELECT
     dp.id,
     dp."challengeId",
@@ -17,7 +22,8 @@ FROM
 JOIN
     profiles p ON dp."authorId" = p.id;
 
-CREATE OR REPLACE VIEW discussion_reply_details_view AS
+-- Recreate the discussion reply details view
+CREATE VIEW discussion_reply_details_view AS
 SELECT
     dr.id,
     dr."postId",
