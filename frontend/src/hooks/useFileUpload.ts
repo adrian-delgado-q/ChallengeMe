@@ -1,12 +1,20 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { FileUploadService, type FileUploadOptions, type FileUploadResult } from '../services/fileUploadService';
+import {
+	FileUploadService,
+	type FileUploadOptions,
+	type FileUploadResult,
+} from '../services/fileUploadService';
 import { queryKeys } from '../lib/queryKeys';
 
 // Hook for file upload mutations
 export const useFileUpload = () => {
 	const queryClient = useQueryClient();
 
-	const uploadFileMutation = useMutation<FileUploadResult, Error, { file: File; options: FileUploadOptions }>({
+	const uploadFileMutation = useMutation<
+		FileUploadResult,
+		Error,
+		{ file: File; options: FileUploadOptions }
+	>({
 		mutationFn: ({ file, options }) => FileUploadService.uploadFile(file, options),
 		onSuccess: () => {
 			// Invalidate any queries that might be affected by file uploads
@@ -16,8 +24,7 @@ export const useFileUpload = () => {
 	});
 
 	const uploadAvatarMutation = useMutation<FileUploadResult, Error, File>({
-		mutationFn: (file: File) =>
-			FileUploadService.uploadAvatar(file),
+		mutationFn: (file: File) => FileUploadService.uploadAvatar(file),
 		onSuccess: () => {
 			// Invalidate profile queries when avatar is updated
 			queryClient.invalidateQueries({ queryKey: queryKeys.profiles.all });
@@ -25,8 +32,7 @@ export const useFileUpload = () => {
 	});
 
 	const uploadChallengeImageMutation = useMutation<FileUploadResult, Error, File>({
-		mutationFn: (file: File) =>
-			FileUploadService.uploadChallengeImage(file),
+		mutationFn: (file: File) => FileUploadService.uploadChallengeImage(file),
 		onSuccess: () => {
 			// Invalidate challenge queries when challenge image is updated
 			queryClient.invalidateQueries({ queryKey: queryKeys.challenges.all });
@@ -34,8 +40,7 @@ export const useFileUpload = () => {
 	});
 
 	const uploadTeamAvatarMutation = useMutation<FileUploadResult, Error, File>({
-		mutationFn: (file: File) =>
-			FileUploadService.uploadTeamAvatar(file),
+		mutationFn: (file: File) => FileUploadService.uploadTeamAvatar(file),
 		onSuccess: () => {
 			// Invalidate team queries when team avatar is updated
 			queryClient.invalidateQueries({ queryKey: queryKeys.teams.all });
@@ -55,15 +60,21 @@ export const useFileUpload = () => {
 
 	return {
 		uploadFile: uploadFileMutation,
-		uploadAvatar: uploadAvatarMutation, 
+		uploadAvatar: uploadAvatarMutation,
 		uploadChallengeImage: uploadChallengeImageMutation,
 		uploadTeamAvatar: uploadTeamAvatarMutation,
 		deleteFile: deleteFileMutation,
 		// Consolidated state
-		isUploading: uploadFileMutation.isPending || uploadAvatarMutation.isPending || 
-					uploadChallengeImageMutation.isPending || uploadTeamAvatarMutation.isPending,
-		uploadError: uploadFileMutation.error || uploadAvatarMutation.error || 
-					uploadChallengeImageMutation.error || uploadTeamAvatarMutation.error,
+		isUploading:
+			uploadFileMutation.isPending ||
+			uploadAvatarMutation.isPending ||
+			uploadChallengeImageMutation.isPending ||
+			uploadTeamAvatarMutation.isPending,
+		uploadError:
+			uploadFileMutation.error ||
+			uploadAvatarMutation.error ||
+			uploadChallengeImageMutation.error ||
+			uploadTeamAvatarMutation.error,
 	};
 };
 

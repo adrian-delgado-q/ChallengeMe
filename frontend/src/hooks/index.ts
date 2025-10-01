@@ -3,61 +3,58 @@
 
 // Challenge hooks
 export {
-  useChallengesQuery,
-  useChallengeQuery,
-  useChallengeProgressQuery,
-  useMyCreatedChallengesQuery,
-  useMyChallengesQuery,
-  useChallengeAnalyticsQuery,
-  useMyParticipationQuery,
-  useChallengeParticipantsQuery,
-  useChallengeMutations,
-  useChallengeActions as useChallengeActionsQuery,
-  useChallenges, // Legacy compatibility wrapper
+	useChallengesQuery,
+	useChallengeQuery,
+	useChallengeProgressQuery,
+	useMyCreatedChallengesQuery,
+	useMyChallengesQuery,
+	useChallengeAnalyticsQuery,
+	useMyParticipationQuery,
+	useChallengeParticipantsQuery,
+	useChallengeMutations,
+	useChallengeActions as useChallengeActionsQuery,
+	useChallenges, // Legacy compatibility wrapper
 } from './useChallengesQuery';
 
 // Activity hooks
 export {
-  useActivitiesForChallengeQuery,
-  useRecentActivitiesQuery, 
-  useUserActivitiesQuery,
-  useLeaderboardActivitiesQuery,
-  useManagementActivitiesQuery,
-  useActivityMutations,
-  useActivities, // Legacy compatibility wrapper
+	useActivitiesForChallengeQuery,
+	useRecentActivitiesQuery,
+	useUserActivitiesQuery,
+	useLeaderboardActivitiesQuery,
+	useManagementActivitiesQuery,
+	useActivityMutations,
+	useActivities, // Legacy compatibility wrapper
 } from './useActivitiesQuery';
 
 // Team hooks
 export {
-  useTeamsQuery,
-  useMyTeamsQuery,
-  useTeamQuery,
-  useTeamMutations,
-  useTeams, // Legacy compatibility wrapper
+	useTeamsQuery,
+	useMyTeamsQuery,
+	useTeamQuery,
+	useTeamMutations,
+	useTeams, // Legacy compatibility wrapper
 } from './useTeamsQuery';
 
 // Profile hooks
 export {
-  useCurrentProfileQuery,
-  useProfileQuery,
-  useUserStatsQuery,
-  useProfilesQuery,
-  useProfileMutations,
-  useProfile, // Legacy compatibility wrapper
+	useCurrentProfileQuery,
+	useProfileQuery,
+	useUserStatsQuery,
+	useProfilesQuery,
+	useProfileMutations,
+	useProfile, // Legacy compatibility wrapper
 } from './useProfilesQuery';
 
 // Activity Type hooks
 export {
-  useActivityTypesQuery,
-  useActivityTypesByIdsQuery,
-  useActivityTypesForChallengeQuery,
+	useActivityTypesQuery,
+	useActivityTypesByIdsQuery,
+	useActivityTypesForChallengeQuery,
 } from './useActivityTypesQuery';
 
 // File Upload hooks
-export {
-  useFileUpload,
-  useImageUpload,
-} from './useFileUpload';
+export { useFileUpload, useImageUpload } from './useFileUpload';
 
 // Query keys for manual cache management
 export { queryKeys } from '../lib/queryKeys';
@@ -67,5 +64,4 @@ export { useAsyncState } from './useAsyncState';
 export { useAuth } from './useAuth';
 export { useUser } from './useUser';
 
-// Legacy data hooks (deprecated - use React Query hooks above instead)
-export { useChallengeActions } from './useData';
+// Legacy data hooks have been migrated to React Query hooks above

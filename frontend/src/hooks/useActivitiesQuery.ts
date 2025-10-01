@@ -73,13 +73,34 @@ export const useActivityMutations = () => {
 			// If activity is for a specific challenge, invalidate that challenge's data too
 			if (variables.challengeId) {
 				queryClient.invalidateQueries({ queryKey: queryKeys.challenges.detail(variables.challengeId) });
-				queryClient.invalidateQueries({ queryKey: queryKeys.challenges.progress(variables.challengeId) });
+				queryClient.invalidateQueries({
+					queryKey: queryKeys.challenges.progress(variables.challengeId),
+				});
 			}
+		},
+	});
+
+	const updateActivityMutation = useMutation({
+		mutationFn: ({ activityId, ...activityData }: { activityId: string; [key: string]: any }) =>
+			ActivityService.updateActivity(activityId, activityData),
+		onSuccess: () => {
+			// Invalidate all activity-related queries to refresh lists
+			queryClient.invalidateQueries({ queryKey: queryKeys.activities.all });
+		},
+	});
+
+	const deleteActivityMutation = useMutation({
+		mutationFn: (activityId: string) => ActivityService.deleteActivity(activityId),
+		onSuccess: () => {
+			// Invalidate all activity-related queries to refresh lists
+			queryClient.invalidateQueries({ queryKey: queryKeys.activities.all });
 		},
 	});
 
 	return {
 		createActivity: createActivityMutation,
+		updateActivity: updateActivityMutation,
+		deleteActivity: deleteActivityMutation,
 	};
 };
 

@@ -16,6 +16,7 @@ import {
 	useColorModeValue,
 } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
+import { useFileUpload } from '../../hooks/useFileUpload';
 import { FileUploadService } from '../../services/fileUploadService';
 import type { FileUploadResult } from '../../services/fileUploadService';
 import { useNotifications } from '../../utils/notifications';
@@ -57,6 +58,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
 	const [isUploading, setIsUploading] = useState(false);
 	const [preview, setPreview] = useState<string | null>(value || null);
 	const notifications = useNotifications();
+	const { uploadAvatar, uploadChallengeImage } = useFileUpload();
 
 	const borderColor = useColorModeValue('gray.200', 'gray.600');
 	const bgColor = useColorModeValue('gray.50', 'gray.700');
@@ -87,9 +89,9 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
 			} else {
 				// Use default upload based on variant
 				if (variant === 'avatar') {
-					result = await FileUploadService.uploadAvatar(file);
+					result = await uploadAvatar.mutateAsync(file);
 				} else {
-					result = await FileUploadService.uploadChallengeImage(file);
+					result = await uploadChallengeImage.mutateAsync(file);
 				}
 			}
 

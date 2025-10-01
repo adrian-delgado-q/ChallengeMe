@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Button, useDisclosure, Icon } from '@chakra-ui/react';
 import { TeamSelectionModal } from './TeamSelectionModal';
 import { AccessCodeModal } from './AccessCodeModal';
-import { useChallengeActions } from '../../hooks/useData';
+import {
+	useChallengeMutations,
+	useChallengeActions,
+	useMyParticipationQuery,
+} from '../../hooks/useChallengesQuery';
 import { useTeams } from '../../hooks/useTeamsQuery';
 import { useUser } from '../../contexts/AuthContext';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { ChallengeService } from '../../graphql/services';
 import type { Challenge, Team } from '../../types';
 
 // Join icon
@@ -56,8 +59,10 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
 	onJoinSuccess,
 }) => {
 	const { user } = useUser();
-	const { joinChallenge } = useChallengeActions();
+	const { joinChallenge } = useChallengeMutations();
+	const { leaveChallenge } = useChallengeActions();
 	const { teams } = useTeams();
+	const { data: participationDetails } = useMyParticipationQuery(challenge.id);
 	const notifications = useNotifications();
 
 	// Team selection modal
@@ -87,39 +92,32 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
 		successMessage: 'Successfully left challenge!',
 	});
 
-	// Check participation status
+	// Update local state based on participation data
 	useEffect(() => {
-		const checkParticipation = async () => {
-			if (!user || !challenge.id) return;
+		if (participationDetails) {
+			setIsParticipating(participationDetails.isParticipating);
+			setParticipationType(participationDetails.participationType);
 
-			try {
-				const participationDetails = await ChallengeService.getMyParticipationDetails(challenge.id);
-				setIsParticipating(participationDetails.isParticipating);
-				setParticipationType(participationDetails.participationType);
-
-				if (participationDetails.team) {
-					// Convert the team data to match our Team interface
-					const teamData: Team = {
-						id: participationDetails.team.id,
-						name: participationDetails.team.name,
-						avatarUrl: participationDetails.team.avatarUrl,
-						memberCount: 0,
-						isPublic: true,
-						creatorId: '',
-						description: '',
-						maxMembers: undefined,
-						sportsTypes: [],
-						createdAt: '',
-					};
-					setParticipantTeam(teamData);
-				}
-			} catch (error) {
-				console.error('Error checking participation:', error);
+			if (participationDetails.team) {
+				// Convert the team data to match our Team interface
+				const teamData: Team = {
+					id: participationDetails.team.id,
+					name: participationDetails.team.name,
+					avatarUrl: participationDetails.team.avatarUrl,
+					memberCount: 0,
+					isPublic: true,
+					creatorId: '',
+					description: '',
+					maxMembers: undefined,
+					sportsTypes: [],
+					createdAt: '',
+				};
+				setParticipantTeam(teamData);
+			} else {
+				setParticipantTeam(null);
 			}
-		};
-
-		checkParticipation();
-	}, [user, challenge.id]);
+		}
+	}, [participationDetails]);
 
 	const handleJoinChallenge = async () => {
 		if (!user) {
@@ -146,7 +144,7 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
 		} else {
 			// Join as individual directly
 			await executeJoin(async () => {
-				await joinChallenge(challenge.id);
+				await joinChallenge.mutateAsync({ challengeId: challenge.id });
 				setIsParticipating(true);
 				setParticipationType('individual');
 				onJoinSuccess?.();
@@ -156,11 +154,10 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
 
 	const handleLeaveChallenge = async () => {
 		await executeLeave(async () => {
-			if (participationType === 'team' && participantTeam) {
-				await ChallengeService.leaveChallenge(challenge.id, participantTeam.id);
-			} else {
-				await ChallengeService.leaveChallenge(challenge.id);
-			}
+			await leaveChallenge.mutateAsync({
+				challengeId: challenge.id,
+				teamId: participationType === 'team' && participantTeam ? participantTeam.id : undefined,
+			});
 			setIsParticipating(false);
 			setParticipantTeam(null);
 			setParticipationType(null);
@@ -180,7 +177,7 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
 
 		// Public challenge - join directly
 		await executeJoin(async () => {
-			await joinChallenge(challenge.id, teamId);
+			await joinChallenge.mutateAsync({ challengeId: challenge.id, asTeam: teamId });
 			setIsParticipating(true);
 			setParticipationType('team');
 			// Find and set the selected team
@@ -197,7 +194,11 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
 		await executeJoin(async () => {
 			if (pendingTeamId) {
 				// Join with team using access code
-				await joinChallenge(challenge.id, pendingTeamId, accessCode);
+				await joinChallenge.mutateAsync({
+					challengeId: challenge.id,
+					asTeam: pendingTeamId,
+					accessCode,
+				});
 				setIsParticipating(true);
 				setParticipationType('team');
 				// Find and set the selected team
@@ -208,7 +209,7 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
 				setPendingTeamId(null);
 			} else {
 				// Join as individual using access code
-				await joinChallenge(challenge.id, undefined, accessCode);
+				await joinChallenge.mutateAsync({ challengeId: challenge.id, accessCode });
 				setIsParticipating(true);
 				setParticipationType('individual');
 			}

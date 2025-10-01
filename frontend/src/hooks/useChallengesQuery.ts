@@ -69,8 +69,13 @@ export const useChallengeMutations = () => {
 	});
 
 	const updateChallengeMutation = useMutation({
-		mutationFn: ({ challengeId, challengeData }: { challengeId: string; challengeData: Partial<ChallengeInput> }) =>
-			ChallengeService.updateChallenge(challengeId, challengeData),
+		mutationFn: ({
+			challengeId,
+			challengeData,
+		}: {
+			challengeId: string;
+			challengeData: Partial<ChallengeInput>;
+		}) => ChallengeService.updateChallenge(challengeId, challengeData),
 		onSuccess: (_data, variables) => {
 			// Invalidate specific challenge and all lists
 			queryClient.invalidateQueries({ queryKey: queryKeys.challenges.detail(variables.challengeId) });
@@ -198,8 +203,13 @@ export const useChallengeActions = () => {
 	});
 
 	const updateChallengeStatusMutation = useMutation({
-		mutationFn: ({ challengeId, status }: { challengeId: string; status: 'ACTIVE' | 'CLOSED' | 'CANCELLED' }) =>
-			ChallengeService.updateChallengeStatus(challengeId, status),
+		mutationFn: ({
+			challengeId,
+			status,
+		}: {
+			challengeId: string;
+			status: 'ACTIVE' | 'CLOSED' | 'CANCELLED';
+		}) => ChallengeService.updateChallengeStatus(challengeId, status),
 		onSuccess: (_data, variables) => {
 			queryClient.invalidateQueries({ queryKey: queryKeys.challenges.detail(variables.challengeId) });
 			queryClient.invalidateQueries({ queryKey: queryKeys.challenges.lists() });
@@ -221,7 +231,9 @@ export const useChallengeActions = () => {
 			ChallengeService.removeParticipant(challengeId, participantId),
 		onSuccess: (_data, variables) => {
 			queryClient.invalidateQueries({ queryKey: queryKeys.challenges.detail(variables.challengeId) });
-			queryClient.invalidateQueries({ queryKey: queryKeys.challenges.participants(variables.challengeId) });
+			queryClient.invalidateQueries({
+				queryKey: queryKeys.challenges.participants(variables.challengeId),
+			});
 		},
 	});
 

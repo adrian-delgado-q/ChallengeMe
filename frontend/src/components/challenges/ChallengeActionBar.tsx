@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
 	HStack,
 	Button,
@@ -13,14 +13,17 @@ import {
 	Badge,
 } from '@chakra-ui/react';
 import { useUser } from '../../contexts/AuthContext';
-import { ChallengeService } from '../../graphql/services';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { useChallengeActions } from '../../hooks/useData';
+import {
+	useChallengeMutations,
+	useChallengeActions,
+	useMyParticipationQuery,
+} from '../../hooks/useChallengesQuery';
 import { useTeams } from '../../hooks/useTeamsQuery';
 import { TeamSelectionModal } from './TeamSelectionModal';
 import { AccessCodeModal } from './AccessCodeModal';
-import type { Challenge, Team } from '../../types';
+import type { Challenge } from '../../types';
 
 // Icons
 const JoinIcon = () => (
@@ -68,9 +71,13 @@ export const ChallengeActionBar: React.FC<ChallengeActionBarProps> = ({
 	onRefresh,
 }) => {
 	const { user } = useUser();
-	const { joinChallenge } = useChallengeActions();
+	const { joinChallenge } = useChallengeMutations();
+	const { leaveChallenge } = useChallengeActions();
 	const { teams } = useTeams();
 	const notifications = useNotifications();
+
+	// Get participation data from React Query
+	const { data: participationData } = useMyParticipationQuery(challenge.id);
 
 	// Modal states
 	const {
@@ -84,11 +91,13 @@ export const ChallengeActionBar: React.FC<ChallengeActionBarProps> = ({
 		onClose: onAccessCodeModalClose,
 	} = useDisclosure();
 
-	// User participation state
-	const [isParticipating, setIsParticipating] = useState(false);
-	const [participantTeam, setParticipantTeam] = useState<Team | null>(null);
-	const [participationType, setParticipationType] = useState<'individual' | 'team' | null>(null);
+	// Local state for join flow
 	const [pendingTeamId, setPendingTeamId] = useState<string | null>(null);
+
+	// Derive participation status from React Query data
+	const isParticipating = participationData?.isParticipating || false;
+	const participationType = participationData?.participationType || null;
+	const participantTeam = participationData?.team || null;
 
 	// Async states
 	const { isLoading: isJoining, execute: executeJoin } = useAsyncState({
@@ -98,39 +107,6 @@ export const ChallengeActionBar: React.FC<ChallengeActionBarProps> = ({
 	const { isLoading: isLeaving, execute: executeLeave } = useAsyncState({
 		successMessage: 'Left challenge',
 	});
-
-	// Check participation status
-	useEffect(() => {
-		const checkParticipation = async () => {
-			if (!user || !challenge.id) return;
-
-			try {
-				const participationDetails = await ChallengeService.getMyParticipationDetails(challenge.id);
-				setIsParticipating(participationDetails.isParticipating);
-				setParticipationType(participationDetails.participationType);
-
-				if (participationDetails.team) {
-					const teamData: Team = {
-						id: participationDetails.team.id,
-						name: participationDetails.team.name,
-						avatarUrl: participationDetails.team.avatarUrl,
-						memberCount: 0,
-						isPublic: true,
-						creatorId: '',
-						description: '',
-						maxMembers: undefined,
-						sportsTypes: [],
-						createdAt: '',
-					};
-					setParticipantTeam(teamData);
-				}
-			} catch (error) {
-				console.error('Error checking participation:', error);
-			}
-		};
-
-		checkParticipation();
-	}, [user, challenge.id]);
 
 	const handleJoinChallenge = async () => {
 		if (!user) {
@@ -151,9 +127,7 @@ export const ChallengeActionBar: React.FC<ChallengeActionBarProps> = ({
 			onTeamModalOpen();
 		} else {
 			await executeJoin(async () => {
-				await joinChallenge(challenge.id);
-				setIsParticipating(true);
-				setParticipationType('individual');
+				await joinChallenge.mutateAsync({ challengeId: challenge.id });
 				onRefresh?.();
 			});
 		}
@@ -162,13 +136,10 @@ export const ChallengeActionBar: React.FC<ChallengeActionBarProps> = ({
 	const handleLeaveChallenge = async () => {
 		await executeLeave(async () => {
 			if (participationType === 'team' && participantTeam) {
-				await ChallengeService.leaveChallenge(challenge.id, participantTeam.id);
+				await leaveChallenge.mutateAsync({ challengeId: challenge.id, teamId: participantTeam.id });
 			} else {
-				await ChallengeService.leaveChallenge(challenge.id);
+				await leaveChallenge.mutateAsync({ challengeId: challenge.id });
 			}
-			setIsParticipating(false);
-			setParticipantTeam(null);
-			setParticipationType(null);
 			onRefresh?.();
 		});
 	};
@@ -182,11 +153,7 @@ export const ChallengeActionBar: React.FC<ChallengeActionBarProps> = ({
 		}
 
 		await executeJoin(async () => {
-			await joinChallenge(challenge.id, teamId);
-			setIsParticipating(true);
-			setParticipationType('team');
-			const selectedTeam = teams?.find(t => t.id === teamId);
-			if (selectedTeam) setParticipantTeam(selectedTeam);
+			await joinChallenge.mutateAsync({ challengeId: challenge.id, asTeam: teamId });
 			onRefresh?.();
 		});
 		onTeamModalClose();
@@ -195,16 +162,14 @@ export const ChallengeActionBar: React.FC<ChallengeActionBarProps> = ({
 	const handleAccessCodeSubmit = async (accessCode: string) => {
 		await executeJoin(async () => {
 			if (pendingTeamId) {
-				await joinChallenge(challenge.id, pendingTeamId, accessCode);
-				setIsParticipating(true);
-				setParticipationType('team');
-				const selectedTeam = teams?.find(t => t.id === pendingTeamId);
-				if (selectedTeam) setParticipantTeam(selectedTeam);
+				await joinChallenge.mutateAsync({
+					challengeId: challenge.id,
+					asTeam: pendingTeamId,
+					accessCode,
+				});
 				setPendingTeamId(null);
 			} else {
-				await joinChallenge(challenge.id, undefined, accessCode);
-				setIsParticipating(true);
-				setParticipationType('individual');
+				await joinChallenge.mutateAsync({ challengeId: challenge.id, accessCode });
 			}
 			onRefresh?.();
 		});

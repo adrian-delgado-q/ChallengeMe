@@ -20,7 +20,7 @@ import {
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '../components/common/Card';
 import { UserTeamIcon, CalendarIcon } from '../components/common/Icons';
-import { useTeamDetails } from '../hooks/useData';
+import { useTeamQuery } from '../hooks/useTeamsQuery';
 import { useUser } from '../contexts/AuthContext';
 import { TeamService } from '../graphql/services';
 import { useNotifications } from '../utils/notifications';
@@ -36,7 +36,12 @@ const TeamDashboardPage: React.FC = () => {
 	const { isLoading: isLeaving, execute: executeLeave } = useAsyncState();
 	const [isAccessCodeModalOpen, setIsAccessCodeModalOpen] = useState(false);
 
-	const { team, loading: teamLoading, error: teamError, refetch } = useTeamDetails(teamId || '');
+	const {
+		data: team,
+		isLoading: teamLoading,
+		error: teamError,
+		refetch,
+	} = useTeamQuery(teamId || '');
 
 	const handleJoinTeam = async () => {
 		if (!teamId || !team) return;
@@ -100,7 +105,7 @@ const TeamDashboardPage: React.FC = () => {
 		return (
 			<Alert status="error">
 				<AlertIcon />
-				{teamError || 'Team not found'}
+				{teamError?.message || 'Team not found'}
 			</Alert>
 		);
 	}

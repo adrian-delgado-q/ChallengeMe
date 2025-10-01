@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
 	Box,
 	Button,
@@ -34,28 +34,43 @@ import {
 import { FaEdit, FaTrash, FaClock, FaFilter, FaSearch } from 'react-icons/fa';
 import { Card } from '../components/common/Card';
 import { EditActivityModal } from '../components/common/EditActivityModal';
-import { ActivityService } from '../graphql/services/activityService';
-import type { Activity, ActivityType } from '../types';
-import { ChallengeService } from '../graphql/services';
-import { ActivityTypeService } from '../graphql/services/activityTypeService';
+import { useManagementActivitiesQuery, useActivityMutations } from '../hooks/useActivitiesQuery';
+import { useMyChallengesQuery } from '../hooks/useChallengesQuery';
+import { useActivityTypesQuery } from '../hooks/useActivityTypesQuery';
+import type { Activity } from '../types';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-interface Challenge {
-	id: string;
-	title: string;
-}
-
 export const ActivityManagementPage: React.FC = () => {
-	const [allActivities, setAllActivities] = useState<Activity[]>([]);
-	const [challenges, setChallenges] = useState<Challenge[]>([]);
-	const [activityTypes, setActivityTypes] = useState<ActivityType[]>([]);
+	// React Query hooks for data fetching
+	const { data: rawActivities = [], isLoading: loading, error } = useManagementActivitiesQuery();
+	const { data: challenges = [] } = useMyChallengesQuery();
+	const { data: activityTypes = [] } = useActivityTypesQuery();
+	const { deleteActivity, updateActivity } = useActivityMutations();
+
+	// Transform activities to match expected Activity type
+	const allActivities = React.useMemo(() => {
+		return rawActivities.map((item: any) => ({
+			...item,
+			activityTypeId: item.activityTypeId ?? item.activityType?.id ?? '',
+			value:
+				item.value ??
+				item.distance ??
+				item.duration ??
+				item.repetitions ??
+				item.weight ??
+				item.sets ??
+				item.calories ??
+				item.pace ??
+				0,
+		}));
+	}, [rawActivities]);
+
+	// Local filter state
 	const [selectedChallenge, setSelectedChallenge] = useState<string>('all');
 	const [selectedActivityType, setSelectedActivityType] = useState<string>('all');
 	const [searchText, setSearchText] = useState<string>('');
 	const [dateFrom, setDateFrom] = useState<string>('');
 	const [dateTo, setDateTo] = useState<string>('');
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
 	const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
 	const [activityToDelete, setActivityToDelete] = useState<Activity | null>(null);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -124,63 +139,7 @@ export const ActivityManagementPage: React.FC = () => {
 		return filtered;
 	}, [allActivities, selectedChallenge, selectedActivityType, searchText, dateFrom, dateTo]);
 
-	// Fetch all activities (without filtering)
-	const fetchActivities = useCallback(async () => {
-		try {
-			setLoading(true);
-			setError(null);
-
-			// Always fetch all activities, filtering will be done locally
-			const data = await ActivityService.getActivitiesForManagement();
-			setAllActivities(
-				(data as any[]).map(item => ({
-					...item,
-					activityTypeId: item.activityTypeId ?? item.activityType?.id ?? '',
-					value:
-						item.value ??
-						item.distance ??
-						item.duration ??
-						item.repetitions ??
-						item.weight ??
-						item.sets ??
-						item.calories ??
-						item.pace ??
-						0,
-				}))
-			);
-		} catch (err: any) {
-			setError(err.message || 'Failed to fetch activities');
-		} finally {
-			setLoading(false);
-		}
-	}, []);
-
-	// Fetch user's challenges for filtering
-	const fetchChallenges = useCallback(async () => {
-		try {
-			const data = await ChallengeService.getMyChallenges();
-			setChallenges(data || []);
-		} catch (err: any) {
-			console.error('Failed to fetch challenges:', err);
-		}
-	}, []);
-
-	// Fetch activity types for filtering
-	const fetchActivityTypes = useCallback(async () => {
-		try {
-			const data = await ActivityTypeService.getActivityTypes();
-			setActivityTypes(data || []);
-		} catch (err: any) {
-			console.error('Failed to fetch activity types:', err);
-		}
-	}, []);
-
-	// Load data on mount
-	useEffect(() => {
-		fetchActivities();
-		fetchChallenges();
-		fetchActivityTypes();
-	}, [fetchActivities, fetchChallenges, fetchActivityTypes]);
+	// Data is loaded automatically via React Query hooks
 
 	// Handle activity edit
 	const handleEditActivity = (activity: Activity) => {
@@ -196,7 +155,7 @@ export const ActivityManagementPage: React.FC = () => {
 
 	// Handle successful activity update
 	const handleActivityUpdated = async () => {
-		await fetchActivities(); // Refresh the list
+		// Data will refresh automatically via React Query cache invalidation
 	};
 
 	// Handle activity delete
@@ -211,7 +170,7 @@ export const ActivityManagementPage: React.FC = () => {
 
 		try {
 			setIsDeleting(true);
-			await ActivityService.deleteActivity(activityToDelete.id);
+			await deleteActivity.mutateAsync(activityToDelete.id);
 
 			toast({
 				title: 'Activity deleted',
@@ -221,8 +180,6 @@ export const ActivityManagementPage: React.FC = () => {
 				isClosable: true,
 			});
 
-			// Refresh activities
-			await fetchActivities();
 			onDeleteClose();
 		} catch (err: any) {
 			toast({
@@ -247,8 +204,7 @@ export const ActivityManagementPage: React.FC = () => {
 			date: string;
 		}
 	) => {
-		await ActivityService.updateActivity(activityId, data);
-		await fetchActivities(); // Refresh the list
+		await updateActivity.mutateAsync({ activityId, ...data });
 	};
 
 	// Clear all filters
@@ -446,7 +402,7 @@ export const ActivityManagementPage: React.FC = () => {
 				{error && (
 					<Alert status="error">
 						<AlertIcon />
-						{error}
+						{error.message || 'An error occurred while loading activities'}
 					</Alert>
 				)}
 

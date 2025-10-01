@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
 	Button,
 	FormControl,
@@ -13,14 +13,13 @@ import {
 	Text,
 } from '@chakra-ui/react';
 import { ImageUploadField } from '../common/ImageUploadField';
-import { FileUploadService } from '../../services/fileUploadService';
+import { useFileUpload } from '../../hooks/useFileUpload';
 import { useTeamMutations } from '../../hooks/useTeamsQuery';
-import { ActivityTypeService } from '../../graphql/services/activityTypeService';
+import { useActivityTypesQuery } from '../../hooks/useActivityTypesQuery';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ValidationUtils, CommonValidationSchemas } from '../../utils/validation';
 import { ActivityTypeSelector } from '../challenges/ActivityTypeSelector';
-import type { ActivityType } from '../../types';
 
 interface TeamFormProps {
 	onSubmit: (team: any) => void;
@@ -39,9 +38,9 @@ export const TeamForm: React.FC<TeamFormProps> = ({
 	hideButtons = false,
 	onLoadingChange,
 }) => {
-	// State for activity types
-	const [activityTypes, setActivityTypes] = useState<ActivityType[]>([]);
-	const [isLoadingActivityTypes, setIsLoadingActivityTypes] = useState(true);
+	// Get activity types from React Query
+	const { data: activityTypes = [], isLoading: isLoadingActivityTypes } = useActivityTypesQuery();
+	const { uploadTeamAvatar } = useFileUpload();
 	const [selectedActivityTypeIds, setSelectedActivityTypeIds] = useState<string[]>(
 		initialData?.activityTypeIds || []
 	);
@@ -64,22 +63,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
 	});
 	const { createTeam, updateTeam } = useTeamMutations();
 
-	// Load activity types on component mount
-	useEffect(() => {
-		const loadActivityTypes = async () => {
-			try {
-				const types = await ActivityTypeService.getActivityTypes();
-				setActivityTypes(types);
-			} catch (error) {
-				console.error('Failed to load activity types:', error);
-				notifications.error('Failed to load activity types');
-			} finally {
-				setIsLoadingActivityTypes(false);
-			}
-		};
-
-		loadActivityTypes();
-	}, []);
+	// Activity types are loaded via React Query hook
 
 	// Handle activity type selection change
 	const handleActivityTypeChange = (selectedIds: string[]) => {
@@ -94,7 +78,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
 	};
 
 	const handleAvatarUpload = async (file: File, result: any) => {
-		const uploadResult = await FileUploadService.uploadTeamAvatar(file);
+		const uploadResult = await uploadTeamAvatar.mutateAsync(file);
 		// Update the result object passed by reference
 		result.success = uploadResult.success;
 		result.url = uploadResult.url;
