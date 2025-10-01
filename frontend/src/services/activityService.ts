@@ -29,101 +29,40 @@ export class ActivityService {
 
 	// Get activities for a specific challenge
 	static async getActivitiesForChallenge(challengeId: string) {
-		// First get all participants for this challenge
-		const { data: participants, error: participantsError } = await supabase
-			.from('ChallengeParticipant')
-			.select('id, userId, teamId')
-			.eq('challengeId', challengeId);
-
-		if (participantsError) throw new Error(participantsError.message);
-		if (!participants || participants.length === 0) return [];
-
-		const participantIds = participants.map(p => p.id);
-
-		// Get activities for these participants
 		const { data: activities, error } = await supabase
-			.from('Activity')
-			.select(
-				`
-                id, 
-                participantId, 
-                activityTypeId, 
-                value, 
-                notes, 
-                date, 
-                uploadedAt,
-                activityType:ActivityType(id, name, category, unit, unitLabel, description)
-            `
-			)
-			.in('participantId', participantIds);
+			.from('activity_details_view')
+			.select('*')
+			.eq('challenge_id', challengeId);
 
 		if (error) throw new Error(error.message);
 
-		// Get participant and user info for each activity
-		const activitiesWithDetails = await Promise.all(
-			(activities || []).map(async (activity: any) => {
-				// Get participant info
-				const { data: participant } = await supabase
-					.from('ChallengeParticipant')
-					.select('userId, challengeId, teamId')
-					.eq('id', activity.participantId)
-					.single();
-
-				let user = null;
-				let team = null;
-				let challenge = null;
-
-				if (participant) {
-					// Get user info
-					if (participant.userId) {
-						const { data: userData } = await supabase
-							.from('profiles')
-							.select('id, username, avatar_url')
-							.eq('id', participant.userId)
-							.single();
-						user = userData
-							? {
-									id: userData.id,
-									username: userData.username || 'Unknown User',
-									avatarUrl: userData.avatar_url,
-								}
-							: null;
-					}
-
-					// Get team info
-					if (participant.teamId) {
-						const { data: teamData } = await supabase
-							.from('Team')
-							.select('id, name')
-							.eq('id', participant.teamId)
-							.single();
-						team = teamData;
-					}
-
-					// Get challenge info
-					const { data: challengeData } = await supabase
-						.from('Challenge')
-						.select('id, title')
-						.eq('id', participant.challengeId)
-						.single();
-					challenge = challengeData;
-				}
-
-				return {
-					id: activity.id,
-					activityType: activity.activityType,
-					value: activity.value,
-					notes: activity.notes,
-					date: activity.date,
-					uploadedAt: activity.uploadedAt,
-					user,
-					challenge,
-					team,
-				};
-			})
-		);
-
-		return activitiesWithDetails;
+		return activities.map((activity: any) => ({
+			id: activity.id,
+			activityType: {
+				id: activity.activityTypeId,
+				name: activity.activity_type_name,
+				category: activity.activity_type_category,
+				unit: activity.activity_type_unit,
+				unitLabel: activity.activity_type_unit_label,
+			},
+			value: activity.value,
+			notes: activity.notes,
+			date: activity.date,
+			uploadedAt: activity.uploadedAt,
+			user: {
+				id: activity.user_id,
+				username: activity.username || 'Unknown User',
+				avatarUrl: activity.avatar_url,
+			},
+			challenge: {
+				id: activity.challenge_id,
+				title: activity.challenge_title,
+			},
+			team: {
+				id: activity.team_id,
+				name: activity.team_name,
+			},
+		}));
 	}
 
 	// Get activities for a specific user
@@ -132,90 +71,39 @@ export class ActivityService {
 		if (!currentUser) throw new Error('User not authenticated');
 
 		const { data: activities, error } = await supabase
-			.from('Activity')
-			.select(
-				`
-                id, 
-                participantId, 
-                challengeId, 
-                activityTypeId,
-                value,
-                notes, 
-                date, 
-                uploadedAt, 
-                profileId,
-                activityType:ActivityType(id, name, category, unit, unitLabel, description)
-            `
-			)
-			.eq('profileId', currentUser.id);
+			.from('activity_details_view')
+			.select('*')
+			.eq('user_id', currentUser.id);
 
 		if (error) throw new Error(error.message);
 
-		// Get participant and challenge info for each activity
-		const activitiesWithDetails = await Promise.all(
-			(activities || []).map(async (activity: any) => {
-				// Get participant info
-				const { data: participant } = await supabase
-					.from('ChallengeParticipant')
-					.select('userId, challengeId, teamId')
-					.eq('id', activity.participantId)
-					.single();
-
-				let challenge = null;
-				let team = null;
-
-				if (participant) {
-					// Get challenge info
-					const { data: challengeData } = await supabase
-						.from('Challenge')
-						.select('id, title')
-						.eq('id', participant.challengeId)
-						.single();
-					challenge = challengeData;
-
-					// Get team info if applicable
-					if (participant.teamId) {
-						const { data: teamData } = await supabase
-							.from('Team')
-							.select('id, name')
-							.eq('id', participant.teamId)
-							.single();
-						team = teamData;
-					}
-				}
-
-				// Get user profile info for display
-				const { data: userProfile } = await supabase
-					.from('profiles')
-					.select('id, username, avatar_url')
-					.eq('id', currentUser.id)
-					.single();
-
-				return {
-					id: activity.id,
-					activityType: activity.activityType,
-					value: activity.value,
-					notes: activity.notes,
-					date: activity.date,
-					uploadedAt: activity.uploadedAt,
-					user: userProfile
-						? {
-								id: userProfile.id,
-								username: userProfile.username || 'Unknown User',
-								avatarUrl: userProfile.avatar_url,
-							}
-						: {
-								id: currentUser.id,
-								username: 'Unknown User',
-								avatarUrl: null,
-							},
-					challenge,
-					team,
-				};
-			})
-		);
-
-		return activitiesWithDetails;
+		return activities.map((activity: any) => ({
+			id: activity.id,
+			activityType: {
+				id: activity.activityTypeId,
+				name: activity.activity_type_name,
+				category: activity.activity_type_category,
+				unit: activity.activity_type_unit,
+				unitLabel: activity.activity_type_unit_label,
+			},
+			value: activity.value,
+			notes: activity.notes,
+			date: activity.date,
+			uploadedAt: activity.uploadedAt,
+			user: {
+				id: activity.user_id,
+				username: activity.username || 'Unknown User',
+				avatarUrl: activity.avatar_url,
+			},
+			challenge: {
+				id: activity.challenge_id,
+				title: activity.challenge_title,
+			},
+			team: {
+				id: activity.team_id,
+				name: activity.team_name,
+			},
+		}));
 	}
 
 	// Create a new activity
@@ -374,186 +262,81 @@ export class ActivityService {
 		const user = await authService.getCurrentUser();
 		if (!user) throw new Error('User not authenticated');
 
-		// Get all user activities
 		const { data: activities, error } = await supabase
-			.from('Activity')
-			.select(
-				`
-                id, 
-                participantId, 
-                challengeId, 
-                activityTypeId,
-                value,
-                notes, 
-                date, 
-                uploadedAt, 
-                profileId,
-                activityType:ActivityType(id, name, category, unit, unitLabel, description)
-            `
-			)
-			.eq('profileId', user.id)
+			.from('activity_details_view')
+			.select('*')
+			.eq('user_id', user.id)
 			.order('uploadedAt', { ascending: false });
 
 		if (error) throw new Error(error.message);
 
-		// Get participant and challenge info for each activity
-		const activitiesWithDetails = await Promise.all(
-			(activities || []).map(async (activity: any) => {
-				// Get participant info
-				const { data: participant } = await supabase
-					.from('ChallengeParticipant')
-					.select('userId, challengeId, teamId')
-					.eq('id', activity.participantId)
-					.single();
-
-				let challenge = null;
-				let team = null;
-
-				if (participant) {
-					// Get challenge info
-					const { data: challengeData } = await supabase
-						.from('Challenge')
-						.select('id, title')
-						.eq('id', participant.challengeId)
-						.single();
-					challenge = challengeData;
-
-					// Get team info if applicable
-					if (participant.teamId) {
-						const { data: teamData } = await supabase
-							.from('Team')
-							.select('id, name')
-							.eq('id', participant.teamId)
-							.single();
-						team = teamData;
-					}
-				}
-
-				// Get user profile info for display
-				const { data: userProfile } = await supabase
-					.from('profiles')
-					.select('id, username, avatar_url')
-					.eq('id', user.id)
-					.single();
-
-				const isEditable = this.isActivityEditable(activity.uploadedAt);
-
-				return {
-					id: activity.id,
-					activityType: activity.activityType,
-					value: activity.value,
-					notes: activity.notes,
-					date: activity.date,
-					uploadedAt: activity.uploadedAt,
-					isEditable,
-					user: userProfile
-						? {
-								id: userProfile.id,
-								username: userProfile.username || 'Unknown User',
-								avatarUrl: userProfile.avatar_url,
-							}
-						: {
-								id: user.id,
-								username: 'Unknown User',
-								avatarUrl: null,
-							},
-					challenge,
-					team,
-				};
-			})
-		);
-
-		return activitiesWithDetails;
+		return activities.map((activity: any) => ({
+			id: activity.id,
+			activityType: {
+				id: activity.activityTypeId,
+				name: activity.activity_type_name,
+				category: activity.activity_type_category,
+				unit: activity.activity_type_unit,
+				unitLabel: activity.activity_type_unit_label,
+			},
+			value: activity.value,
+			notes: activity.notes,
+			date: activity.date,
+			uploadedAt: activity.uploadedAt,
+			isEditable: this.isActivityEditable(activity.uploadedAt),
+			user: {
+				id: activity.user_id,
+				username: activity.username || 'Unknown User',
+				avatarUrl: activity.avatar_url,
+			},
+			challenge: {
+				id: activity.challenge_id,
+				title: activity.challenge_title,
+			},
+			team: {
+				id: activity.team_id,
+				name: activity.team_name,
+			},
+		}));
 	}
 
 	// Get recent activities across all challenges (activity feed)
 	static async getRecentActivities(limit: number = 20) {
 		const { data: activities, error } = await supabase
-			.from('Activity')
-			.select(
-				`
-                id, 
-                participantId, 
-                challengeId, 
-                activityTypeId,
-                value,
-                notes, 
-                date, 
-                uploadedAt, 
-                profileId,
-                activityType:ActivityType(id, name, category, unit, unitLabel, description)
-            `
-			)
+			.from('activity_details_view')
+			.select('*')
 			.order('uploadedAt', { ascending: false })
 			.limit(limit);
 
 		if (error) throw new Error(error.message);
 
-		// Get participant and user info for each activity
-		const activitiesWithDetails = await Promise.all(
-			(activities || []).map(async (activity: any) => {
-				// Get participant info
-				const { data: participant } = await supabase
-					.from('ChallengeParticipant')
-					.select('userId, challengeId, teamId')
-					.eq('id', activity.participantId)
-					.single();
-
-				let user = null;
-				let team = null;
-				let challenge = null;
-
-				if (participant) {
-					// Get user info
-					if (participant.userId) {
-						const { data: userData } = await supabase
-							.from('profiles')
-							.select('id, username, avatar_url')
-							.eq('id', participant.userId)
-							.single();
-						user = userData
-							? {
-									id: userData.id,
-									username: userData.username || 'Unknown User',
-									avatarUrl: userData.avatar_url,
-								}
-							: null;
-					}
-
-					// Get team info
-					if (participant.teamId) {
-						const { data: teamData } = await supabase
-							.from('Team')
-							.select('id, name')
-							.eq('id', participant.teamId)
-							.single();
-						team = teamData;
-					}
-
-					// Get challenge info
-					const { data: challengeData } = await supabase
-						.from('Challenge')
-						.select('id, title')
-						.eq('id', participant.challengeId)
-						.single();
-					challenge = challengeData;
-				}
-
-				return {
-					id: activity.id,
-					activityType: activity.activityType,
-					value: activity.value,
-					notes: activity.notes,
-					date: activity.date,
-					uploadedAt: activity.uploadedAt,
-					user,
-					challenge,
-					team,
-				};
-			})
-		);
-
-		return activitiesWithDetails;
+		return activities.map((activity: any) => ({
+			id: activity.id,
+			activityType: {
+				id: activity.activityTypeId,
+				name: activity.activity_type_name,
+				category: activity.activity_type_category,
+				unit: activity.activity_type_unit,
+				unitLabel: activity.activity_type_unit_label,
+			},
+			value: activity.value,
+			notes: activity.notes,
+			date: activity.date,
+			uploadedAt: activity.uploadedAt,
+			user: {
+				id: activity.user_id,
+				username: activity.username || 'Unknown User',
+				avatarUrl: activity.avatar_url,
+			},
+			challenge: {
+				id: activity.challenge_id,
+				title: activity.challenge_title,
+			},
+			team: {
+				id: activity.team_id,
+				name: activity.team_name,
+			},
+		}));
 	}
 
 	// Get activities for leaderboard calculation
