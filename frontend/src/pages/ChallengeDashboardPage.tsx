@@ -77,17 +77,18 @@ const ChallengeDashboardPage: React.FC = () => {
 					<VStack spacing={6} align="stretch">
 						{/* About This Challenge Section */}
 						<AboutChallenge challenge={challenge} />
-
 						{/* Mobile: Milestones */}
 						<MilestonesDisplay
 							milestones={challenge.milestones}
 							currentProgress={challenge.progress || 0}
 							progressByActivityType={challenge.progressByActivityType || {}}
-						/>
-
+							challenge={challenge}
+							dailyStreak={challenge.dailyStreak || 0}
+							todayActivity={challenge.todayActivity || false}
+							userName={challenge.creator?.username || 'You'}
+						/>{' '}
 						{/* Mobile: Progress Chart */}
 						<ProgressChart challengeId={challengeId} />
-
 						{/* Mobile: Leaderboard */}
 						{challengeId ? (
 							<Leaderboard challengeId={challengeId} />
@@ -98,7 +99,6 @@ const ChallengeDashboardPage: React.FC = () => {
 								</Center>
 							</Card>
 						)}
-
 						{/* Mobile: Latest Updates */}
 						{challengeId ? (
 							<ActivityFeed challengeId={challengeId} />
@@ -109,7 +109,6 @@ const ChallengeDashboardPage: React.FC = () => {
 								</Center>
 							</Card>
 						)}
-
 						{/* Mobile: Comments */}
 						{challengeId && <CommentsForum challengeId={challengeId} />}
 					</VStack>
@@ -141,8 +140,11 @@ const ChallengeDashboardPage: React.FC = () => {
 							milestones={challenge.milestones}
 							currentProgress={challenge.progress || 0}
 							progressByActivityType={challenge.progressByActivityType || {}}
-						/>
-
+							challenge={challenge}
+							dailyStreak={challenge.dailyStreak || 0}
+							todayActivity={challenge.todayActivity || false}
+							userName={challenge.creator?.username || 'You'}
+						/>{' '}
 						{/* Leaderboard */}
 						{challengeId ? (
 							<Leaderboard challengeId={challengeId} />
@@ -153,7 +155,6 @@ const ChallengeDashboardPage: React.FC = () => {
 								</Center>
 							</Card>
 						)}
-
 						{/* Activity Feed */}
 						{challengeId ? (
 							<ActivityFeed challengeId={challengeId} />

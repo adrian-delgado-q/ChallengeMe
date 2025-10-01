@@ -16,6 +16,7 @@ import ChallengeDashboardPage from './pages/ChallengeDashboardPage';
 import ManageChallengePage from './pages/ManageChallengePage';
 import MyChallengesPage from './pages/MyChallengesPage';
 import { ActivityManagementPage } from './pages/ActivityManagementPage';
+import ShareDemoPage from './pages/ShareDemoPage';
 import { DebugPanel } from './components/common/DebugPanel';
 
 // Protected route wrapper that requires authentication
@@ -212,6 +213,17 @@ const App: React.FC = () => {
 						<ProtectedRoute>
 							<AuthenticatedLayout>
 								<EditTeamPage />
+							</AuthenticatedLayout>
+						</ProtectedRoute>
+					}
+				/>
+
+				<Route
+					path="/share-demo"
+					element={
+						<ProtectedRoute>
+							<AuthenticatedLayout>
+								<ShareDemoPage />
 							</AuthenticatedLayout>
 						</ProtectedRoute>
 					}

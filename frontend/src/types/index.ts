@@ -55,6 +55,9 @@ export interface Challenge {
 	startDate?: string;
 	endDate: string;
 	progress?: number; // UI calculated progress
+	progressByActivityType?: Record<string, number>; // Progress by activity type
+	dailyStreak?: number; // Current daily streak
+	todayActivity?: boolean; // Whether user logged activity today
 	isPublic: boolean;
 	accessCode?: string; // Optional access code for private challenges
 	milestones?: Milestone[];

@@ -19,7 +19,8 @@ import {
 	StatNumber,
 } from '@chakra-ui/react';
 import { Card } from '../common/Card';
-import type { Milestone } from '../../types';
+import { ProgressShareModal } from './ProgressShareModal';
+import type { Milestone, Challenge } from '../../types';
 
 // Milestone icon
 const MilestoneIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -44,12 +45,21 @@ interface MilestonesDisplayProps {
 	currentProgress?: number;
 	// Add support for activity-specific progress
 	progressByActivityType?: Record<string, number>;
+	// Add challenge for sharing functionality
+	challenge?: Challenge;
+	dailyStreak?: number;
+	todayActivity?: boolean;
+	userName?: string;
 }
 
 export const MilestonesDisplay: React.FC<MilestonesDisplayProps> = ({
 	milestones = [],
 	currentProgress = 0,
 	progressByActivityType = {},
+	challenge,
+	dailyStreak = 0,
+	todayActivity = false,
+	userName = 'You',
 }) => {
 	if (!milestones || milestones.length === 0) {
 		return (
@@ -92,28 +102,46 @@ export const MilestonesDisplay: React.FC<MilestonesDisplayProps> = ({
 			<VStack spacing={6} align="stretch">
 				{/* Header with overall progress */}
 				<Box>
-					<HStack justify="space-between" mb={4}>
-						<Heading as="h3" size="md">
-							<HStack>
-								<Icon as={MilestoneIcon} w={5} h={5} color="purple.500" />
-								<Text>Challenge Milestones</Text>
-							</HStack>
-						</Heading>
-						<Badge
-							colorScheme={
-								overallCompletionPercentage === 100
-									? 'green'
-									: overallCompletionPercentage > 50
-										? 'orange'
-										: 'gray'
-							}
-							variant="solid"
-							fontSize="sm"
-							px={3}
-							py={1}
-						>
-							{achievedMilestones}/{totalMilestones} Completed
-						</Badge>
+					<HStack justify="space-between" mb={4} align="center">
+						<HStack spacing={3}>
+							<Heading as="h3" size="md">
+								<HStack>
+									<Icon as={MilestoneIcon} w={5} h={5} color="purple.500" />
+									<Text>Challenge Milestones</Text>
+								</HStack>
+							</Heading>
+							{/* Share button - positioned top left next to title */}
+							{challenge && (
+								<ProgressShareModal
+									challenge={challenge}
+									currentProgress={currentProgress}
+									progressByActivityType={progressByActivityType}
+									dailyStreak={dailyStreak}
+									todayActivity={todayActivity}
+									userName={userName}
+									buttonSize="xs"
+									buttonVariant="ghost"
+									iconColor="gray.600"
+								/>
+							)}
+						</HStack>
+						<HStack spacing={2} align="center">
+							<Badge
+								colorScheme={
+									overallCompletionPercentage === 100
+										? 'green'
+										: overallCompletionPercentage > 50
+											? 'orange'
+											: 'gray'
+								}
+								variant="solid"
+								fontSize="sm"
+								px={3}
+								py={1}
+							>
+								{achievedMilestones}/{totalMilestones} Completed
+							</Badge>
+						</HStack>
 					</HStack>
 
 					{/* Overall Progress Bar */}
