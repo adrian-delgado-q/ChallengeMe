@@ -1,15 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TeamService } from '../graphql/services/teamService';
-
-// Query keys for Teams
-export const teamKeys = {
-	all: ['teams'] as const,
-	lists: () => [...teamKeys.all, 'list'] as const,
-	list: (options: any) => [...teamKeys.lists(), options] as const,
-	details: () => [...teamKeys.all, 'detail'] as const,
-	detail: (id: string) => [...teamKeys.details(), id] as const,
-	myTeams: () => [...teamKeys.all, 'myTeams'] as const,
-};
+import { queryKeys } from '../lib/queryKeys';
 
 // Teams Query Hook
 export const useTeamsQuery = (options?: {
@@ -24,7 +15,7 @@ export const useTeamsQuery = (options?: {
 }) => {
 	const { enabled = true, ...queryOptions } = options || {};
 	return useQuery({
-		queryKey: teamKeys.list(queryOptions),
+		queryKey: queryKeys.teams.list(queryOptions),
 		queryFn: () => TeamService.getTeams(queryOptions),
 		staleTime: 2 * 60 * 1000, // 2 minutes
 		gcTime: 5 * 60 * 1000, // 5 minutes
@@ -35,9 +26,9 @@ export const useTeamsQuery = (options?: {
 };
 
 // My Teams Query Hook (for user's own teams)
-export const useMyTeamsQuery = () => {
+export const useMyTeamsQuery = (userId?: string) => {
 	return useQuery({
-		queryKey: teamKeys.myTeams(),
+		queryKey: queryKeys.teams.userTeams(userId || 'current'),
 		queryFn: () => TeamService.getMyTeams(),
 		staleTime: 5 * 60 * 1000, // 5 minutes - user's teams don't change frequently
 		gcTime: 10 * 60 * 1000, // 10 minutes
@@ -48,7 +39,7 @@ export const useMyTeamsQuery = () => {
 // Individual Team Query Hook
 export const useTeamQuery = (teamId: string) => {
 	return useQuery({
-		queryKey: teamKeys.detail(teamId),
+		queryKey: queryKeys.teams.detail(teamId),
 		queryFn: () => TeamService.getTeamById(teamId),
 		staleTime: 5 * 60 * 1000,
 		gcTime: 10 * 60 * 1000,
@@ -64,8 +55,8 @@ export const useTeamMutations = () => {
 		mutationFn: (teamData: any) => TeamService.createTeam(teamData),
 		onSuccess: () => {
 			// Invalidate team lists and my teams
-			queryClient.invalidateQueries({ queryKey: teamKeys.lists() });
-			queryClient.invalidateQueries({ queryKey: teamKeys.myTeams() });
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.lists() });
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.userTeams('current') });
 		},
 	});
 
@@ -73,9 +64,9 @@ export const useTeamMutations = () => {
 		mutationFn: (teamId: string) => TeamService.joinTeam(teamId),
 		onSuccess: (_data, teamId) => {
 			// Invalidate team lists, my teams, and the specific team
-			queryClient.invalidateQueries({ queryKey: teamKeys.lists() });
-			queryClient.invalidateQueries({ queryKey: teamKeys.myTeams() });
-			queryClient.invalidateQueries({ queryKey: teamKeys.detail(teamId) });
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.lists() });
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.userTeams('current') });
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.detail(teamId) });
 		},
 	});
 
@@ -83,9 +74,9 @@ export const useTeamMutations = () => {
 		mutationFn: (teamId: string) => TeamService.leaveTeam(teamId),
 		onSuccess: (_data, teamId) => {
 			// Invalidate team lists, my teams, and the specific team
-			queryClient.invalidateQueries({ queryKey: teamKeys.lists() });
-			queryClient.invalidateQueries({ queryKey: teamKeys.myTeams() });
-			queryClient.invalidateQueries({ queryKey: teamKeys.detail(teamId) });
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.lists() });
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.userTeams('current') });
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.detail(teamId) });
 		},
 	});
 
@@ -94,9 +85,9 @@ export const useTeamMutations = () => {
 			TeamService.updateTeam(teamId, teamData),
 		onSuccess: (_data, variables) => {
 			// Invalidate team lists, my teams, and the specific team
-			queryClient.invalidateQueries({ queryKey: teamKeys.lists() });
-			queryClient.invalidateQueries({ queryKey: teamKeys.myTeams() });
-			queryClient.invalidateQueries({ queryKey: teamKeys.detail(variables.teamId) });
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.lists() });
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.userTeams('current') });
+			queryClient.invalidateQueries({ queryKey: queryKeys.teams.detail(variables.teamId) });
 		},
 	});
 

@@ -1,21 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ProfileService } from '../graphql/services/profileService';
-
-// Query keys for Profiles
-export const profileKeys = {
-	all: ['profiles'] as const,
-	lists: () => [...profileKeys.all, 'list'] as const,
-	list: (ids: string[]) => [...profileKeys.lists(), ids.sort()] as const,
-	details: () => [...profileKeys.all, 'detail'] as const,
-	detail: (id: string) => [...profileKeys.details(), id] as const,
-	current: () => [...profileKeys.all, 'current'] as const,
-	stats: (id?: string) => [...profileKeys.all, 'stats', id] as const,
-};
+import { queryKeys } from '../lib/queryKeys';
 
 // Current User Profile Query Hook
 export const useCurrentProfileQuery = () => {
 	return useQuery({
-		queryKey: profileKeys.current(),
+		queryKey: queryKeys.profiles.current,
 		queryFn: () => ProfileService.getCurrentProfile(),
 		staleTime: 5 * 60 * 1000, // 5 minutes - user's own profile
 		gcTime: 10 * 60 * 1000, // 10 minutes
@@ -26,7 +16,7 @@ export const useCurrentProfileQuery = () => {
 // Individual Profile Query Hook
 export const useProfileQuery = (profileId: string) => {
 	return useQuery({
-		queryKey: profileKeys.detail(profileId),
+		queryKey: queryKeys.profiles.detail(profileId),
 		queryFn: () => ProfileService.getProfileById(profileId),
 		staleTime: 10 * 60 * 1000, // 10 minutes - profiles don't change often
 		gcTime: 15 * 60 * 1000, // 15 minutes
@@ -38,7 +28,7 @@ export const useProfileQuery = (profileId: string) => {
 // User Stats Query Hook
 export const useUserStatsQuery = (userId?: string) => {
 	return useQuery({
-		queryKey: profileKeys.stats(userId),
+		queryKey: [...queryKeys.profiles.detail(userId || 'current'), 'stats'],
 		queryFn: () => ProfileService.getUserStats(userId),
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		gcTime: 10 * 60 * 1000, // 10 minutes
@@ -49,7 +39,7 @@ export const useUserStatsQuery = (userId?: string) => {
 // Profiles Query Hook (for batch fetching profiles by IDs)
 export const useProfilesQuery = (profileIds: string[]) => {
 	return useQuery({
-		queryKey: profileKeys.list(profileIds),
+		queryKey: queryKeys.profiles.list({ ids: profileIds.sort() }),
 		queryFn: async () => {
 			// Since ProfileService doesn't have bulk fetch, fetch individually and cache
 			const profiles = await Promise.all(profileIds.map(id => ProfileService.getProfileById(id)));
@@ -70,9 +60,9 @@ export const useProfileMutations = () => {
 		mutationFn: (profileData: any) => ProfileService.updateProfile(profileData),
 		onSuccess: data => {
 			// Invalidate current profile and specific profile queries
-			queryClient.invalidateQueries({ queryKey: profileKeys.current() });
+			queryClient.invalidateQueries({ queryKey: queryKeys.profiles.current });
 			if (data?.id) {
-				queryClient.invalidateQueries({ queryKey: profileKeys.detail(data.id) });
+				queryClient.invalidateQueries({ queryKey: queryKeys.profiles.detail(data.id) });
 			}
 		},
 	});
