@@ -16,9 +16,6 @@ SELECT
     c.title AS challenge_title
 FROM
     "Post" post
-JOIN
-    "ChallengeParticipant" cp ON post."participantId" = cp.id
-LEFT JOIN
-    "profiles" p ON cp."userId" = p.id
-JOIN
-    "Challenge" c ON cp."challengeId" = c.id;
+    JOIN "ChallengeParticipant" cp ON post."participantId" = cp.id
+    LEFT JOIN "profiles" p ON cp."userId" = p.id
+    JOIN "Challenge" c ON cp."challengeId" = c.id;

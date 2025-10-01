@@ -13,8 +13,14 @@ SELECT
     t."creatorId",
     p.username AS creator_username,
     p.avatar_url AS creator_avatar_url,
-    (SELECT COUNT(*) FROM "TeamMembership" tm WHERE tm."teamId" = t.id) AS member_count
+    (
+        SELECT
+            COUNT(*)
+        FROM
+            "TeamMembership" tm
+        WHERE
+            tm."teamId" = t.id
+    ) AS member_count
 FROM
     "Team" t
-JOIN
-    "profiles" p ON t."creatorId" = p.id;
+    JOIN "profiles" p ON t."creatorId" = p.id;

@@ -1,5 +1,6 @@
 -- Drop existing views first to avoid column structure conflicts
 DROP VIEW IF EXISTS discussion_post_details_view;
+
 DROP VIEW IF EXISTS discussion_reply_details_view;
 
 -- Recreate the discussion post details view
@@ -19,8 +20,7 @@ SELECT
     p.avatar_url AS author_avatar_url
 FROM
     discussion_posts dp
-JOIN
-    profiles p ON dp."authorId" = p.id;
+    JOIN profiles p ON dp."authorId" = p.id;
 
 -- Recreate the discussion reply details view
 CREATE VIEW discussion_reply_details_view AS
@@ -37,5 +37,4 @@ SELECT
     p.avatar_url AS author_avatar_url
 FROM
     discussion_replies dr
-JOIN
-    profiles p ON dr."authorId" = p.id;
+    JOIN profiles p ON dr."authorId" = p.id;

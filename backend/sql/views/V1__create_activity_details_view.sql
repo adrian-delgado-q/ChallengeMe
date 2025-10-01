@@ -24,13 +24,8 @@ SELECT
     c.title AS challenge_title
 FROM
     "Activity" a
-JOIN
-    "ChallengeParticipant" cp ON a."participantId" = cp.id
-LEFT JOIN
-    "profiles" p ON cp."userId" = p.id
-LEFT JOIN
-    "Team" t ON cp."teamId" = t.id
-JOIN
-    "Challenge" c ON cp."challengeId" = c.id
-JOIN
-    "ActivityType" atp ON a."activityTypeId" = atp.id;
+    JOIN "ChallengeParticipant" cp ON a."participantId" = cp.id
+    LEFT JOIN "profiles" p ON cp."userId" = p.id
+    LEFT JOIN "Team" t ON cp."teamId" = t.id
+    JOIN "Challenge" c ON cp."challengeId" = c.id
+    JOIN "ActivityType" atp ON a."activityTypeId" = atp.id;
