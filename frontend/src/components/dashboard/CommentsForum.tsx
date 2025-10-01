@@ -20,9 +20,26 @@ import {
 	Spinner,
 	Flex,
 	useColorModeValue,
+	Modal,
+	ModalOverlay,
+	ModalContent,
+	ModalHeader,
+	ModalFooter,
+	ModalBody,
+	ModalCloseButton,
+	FormControl,
+	FormLabel,
+	Input,
 } from '@chakra-ui/react';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
-import { BsThreeDotsVertical, BsPinAngle, BsPinAngleFill, BsReply, BsTrash } from 'react-icons/bs';
+import {
+	BsThreeDotsVertical,
+	BsPinAngle,
+	BsPinAngleFill,
+	BsReply,
+	BsTrash,
+	BsPersonX,
+} from 'react-icons/bs';
 import ReactMarkdown from 'react-markdown';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 
@@ -34,7 +51,7 @@ import {
 	useDiscussionPermissionsQuery,
 	useDiscussionMutations,
 } from '../../hooks/useDiscussionQuery';
-import { QuickBanButton, DiscussionModeration } from './DiscussionModeration';
+import { DiscussionModeration } from './DiscussionModeration';
 
 interface CommentsForumProps {
 	challengeId: string;
@@ -272,9 +289,19 @@ const DiscussionPostItem: React.FC<DiscussionPostItemProps> = ({
 	const { isOpen: isReplying, onToggle: toggleReply } = useDisclosure();
 	const { isOpen: showReplies, onToggle: toggleReplies } = useDisclosure();
 
-	const { createReply } = useDiscussionMutations();
+	const { createReply, banUser } = useDiscussionMutations();
 	const [replyContent, setReplyContent] = useState('');
 	const [submittingReply, setSubmittingReply] = useState(false);
+
+	// Ban modal state
+	const {
+		isOpen: isBanModalOpen,
+		onOpen: onBanModalOpen,
+		onClose: onBanModalClose,
+	} = useDisclosure();
+	const [banReason, setBanReason] = useState('');
+	const [banExpiresAt, setBanExpiresAt] = useState('');
+	const [banning, setBanning] = useState(false);
 
 	// All color mode values at the top
 	const bgColor = useColorModeValue('white', 'gray.800');
@@ -322,6 +349,40 @@ const DiscussionPostItem: React.FC<DiscussionPostItemProps> = ({
 		}
 	};
 
+	const handleBan = async () => {
+		try {
+			setBanning(true);
+			await banUser.mutateAsync({
+				challengeId,
+				userId: post.authorId,
+				reason: banReason.trim() || 'No reason provided',
+				duration: banExpiresAt || undefined,
+			});
+
+			toast({
+				title: 'User banned successfully',
+				status: 'success',
+				duration: 2000,
+				isClosable: true,
+			});
+
+			onBanModalClose();
+			setBanReason('');
+			setBanExpiresAt('');
+			onReplyAdded();
+		} catch (error) {
+			toast({
+				title: 'Error banning user',
+				description: error instanceof Error ? error.message : 'Unknown error',
+				status: 'error',
+				duration: 3000,
+				isClosable: true,
+			});
+		} finally {
+			setBanning(false);
+		}
+	};
+
 	return (
 		<Box bg={bgColor} p={3} borderRadius="md" borderWidth="1px" borderColor={borderColor} shadow="sm">
 			<HStack align="flex-start" spacing={3}>
@@ -363,13 +424,8 @@ const DiscussionPostItem: React.FC<DiscussionPostItemProps> = ({
 										</MenuItem>
 									)}
 									{permissions?.canBan && post.authorId !== user?.id && (
-										<MenuItem closeOnSelect={false}>
-											<QuickBanButton
-												userId={post.authorId}
-												challengeId={challengeId}
-												permissions={permissions}
-												onBanComplete={() => onReplyAdded()}
-											/>
+										<MenuItem icon={<BsPersonX />} onClick={onBanModalOpen} color="red.500">
+											Ban User
 										</MenuItem>
 									)}
 								</MenuList>
@@ -480,6 +536,48 @@ const DiscussionPostItem: React.FC<DiscussionPostItemProps> = ({
 					)}
 				</VStack>
 			</HStack>
+
+			{/* Ban User Modal */}
+			<Modal isOpen={isBanModalOpen} onClose={onBanModalClose}>
+				<ModalOverlay />
+				<ModalContent>
+					<ModalHeader>Ban User</ModalHeader>
+					<ModalCloseButton />
+					<ModalBody>
+						<VStack spacing={4}>
+							<FormControl>
+								<FormLabel>Reason (optional)</FormLabel>
+								<Textarea
+									value={banReason}
+									onChange={e => setBanReason(e.target.value)}
+									placeholder="Provide a reason for the ban..."
+								/>
+							</FormControl>
+
+							<FormControl>
+								<FormLabel>Expires At (optional)</FormLabel>
+								<Input
+									type="datetime-local"
+									value={banExpiresAt}
+									onChange={e => setBanExpiresAt(e.target.value)}
+									min={new Date().toISOString().slice(0, 16)}
+								/>
+								<Text fontSize="xs" color="gray.500" mt={1}>
+									Leave empty for permanent ban
+								</Text>
+							</FormControl>
+						</VStack>
+					</ModalBody>
+					<ModalFooter>
+						<Button variant="ghost" mr={3} onClick={onBanModalClose}>
+							Cancel
+						</Button>
+						<Button colorScheme="red" onClick={handleBan} isLoading={banning}>
+							Ban User
+						</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
 		</Box>
 	);
 };

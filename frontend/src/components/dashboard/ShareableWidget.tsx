@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
 import { Box, VStack, HStack, Text, Badge, Icon, Grid, GridItem } from '@chakra-ui/react';
+import { useActivityTypesByIdsQuery } from '../../hooks/useActivityTypesQuery';
 import type { Challenge } from '../../types';
 
 // Trophy icon for achievements
@@ -74,6 +75,12 @@ export const ShareableWidget = forwardRef<HTMLDivElement, ShareableWidgetProps>(
 
 		// Get activity type data
 		const activityEntries = Object.entries(progressByActivityType || {});
+		const activityTypeIds = activityEntries.map(([id]) => id);
+		const { data: activityTypes = [] } = useActivityTypesByIdsQuery(activityTypeIds);
+
+		// Create a map for quick lookup of activity type names
+		const activityTypeMap = new Map(activityTypes.map(at => [at.id, at]));
+
 		const totalActivities = activityEntries.reduce((sum, [, count]) => sum + count, 0);
 
 		// Calculate days remaining
@@ -145,13 +152,9 @@ export const ShareableWidget = forwardRef<HTMLDivElement, ShareableWidgetProps>(
 						{activityEntries.length > 0 ? (
 							<VStack spacing={2} align="stretch">
 								{activityEntries.map(([activityTypeId, count]) => {
-									const activityName = activityTypeId.includes('-')
-										? activityTypeId
-												.split('-')
-												.pop()
-												?.replace(/([A-Z])/g, ' $1')
-												.trim() || 'Activity'
-										: activityTypeId.replace(/([A-Z])/g, ' $1').trim();
+									const activityType = activityTypeMap.get(activityTypeId);
+									const activityName =
+										activityType?.name || activityTypeId.replace(/([A-Z])/g, ' $1').trim();
 
 									return (
 										<HStack

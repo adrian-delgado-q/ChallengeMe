@@ -114,7 +114,10 @@ export const ChallengeActionBar: React.FC<ChallengeActionBarProps> = ({
 			return;
 		}
 
-		if (!challenge.isPublic) {
+		// Check if user is the creator - creators can join their own private challenges without access code
+		const isCreator = challenge.creatorId === user.id;
+
+		if (!challenge.isPublic && !isCreator) {
 			if (challenge.challengeType === 'team') {
 				onTeamModalOpen();
 			} else {
@@ -145,7 +148,10 @@ export const ChallengeActionBar: React.FC<ChallengeActionBarProps> = ({
 	};
 
 	const handleTeamSelection = async (teamId: string) => {
-		if (!challenge.isPublic) {
+		// Check if user is the creator - creators can join their own private challenges without access code
+		const isCreator = challenge.creatorId === user?.id;
+
+		if (!challenge.isPublic && !isCreator) {
 			setPendingTeamId(teamId);
 			onTeamModalClose();
 			onAccessCodeModalOpen();
@@ -178,13 +184,13 @@ export const ChallengeActionBar: React.FC<ChallengeActionBarProps> = ({
 
 	const isCurrentUserCreator = user?.id === challenge.creatorId;
 
-	// For challenge creators - show manage options
+	// For challenge creators - show manage options (regardless of participation status)
 	if (isCurrentUserCreator) {
 		return (
 			<HStack spacing={2}>
 				<Badge colorScheme="purple" variant="subtle" px={3} py={1} borderRadius="full">
 					<Text fontSize="xs" fontWeight="medium">
-						Creator
+						Creator{isParticipating ? (participantTeam ? ` • ${participantTeam.name}` : ' • Joined') : ''}
 					</Text>
 				</Badge>
 
@@ -203,6 +209,28 @@ export const ChallengeActionBar: React.FC<ChallengeActionBarProps> = ({
 						<MenuItem onClick={() => window.open(`/activities?challengeId=${challenge.id}`, '_self')}>
 							Manage Activities
 						</MenuItem>
+						<MenuItem onClick={() => window.open(`/challenges/${challenge.id}/manage`, '_self')}>
+							Manage Challenge
+						</MenuItem>
+						<MenuItem onClick={() => window.open(`/challenges/${challenge.id}/edit`, '_self')}>
+							Edit Challenge
+						</MenuItem>
+						{isParticipating && (
+							<>
+								<MenuDivider />
+								<MenuItem color="orange.600" onClick={handleLeaveChallenge} isDisabled={isLeaving}>
+									Leave as Participant
+								</MenuItem>
+							</>
+						)}
+						{!isParticipating && (
+							<>
+								<MenuDivider />
+								<MenuItem color="green.600" onClick={handleJoinChallenge} isDisabled={isJoining}>
+									Join Challenge
+								</MenuItem>
+							</>
+						)}
 					</MenuList>
 				</Menu>
 			</HStack>

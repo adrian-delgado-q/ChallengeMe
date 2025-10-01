@@ -125,8 +125,11 @@ export const ChallengeJoinButton: React.FC<ChallengeJoinButtonProps> = ({
 			return;
 		}
 
-		// Check if challenge is private and needs access code
-		if (!challenge.isPublic) {
+		// Check if user is the creator - creators can join their own private challenges without access code
+		const isCreator = challenge.creatorId === user.id;
+
+		// Check if challenge is private and needs access code (skip for creators)
+		if (!challenge.isPublic && !isCreator) {
 			if (challenge.challengeType === 'team') {
 				// Show team selection modal first, then access code modal
 				onTeamModalOpen();

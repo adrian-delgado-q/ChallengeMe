@@ -34,6 +34,7 @@ import { useActivityTypesQuery } from '../../hooks/useActivityTypesQuery';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { TeamSelectionModal } from '../challenges/TeamSelectionModal';
+import { DataTransformUtils } from '../../utils/dataTransform';
 import type { Challenge, ActivityType } from '../../types';
 
 interface LogActivityModalProps {
@@ -101,7 +102,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 		}
 
 		setIsLoadingActivityTypes(false);
-	}, [challengeId, isOpen, challengeData, allActivityTypes, notifications]);
+	}, [challengeId, isOpen, challengeData, allActivityTypes]);
 
 	const handleSubmit = async () => {
 		// Validation
@@ -151,7 +152,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 						activityTypeId: selectedActivityTypeId,
 						value: numericValue,
 						notes,
-						date: new Date().toISOString().split('T')[0], // Today's date
+						date: DataTransformUtils.getCurrentDateInToronto(), // Today's date in Toronto timezone
 					});
 				}
 			} else {
@@ -161,7 +162,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 					activityTypeId: selectedActivityTypeId,
 					value: numericValue,
 					notes,
-					date: new Date().toISOString().split('T')[0], // Today's date
+					date: DataTransformUtils.getCurrentDateInToronto(), // Today's date in Toronto timezone
 				});
 			}
 
@@ -187,7 +188,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 				activityTypeId: selectedActivityTypeId,
 				value: numericValue,
 				notes,
-				date: new Date().toISOString().split('T')[0], // Today's date
+				date: DataTransformUtils.getCurrentDateInToronto(), // Today's date in Toronto timezone
 			});
 
 			return true;
@@ -217,7 +218,7 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 				activityTypeId: selectedActivityTypeId,
 				value: numericValue,
 				notes,
-				date: new Date().toISOString().split('T')[0], // Today's date
+				date: DataTransformUtils.getCurrentDateInToronto(), // Today's date in Toronto timezone
 			});
 
 			return true;

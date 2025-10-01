@@ -17,10 +17,10 @@ const mockChallenge: Challenge = {
 	dailyStreak: 7,
 	todayActivity: true,
 	milestones: [
-		{ name: 'Beginner', value: 10, activityTypeId: 'running' },
-		{ name: 'Intermediate', value: 25, activityTypeId: 'running' },
-		{ name: 'Advanced', value: 50, activityTypeId: 'running' },
-		{ name: 'Expert', value: 100, activityTypeId: 'running' },
+		{ name: 'Beginner', value: 10, activityTypeId: 'running-uuid-demo' },
+		{ name: 'Intermediate', value: 25, activityTypeId: 'running-uuid-demo' },
+		{ name: 'Advanced', value: 50, activityTypeId: 'cycling-uuid-demo' },
+		{ name: 'Expert', value: 100, activityTypeId: 'walking-uuid-demo' },
 	],
 	creator: {
 		id: 'demo-user',
@@ -35,6 +35,11 @@ const mockUserProgress = {
 	totalMilestones: 4,
 	dailyStreak: 7,
 	todayActivity: true,
+	progressByActivityType: {
+		'running-uuid-demo': 15, // Running: 15 activities
+		'cycling-uuid-demo': 8, // Cycling: 8 activities
+		'walking-uuid-demo': 12, // Walking: 12 activities
+	},
 };
 
 export const ShareableWidgetDemo: React.FC = () => {
