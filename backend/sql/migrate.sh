@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 
 echo -e "${GREEN}🚀 ChallengeMe Database Migration${NC}"
 echo "=================================="
-echo -e "${YELLOW}📋 This script applies SQL features (RLS, triggers, constraints)${NC}"
+echo -e "${YELLOW}📋 This script applies SQL features (RLS, triggers, constraints, views)${NC}"
 echo -e "${YELLOW}📋 Make sure to run 'npx prisma db push' first for schema!${NC}"
 echo ""
 
@@ -69,6 +69,45 @@ for file in "${MIGRATION_FILES[@]}"; do
     fi
 done
 
+# Apply all views from the views folder
+echo -e "${BLUE}🔄 Applying views...${NC}"
+echo ""
+
+# Initialize empty array for views
+VIEWS_FILES=()
+
+# Check if views directory exists and has SQL files
+if [ -d "views" ]; then
+    # Add all SQL files from views directory to array
+    for view_file in views/*.sql; do
+        # Check if the glob matched any files (avoid adding the literal pattern if no files exist)
+        if [ -f "$view_file" ]; then
+            VIEWS_FILES+=("$view_file")
+        fi
+    done
+    
+    # Apply views if any were found
+    if [ ${#VIEWS_FILES[@]} -gt 0 ]; then
+        # Sort views files to ensure consistent ordering (optional but recommended)
+        IFS=$'\n' VIEWS_FILES=($(sort <<<"${VIEWS_FILES[*]}"))
+        unset IFS
+        
+        for view in "${VIEWS_FILES[@]}"; do
+            echo -e "${YELLOW}📄 Applying $(basename "$view")...${NC}"
+            psql "$SUPABASE_DB_URL" -f "$view" || {
+                echo -e "${RED}❌ Failed to apply $view${NC}"
+                exit 1
+            }
+            echo -e "${GREEN}✅ $(basename "$view") applied successfully${NC}"
+            echo ""
+        done
+    else
+        echo -e "${YELLOW}⚠️ No SQL files found in views/ directory${NC}"
+    fi
+else
+    echo -e "${YELLOW}⚠️ Views directory not found, skipping views${NC}"
+fi
+
 # Run validation
 echo -e "${BLUE}🔍 Running validation checks...${NC}"
 if [ -f "99_validation.sql" ]; then
@@ -79,10 +118,11 @@ else
 fi
 
 echo ""
-echo -e "${GREEN}🎉 All SQL migrations completed successfully!${NC}"
+echo -e "${GREEN}🎉 All SQL migrations and views completed successfully!${NC}"
 echo -e "${GREEN}   ✅ Schema Enhancements: Applied${NC}"
 echo -e "${GREEN}   ✅ Functions: Created${NC}"
 echo -e "${GREEN}   ✅ Triggers: Configured${NC}"
 echo -e "${GREEN}   ✅ RLS Policies: Applied${NC}"
 echo -e "${GREEN}   ✅ Progress Aggregation: Enabled${NC}"
+echo -e "${GREEN}   ✅ Views: Applied (${#VIEWS_FILES[@]} view(s))${NC}"
 echo -e "${GREEN}   🚀 Your database is ready for ChallengeMe!${NC}"
