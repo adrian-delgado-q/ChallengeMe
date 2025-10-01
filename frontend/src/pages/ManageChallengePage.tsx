@@ -286,7 +286,7 @@ const ManageChallengePage: React.FC = () => {
 								{Math.round(
 									((new Date().getTime() - new Date(challenge.startDate || '').getTime()) /
 										(new Date(challenge.endDate).getTime() - new Date(challenge.startDate || '').getTime())) *
-									100
+										100
 								)}
 								%
 							</Text>
