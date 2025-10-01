@@ -24,7 +24,7 @@ import { FaEdit } from 'react-icons/fa';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ValidationUtils } from '../../utils/validation';
-import { ActivityTypeService } from '../../graphql/services/activityTypeService';
+import { ActivityTypeService } from '../../services/activityTypeService';
 import type { Activity, ActivityType } from '../../types';
 
 interface EditActivityModalProps {
@@ -79,6 +79,7 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
 
 	const [distance, setDistance] = useState('');
 	const [duration, setDuration] = useState('');
+	const [activityValue, setActivityValue] = useState('');
 
 	// Load challenge activity types when modal opens
 	useEffect(() => {
@@ -122,6 +123,7 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
 				) {
 					setDistance(activity.value.toString());
 					setDuration('');
+					setActivityValue('');
 				} else if (
 					activityType.category === 'time' ||
 					activityType.unit === 'minutes' ||
@@ -129,10 +131,12 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
 				) {
 					setDuration(activity.value.toString());
 					setDistance('');
+					setActivityValue('');
 				} else {
-					// For other types (reps, weight, etc.), clear the specific fields and use notes
+					// For other types (reps, weight, etc.), clear the specific fields and use the activity value
 					setDistance('');
 					setDuration('');
+					setActivityValue(activity.value?.toString() || '');
 				}
 			} else {
 				// Fallback: Extract structured data from notes (backward compatibility)
@@ -180,9 +184,19 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
 			}
 		}
 
+		if (activityValue) {
+			const valueValidation = ValidationUtils.combine(
+				ValidationUtils.numeric(activityValue, 0.1, 10000, 'Activity Value')
+			);
+			if (!valueValidation.isValid) {
+				notifications.validationError(valueValidation.error!);
+				return;
+			}
+		}
+
 		const result = await execute(async () => {
 			// Determine the value based on activity type
-			let activityValue: number | undefined = undefined;
+			let finalActivityValue: number | undefined = undefined;
 
 			if (activity && activity.activityType) {
 				const activityType = activity.activityType;
@@ -193,14 +207,17 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
 						activityType.unit === 'km' ||
 						activityType.unit === 'miles')
 				) {
-					activityValue = parseFloat(distance);
+					finalActivityValue = parseFloat(distance);
 				} else if (
 					duration &&
 					(activityType.category === 'time' ||
 						activityType.unit === 'minutes' ||
 						activityType.unit === 'hours')
 				) {
-					activityValue = parseFloat(duration);
+					finalActivityValue = parseFloat(duration);
+				} else if (activityValue) {
+					// For other activity types (reps, weight, etc.)
+					finalActivityValue = parseFloat(activityValue);
 				}
 			}
 
@@ -220,7 +237,7 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
 			await onUpdateActivity(activity.id, {
 				activityTypeId:
 					selectedActivityTypeId !== activity.activityTypeId ? selectedActivityTypeId : undefined,
-				value: activityValue,
+				value: finalActivityValue,
 				notes: finalNotes || undefined,
 				date,
 			});
@@ -375,9 +392,10 @@ export const EditActivityModal: React.FC<EditActivityModalProps> = ({
 										<Input
 											type="number"
 											step="0.1"
-											value={activity.value?.toString() || ''}
+											value={activityValue}
+											onChange={e => setActivityValue(e.target.value)}
 											placeholder={`Current: ${activity.value} ${selectedType?.unit || ''}`}
-											isDisabled={true}
+											isDisabled={!isEditable || isSubmitting}
 										/>
 									);
 								}

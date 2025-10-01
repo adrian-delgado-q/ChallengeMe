@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
 	Button,
 	FormControl,
@@ -13,15 +13,15 @@ import {
 	VStack,
 } from '@chakra-ui/react';
 import { ImageUploadField } from '../common/ImageUploadField';
-import { FileUploadService } from '../../services/fileUploadService';
-import { useChallengeActions } from '../../hooks/useData';
+import { useFileUpload } from '../../hooks/useFileUpload';
+import { useChallengeMutations } from '../../hooks/useChallengesQuery';
+import { useActivityTypesQuery } from '../../hooks/useActivityTypesQuery';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { CommonValidationSchemas } from '../../utils/validation';
-import { ActivityTypeService } from '../../graphql/services/activityTypeService';
 import { ActivityTypeSelector } from './ActivityTypeSelector';
 import { MilestoneManager } from './MilestoneManager';
-import type { Challenge, Milestone, ChallengeType, ActivityType } from '../../types';
+import type { Challenge, Milestone, ChallengeType } from '../../types';
 
 interface ChallengeFormProps {
 	challengeToEdit?: Challenge;
@@ -36,34 +36,16 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
 	onCancel,
 	isEditing = false,
 }) => {
-	// State for activity types
-	const [activityTypes, setActivityTypes] = useState<ActivityType[]>([]);
-	const [isLoadingActivityTypes, setIsLoadingActivityTypes] = useState(true);
+	// Load activity types using React Query
+	const { data: activityTypes = [], isLoading: isLoadingActivityTypes } = useActivityTypesQuery();
 
-	const { createChallenge, updateChallenge } = useChallengeActions();
+	const { createChallenge, updateChallenge } = useChallengeMutations();
+	const { uploadChallengeImage } = useFileUpload();
 	const notifications = useNotifications();
 	const { isLoading: isSubmitting, execute } = useAsyncState({
 		showSuccessNotifications: true,
 		successMessage: `Challenge ${isEditing ? 'updated' : 'created'} successfully!`,
 	});
-
-	// Load activity types on component mount
-	useEffect(() => {
-		const loadActivityTypes = async () => {
-			try {
-				const types = await ActivityTypeService.getActivityTypes();
-				setActivityTypes(types);
-			} catch (error) {
-				console.error('Failed to load activity types:', error);
-				notifications.error('Failed to load activity types');
-			} finally {
-				setIsLoadingActivityTypes(false);
-			}
-		};
-
-		loadActivityTypes();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	// Helper function to get default end date (one month from today)
 	const getDefaultEndDate = () => {
@@ -183,7 +165,7 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
 	};
 
 	const handleImageUpload = async (file: File, result: any) => {
-		const uploadResult = await FileUploadService.uploadChallengeImage(file);
+		const uploadResult = await uploadChallengeImage.mutateAsync(file);
 		if (uploadResult.success && uploadResult.url) {
 			setImageUrl(uploadResult.url);
 		}
@@ -273,9 +255,9 @@ export const ChallengeForm: React.FC<ChallengeFormProps> = ({
 			};
 
 			if (isEditing && challengeToEdit) {
-				return await updateChallenge(challengeToEdit.id, challengeData);
+				return await updateChallenge.mutateAsync({ challengeId: challengeToEdit.id, challengeData });
 			} else {
-				return await createChallenge(challengeData);
+				return await createChallenge.mutateAsync(challengeData);
 			}
 		});
 

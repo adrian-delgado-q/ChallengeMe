@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
 	Box,
 	Heading,
@@ -27,9 +27,9 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { AddIcon, SettingsIcon, ViewIcon, EditIcon, ChevronDownIcon } from '@chakra-ui/icons';
-import { ChallengeService } from '../graphql/services';
-import { useUser } from '../contexts/AuthContext';
+
 import { useNotifications } from '../utils/notifications';
+import { useMyCreatedChallengesQuery } from '../hooks/useChallengesQuery';
 
 interface ManagedChallenge {
 	id: string;
@@ -64,34 +64,17 @@ interface ManagedChallenge {
 
 const MyChallengesPage: React.FC = () => {
 	const navigate = useNavigate();
-	const { user } = useUser();
 	const notifications = useNotifications();
 
-	const [challenges, setChallenges] = useState<ManagedChallenge[]>([]);
-	const [loading, setLoading] = useState(true);
+	const { data: challenges = [], isLoading: loading, error } = useMyCreatedChallengesQuery();
 
 	const cardBg = useColorModeValue('white', 'gray.800');
 	const borderColor = useColorModeValue('gray.200', 'gray.600');
 
-	// Fetch user's created challenges
-	useEffect(() => {
-		const fetchChallenges = async () => {
-			try {
-				setLoading(true);
-				const data = await ChallengeService.getMyCreatedChallenges();
-				setChallenges(data || []);
-			} catch (error) {
-				console.error('Error fetching challenges:', error);
-				notifications.error('Error', 'Failed to load your challenges');
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		if (user) {
-			fetchChallenges();
-		}
-	}, [user]); // Remove notifications from dependency array
+	// Handle loading error
+	if (error) {
+		notifications.error('Error', 'Failed to load your challenges');
+	} // Remove notifications from dependency array
 
 	const getStatusColor = (status: string) => {
 		switch (status) {
@@ -315,7 +298,7 @@ const MyChallengesPage: React.FC = () => {
 											Recent Participants
 										</Text>
 										<Wrap spacing={1}>
-											{challenge.participantList.slice(0, 8).map(participant => (
+											{challenge.participantList.slice(0, 8).map((participant: any) => (
 												<WrapItem key={participant.id}>
 													<Box
 														w="8px"

@@ -13,9 +13,12 @@ import { Card } from '../components/common/Card';
 import { LoadingErrorWrapper } from '../components/common/LoadingErrorWrapper';
 import { ConfirmationDialog } from '../components/common/ConfirmationDialog';
 import { ChallengeForm } from '../components/challenges/ChallengeForm';
-import { useChallengeDetails } from '../hooks/useData';
+import {
+	useChallengeQuery,
+	useChallengeActions,
+	useChallengeMutations,
+} from '../hooks/useChallengesQuery';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChallengeService } from '../graphql/services';
 import { useNotifications } from '../utils/notifications';
 import { useAsyncState } from '../hooks/useAsyncState';
 
@@ -26,7 +29,14 @@ const EditChallengePage: React.FC = () => {
 	const { id: challengeId } = useParams<{ id: string }>();
 	const notifications = useNotifications();
 
-	const { challenge, loading, error, refetch } = useChallengeDetails(challengeId || '');
+	const {
+		data: challenge,
+		isLoading: loading,
+		error,
+		refetch,
+	} = useChallengeQuery(challengeId || '');
+	const { deleteChallenge } = useChallengeActions();
+	const { updateChallenge } = useChallengeMutations();
 	const { isLoading: deleting, execute: executeDelete } = useAsyncState({
 		successMessage: 'Challenge deleted successfully!',
 	});
@@ -35,7 +45,7 @@ const EditChallengePage: React.FC = () => {
 		if (!challengeId) return;
 
 		try {
-			await ChallengeService.updateChallenge(challengeId, formData);
+			await updateChallenge.mutateAsync({ challengeId, challengeData: formData });
 			notifications.success('Success!', 'Challenge updated successfully!');
 			refetch();
 			// Navigate back to the challenge dashboard
@@ -49,7 +59,7 @@ const EditChallengePage: React.FC = () => {
 		if (!challengeId) return;
 
 		const result = await executeDelete(async () => {
-			await ChallengeService.deleteChallenge(challengeId);
+			await deleteChallenge.mutateAsync(challengeId);
 			return true;
 		});
 

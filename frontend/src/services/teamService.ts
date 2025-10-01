@@ -1,7 +1,7 @@
-import { supabase } from '../../supabase/client';
-import { authService } from '../../services/optimizedAuthService';
-import { generateUUID } from '../../utils/uuid';
-import { ensureUserProfile } from '../../utils/profileUtils';
+import { supabase } from '../supabase/client';
+import { authService } from './optimizedAuthService';
+import { generateUUID } from '../utils/uuid';
+import { ensureUserProfile } from '../utils/profileUtils';
 
 // Types for team operations
 export interface TeamInput {

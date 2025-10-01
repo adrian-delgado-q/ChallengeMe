@@ -273,4 +273,41 @@ export class DataTransformUtils {
 		const timestamp = Date.now().toString(36);
 		return prefix ? `${prefix}_${timestamp}_${random}` : `${timestamp}_${random}`;
 	}
+
+	/**
+	 * Get current date in Toronto timezone formatted as YYYY-MM-DD
+	 */
+	static getCurrentDateInToronto(): string {
+		const now = new Date();
+
+		// Convert to Toronto timezone
+		const torontoDate = new Date(
+			now.toLocaleString('en-US', {
+				timeZone: 'America/Toronto',
+			})
+		);
+
+		// Format as YYYY-MM-DD
+		const year = torontoDate.getFullYear();
+		const month = String(torontoDate.getMonth() + 1).padStart(2, '0');
+		const day = String(torontoDate.getDate()).padStart(2, '0');
+
+		return `${year}-${month}-${day}`;
+	}
+
+	/**
+	 * Get current timestamp in Toronto timezone
+	 */
+	static getCurrentTimestampInToronto(): string {
+		const now = new Date();
+
+		// Convert to Toronto timezone and return ISO string
+		const torontoDate = new Date(
+			now.toLocaleString('en-US', {
+				timeZone: 'America/Toronto',
+			})
+		);
+
+		return torontoDate.toISOString();
+	}
 }

@@ -22,9 +22,12 @@ export const useActivityUpdates = ({
 	const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const isCleanedUpRef = useRef<boolean>(false);
 
+	// Feature flag to disable real-time subscriptions if there are server issues
+	const REALTIME_ENABLED = false; // Set to false to disable real-time and use polling only
+
 	// Real-time subscription setup with better error handling
 	const setupRealTimeSubscription = useCallback(() => {
-		if (!enabled || isCleanedUpRef.current) return;
+		if (!enabled || isCleanedUpRef.current || !REALTIME_ENABLED) return;
 
 		// Clean up existing subscription
 		if (subscriptionRef.current) {
@@ -72,6 +75,13 @@ export const useActivityUpdates = ({
 
 					if (err) {
 						console.error('Subscription error:', err);
+
+						// Check for specific binding mismatch error
+						if (err?.message?.includes('mismatch between server and client bindings')) {
+							console.warn('Real-time subscription disabled due to server/client binding mismatch');
+							// Don't attempt reconnection for binding errors
+							return;
+						}
 					}
 
 					// Handle different subscription states

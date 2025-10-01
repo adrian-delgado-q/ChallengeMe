@@ -17,9 +17,8 @@ import { LoadingErrorWrapper } from '../components/common/LoadingErrorWrapper';
 import { ConfirmationDialog } from '../components/common/ConfirmationDialog';
 import { TeamForm } from '../components/teams/TeamForm';
 import { TeamMemberManagement } from '../components/teams/TeamMemberManagement';
-import { useTeamDetails } from '../hooks/useData';
+import { useTeamQuery, useTeamMutations } from '../hooks/useTeamsQuery';
 import { useParams, useNavigate } from 'react-router-dom';
-import { TeamService } from '../graphql/services';
 import { useUser } from '../contexts/AuthContext';
 import { useNotifications } from '../utils/notifications';
 import { useAsyncState } from '../hooks/useAsyncState';
@@ -32,7 +31,8 @@ const EditTeamPage: React.FC = () => {
 	const { user } = useUser();
 	const notifications = useNotifications();
 
-	const { team, loading, error, refetch } = useTeamDetails(teamId || '');
+	const { data: team, isLoading: loading, error, refetch } = useTeamQuery(teamId || '');
+	const { deleteTeam } = useTeamMutations();
 	const { isLoading: deleting, execute: executeDelete } = useAsyncState();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -60,7 +60,7 @@ const EditTeamPage: React.FC = () => {
 		if (!teamId) return;
 
 		const result = await executeDelete(async () => {
-			await TeamService.deleteTeam(teamId);
+			await deleteTeam.mutateAsync(teamId);
 			return true;
 		});
 

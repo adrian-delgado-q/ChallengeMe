@@ -23,7 +23,7 @@ import {
 	FormLabel,
 	Divider,
 } from '@chakra-ui/react';
-import { TeamService } from '../../graphql/services';
+import { TeamService } from '../../services';
 import { useUser } from '../../contexts/AuthContext';
 import { useNotifications } from '../../utils/notifications';
 import { useMultipleLoadingStates } from '../../hooks/useAsyncState';

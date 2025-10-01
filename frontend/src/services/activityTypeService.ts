@@ -1,5 +1,5 @@
-import { supabase } from '../../supabase/client';
-import type { ActivityType } from '../../types';
+import { supabase } from '../supabase/client';
+import type { ActivityType } from '../types';
 
 // Activity Type data service with exponential backoff
 

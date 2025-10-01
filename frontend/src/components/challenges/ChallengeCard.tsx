@@ -19,12 +19,12 @@ import { TrophyIcon, UserTeamIcon, CalendarIcon } from '../common/Icons';
 import { useActivityTypesByIdsQuery } from '../../hooks/useActivityTypesQuery';
 import { TeamSelectionModal } from './TeamSelectionModal';
 import { AccessCodeModal } from './AccessCodeModal';
-import { useChallengeActions } from '../../hooks/useData';
 import { useTeams } from '../../hooks/useTeamsQuery';
+import { useChallengeMutations, useChallengeActions } from '../../hooks/useChallengesQuery';
 import { useUser } from '../../contexts/AuthContext';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { ChallengeService } from '../../graphql/services';
+import templateImage from '../../assets/template_challenge.png';
 
 // Activity type icon
 const ActivityIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -51,7 +51,8 @@ interface ChallengeCardProps {
 
 export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelect }) => {
 	const { user } = useUser();
-	const { joinChallenge } = useChallengeActions();
+	const { joinChallenge } = useChallengeMutations();
+	const challengeActions = useChallengeActions();
 	const { teams } = useTeams();
 	const notifications = useNotifications();
 	const navigate = useNavigate();
@@ -124,8 +125,11 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 			return;
 		}
 
-		// Check if challenge is private and needs access code
-		if (!challenge.isPublic) {
+		// Check if user is the creator - creators can join their own private challenges without access code
+		const isCreator = challenge.creatorId === user?.id;
+
+		// Check if challenge is private and needs access code (skip for creators)
+		if (!challenge.isPublic && !isCreator) {
 			if (challenge.challengeType === 'team') {
 				// Show team selection modal first, then access code modal
 				onTeamModalOpen();
@@ -143,7 +147,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 		} else {
 			// Join as individual directly
 			await executeJoin(async () => {
-				await joinChallenge(challenge.id);
+				await joinChallenge.mutateAsync({ challengeId: challenge.id });
 				setIsParticipating(true);
 			});
 		}
@@ -153,19 +157,21 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 		e.stopPropagation(); // Prevent card click
 
 		await executeLeave(async () => {
-			if (challenge.challengeType === 'team' && participantTeam) {
-				await ChallengeService.leaveChallenge(challenge.id, participantTeam.id);
-			} else {
-				await ChallengeService.leaveChallenge(challenge.id);
-			}
+			await challengeActions.leaveChallenge.mutateAsync({
+				challengeId: challenge.id,
+				teamId: challenge.challengeType === 'team' && participantTeam ? participantTeam.id : undefined,
+			});
 			setIsParticipating(false);
 			setParticipantTeam(null);
 		});
 	};
 
 	const handleTeamSelection = async (teamId: string) => {
-		// Check if this is a private challenge that needs access code
-		if (!challenge.isPublic) {
+		// Check if user is the creator - creators can join their own private challenges without access code
+		const isCreator = challenge.creatorId === user?.id;
+
+		// Check if this is a private challenge that needs access code (skip for creators)
+		if (!challenge.isPublic && !isCreator) {
 			// Store the selected team and show access code modal
 			setPendingTeamId(teamId);
 			onTeamModalClose();
@@ -175,7 +181,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 
 		// Public challenge - join directly
 		await executeJoin(async () => {
-			await joinChallenge(challenge.id, teamId);
+			await joinChallenge.mutateAsync({ challengeId: challenge.id, asTeam: teamId });
 			setIsParticipating(true);
 			// Find and set the selected team
 			const selectedTeam = teams?.find(t => t.id === teamId);
@@ -190,7 +196,11 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 		await executeJoin(async () => {
 			if (pendingTeamId) {
 				// Join with team using access code
-				await joinChallenge(challenge.id, pendingTeamId, accessCode);
+				await joinChallenge.mutateAsync({
+					challengeId: challenge.id,
+					asTeam: pendingTeamId,
+					accessCode,
+				});
 				setIsParticipating(true);
 				// Find and set the selected team
 				const selectedTeam = teams?.find(t => t.id === pendingTeamId);
@@ -200,7 +210,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 				setPendingTeamId(null);
 			} else {
 				// Join as individual using access code
-				await joinChallenge(challenge.id, undefined, accessCode);
+				await joinChallenge.mutateAsync({ challengeId: challenge.id, accessCode });
 				setIsParticipating(true);
 			}
 		});
@@ -231,10 +241,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 			{/* Banner with image */}
 			<Box position="relative">
 				<Image
-					src={
-						challenge.imageUrl ||
-						'https://images.unsplash.com/photo-1606788075761-5a81c9db1e36?q=80&w=1200'
-					}
+					src={challenge.imageUrl || templateImage}
 					alt="Challenge Banner"
 					w="full"
 					h="160px"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
 	Button,
 	VStack,
@@ -27,8 +27,11 @@ import {
 import { BsShield, BsPersonX, BsPersonCheck } from 'react-icons/bs';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 
-import { DiscussionService } from '../../graphql/services/discussionService';
 import { useUser } from '../../contexts/AuthContext';
+import {
+	useDiscussionPermissionsQuery,
+	useDiscussionMutations,
+} from '../../hooks/useDiscussionQuery';
 import type { DiscussionPermissions } from '../../types';
 import { supabase } from '../../supabase/client';
 
@@ -39,45 +42,45 @@ interface DiscussionModerationProps {
 export const DiscussionModeration: React.FC<DiscussionModerationProps> = ({ challengeId }) => {
 	const { user } = useUser();
 	const toast = useToast();
+
+	const { data: permissions, isLoading: permissionsLoading } = useDiscussionPermissionsQuery(
+		challengeId,
+		user?.id || ''
+	);
+
+	const discussionMutations = useDiscussionMutations();
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [permissions, setPermissions] = useState<DiscussionPermissions | null>(null);
 	const [bannedUsers, setBannedUsers] = useState<any[]>([]);
-	const [loading, setLoading] = useState(true);
+	const [bannedUsersLoading, setBannedUsersLoading] = useState(true);
 
 	// Color mode values at the top
 	const moderatorBg = useColorModeValue('orange.50', 'orange.900');
 	const moderatorBorderColor = useColorModeValue('orange.200', 'orange.700');
 	const moderatorTextColor = useColorModeValue('orange.600', 'orange.300');
 
-	useEffect(() => {
-		loadData();
-	}, [challengeId, user]);
+	// Load banned users on component mount
+	React.useEffect(() => {
+		const loadBans = async () => {
+			try {
+				setBannedUsersLoading(true);
+				const bans = await loadBannedUsers();
+				setBannedUsers(bans);
+			} catch (error) {
+				console.error('Error loading banned users:', error);
+				toast({
+					title: 'Error loading banned users',
+					description: error instanceof Error ? error.message : 'Unknown error',
+					status: 'error',
+					duration: 3000,
+					isClosable: true,
+				});
+			} finally {
+				setBannedUsersLoading(false);
+			}
+		};
 
-	const loadData = async () => {
-		if (!user) return;
-
-		try {
-			setLoading(true);
-			const [userPermissions, bans] = await Promise.all([
-				DiscussionService.getUserPermissions(challengeId, user.id),
-				loadBannedUsers(),
-			]);
-
-			setPermissions(userPermissions);
-			setBannedUsers(bans);
-		} catch (error) {
-			console.error('Error loading moderation data:', error);
-			toast({
-				title: 'Error loading moderation data',
-				description: error instanceof Error ? error.message : 'Unknown error',
-				status: 'error',
-				duration: 3000,
-				isClosable: true,
-			});
-		} finally {
-			setLoading(false);
-		}
-	};
+		loadBans();
+	}, [challengeId, toast]);
 
 	const loadBannedUsers = async (): Promise<any[]> => {
 		const { data: bans } = await supabase
@@ -97,8 +100,10 @@ export const DiscussionModeration: React.FC<DiscussionModerationProps> = ({ chal
 
 	const handleUnbanUser = async (_banId: string, userId: string) => {
 		try {
-			await DiscussionService.unbanUser(challengeId, userId);
-			await loadData(); // Refresh the data
+			await discussionMutations.unbanUser.mutateAsync({ challengeId, userId });
+			// Refresh banned users list
+			const bans = await loadBannedUsers();
+			setBannedUsers(bans);
 
 			toast({
 				title: 'User unbanned successfully',
@@ -117,7 +122,7 @@ export const DiscussionModeration: React.FC<DiscussionModerationProps> = ({ chal
 		}
 	};
 
-	if (loading) {
+	if (permissionsLoading || bannedUsersLoading) {
 		return (
 			<Box bg="orange.50" borderColor="orange.200" borderWidth="1px" borderRadius="md" p={2}>
 				<HStack justify="center">
@@ -259,17 +264,19 @@ export const QuickBanButton: React.FC<QuickBanButtonProps> = ({
 	const [expiresAt, setExpiresAt] = useState('');
 	const [banning, setBanning] = useState(false);
 
+	const { banUser } = useDiscussionMutations();
+
 	if (!permissions.canBan) return null;
 
 	const handleBan = async () => {
 		try {
 			setBanning(true);
-			await DiscussionService.banUser(
+			await banUser.mutateAsync({
 				challengeId,
 				userId,
-				reason.trim() || undefined,
-				expiresAt || undefined
-			);
+				reason: reason.trim() || 'No reason provided',
+				duration: expiresAt || undefined,
+			});
 
 			toast({
 				title: 'User banned successfully',

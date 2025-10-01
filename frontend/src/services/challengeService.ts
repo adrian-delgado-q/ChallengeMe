@@ -1,8 +1,8 @@
-import { supabase } from '../../supabase/client';
-import { authService } from '../../services/optimizedAuthService';
-import { generateUUID } from '../../utils/uuid';
-import { ensureUserProfile } from '../../utils/profileUtils';
-import { handleAuthError } from '../../utils/authUtils';
+import { supabase } from '../supabase/client';
+import { authService } from './optimizedAuthService';
+import { generateUUID } from '../utils/uuid';
+import { ensureUserProfile } from '../utils/profileUtils';
+import { handleAuthError } from '../utils/authUtils';
 
 // Types for challenge operations
 export interface ChallengeInput {
@@ -861,18 +861,21 @@ export class ChallengeService {
 			// Ensure user profile exists before joining challenge
 			await ensureUserProfile();
 
-			// Get challenge details to check privacy and access code
+			// Get challenge details to check privacy, access code, and creator
 			const { data: challenge, error: challengeError } = await supabase
 				.from('Challenge')
-				.select('isPublic, accessCode, title')
+				.select('isPublic, accessCode, title, creatorId')
 				.eq('id', challengeId)
 				.single();
 
 			if (challengeError) throw challengeError;
 			if (!challenge) throw new Error('Challenge not found');
 
-			// Validate access for private challenges
-			if (!challenge.isPublic) {
+			// Check if current user is the creator
+			const isCreator = challenge.creatorId === user.id;
+
+			// Validate access for private challenges (skip validation if user is the creator)
+			if (!challenge.isPublic && !isCreator) {
 				if (!challenge.accessCode) {
 					throw new Error('This private challenge cannot be joined');
 				}
@@ -882,9 +885,7 @@ export class ChallengeService {
 				if (accessCode !== challenge.accessCode) {
 					throw new Error('Invalid access code');
 				}
-			}
-
-			// Generate UUID for the participant
+			} // Generate UUID for the participant
 			const participantId = generateUUID();
 
 			const { data, error } = await supabase
@@ -914,18 +915,21 @@ export class ChallengeService {
 			// Ensure user profile exists before joining challenge
 			await ensureUserProfile();
 
-			// Get challenge details to check maxTeamSize constraint and access code
+			// Get challenge details to check maxTeamSize constraint, access code, and creator
 			const { data: challenge, error: challengeError } = await supabase
 				.from('Challenge')
-				.select('maxTeamSize, challengeType, isPublic, accessCode, title')
+				.select('maxTeamSize, challengeType, isPublic, accessCode, title, creatorId')
 				.eq('id', challengeId)
 				.single();
 
 			if (challengeError) throw challengeError;
 			if (!challenge) throw new Error('Challenge not found');
 
-			// Validate access for private challenges
-			if (!challenge.isPublic) {
+			// Check if current user is the creator
+			const isCreator = challenge.creatorId === user.id;
+
+			// Validate access for private challenges (skip validation if user is the creator)
+			if (!challenge.isPublic && !isCreator) {
 				if (!challenge.accessCode) {
 					throw new Error('This private challenge cannot be joined');
 				}
@@ -935,9 +939,7 @@ export class ChallengeService {
 				if (accessCode !== challenge.accessCode) {
 					throw new Error('Invalid access code');
 				}
-			}
-
-			// Validate that this is a team challenge
+			} // Validate that this is a team challenge
 			if (challenge.challengeType !== 'TEAM') {
 				throw new Error('This challenge only accepts individual participants');
 			}

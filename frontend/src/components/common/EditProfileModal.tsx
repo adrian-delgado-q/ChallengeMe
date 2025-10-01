@@ -115,7 +115,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 			setUsernameStatus({ isChecking: true });
 
 			try {
-				const { ProfileService } = await import('../../graphql/services');
+				const { ProfileService } = await import('../../services');
 				const result = await ProfileService.checkUsernameAvailability(usernameToCheck);
 
 				setUsernameStatus({
@@ -192,7 +192,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 		setIsLoading(true);
 
 		try {
-			const { ProfileService } = await import('../../graphql/services');
+			const { ProfileService } = await import('../../services');
 
 			const updatedProfile = await ProfileService.updateProfile({
 				username: username.trim(),

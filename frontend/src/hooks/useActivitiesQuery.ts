@@ -1,22 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ActivityService } from '../graphql/services/activityService';
-
-// Query keys for Activities
-export const activityKeys = {
-	all: ['activities'] as const,
-	challenges: () => [...activityKeys.all, 'challenge'] as const,
-	challenge: (challengeId: string) => [...activityKeys.challenges(), challengeId] as const,
-	users: () => [...activityKeys.all, 'user'] as const,
-	user: (userId?: string) => [...activityKeys.users(), userId] as const,
-	recent: (limit?: number) => [...activityKeys.all, 'recent', limit] as const,
-	leaderboard: (challengeId: string) => [...activityKeys.all, 'leaderboard', challengeId] as const,
-	management: () => [...activityKeys.all, 'management'] as const,
-};
+import { ActivityService } from '../services/activityService';
+import { queryKeys } from '../lib/queryKeys';
 
 // Activities for Challenge Query Hook
 export const useActivitiesForChallengeQuery = (challengeId: string) => {
 	return useQuery({
-		queryKey: activityKeys.challenge(challengeId),
+		queryKey: queryKeys.activities.challengeActivities(challengeId),
 		queryFn: () => ActivityService.getActivitiesForChallenge(challengeId),
 		staleTime: 30 * 1000, // 30 seconds - activities change frequently
 		gcTime: 2 * 60 * 1000, // 2 minutes
@@ -28,7 +17,7 @@ export const useActivitiesForChallengeQuery = (challengeId: string) => {
 // Recent Activities Query Hook
 export const useRecentActivitiesQuery = (limit: number = 20) => {
 	return useQuery({
-		queryKey: activityKeys.recent(limit),
+		queryKey: queryKeys.activities.list({ limit, recent: true }),
 		queryFn: () => ActivityService.getRecentActivities(limit),
 		staleTime: 30 * 1000, // 30 seconds
 		gcTime: 2 * 60 * 1000, // 2 minutes
@@ -39,18 +28,19 @@ export const useRecentActivitiesQuery = (limit: number = 20) => {
 // User Activities Query Hook
 export const useUserActivitiesQuery = (userId?: string) => {
 	return useQuery({
-		queryKey: activityKeys.user(userId),
+		queryKey: queryKeys.activities.userActivities(userId || ''),
 		queryFn: () => ActivityService.getActivitiesForUser(userId),
 		staleTime: 60 * 1000, // 1 minute - user activities don't change as frequently
 		gcTime: 5 * 60 * 1000, // 5 minutes
 		refetchOnWindowFocus: false,
+		enabled: !!userId,
 	});
 };
 
 // Leaderboard Activities Query Hook
 export const useLeaderboardActivitiesQuery = (challengeId: string) => {
 	return useQuery({
-		queryKey: activityKeys.leaderboard(challengeId),
+		queryKey: queryKeys.activities.list({ challengeId, leaderboard: true }),
 		queryFn: () => ActivityService.getActivitiesForLeaderboard(challengeId),
 		staleTime: 60 * 1000, // 1 minute
 		gcTime: 5 * 60 * 1000, // 5 minutes
@@ -62,7 +52,7 @@ export const useLeaderboardActivitiesQuery = (challengeId: string) => {
 // Management Activities Query Hook
 export const useManagementActivitiesQuery = () => {
 	return useQuery({
-		queryKey: activityKeys.management(),
+		queryKey: queryKeys.activities.list({ management: true }),
 		queryFn: () => ActivityService.getActivitiesForManagement(),
 		staleTime: 60 * 1000, // 1 minute
 		gcTime: 5 * 60 * 1000, // 5 minutes
@@ -78,17 +68,39 @@ export const useActivityMutations = () => {
 		mutationFn: (activityData: any) => ActivityService.createActivity(activityData),
 		onSuccess: (_data, variables) => {
 			// Invalidate all activity-related queries since new activity affects many lists
-			queryClient.invalidateQueries({ queryKey: activityKeys.all });
+			queryClient.invalidateQueries({ queryKey: queryKeys.activities.all });
 
 			// If activity is for a specific challenge, invalidate that challenge's data too
 			if (variables.challengeId) {
-				queryClient.invalidateQueries({ queryKey: ['challenges', 'detail', variables.challengeId] });
+				queryClient.invalidateQueries({ queryKey: queryKeys.challenges.detail(variables.challengeId) });
+				queryClient.invalidateQueries({
+					queryKey: queryKeys.challenges.progress(variables.challengeId),
+				});
 			}
+		},
+	});
+
+	const updateActivityMutation = useMutation({
+		mutationFn: ({ activityId, ...activityData }: { activityId: string; [key: string]: any }) =>
+			ActivityService.updateActivity(activityId, activityData),
+		onSuccess: () => {
+			// Invalidate all activity-related queries to refresh lists
+			queryClient.invalidateQueries({ queryKey: queryKeys.activities.all });
+		},
+	});
+
+	const deleteActivityMutation = useMutation({
+		mutationFn: (activityId: string) => ActivityService.deleteActivity(activityId),
+		onSuccess: () => {
+			// Invalidate all activity-related queries to refresh lists
+			queryClient.invalidateQueries({ queryKey: queryKeys.activities.all });
 		},
 	});
 
 	return {
 		createActivity: createActivityMutation,
+		updateActivity: updateActivityMutation,
+		deleteActivity: deleteActivityMutation,
 	};
 };
 

@@ -24,13 +24,17 @@ import {
 	Box,
 } from '@chakra-ui/react';
 import { useActivities } from '../../hooks/useActivitiesQuery';
-import { useChallengeActions } from '../../hooks/useData';
+import {
+	useChallengeMutations,
+	useChallengeQuery,
+	useMyParticipationQuery,
+} from '../../hooks/useChallengesQuery';
 import { useTeams } from '../../hooks/useTeamsQuery';
-import { ChallengeService } from '../../graphql/services';
-import { ActivityTypeService } from '../../graphql/services/activityTypeService';
+import { useActivityTypesQuery } from '../../hooks/useActivityTypesQuery';
 import { useNotifications } from '../../utils/notifications';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { TeamSelectionModal } from '../challenges/TeamSelectionModal';
+import { DataTransformUtils } from '../../utils/dataTransform';
 import type { Challenge, ActivityType } from '../../types';
 
 interface LogActivityModalProps {
@@ -58,8 +62,11 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 	const [showJoinPrompt, setShowJoinPrompt] = useState(false);
 
 	const { createActivity } = useActivities();
-	const { joinChallenge } = useChallengeActions();
+	const { joinChallenge } = useChallengeMutations();
 	const { teams } = useTeams();
+	const { data: allActivityTypes = [] } = useActivityTypesQuery();
+	const { data: challengeData } = useChallengeQuery(challengeId || '');
+	const { data: participationData } = useMyParticipationQuery(challengeId || '');
 	const notifications = useNotifications();
 	const {
 		isOpen: isTeamModalOpen,
@@ -72,40 +79,30 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 	});
 	const initialRef = React.useRef(null);
 
-	// Fetch challenge details and activity types when modal opens
+	// Update challenge and activity types when data changes
 	useEffect(() => {
-		const fetchData = async () => {
-			if (!challengeId || !isOpen) return;
-			try {
-				setIsLoadingActivityTypes(true);
-				// Load all activity types
-				const allActivityTypes = await ActivityTypeService.getActivityTypes();
-				// Fetch challenge details
-				const challengeFetched = await ChallengeService.getChallengeById(challengeId);
-				setChallenge(challengeFetched);
-				// Filter activity types based on challenge's supported types
-				if (challengeFetched.activityTypes && challengeFetched.activityTypes.length > 0) {
-					const supportedTypes = allActivityTypes.filter(at =>
-						challengeFetched.activityTypes!.includes(at.id)
-					);
-					setChallengeActivityTypes(supportedTypes);
-					// Set default activity type for single-activity challenges
-					if (supportedTypes.length === 1) {
-						setSelectedActivityTypeId(supportedTypes[0].id);
-					}
-				} else {
-					// If challenge doesn't have activity types set, show all
-					setChallengeActivityTypes(allActivityTypes);
-				}
-			} catch (error) {
-				console.error('Error fetching data:', error);
-				notifications.error('Failed to load activity types');
-			} finally {
-				setIsLoadingActivityTypes(false);
+		if (!challengeId || !isOpen || !challengeData || !allActivityTypes) return;
+
+		setIsLoadingActivityTypes(true);
+		setChallenge(challengeData);
+
+		// Filter activity types based on challenge's supported types
+		if (challengeData.activityTypes && challengeData.activityTypes.length > 0) {
+			const supportedTypes = allActivityTypes.filter(at =>
+				challengeData.activityTypes!.includes(at.id)
+			);
+			setChallengeActivityTypes(supportedTypes);
+			// Set default activity type for single-activity challenges
+			if (supportedTypes.length === 1) {
+				setSelectedActivityTypeId(supportedTypes[0].id);
 			}
-		};
-		fetchData();
-	}, [challengeId, isOpen]);
+		} else {
+			// If challenge doesn't have activity types set, show all
+			setChallengeActivityTypes(allActivityTypes);
+		}
+
+		setIsLoadingActivityTypes(false);
+	}, [challengeId, isOpen, challengeData, allActivityTypes]);
 
 	const handleSubmit = async () => {
 		// Validation
@@ -138,10 +135,8 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 		}
 
 		const result = await execute(async () => {
-			// Get the user's participant ID for this challenge
-			const participantId = await ChallengeService.getMyParticipantId(challengeId);
-
-			if (!participantId) {
+			// Check if user is already a participant using React Query data
+			if (!participationData?.isParticipating) {
 				// User is not a participant, check if this is a team challenge
 				if (challenge?.challengeType === 'team') {
 					// For team challenges, show team selection or join prompt
@@ -149,27 +144,25 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 					return false; // Don't continue with activity logging
 				} else {
 					// For individual challenges, auto-join as individual
-					const participant = await ChallengeService.joinChallengeAsIndividual(challengeId);
-
-					// Use the newly created participant ID
-					const newParticipantId = participant.id;
-
+					await joinChallenge.mutateAsync({ challengeId });
+					// After joining, we need to refresh participation data to get participant ID
+					// For now, we'll create the activity without the participant ID and let the backend handle it
 					await createActivity({
-						participantId: newParticipantId,
+						participantId: undefined, // Backend will resolve this
 						activityTypeId: selectedActivityTypeId,
 						value: numericValue,
 						notes,
-						date: new Date().toISOString().split('T')[0], // Today's date
+						date: DataTransformUtils.getCurrentDateInToronto(), // Today's date in Toronto timezone
 					});
 				}
 			} else {
-				// User is already a participant
+				// User is already a participant - use participant ID from participation data
 				await createActivity({
-					participantId,
+					participantId: participationData.participantId,
 					activityTypeId: selectedActivityTypeId,
 					value: numericValue,
 					notes,
-					date: new Date().toISOString().split('T')[0], // Today's date
+					date: DataTransformUtils.getCurrentDateInToronto(), // Today's date in Toronto timezone
 				});
 			}
 
@@ -187,15 +180,15 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 	const handleJoinAsIndividual = async () => {
 		const result = await execute(async () => {
 			// Join as individual and then log activity
-			const participant = await ChallengeService.joinChallengeAsIndividual(challengeId!);
+			await joinChallenge.mutateAsync({ challengeId: challengeId! });
 
 			const numericValue = parseFloat(value);
 			await createActivity({
-				participantId: participant.id,
+				participantId: undefined, // Backend will resolve this after joining
 				activityTypeId: selectedActivityTypeId,
 				value: numericValue,
 				notes,
-				date: new Date().toISOString().split('T')[0], // Today's date
+				date: DataTransformUtils.getCurrentDateInToronto(), // Today's date in Toronto timezone
 			});
 
 			return true;
@@ -217,22 +210,15 @@ export const LogActivityModal: React.FC<LogActivityModalProps> = ({
 	const handleTeamSelection = async (teamId: string) => {
 		const result = await execute(async () => {
 			// Join as team and then log activity
-			await joinChallenge(challengeId!, teamId);
-
-			// Get the new participant ID after joining
-			const participantId = await ChallengeService.getMyParticipantId(challengeId!);
-
-			if (!participantId) {
-				throw new Error('Failed to get participant ID after joining');
-			}
+			await joinChallenge.mutateAsync({ challengeId: challengeId!, asTeam: teamId });
 
 			const numericValue = parseFloat(value);
 			await createActivity({
-				participantId,
+				participantId: undefined, // Backend will resolve this after joining
 				activityTypeId: selectedActivityTypeId,
 				value: numericValue,
 				notes,
-				date: new Date().toISOString().split('T')[0], // Today's date
+				date: DataTransformUtils.getCurrentDateInToronto(), // Today's date in Toronto timezone
 			});
 
 			return true;

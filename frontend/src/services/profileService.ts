@@ -1,5 +1,5 @@
-import { supabase } from '../../supabase/client';
-import { authService } from '../../services/optimizedAuthService';
+import { supabase } from '../supabase/client';
+import { authService } from './optimizedAuthService';
 
 // Types for profile operations
 export interface ProfileInput {

@@ -1,7 +1,7 @@
-import { supabase } from '../../supabase/client';
-import { authService } from '../../services/optimizedAuthService';
-import { generateUUID } from '../../utils/uuid';
-import type { DiscussionPost, DiscussionReply, DiscussionPermissions } from '../../types';
+import { supabase } from '../supabase/client';
+import { authService } from './optimizedAuthService';
+import { generateUUID } from '../utils/uuid';
+import type { DiscussionPost, DiscussionReply, DiscussionPermissions } from '../types';
 
 // Input types for creating discussions
 export interface DiscussionPostInput {

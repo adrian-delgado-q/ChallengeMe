@@ -20,9 +20,8 @@ import {
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '../components/common/Card';
 import { UserTeamIcon, CalendarIcon } from '../components/common/Icons';
-import { useTeamDetails } from '../hooks/useData';
+import { useTeamQuery, useTeamMutations } from '../hooks/useTeamsQuery';
 import { useUser } from '../contexts/AuthContext';
-import { TeamService } from '../graphql/services';
 import { useNotifications } from '../utils/notifications';
 import { useAsyncState } from '../hooks/useAsyncState';
 import { AccessCodeModal } from '../components/teams/AccessCodeModal';
@@ -36,7 +35,13 @@ const TeamDashboardPage: React.FC = () => {
 	const { isLoading: isLeaving, execute: executeLeave } = useAsyncState();
 	const [isAccessCodeModalOpen, setIsAccessCodeModalOpen] = useState(false);
 
-	const { team, loading: teamLoading, error: teamError, refetch } = useTeamDetails(teamId || '');
+	const {
+		data: team,
+		isLoading: teamLoading,
+		error: teamError,
+		refetch,
+	} = useTeamQuery(teamId || '');
+	const { joinTeam, joinTeamWithAccessCode, leaveTeam } = useTeamMutations();
 
 	const handleJoinTeam = async () => {
 		if (!teamId || !team) return;
@@ -49,7 +54,7 @@ const TeamDashboardPage: React.FC = () => {
 
 		// Public team - join directly
 		const result = await executeJoin(async () => {
-			await TeamService.joinTeam(teamId);
+			await joinTeam.mutateAsync(teamId);
 			return true;
 		});
 
@@ -63,7 +68,7 @@ const TeamDashboardPage: React.FC = () => {
 		if (!teamId) return;
 
 		const result = await executeJoin(async () => {
-			await TeamService.joinTeam(teamId, accessCode);
+			await joinTeamWithAccessCode.mutateAsync({ teamId, accessCode });
 			return true;
 		});
 
@@ -78,7 +83,7 @@ const TeamDashboardPage: React.FC = () => {
 		if (!teamId) return;
 
 		const result = await executeLeave(async () => {
-			await TeamService.leaveTeam(teamId);
+			await leaveTeam.mutateAsync(teamId);
 			return true;
 		});
 
@@ -100,7 +105,7 @@ const TeamDashboardPage: React.FC = () => {
 		return (
 			<Alert status="error">
 				<AlertIcon />
-				{teamError || 'Team not found'}
+				{teamError?.message || 'Team not found'}
 			</Alert>
 		);
 	}
