@@ -320,7 +320,7 @@ export interface DiscussionPermissions {
 export type ModeratorRole = 'MODERATOR' | 'ADMIN';
 
 // --- UI & Other ---
-export interface LeaderboardEntry {
+export interface ActivityTrackerEntry {
 	rank: number;
 	id?: string; // User ID
 	name: string;

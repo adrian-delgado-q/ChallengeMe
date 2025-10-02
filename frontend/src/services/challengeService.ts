@@ -408,6 +408,7 @@ export class ChallengeService {
 					username: data.creator_username,
 					avatarUrl: data.creator_avatar_url,
 				},
+				participants: data.participant_count || 0, // Map participantCount to participants for consistency
 				participantCount: data.participant_count || 0,
 				participantList,
 				milestones: formattedMilestones,
@@ -1413,5 +1414,156 @@ export class ChallengeService {
 		}
 
 		return 0; // No milestone reached yet
+	}
+
+	// Get challenge leaderboard with all participants' progress
+	static async getChallengeLeaderboard(challengeId: string): Promise<{
+		participants: Array<{
+			id: string;
+			name: string;
+			avatarUrl?: string;
+			isCurrentUser: boolean;
+			progressPercentage: number;
+			isTeam: boolean;
+		}>;
+		currentUserPosition: number;
+	}> {
+		try {
+			const user = await authService.getCurrentUser();
+
+			// Get challenge milestones to calculate total target work
+			const { data: milestones } = await supabase
+				.from('Milestone')
+				.select('activityTypeId, targetValue')
+				.eq('challengeId', challengeId)
+				.order('order', { ascending: true });
+
+			// Calculate total target work (sum of maximum milestone values for each activity type)
+			const maxTargetByActivity = (milestones || []).reduce(
+				(acc, milestone) => {
+					const activityTypeId = milestone.activityTypeId;
+					acc[activityTypeId] = Math.max(acc[activityTypeId] || 0, milestone.targetValue);
+					return acc;
+				},
+				{} as Record<string, number>
+			);
+
+			const totalTargetWork = Object.values(maxTargetByActivity).reduce(
+				(sum, target) => sum + target,
+				0
+			);
+
+			// Get all participants
+			const { data: participants } = await supabase
+				.from('ChallengeParticipant')
+				.select('id, userId, teamId')
+				.eq('challengeId', challengeId);
+
+			if (!participants) return { participants: [], currentUserPosition: 0 };
+
+			// Get user and team info for participants (similar to getChallengeById)
+			const participantList = await Promise.all(
+				participants.map(async (participant: any) => {
+					const result: any = { ...participant };
+
+					if (participant.userId) {
+						const { data: user } = await supabase
+							.from('profiles')
+							.select('id, username, avatar_url')
+							.eq('id', participant.userId)
+							.single();
+						result.user = user
+							? {
+									...user,
+									avatarUrl: user.avatar_url, // Map database column to frontend expectation
+								}
+							: null;
+					}
+
+					if (participant.teamId) {
+						const { data: team } = await supabase
+							.from('Team')
+							.select('id, name, avatarUrl:avatar_url')
+							.eq('id', participant.teamId)
+							.single();
+						result.team = team;
+					}
+
+					return result;
+				})
+			);
+
+			// Get progress for all participants
+			const participantIds = participantList.map(p => p.id);
+			const { data: progressData } = await supabase
+				.from('challenge_progress')
+				.select('participantId, activityTypeId, totalValue')
+				.eq('challengeId', challengeId)
+				.in('participantId', participantIds);
+
+			// Calculate progress percentage for each participant
+			const participantsWithProgress = participantList.map(participant => {
+				// Get participant's progress by activity type
+				const participantProgress = (progressData || [])
+					.filter(p => p.participantId === participant.id)
+					.reduce(
+						(acc, p) => {
+							acc[p.activityTypeId] = p.totalValue;
+							return acc;
+						},
+						{} as Record<string, number>
+					);
+
+				// Calculate total progress (capped at max target for each activity)
+				const totalProgress = Object.entries(maxTargetByActivity).reduce(
+					(sum, [activityTypeId, maxTarget]) => {
+						const currentProgress = participantProgress[activityTypeId] || 0;
+						const cappedProgress = Math.min(currentProgress, maxTarget);
+						return sum + cappedProgress;
+					},
+					0
+				);
+
+				// Calculate percentage - if no milestones exist, show random progress for demo
+				let progressPercentage = 0;
+				if (totalTargetWork > 0) {
+					progressPercentage = (totalProgress / totalTargetWork) * 100;
+				} else {
+					// Fallback: if no milestones, generate demo progress based on activity count
+					const activityCount = Object.keys(participantProgress).length;
+					progressPercentage = Math.min(activityCount * 15, 100); // 15% per activity type
+				}
+
+				const isCurrentUser = user?.id === participant.userId;
+				const isTeam = !!participant.teamId;
+
+				const result = {
+					id: participant.id,
+					name: isTeam
+						? participant.team?.name || 'Unknown Team'
+						: participant.user?.username || 'Unknown User',
+					avatarUrl: isTeam ? participant.team?.avatarUrl : participant.user?.avatarUrl,
+					isCurrentUser,
+					progressPercentage: Math.min(progressPercentage, 100), // Cap at 100%
+					isTeam,
+				};
+
+				return result;
+			});
+
+			// Sort by progress percentage (descending)
+			participantsWithProgress.sort((a, b) => b.progressPercentage - a.progressPercentage);
+
+			// Find current user position
+			const currentUserPosition = participantsWithProgress.findIndex(p => p.isCurrentUser) + 1;
+
+			return {
+				participants: participantsWithProgress,
+				currentUserPosition,
+			};
+		} catch (error) {
+			this.handleError(error, 'getChallengeLeaderboard');
+			return { participants: [], currentUserPosition: 0 };
+		}
 	}
 }

@@ -94,8 +94,37 @@ export const MilestonesDisplay: React.FC<MilestonesDisplayProps> = ({
 		return activityProgress >= milestone.value;
 	}).length;
 
-	const overallCompletionPercentage =
-		totalMilestones > 0 ? (achievedMilestones / totalMilestones) * 100 : 0;
+	// Calculate aggregate percentage based on actual progress towards total work
+	const overallCompletionPercentage = (() => {
+		// Group milestones by activity type to find the maximum target for each activity
+		const maxTargetByActivity = milestones.reduce(
+			(acc, milestone) => {
+				const activityTypeId = milestone.activityTypeId || 'general';
+				acc[activityTypeId] = Math.max(acc[activityTypeId] || 0, milestone.value);
+				return acc;
+			},
+			{} as Record<string, number>
+		);
+
+		// Calculate total target work across all activities
+		const totalTargetWork = Object.values(maxTargetByActivity).reduce(
+			(sum, target) => sum + target,
+			0
+		);
+
+		// Calculate total current progress across all activities
+		const totalCurrentProgress = Object.entries(maxTargetByActivity).reduce(
+			(sum, [activityTypeId, maxTarget]) => {
+				const currentProgress = progressByActivityType[activityTypeId] || 0;
+				// Cap progress at the maximum milestone target for this activity
+				const cappedProgress = Math.min(currentProgress, maxTarget);
+				return sum + cappedProgress;
+			},
+			0
+		);
+
+		return totalTargetWork > 0 ? (totalCurrentProgress / totalTargetWork) * 100 : 0;
+	})();
 
 	return (
 		<Card p={6}>
