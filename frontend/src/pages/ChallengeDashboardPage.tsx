@@ -13,6 +13,7 @@ import {
 import { CommentsForum } from '../components/dashboard/CommentsForum';
 import { Card } from '../components/common/Card';
 import { ActivityTracker } from '../components/dashboard/ActivityTracker';
+import { AvatarRaceLeaderboard } from '../components/dashboard/AvatarRaceLeaderboard';
 import { ProgressChart } from '../components/dashboard/ProgressChart';
 import { ActivityFeed } from '../components/dashboard/ActivityFeed';
 import { ChallengeRules } from '../components/dashboard/ChallengeRules';
@@ -87,6 +88,16 @@ const ChallengeDashboardPage: React.FC = () => {
 							todayActivity={challenge.todayActivity || false}
 							userName={challenge.creator?.username || 'You'}
 						/>{' '}
+						{/* Mobile: Avatar Race Leaderboard */}
+						{challengeId ? (
+							<AvatarRaceLeaderboard challengeId={challengeId} />
+						) : (
+							<Card p={4}>
+								<Center>
+									<Text fontSize="sm">No challenge selected</Text>
+								</Center>
+							</Card>
+						)}
 						{/* Mobile: Progress Chart */}
 						<ProgressChart challengeId={challengeId} />
 						{/* Mobile: ActivityTracker */}
@@ -121,12 +132,23 @@ const ChallengeDashboardPage: React.FC = () => {
 					alignItems="start"
 					display={{ base: 'none', lg: 'grid' }}
 				>
-					{/* Left Column: About Challenge + Progress Chart */}
+					{/* Left Column: About Challenge + Avatar Race + Progress Chart */}
 					<VStack spacing={6} align="stretch">
 						{/* About Challenge */}
 						<AboutChallenge challenge={challenge} />
 
-						{/* Progress Chart under About Challenge */}
+						{/* Avatar Race Leaderboard above Progress Chart */}
+						{challengeId ? (
+							<AvatarRaceLeaderboard challengeId={challengeId} />
+						) : (
+							<Card p={4}>
+								<Center>
+									<Text fontSize="sm">No challenge selected</Text>
+								</Center>
+							</Card>
+						)}
+
+						{/* Progress Chart under Avatar Race */}
 						<ProgressChart challengeId={challengeId} />
 
 						{/* Discussion Forum */}

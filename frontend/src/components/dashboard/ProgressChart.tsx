@@ -216,7 +216,7 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({ challengeId }) => 
 		return (
 			<Card p={6}>
 				<Heading as="h3" size="lg" mb={4}>
-					Progress Over Time
+					Your Progress Over Time
 				</Heading>
 				<Center h="250px">
 					<Spinner size="lg" color="orange.500" />
@@ -229,7 +229,7 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({ challengeId }) => 
 		return (
 			<Card p={6}>
 				<Heading as="h3" size="lg" mb={4}>
-					Progress Over Time
+					Your Progress Over Time
 				</Heading>
 				<Alert status="error">
 					<AlertIcon />
@@ -243,7 +243,7 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({ challengeId }) => 
 		return (
 			<Card p={6}>
 				<Heading as="h3" size="lg" mb={4}>
-					Progress Over Time
+					Your Progress Over Time
 				</Heading>
 				<Center h="250px">
 					<Text color="gray.500">Select a challenge to view progress</Text>
@@ -256,7 +256,7 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({ challengeId }) => 
 		return (
 			<Card p={6}>
 				<Heading as="h3" size="lg" mb={4}>
-					Progress Over Time
+					Your Progress Over Time
 				</Heading>
 				<Center h="250px">
 					<Text color="gray.500">
@@ -272,7 +272,7 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({ challengeId }) => 
 	return (
 		<Card p={6}>
 			<Heading as="h3" size="lg" mb={4}>
-				Progress Over Time
+				Your Progress Over Time
 			</Heading>
 			<Box h={{ base: '250px', md: '320px' }}>
 				<Line data={chartData} options={chartOptions} />

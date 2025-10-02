@@ -123,11 +123,13 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({ challengeId }) => {
 									</Text>{' '}
 									logged{' '}
 									<Text as="span" fontWeight="semibold" color="orange.600">
-										{activity.value} {activity.activityType?.unitLabel || activity.activityType?.unit || 'units'}
+										{activity.value}{' '}
+										{activity.activityType?.unitLabel || activity.activityType?.unit || 'units'}
 									</Text>
 									{activity.activityType && (
 										<Text as="span" color="blue.600">
-											{' '}of {activity.activityType.name}
+											{' '}
+											of {activity.activityType.name}
 										</Text>
 									)}
 									{activity.challenge && (
