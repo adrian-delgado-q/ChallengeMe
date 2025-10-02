@@ -31,8 +31,7 @@ WHERE
         'ChallengeParticipant',
         'Activity',
         'Post',
-        'Comment',
-        'challenge_progress'
+        'Comment' -- 'challenge_progress' removed - replaced with view
     );
 
 -- Check that key functions exist
@@ -48,9 +47,7 @@ WHERE
         'generate_random_username',
         'handle_new_user',
         'update_team_member_count',
-        'update_challenge_participant_count',
-        'update_challenge_progress',
-        'handle_activity_delete'
+        'update_challenge_participant_count' -- 'update_challenge_progress', 'handle_activity_delete' removed - no longer needed with view approach
     );
 
 -- Check that key triggers exist

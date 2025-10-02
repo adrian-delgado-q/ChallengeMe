@@ -90,11 +90,6 @@ export type ActivityType = Prisma.ActivityTypeModel
  */
 export type Activity = Prisma.ActivityModel
 /**
- * Model ChallengeProgress
- * 
- */
-export type ChallengeProgress = Prisma.ChallengeProgressModel
-/**
  * Model Post
  * 
  */

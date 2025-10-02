@@ -2,7 +2,7 @@
 DROP VIEW IF EXISTS post_details_view;
 
 -- Recreate the view with all necessary columns
-CREATE VIEW post_details_view AS
+CREATE VIEW post_details_view WITH (security_invoker = true) AS
 SELECT
     post.id,
     post."createdAt",

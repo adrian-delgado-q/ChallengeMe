@@ -2,7 +2,7 @@
 DROP VIEW IF EXISTS activity_details_view;
 
 -- Recreate the view with all necessary columns
-CREATE VIEW activity_details_view AS
+CREATE VIEW activity_details_view WITH (security_invoker = true) AS
 SELECT
     a.id,
     a."participantId",

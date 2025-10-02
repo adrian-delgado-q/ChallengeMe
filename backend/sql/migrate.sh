@@ -1,128 +1,178 @@
 #!/bin/bash
 
-# ChallengeMe Database Migration Script
-# This script applies all database changes using organized SQL files
+# ==============================================================================
+# ChallengeMe - Production Database Migration Script
+#
+# Description:
+#   Applies SQL migrations to the database in a consistent, ordered, and
+#   automated manner. It's designed to be robust for both local development
+#   and CI/CD environments.
+#
+# Usage:
+#   ./migrate.sh
+#
+# Prerequisites:
+#   - `psql` (PostgreSQL client) must be installed and in the system's PATH.
+#   - A `SUPABASE_DB_URL` environment variable must be set, or a .env file
+#     must be present in this script's directory or the parent directory.
+#
+# File Structure Convention:
+#   - Ordered migrations: Place in the same directory as the script.
+#     Must be prefixed with a number (e.g., `01_setup.sql`, `02_functions.sql`).
+#   - Views: Place all view definitions in a `views/` subdirectory.
+#   - Validation: A final check script can be named `99_validation.sql`.
+# ==============================================================================
 
-set -e
+# --- Strict Mode & Error Handling ---
+# set -e: Exit immediately if a command exits with a non-zero status.
+# set -u: Treat unset variables as an error when substituting.
+# set -o pipefail: The return value of a pipeline is the status of the last
+#                  command to exit with a non-zero status, or zero if no
+#                  command exited with a non-zero status.
+set -euo pipefail
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# --- Script Directory ---
+# Find the script's own directory to reliably locate other files.
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
-echo -e "${GREEN}🚀 ChallengeMe Database Migration${NC}"
-echo "=================================="
-echo -e "${YELLOW}📋 This script applies SQL features (RLS, triggers, constraints, views)${NC}"
-echo -e "${YELLOW}📋 Make sure to run 'npx prisma db push' first for schema!${NC}"
-echo ""
+# --- Configuration ---
+# Add directories here. They will be processed in the order they are listed.
+# Files within each directory will be sorted alphabetically.
+MIGRATION_DIRS=(
+    "."         # Root directory for numbered migration files
+    "views"     # Subdirectory for all view definitions
+)
+VALIDATION_FILE="99_validation.sql"
 
-# Check if we have the required environment variables
-if [ -z "$SUPABASE_DB_URL" ]; then
-    echo -e "${YELLOW}⚠️  SUPABASE_DB_URL not found in environment.${NC}"
-    echo "   Attempting to load from .env file..."
-    
-    if [ -f "../.env" ]; then
-        source ../.env
-        echo -e "${GREEN}✅ Loaded environment from .env${NC}"
-    elif [ -f ".env" ]; then
-        source .env
-        echo -e "${GREEN}✅ Loaded environment from .env${NC}"
-    else
-        echo -e "${RED}❌ No SUPABASE_DB_URL found. Please set it in your environment or .env file.${NC}"
-        exit 1
-    fi
+# --- Colors & Logging ---
+# Use tput to check for color support and set color variables.
+if tput setaf 1 &> /dev/null; then
+    RED=$(tput setaf 1)
+    GREEN=$(tput setaf 2)
+    YELLOW=$(tput setaf 3)
+    BLUE=$(tput setaf 4)
+    BOLD=$(tput bold)
+    NC=$(tput sgr0) # No Color
+else
+    RED=""
+    GREEN=""
+    YELLOW=""
+    BLUE=""
+    BOLD=""
+    NC=""
 fi
 
-echo -e "${GREEN}📊 Database:${NC} $(echo $SUPABASE_DB_URL | sed 's/:[^:]*@/@****@/')"
-echo ""
+# Logging functions for consistent output
+log_info() { echo -e "${BLUE}${BOLD}INFO:${NC} $1"; }
+log_success() { echo -e "${GREEN}✅ $1${NC}"; }
+log_warn() { echo -e "${YELLOW}⚠️ $1${NC}"; }
+log_error() { echo -e "${RED}❌ $1${NC}"; }
+die() { log_error "$1"; exit 1; }
 
-# Define migration files in order
-MIGRATION_FILES=(
-    "01_schema_enhancements.sql"
-    "02_functions.sql"
-    "03_triggers.sql"
-    "04_rls_policies.sql"
-    "05_progress_aggregation.sql"
-    "06_discussion_rls_policies.sql"
-    "07_fix_updated_at_defaults.sql"
-    "08_storage_setup.sql"
-)
+# --- Helper Functions ---
 
-# Run migrations in order
-echo -e "${BLUE}🔄 Running database migrations...${NC}"
-echo ""
-
-for file in "${MIGRATION_FILES[@]}"; do
-    if [ -f "$file" ]; then
-        echo -e "${YELLOW}📄 Applying $file...${NC}"
-        psql "$SUPABASE_DB_URL" -f "$file" || {
-            echo -e "${RED}❌ Failed to apply $file${NC}"
-            exit 1
-        }
-        echo -e "${GREEN}✅ $file applied successfully${NC}"
-        echo ""
-    else
-        echo -e "${RED}❌ File $file not found!${NC}"
-        exit 1
+# Checks for required command-line tools.
+check_dependencies() {
+    if ! command -v psql &> /dev/null; then
+        die "psql is not installed or not in your PATH. Please install the PostgreSQL client."
     fi
-done
+}
 
-# Apply all views from the views folder
-echo -e "${BLUE}🔄 Applying views...${NC}"
-echo ""
+# Loads environment variables from .env files.
+load_env() {
+    if [ -f "$SCRIPT_DIR/.env" ]; then
+        log_info "Loading environment variables from .env"
+        # Use `set -a` to export all variables declared in the .env file
+        set -a
+        source "$SCRIPT_DIR/.env"
+        set +a
+    elif [ -f "$SCRIPT_DIR/../.env" ]; then
+        log_info "Loading environment variables from ../.env"
+        set -a
+        source "$SCRIPT_DIR/../.env"
+        set +a
+    fi
+}
 
-# Initialize empty array for views
-VIEWS_FILES=()
+# Applies a single SQL file using psql.
+# Globals: SUPABASE_DB_URL
+# Arguments:
+#   $1: Path to the SQL file to apply.
+apply_sql_file() {
+    local file_path="$1"
+    local file_name
+    file_name=$(basename "$file_path")
 
-# Check if views directory exists and has SQL files
-if [ -d "views" ]; then
-    # Add all SQL files from views directory to array
-    for view_file in views/*.sql; do
-        # Check if the glob matched any files (avoid adding the literal pattern if no files exist)
-        if [ -f "$view_file" ]; then
-            VIEWS_FILES+=("$view_file")
+    echo -e "${YELLOW}📄 Applying ${file_name}...${NC}"
+    
+    # The `|| die ...` construct handles errors gracefully due to `set -e`.
+    psql "$SUPABASE_DB_URL" --quiet --single-transaction --file "$file_path"
+    
+    log_success "${file_name} applied successfully."
+}
+
+# --- Main Execution Logic ---
+main() {
+    check_dependencies
+    
+    echo -e "${GREEN}${BOLD}🚀 ChallengeMe Database Migration${NC}"
+    echo "=================================="
+
+    load_env
+    
+    # Ensure database URL is set
+    if [ -z "${SUPABASE_DB_URL:-}" ]; then
+        die "SUPABASE_DB_URL is not set. Please define it in your environment or a .env file."
+    fi
+
+    # Redact password for safe logging
+    local safe_db_url
+    safe_db_url=$(echo "$SUPABASE_DB_URL" | sed 's/:[^:]*@/@****@/')
+    log_info "Connecting to database: $safe_db_url"
+    echo ""
+
+    # --- Discover and Run Migrations ---
+    log_info "Discovering and running migration files..."
+    
+    local migration_files=()
+    for dir in "${MIGRATION_DIRS[@]}"; do
+        local full_path="$SCRIPT_DIR/$dir"
+        if [ -d "$full_path" ]; then
+            # Find all .sql files in the directory, add them to the list
+            while IFS= read -r file; do
+                migration_files+=("$file")
+            done < <(find "$full_path" -maxdepth 1 -name "*.sql" -not -name "$VALIDATION_FILE" | sort)
+        else
+            log_warn "Directory '$dir' not found, skipping."
         fi
     done
     
-    # Apply views if any were found
-    if [ ${#VIEWS_FILES[@]} -gt 0 ]; then
-        # Sort views files to ensure consistent ordering (optional but recommended)
-        IFS=$'\n' VIEWS_FILES=($(sort <<<"${VIEWS_FILES[*]}"))
-        unset IFS
-        
-        for view in "${VIEWS_FILES[@]}"; do
-            echo -e "${YELLOW}📄 Applying $(basename "$view")...${NC}"
-            psql "$SUPABASE_DB_URL" -f "$view" || {
-                echo -e "${RED}❌ Failed to apply $view${NC}"
-                exit 1
-            }
-            echo -e "${GREEN}✅ $(basename "$view") applied successfully${NC}"
+    if [ ${#migration_files[@]} -eq 0 ]; then
+        log_warn "No migration files found. Nothing to apply."
+    else
+        for file in "${migration_files[@]}"; do
+            apply_sql_file "$file"
             echo ""
         done
-    else
-        echo -e "${YELLOW}⚠️ No SQL files found in views/ directory${NC}"
     fi
-else
-    echo -e "${YELLOW}⚠️ Views directory not found, skipping views${NC}"
-fi
-
-# Run validation
-echo -e "${BLUE}🔍 Running validation checks...${NC}"
-if [ -f "99_validation.sql" ]; then
-    psql "$SUPABASE_DB_URL" -f "99_validation.sql"
+    
+    # --- Run Validation ---
+    local validation_path="$SCRIPT_DIR/$VALIDATION_FILE"
+    if [ -f "$validation_path" ]; then
+        log_info "🔍 Running validation checks..."
+        apply_sql_file "$validation_path"
+        echo ""
+    else
+        log_warn "Validation file ($VALIDATION_FILE) not found, skipping."
+    fi
+    
+    # --- Final Summary ---
     echo ""
-else
-    echo -e "${YELLOW}⚠️ Validation file not found, skipping validation${NC}"
-fi
+    log_success "🎉 All database migrations completed successfully!"
+    echo -e "${GREEN}   Your database is ready for ChallengeMe!${NC}"
+}
 
-echo ""
-echo -e "${GREEN}🎉 All SQL migrations and views completed successfully!${NC}"
-echo -e "${GREEN}   ✅ Schema Enhancements: Applied${NC}"
-echo -e "${GREEN}   ✅ Functions: Created${NC}"
-echo -e "${GREEN}   ✅ Triggers: Configured${NC}"
-echo -e "${GREEN}   ✅ RLS Policies: Applied${NC}"
-echo -e "${GREEN}   ✅ Progress Aggregation: Enabled${NC}"
-echo -e "${GREEN}   ✅ Views: Applied (${#VIEWS_FILES[@]} view(s))${NC}"
-echo -e "${GREEN}   🚀 Your database is ready for ChallengeMe!${NC}"
+# Run the main function
+# The `trap` ensures the error message is more informative on failure.
+trap 'die "An error occurred on line $LINENO. Aborting."' ERR
+main

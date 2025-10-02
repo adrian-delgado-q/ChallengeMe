@@ -109,7 +109,7 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({ challengeId }) => {
 			</HStack>
 			<VStack spacing={2} align="stretch">
 				{activities.length > 0 ? (
-					activities.map(activity => (
+					activities.slice(-4).map(activity => (
 						<HStack key={activity.id} spacing={4} align="flex-start">
 							<Avatar
 								src={activity.user?.avatarUrl}

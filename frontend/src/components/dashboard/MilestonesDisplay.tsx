@@ -90,10 +90,10 @@ export const MilestonesDisplay: React.FC<MilestonesDisplayProps> = ({
 	// Calculate overall progress statistics
 	const totalMilestones = milestones.length;
 	const achievedMilestones = milestones.filter(milestone => {
-		const activityProgress =
-			progressByActivityType[milestone.activityTypeId || 'general'] || currentProgress;
+		const activityProgress = progressByActivityType[milestone.activityTypeId || 'general'] || 0;
 		return activityProgress >= milestone.value;
 	}).length;
+
 	const overallCompletionPercentage =
 		totalMilestones > 0 ? (achievedMilestones / totalMilestones) * 100 : 0;
 
@@ -173,7 +173,7 @@ export const MilestonesDisplay: React.FC<MilestonesDisplayProps> = ({
 					defaultIndex={Object.keys(milestonesByActivityType).map((_, index) => index)}
 				>
 					{Object.entries(milestonesByActivityType).map(([activityTypeId, activityMilestones]) => {
-						const activityProgress = progressByActivityType[activityTypeId] || currentProgress;
+						const activityProgress = progressByActivityType[activityTypeId] || 0;
 						const sortedMilestones = [...activityMilestones].sort((a, b) => a.value - b.value);
 						const activityType = activityMilestones[0]?.activityType;
 						const achievedCount = sortedMilestones.filter(m => activityProgress >= m.value).length;
