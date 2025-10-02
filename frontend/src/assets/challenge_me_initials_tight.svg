@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200" role="img" aria-label="CM logo">
+  <title>CM</title>
+  <text x="0" y="145" font-family="Segoe UI, Roboto, 'Helvetica Neue', Arial, sans-serif" font-weight="600" font-size="140">
+    <tspan fill="#F57C20">C</tspan><tspan fill="#33323D" font-weight="700" dx="-10">M</tspan>
+  </text>
+</svg>

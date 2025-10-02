@@ -301,7 +301,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSelec
 										fontSize="xs"
 										rounded="md"
 										bg="orange.200"
-										color="orange.800"
+										color="orange.600"
 										fontWeight="medium"
 									>
 										CLOSED
