@@ -349,33 +349,6 @@ async function main() {
   }
   console.log(`Created ${milestones.length} milestones.`);
 
-  // --- 10. Create Milestone Progress ---
-  const milestoneProgress = [];
-  for (const milestone of milestones) {
-    // Find participants for this challenge
-    const challengeParticipantsForMilestone = challengeParticipants.filter(
-      p => p.challengeId === milestone.challengeId
-    );
-    
-    for (const participant of challengeParticipantsForMilestone) {
-      // Generate some random progress
-      const currentValue = Math.floor(Math.random() * (milestone.targetValue + 20));
-      const isAchieved = currentValue >= milestone.targetValue;
-      
-      const progress = await prisma.milestoneProgress.create({
-        data: {
-          milestoneId: milestone.id,
-          participantId: participant.id,
-          currentValue: currentValue,
-          isAchieved: isAchieved,
-          achievedAt: isAchieved ? faker.date.recent() : null
-        }
-      });
-      milestoneProgress.push(progress);
-    }
-  }
-  console.log(`Created ${milestoneProgress.length} milestone progress records.`);
-
   console.log('Seeding finished.');
 }
 

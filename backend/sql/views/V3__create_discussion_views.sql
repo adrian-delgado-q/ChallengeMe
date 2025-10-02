@@ -4,7 +4,7 @@ DROP VIEW IF EXISTS discussion_post_details_view;
 DROP VIEW IF EXISTS discussion_reply_details_view;
 
 -- Recreate the discussion post details view
-CREATE VIEW discussion_post_details_view AS
+CREATE VIEW discussion_post_details_view WITH (security_invoker = true) AS
 SELECT
     dp.id,
     dp."challengeId",
@@ -23,7 +23,7 @@ FROM
     JOIN profiles p ON dp."authorId" = p.id;
 
 -- Recreate the discussion reply details view
-CREATE VIEW discussion_reply_details_view AS
+CREATE VIEW discussion_reply_details_view WITH (security_invoker = true) AS
 SELECT
     dr.id,
     dr."postId",

@@ -2,7 +2,7 @@
 DROP VIEW IF EXISTS team_details_view;
 
 -- Recreate the view with all necessary columns
-CREATE VIEW team_details_view AS
+CREATE VIEW team_details_view WITH (security_invoker = true) AS
 SELECT
     t.id,
     t.name,

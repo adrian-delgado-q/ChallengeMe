@@ -59,9 +59,7 @@ ALTER TABLE
 ALTER TABLE
     "public"."profiles" ENABLE ROW LEVEL SECURITY;
 
-ALTER TABLE
-    "public"."challenge_progress" ENABLE ROW LEVEL SECURITY;
-
+-- challenge_progress table removed - replaced with challenge_progress view
 -- Section 2: Policy Definitions with Public Access Fallbacks
 -- Define access policies for each table with proper public access where needed.
 -- -----------------------------------------------------------------------------
@@ -480,13 +478,7 @@ UPDATE
 
 CREATE POLICY "System can manage milestone progress." ON "public"."MilestoneProgress" FOR ALL USING (true) WITH CHECK (true);
 
--- Challenge Progress (Aggregation Table) - Allow public read access for leaderboards
-CREATE POLICY "Challenge progress is publicly viewable." ON "public"."challenge_progress" FOR
-SELECT
-    USING (true);
-
-CREATE POLICY "System can manage challenge progress." ON "public"."challenge_progress" FOR ALL USING (true) WITH CHECK (true);
-
+-- Challenge Progress policies removed - now using challenge_progress view with proper permissions
 -- Add additional emergency bypass policy for service role
 -- This ensures that even if auth fails, service operations can still work
 CREATE POLICY "Service role bypass for challenges." ON "public"."Challenge" FOR ALL USING (

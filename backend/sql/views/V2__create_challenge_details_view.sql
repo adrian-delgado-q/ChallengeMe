@@ -2,7 +2,7 @@
 DROP VIEW IF EXISTS challenge_details_view;
 
 -- Recreate the view with all necessary columns
-CREATE VIEW challenge_details_view AS
+CREATE VIEW challenge_details_view WITH (security_invoker = true) AS
 SELECT
     c.id,
     c.title,

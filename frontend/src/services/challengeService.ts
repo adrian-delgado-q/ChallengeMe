@@ -269,7 +269,6 @@ export class ChallengeService {
 				const milestones = milestonesMap.get(challenge.id) || [];
 				const activityTypes = activityTypesMap.get(challenge.id) || [];
 				const userProgress = userProgressMap.get(challenge.id) || 0;
-				const activityType = this.generateSampleActivityType(challenge.title);
 				const participation = participationMap.get(challenge.id) || {
 					isParticipating: false,
 					participantId: null,
@@ -285,7 +284,6 @@ export class ChallengeService {
 					milestones,
 					activityTypes, // Add the activity types array
 					progress: userProgress,
-					type: activityType,
 					// Add participation data to each challenge
 					participation,
 				};
@@ -398,9 +396,6 @@ export class ChallengeService {
 				activityType: milestone.activityType,
 			}));
 
-			// Generate activity type from challenge title
-			const activityType = this.generateSampleActivityType(data.title);
-
 			// Calculate actual progress for current user by activity type
 			const userProgress = await this.calculateUserProgress(id);
 			const progressByActivityType = await this.calculateUserProgressByActivityType(id);
@@ -420,7 +415,6 @@ export class ChallengeService {
 				activityTypeDetails, // Array of full activity type objects
 				progress: userProgress,
 				progressByActivityType,
-				type: activityType,
 				activityFeed: [], // We'll load this separately if needed
 			};
 		} catch (error) {
@@ -1062,9 +1056,6 @@ export class ChallengeService {
 						value: milestone.targetValue,
 					}));
 
-					// Generate activity type from challenge title
-					const activityType = this.generateSampleActivityType(challenge?.title || '');
-
 					// Calculate actual progress for current user
 					const userProgress = await this.calculateUserProgress(challenge?.id || '');
 
@@ -1080,7 +1071,6 @@ export class ChallengeService {
 						participants: count || 0,
 						milestones: formattedMilestones,
 						progress: userProgress,
-						type: activityType,
 					};
 				})
 			);
@@ -1270,29 +1260,22 @@ export class ChallengeService {
 
 			if (!participant) return {};
 
-			// Get user's activities grouped by activity type
-			const { data: activities } = await supabase
-				.from('Activity')
-				.select(
-					`
-                    value,
-                    activityType:ActivityType(id, unit)
-                `
-				)
+			// Get user's progress by activity type from the challenge_progress view
+			const { data: progressRecords } = await supabase
+				.from('challenge_progress')
+				.select('totalValue, activityTypeId')
+				.eq('challengeId', challengeId)
 				.eq('participantId', participant.id);
 
-			if (!activities) return {};
+			if (!progressRecords) return {};
 
-			// Sum values by activity type
+			// Convert progress records to a lookup by activity type
 			const progressByActivityType: Record<string, number> = {};
 
-			activities.forEach((activity: any) => {
-				const activityTypeId = activity.activityType?.id;
+			progressRecords.forEach((record: any) => {
+				const activityTypeId = record.activityTypeId;
 				if (activityTypeId) {
-					if (!progressByActivityType[activityTypeId]) {
-						progressByActivityType[activityTypeId] = 0;
-					}
-					progressByActivityType[activityTypeId] += activity.value || 0;
+					progressByActivityType[activityTypeId] = record.totalValue || 0;
 				}
 			});
 
@@ -1356,7 +1339,7 @@ export class ChallengeService {
 
 			const supportedActivityTypeIds = challengeActivityTypes.map(cat => cat.activityTypeId);
 
-			// Get progress data from challenge_progress table for this participant
+			// Get progress data from challenge_progress view for this participant
 			const { data: progressRecords } = await supabase
 				.from('challenge_progress')
 				.select(
@@ -1430,42 +1413,5 @@ export class ChallengeService {
 		}
 
 		return 0; // No milestone reached yet
-	}
-
-	// Helper method to generate sample activity type based on challenge title
-	private static generateSampleActivityType(title: string): string {
-		const titleLower = title.toLowerCase();
-
-		if (titleLower.includes('run') || titleLower.includes('jog') || titleLower.includes('marathon')) {
-			return 'running';
-		} else if (titleLower.includes('walk') || titleLower.includes('step')) {
-			return 'walking';
-		} else if (titleLower.includes('bike') || titleLower.includes('cycle')) {
-			return 'cycling';
-		} else if (titleLower.includes('swim')) {
-			return 'swimming';
-		} else if (
-			titleLower.includes('strength') ||
-			titleLower.includes('lift') ||
-			titleLower.includes('gym')
-		) {
-			return 'strength';
-		} else if (titleLower.includes('yoga') || titleLower.includes('stretch')) {
-			return 'yoga';
-		} else if (titleLower.includes('cardio') || titleLower.includes('fitness')) {
-			return 'cardio';
-		} else {
-			// Default to a random activity type
-			const activityTypes = [
-				'running',
-				'walking',
-				'cycling',
-				'swimming',
-				'strength',
-				'yoga',
-				'cardio',
-			];
-			return activityTypes[Math.floor(Math.random() * activityTypes.length)];
-		}
 	}
 }
