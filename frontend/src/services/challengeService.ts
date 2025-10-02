@@ -408,6 +408,7 @@ export class ChallengeService {
 					username: data.creator_username,
 					avatarUrl: data.creator_avatar_url,
 				},
+				participants: data.participant_count || 0, // Map participantCount to participants for consistency
 				participantCount: data.participant_count || 0,
 				participantList,
 				milestones: formattedMilestones,

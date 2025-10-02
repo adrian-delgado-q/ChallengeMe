@@ -121,7 +121,15 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({ challengeId }) => {
 									<Text as="span" fontWeight="bold">
 										{activity.user?.username || 'Anonymous'}
 									</Text>{' '}
-									logged an activity
+									logged{' '}
+									<Text as="span" fontWeight="semibold" color="orange.600">
+										{activity.value} {activity.activityType?.unitLabel || activity.activityType?.unit || 'units'}
+									</Text>
+									{activity.activityType && (
+										<Text as="span" color="blue.600">
+											{' '}of {activity.activityType.name}
+										</Text>
+									)}
 									{activity.challenge && (
 										<Text as="span" color="gray.600">
 											{' '}

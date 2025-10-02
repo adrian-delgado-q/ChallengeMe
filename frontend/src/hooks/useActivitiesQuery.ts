@@ -7,8 +7,8 @@ export const useActivitiesForChallengeQuery = (challengeId: string) => {
 	return useQuery({
 		queryKey: queryKeys.activities.challengeActivities(challengeId),
 		queryFn: () => ActivityService.getActivitiesForChallenge(challengeId),
-		staleTime: 30 * 1000, // 30 seconds - activities change frequently
-		gcTime: 2 * 60 * 1000, // 2 minutes
+		staleTime: 60 * 1000, // 1 minute - increased from 30 seconds for better performance
+		gcTime: 5 * 60 * 1000, // 5 minutes
 		enabled: !!challengeId,
 		refetchOnWindowFocus: true, // Activities should update when user returns
 	});
@@ -19,8 +19,8 @@ export const useRecentActivitiesQuery = (limit: number = 20) => {
 	return useQuery({
 		queryKey: queryKeys.activities.list({ limit, recent: true }),
 		queryFn: () => ActivityService.getRecentActivities(limit),
-		staleTime: 30 * 1000, // 30 seconds
-		gcTime: 2 * 60 * 1000, // 2 minutes
+		staleTime: 60 * 1000, // 1 minute - increased from 30 seconds for better performance
+		gcTime: 5 * 60 * 1000, // 5 minutes
 		refetchOnWindowFocus: true,
 	});
 };

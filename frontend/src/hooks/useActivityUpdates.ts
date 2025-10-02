@@ -98,7 +98,7 @@ export const useActivityUpdates = ({
 								if (enabled && !isCleanedUpRef.current) {
 									setupRealTimeSubscription();
 								}
-							}, 5000); // Increased delay to 5 seconds to prevent rapid reconnections
+							}, 30000); // Increased delay to 5 seconds to prevent rapid reconnections
 						}
 					}
 				});
@@ -123,7 +123,7 @@ export const useActivityUpdates = ({
 			return;
 		}
 
-		// Check activity count every 10 seconds (reduced frequency)
+		// Check activity count every 30 seconds (reduced frequency for better performance)
 		pollingIntervalRef.current = setInterval(async () => {
 			// Only poll when the browser tab is active and not cleaned up
 			if (document.hidden || isCleanedUpRef.current) return;
@@ -144,7 +144,7 @@ export const useActivityUpdates = ({
 			} catch (error) {
 				console.error('Polling error:', error);
 			}
-		}, 10000); // Increased to 10 seconds to reduce load
+		}, 90000); // Increased to 30 seconds to reduce server load
 
 		// Get initial count
 		try {
