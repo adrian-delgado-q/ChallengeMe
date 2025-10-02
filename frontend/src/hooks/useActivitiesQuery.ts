@@ -37,11 +37,11 @@ export const useUserActivitiesQuery = (userId?: string) => {
 	});
 };
 
-// Leaderboard Activities Query Hook
-export const useLeaderboardActivitiesQuery = (challengeId: string) => {
+// ActivityTracker Activities Query Hook
+export const useActivityTrackerActivitiesQuery = (challengeId: string) => {
 	return useQuery({
-		queryKey: queryKeys.activities.list({ challengeId, leaderboard: true }),
-		queryFn: () => ActivityService.getActivitiesForLeaderboard(challengeId),
+		queryKey: queryKeys.activities.list({ challengeId, ActivityTracker: true }),
+		queryFn: () => ActivityService.getActivitiesForActivityTracker(challengeId),
 		staleTime: 60 * 1000, // 1 minute
 		gcTime: 5 * 60 * 1000, // 5 minutes
 		enabled: !!challengeId,

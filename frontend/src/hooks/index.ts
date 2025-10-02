@@ -21,7 +21,7 @@ export {
 	useActivitiesForChallengeQuery,
 	useRecentActivitiesQuery,
 	useUserActivitiesQuery,
-	useLeaderboardActivitiesQuery,
+	useActivityTrackerActivitiesQuery,
 	useManagementActivitiesQuery,
 	useActivityMutations,
 	useActivities, // Legacy compatibility wrapper

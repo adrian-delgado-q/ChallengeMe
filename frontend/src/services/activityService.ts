@@ -339,8 +339,8 @@ export class ActivityService {
 		}));
 	}
 
-	// Get activities for leaderboard calculation
-	static async getActivitiesForLeaderboard(challengeId: string) {
+	// Get activities for ActivityTracker calculation
+	static async getActivitiesForActivityTracker(challengeId: string) {
 		const activities = await this.getActivitiesForChallenge(challengeId);
 
 		// Group activities by user and calculate totals
