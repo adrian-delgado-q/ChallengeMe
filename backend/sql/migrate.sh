@@ -80,17 +80,26 @@ check_dependencies() {
 
 # Loads environment variables from .env files.
 load_env() {
-    if [ -f "$SCRIPT_DIR/.env" ]; then
-        log_info "Loading environment variables from .env"
-        # Use `set -a` to export all variables declared in the .env file
+    # Default env file location for Vite projects
+    ENV_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+    ENV_FILE="$ENV_ROOT/.env"
+
+    # If running via npx, allow NODE_ENV to select .env.production or .env.development
+    if [ -n "${NODE_ENV:-}" ]; then
+        if [ "$NODE_ENV" = "production" ] && [ -f "$ENV_ROOT/.env.production" ]; then
+            ENV_FILE="$ENV_ROOT/.env.production"
+        elif [ "$NODE_ENV" = "development" ] && [ -f "$ENV_ROOT/.env.development" ]; then
+            ENV_FILE="$ENV_ROOT/.env.development"
+        fi
+    fi
+
+    if [ -f "$ENV_FILE" ]; then
+        log_info "Loading environment variables from $(basename "$ENV_FILE")"
         set -a
-        source "$SCRIPT_DIR/.env"
+        source "$ENV_FILE"
         set +a
-    elif [ -f "$SCRIPT_DIR/../.env" ]; then
-        log_info "Loading environment variables from ../.env"
-        set -a
-        source "$SCRIPT_DIR/../.env"
-        set +a
+    else
+        log_warn "Environment file ($ENV_FILE) not found. Skipping env loading."
     fi
 }
 
@@ -119,6 +128,8 @@ main() {
     echo "=================================="
 
     load_env
+
+    exit 0
     
     # Ensure database URL is set
     if [ -z "${SUPABASE_DB_URL:-}" ]; then

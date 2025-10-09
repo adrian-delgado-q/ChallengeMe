@@ -17,6 +17,7 @@ import {
 import { supabase } from '../../supabase/client';
 import { authService } from '../../services/optimizedAuthService';
 import { useUser } from '../../contexts/AuthContext';
+import { ENV, getEnvVar } from '../../utils/env-loader';
 
 interface ConnectionTest {
 	success: boolean;
@@ -31,12 +32,20 @@ export const DebugPanel: React.FC = () => {
 	const [envVars, setEnvVars] = useState<any>({});
 
 	useEffect(() => {
-		// Check environment variables
+		// Check environment variables using the new env loader
 		setEnvVars({
-			supabaseUrl: import.meta.env.VITE_SUPABASE_API_URL,
-			hasApiKey: !!import.meta.env.VITE_SUPABASE_API_KEY,
-			mode: import.meta.env.MODE,
-			dev: import.meta.env.DEV,
+			appName: getEnvVar('VITE_APP_NAME', 'ChallengeMe'),
+			appVersion: getEnvVar('VITE_APP_VERSION', '1.0.0'),
+			supabaseUrl: ENV.SUPABASE_URL,
+			hasAnonKey: !!ENV.SUPABASE_ANON_KEY,
+			mode: ENV.MODE,
+			dev: ENV.DEV,
+			prod: ENV.PROD,
+			isDeployment: ENV.IS_DEPLOYMENT,
+			enableDevtools: getEnvVar('VITE_ENABLE_REACT_QUERY_DEVTOOLS', 'false'),
+			apiCacheTime: getEnvVar('VITE_API_CACHE_TIME', '300000'),
+			apiStaleTime: getEnvVar('VITE_API_STALE_TIME', '60000'),
+			isConfigured: !!(ENV.SUPABASE_URL && ENV.SUPABASE_ANON_KEY),
 		});
 	}, []);
 
@@ -100,6 +109,14 @@ export const DebugPanel: React.FC = () => {
 							</Text>
 							<VStack align="stretch" spacing={1} mt={1}>
 								<HStack justify="space-between">
+									<Text fontSize="xs">App Name:</Text>
+									<Badge colorScheme="blue">{envVars.appName}</Badge>
+								</HStack>
+								<HStack justify="space-between">
+									<Text fontSize="xs">Version:</Text>
+									<Badge colorScheme="blue">{envVars.appVersion}</Badge>
+								</HStack>
+								<HStack justify="space-between">
 									<Text fontSize="xs">Configured:</Text>
 									<Badge colorScheme={envVars.isConfigured ? 'green' : 'red'}>
 										{envVars.isConfigured ? 'Yes' : 'No'}
@@ -112,14 +129,26 @@ export const DebugPanel: React.FC = () => {
 									</Badge>
 								</HStack>
 								<HStack justify="space-between">
-									<Text fontSize="xs">API Key:</Text>
-									<Badge colorScheme={envVars.hasApiKey ? 'green' : 'red'}>
-										{envVars.hasApiKey ? 'Set' : 'Missing'}
+									<Text fontSize="xs">Anon Key:</Text>
+									<Badge colorScheme={envVars.hasAnonKey ? 'green' : 'red'}>
+										{envVars.hasAnonKey ? 'Set' : 'Missing'}
 									</Badge>
 								</HStack>
 								<HStack justify="space-between">
 									<Text fontSize="xs">Mode:</Text>
-									<Badge>{envVars.mode}</Badge>
+									<Badge colorScheme={envVars.dev ? 'yellow' : 'green'}>{envVars.mode}</Badge>
+								</HStack>
+								<HStack justify="space-between">
+									<Text fontSize="xs">Deployment:</Text>
+									<Badge colorScheme={envVars.isDeployment ? 'green' : 'gray'}>
+										{envVars.isDeployment ? 'Yes' : 'Local'}
+									</Badge>
+								</HStack>
+								<HStack justify="space-between">
+									<Text fontSize="xs">DevTools:</Text>
+									<Badge colorScheme={envVars.enableDevtools === 'true' ? 'green' : 'gray'}>
+										{envVars.enableDevtools === 'true' ? 'Enabled' : 'Disabled'}
+									</Badge>
 								</HStack>
 							</VStack>
 							{envVars.supabaseUrl && (
@@ -127,6 +156,25 @@ export const DebugPanel: React.FC = () => {
 									{envVars.supabaseUrl}
 								</Code>
 							)}
+						</Box>
+
+						<Divider />
+
+						{/* API Configuration */}
+						<Box>
+							<Text fontWeight="bold" fontSize="sm">
+								API Configuration
+							</Text>
+							<VStack align="stretch" spacing={1} mt={1}>
+								<HStack justify="space-between">
+									<Text fontSize="xs">Cache Time:</Text>
+									<Badge colorScheme="purple">{(parseInt(envVars.apiCacheTime) / 1000 / 60).toFixed(1)}m</Badge>
+								</HStack>
+								<HStack justify="space-between">
+									<Text fontSize="xs">Stale Time:</Text>
+									<Badge colorScheme="purple">{(parseInt(envVars.apiStaleTime) / 1000).toFixed(0)}s</Badge>
+								</HStack>
+							</VStack>
 						</Box>
 
 						<Divider />
@@ -192,6 +240,13 @@ export const DebugPanel: React.FC = () => {
 								</Button>
 								<Button
 									size="xs"
+									onClick={() => console.log('Environment variables:', envVars)}
+									colorScheme="purple"
+								>
+									Log Environment Vars
+								</Button>
+								<Button
+									size="xs"
 									onClick={() => console.log('Supabase client:', supabase)}
 									colorScheme="gray"
 								>
@@ -208,7 +263,7 @@ export const DebugPanel: React.FC = () => {
 						</Box>
 
 						{/* Quick Setup Reminder */}
-						{(!envVars.supabaseUrl || !envVars.hasApiKey) && (
+						{(!envVars.supabaseUrl || !envVars.hasAnonKey) && (
 							<>
 								<Divider />
 								<Alert status="warning" size="sm">
@@ -217,7 +272,11 @@ export const DebugPanel: React.FC = () => {
 										<Text fontSize="xs" fontWeight="bold">
 											Setup Required
 										</Text>
-										<Text fontSize="xs">Check AUTHENTICATION_FIX.md for setup instructions</Text>
+										<Text fontSize="xs">
+											{!envVars.supabaseUrl && 'Missing VITE_SUPABASE_URL. '}
+											{!envVars.hasAnonKey && 'Missing VITE_SUPABASE_ANON_KEY. '}
+											Check your .env file.
+										</Text>
 									</VStack>
 								</Alert>
 							</>

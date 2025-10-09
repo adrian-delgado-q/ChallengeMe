@@ -49,6 +49,8 @@ model Team {
   challengeEntries ChallengeParticipant[]
   creator          Profile                @relation("TeamCreator", fields: [creatorId], references: [id])
   teamMemberships  TeamMembership[]
+
+  @@map("teams")
 }
 
 model TeamMembership {
@@ -62,6 +64,7 @@ model TeamMembership {
   user      Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([teamId, userId])
+  @@map("team_memberships")
 }
 
 model Challenge {
@@ -97,6 +100,7 @@ model Challenge {
 
   @@index([creatorId, status], map: "idx_challenge_creator_status")
   @@index([status], map: "idx_challenge_status")
+  @@map("challenges")
 }
 
 model ChallengeActivityType {
@@ -107,6 +111,7 @@ model ChallengeActivityType {
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
 
   @@unique([challengeId, activityTypeId])
+  @@map("challenge_activity_types")
 }
 
 model Milestone {
@@ -121,6 +126,8 @@ model Milestone {
   activityType        ActivityType        @relation(fields: [activityTypeId], references: [id])
   challenge           Challenge           @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   participantProgress MilestoneProgress[]
+
+  @@map("milestones")
 }
 
 model MilestoneProgress {
@@ -136,6 +143,7 @@ model MilestoneProgress {
   participant   ChallengeParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
 
   @@unique([milestoneId, participantId])
+  @@map("milestone_progress")
 }
 
 model ChallengeParticipant {
@@ -156,6 +164,7 @@ model ChallengeParticipant {
   // Note: These are implemented as partial unique indexes in SQL since Prisma doesn't support conditional unique constraints
   @@index([challengeId, userId], map: "idx_challengeparticipant_challengeid_userid_unique")
   @@index([challengeId, teamId], map: "idx_challengeparticipant_challengeid_teamid_unique")
+  @@map("challenge_participants")
 }
 
 model ActivityType {
@@ -171,6 +180,8 @@ model ActivityType {
   milestones  Milestone[]
   challenges  ChallengeActivityType[]
   // progress relation removed - now using challenge_progress view
+
+  @@map("activity_types")
 }
 
 model Activity {
@@ -187,6 +198,8 @@ model Activity {
   Challenge      Challenge?           @relation(fields: [challengeId], references: [id])
   participant    ChallengeParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
   Profile        Profile?             @relation(fields: [profileId], references: [id])
+
+  @@map("activities")
 }
 
 // ChallengeProgress model removed - replaced with challenge_progress view
@@ -204,6 +217,8 @@ model Post {
   Challenge     Challenge?           @relation(fields: [challengeId], references: [id])
   participant   ChallengeParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
   Profile       Profile?             @relation(fields: [profileId], references: [id])
+
+  @@map("posts")
 }
 
 model Comment {
@@ -214,6 +229,8 @@ model Comment {
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   author    Profile  @relation(fields: [authorId], references: [id], onDelete: Cascade)
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
 }
 
 // New Discussion Models for Threaded Comments

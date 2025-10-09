@@ -1,11 +1,10 @@
 {
   "name": "backend",
-  "version": "1.0.0",
-  "main": "index.js",
+  "private": true,
+  "version": "1.0.3",
   "scripts": {
-    "start": "ts-node index.ts",
     "seed": "ts-node database/seeder/fakeData.ts",
-    "migrate:sql": "cd sql && node apply_migrations.js"
+    "migrate:sql": "cd sql && ./migrate.sh"
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",

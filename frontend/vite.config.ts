@@ -1,14 +1,18 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import checker from 'vite-plugin-checker'
+import { customEnvLoader } from './src/plugins/custom-env-loader'
+import path from 'path'
+
+const projectRoot = path.resolve(__dirname, '..')
 
 export default defineConfig({
   plugins: [
     react(),
     checker({
-      // e.g. use TypeScript check
       typescript: true,
     }),
+    customEnvLoader(path.join(projectRoot, '.env')),
   ],
   build: {
     outDir: 'dist',

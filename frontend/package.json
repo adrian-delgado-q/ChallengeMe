@@ -1,10 +1,11 @@
 {
   "name": "frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.3",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 5173 --host",
+    "dev": "NODE_ENV=development vite --port 5173 --host --mode development",
+    "dev-build": "tsc -b && NODE_ENV=development vite build --mode development",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
