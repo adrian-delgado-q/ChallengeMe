@@ -1,9 +1,4 @@
--- Drop existing views first to avoid column structure conflicts
-DROP VIEW IF EXISTS discussion_post_details_view;
-
-DROP VIEW IF EXISTS discussion_reply_details_view;
-
--- Recreate the discussion post details view
+-- migrate:up
 CREATE VIEW discussion_post_details_view WITH (security_invoker = true) AS
 SELECT
     dp.id,
@@ -22,7 +17,6 @@ FROM
     discussion_posts dp
     JOIN profiles p ON dp."authorId" = p.id;
 
--- Recreate the discussion reply details view
 CREATE VIEW discussion_reply_details_view WITH (security_invoker = true) AS
 SELECT
     dr.id,
@@ -38,3 +32,7 @@ SELECT
 FROM
     discussion_replies dr
     JOIN profiles p ON dr."authorId" = p.id;
+
+-- migrate:down
+DROP VIEW IF EXISTS discussion_post_details_view;
+DROP VIEW IF EXISTS discussion_reply_details_view;

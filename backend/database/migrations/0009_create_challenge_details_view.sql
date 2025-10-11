@@ -1,7 +1,4 @@
--- Drop the existing view first to avoid column structure conflicts
-DROP VIEW IF EXISTS challenge_details_view;
-
--- Recreate the view with all necessary columns
+-- migrate:up
 CREATE VIEW challenge_details_view WITH (security_invoker = true) AS
 SELECT
     c.id,
@@ -27,10 +24,13 @@ SELECT
         SELECT
             COUNT(*)
         FROM
-            "ChallengeParticipant" cp
+            "challenge_participants" cp
         WHERE
             cp."challengeId" = c.id
     ) AS participant_count
 FROM
-    "Challenge" c
+    "challenges" c
     JOIN "profiles" p ON c."creatorId" = p.id;
+
+-- migrate:down
+DROP VIEW IF EXISTS challenge_details_view;

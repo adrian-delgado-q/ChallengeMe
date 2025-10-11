@@ -2,36 +2,29 @@
 -- Description: Run this script after all migrations to verify that
 -- the necessary database objects have been created correctly.
 -- =============================================================================
+
 -- Check if RLS is enabled on key tables
 SELECT
     'RLS Check' AS check_type,
     relname AS table_name,
     CASE
-        relrowsecurity
-        WHEN true THEN '✅ Enabled'
-        ELSE '⚠️ NOT ENABLED'
+        WHEN relrowsecurity THEN '✅ Enabled'
+        ELSE '⚠️ NOT ENABLEED'
     END AS status
 FROM
     pg_class
 WHERE
     relkind = 'r'
-    AND relnamespace = (
-        SELECT
-            oid
-        FROM
-            pg_namespace
-        WHERE
-            nspname = 'public'
-    )
+    AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'public')
     AND relname IN (
         'profiles',
-        'Team',
-        'TeamMembership',
-        'Challenge',
-        'ChallengeParticipant',
-        'Activity',
-        'Post',
-        'Comment' -- 'challenge_progress' removed - replaced with view
+        'teams',
+        'team_memberships',
+        'challenges',
+        'challenge_participants',
+        'activities',
+        'posts',
+        'comments'
     );
 
 -- Check that key functions exist
@@ -47,7 +40,8 @@ WHERE
         'generate_random_username',
         'handle_new_user',
         'update_team_member_count',
-        'update_challenge_participant_count' -- 'update_challenge_progress', 'handle_activity_delete' removed - no longer needed with view approach
+        'update_challenge_participant_count',
+        'validate_activity_challenge_agreement'
     );
 
 -- Check that key triggers exist
@@ -61,10 +55,10 @@ FROM
 WHERE
     trigger_schema = 'public'
     AND trigger_name IN (
+        'on_auth_user_created',
         'update_team_member_count_trigger',
         'update_challenge_participant_count_trigger',
-        'trg_activity_progress_upsert',
-        'trg_activity_progress_delete'
+        'validate_activity_challenge_agreement_trigger'
     );
 
 -- Check auth trigger separately
@@ -78,7 +72,7 @@ WHERE
     trigger_schema = 'auth'
     AND trigger_name = 'on_auth_user_created';
 
--- Check partial unique indexes (SQL-specific)
+-- Check partial unique indexes
 SELECT
     'Partial Indexes Check' AS check_type,
     indexname,
@@ -90,6 +84,25 @@ WHERE
     AND indexname IN (
         'idx_challengeparticipant_challengeid_userid_unique',
         'idx_challengeparticipant_challengeid_teamid_unique'
+    );
+
+-- Check that views exist
+SELECT
+    'Views Check' AS check_type,
+    table_name AS view_name,
+    '✅ Found' AS status
+FROM
+    information_schema.views
+WHERE
+    table_schema = 'public'
+    AND table_name IN (
+        'activity_details_view',
+        'challenge_details_view',
+        'discussion_post_details_view',
+        'discussion_reply_details_view',
+        'post_details_view',
+        'team_details_view',
+        'challenge_progress'
     );
 
 -- Summary validation

@@ -1,7 +1,4 @@
--- Drop the existing view first to avoid column structure conflicts
-DROP VIEW IF EXISTS team_details_view;
-
--- Recreate the view with all necessary columns
+-- migrate:up
 CREATE VIEW team_details_view WITH (security_invoker = true) AS
 SELECT
     t.id,
@@ -17,10 +14,13 @@ SELECT
         SELECT
             COUNT(*)
         FROM
-            "TeamMembership" tm
+            "team_memberships" tm
         WHERE
             tm."teamId" = t.id
     ) AS member_count
 FROM
-    "Team" t
+    "teams" t
     JOIN "profiles" p ON t."creatorId" = p.id;
+
+-- migrate:down
+DROP VIEW IF EXISTS team_details_view;

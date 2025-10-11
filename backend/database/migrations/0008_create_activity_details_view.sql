@@ -1,7 +1,4 @@
--- Drop the existing view first to avoid column structure conflicts
-DROP VIEW IF EXISTS activity_details_view;
-
--- Recreate the view with all necessary columns
+-- migrate:up
 CREATE VIEW activity_details_view WITH (security_invoker = true) AS
 SELECT
     a.id,
@@ -23,9 +20,12 @@ SELECT
     c.id AS challenge_id,
     c.title AS challenge_title
 FROM
-    "Activity" a
-    JOIN "ChallengeParticipant" cp ON a."participantId" = cp.id
+    "activities" a
+    JOIN "challenge_participants" cp ON a."participantId" = cp.id
     LEFT JOIN "profiles" p ON cp."userId" = p.id
-    LEFT JOIN "Team" t ON cp."teamId" = t.id
-    JOIN "Challenge" c ON cp."challengeId" = c.id
-    JOIN "ActivityType" atp ON a."activityTypeId" = atp.id;
+    LEFT JOIN "teams" t ON cp."teamId" = t.id
+    JOIN "challenges" c ON cp."challengeId" = c.id
+    JOIN "activity_types" atp ON a."activityTypeId" = atp.id;
+
+-- migrate:down
+DROP VIEW IF EXISTS activity_details_view;

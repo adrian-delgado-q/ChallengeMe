@@ -51,3 +51,7 @@ package-lock.json
 .vscode/
 !.vscode/extensions.json
 .idea/
+
+
+# Postgres data
+.dump

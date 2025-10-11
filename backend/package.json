@@ -1,23 +1,29 @@
 {
-  "name": "backend",
-  "private": true,
-  "version": "1.0.3",
-  "scripts": {
-    "seed": "ts-node database/seeder/fakeData.ts",
-    "migrate:sql": "cd sql && ./migrate.sh"
-  },
-  "dependencies": {
-    "@prisma/client": "^6.10.1",
-    "@supabase/supabase-js": "^2.0.0",
-    "dotenv": "^16.0.0",
-    "pg": "^8.16.0",
-    "prisma": "^6.10.1"
-  },
-  "devDependencies": {
-    "@faker-js/faker": "^9.8.0",
-    "@types/node": "^20.0.0",
-    "@types/pg": "^8.15.4",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
-  }
+	"name": "backend",
+	"private": true,
+	"version": "1.0.3",
+	"scripts": {
+		"seed": "ts-node database/seeder/seed.ts",
+		"validate:data": "ts-node database/seeder/validate_data.ts",
+		"format": "prettier --config ../.prettierrc --ignore-path ../.prettierignore --write \"**/*.{ts,json}\"",
+		"dev-migrate:sql": "cd scripts && NODE_ENV=development ./migrate-sql.sh",
+		"prod-migrate:sql": "cd scripts && NODE_ENV=production ./migrate-sql.sh",
+		"dev-load-env": "cd scripts && NODE_ENV=development ./env-loader.sh",
+		"prod-load-env": "cd scripts && NODE_ENV=production ./env-loader.sh"
+	},
+	"dependencies": {
+		"@prisma/client": "^6.10.1",
+		"@supabase/supabase-js": "^2.0.0",
+		"dotenv": "^16.0.0",
+		"pg": "^8.16.0",
+		"prisma": "^6.10.1"
+	},
+	"devDependencies": {
+		"@faker-js/faker": "^9.8.0",
+		"@types/node": "^20.0.0",
+		"@types/pg": "^8.15.4",
+		"prettier": "^3.6.2",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.8.3"
+	}
 }

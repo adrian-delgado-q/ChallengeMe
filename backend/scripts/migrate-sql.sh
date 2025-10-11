@@ -13,7 +13,7 @@
 #
 # Prerequisites:
 #   - `psql` (PostgreSQL client) must be installed and in the system's PATH.
-#   - A `SUPABASE_DB_URL` environment variable must be set, or a .env file
+#   - A `SUPABASE_DB_URL_STRING` environment variable must be set, or a .env file
 #     must be present in this script's directory or the parent directory.
 #
 # File Structure Convention:
@@ -39,10 +39,10 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 # Add directories here. They will be processed in the order they are listed.
 # Files within each directory will be sorted alphabetically.
 MIGRATION_DIRS=(
-    "."         # Root directory for numbered migration files
-    "views"     # Subdirectory for all view definitions
+    "$SCRIPT_DIR/../sql"         # Migration files directory
+    "$SCRIPT_DIR/../sql/views"   # Views subdirectory
 )
-VALIDATION_FILE="99_validation.sql"
+VALIDATION_FILE="$SCRIPT_DIR/../sql/99_validation.sql"
 
 # --- Colors & Logging ---
 # Use tput to check for color support and set color variables.
@@ -78,33 +78,8 @@ check_dependencies() {
     fi
 }
 
-# Loads environment variables from .env files.
-load_env() {
-    # Default env file location for Vite projects
-    ENV_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-    ENV_FILE="$ENV_ROOT/.env"
-
-    # If running via npx, allow NODE_ENV to select .env.production or .env.development
-    if [ -n "${NODE_ENV:-}" ]; then
-        if [ "$NODE_ENV" = "production" ] && [ -f "$ENV_ROOT/.env.production" ]; then
-            ENV_FILE="$ENV_ROOT/.env.production"
-        elif [ "$NODE_ENV" = "development" ] && [ -f "$ENV_ROOT/.env.development" ]; then
-            ENV_FILE="$ENV_ROOT/.env.development"
-        fi
-    fi
-
-    if [ -f "$ENV_FILE" ]; then
-        log_info "Loading environment variables from $(basename "$ENV_FILE")"
-        set -a
-        source "$ENV_FILE"
-        set +a
-    else
-        log_warn "Environment file ($ENV_FILE) not found. Skipping env loading."
-    fi
-}
-
 # Applies a single SQL file using psql.
-# Globals: SUPABASE_DB_URL
+# Globals: SUPABASE_DB_URL_STRING
 # Arguments:
 #   $1: Path to the SQL file to apply.
 apply_sql_file() {
@@ -115,7 +90,7 @@ apply_sql_file() {
     echo -e "${YELLOW}📄 Applying ${file_name}...${NC}"
     
     # The `|| die ...` construct handles errors gracefully due to `set -e`.
-    psql "$SUPABASE_DB_URL" --quiet --single-transaction --file "$file_path"
+    psql "$SUPABASE_DB_URL_STRING" --quiet --single-transaction --file "$file_path"
     
     log_success "${file_name} applied successfully."
 }
@@ -127,18 +102,16 @@ main() {
     echo -e "${GREEN}${BOLD}🚀 ChallengeMe Database Migration${NC}"
     echo "=================================="
 
-    load_env
-
-    exit 0
+    source "$SCRIPT_DIR/env-loader.sh"
     
     # Ensure database URL is set
-    if [ -z "${SUPABASE_DB_URL:-}" ]; then
-        die "SUPABASE_DB_URL is not set. Please define it in your environment or a .env file."
+    if [ -z "${SUPABASE_DB_URL_STRING:-}" ]; then
+        die "SUPABASE_DB_URL_STRING is not set. Please define it in your environment or a .env file."
     fi
 
     # Redact password for safe logging
     local safe_db_url
-    safe_db_url=$(echo "$SUPABASE_DB_URL" | sed 's/:[^:]*@/@****@/')
+    safe_db_url=$(echo "$SUPABASE_DB_URL_STRING" | sed 's/:[^:]*@/@****@/')
     log_info "Connecting to database: $safe_db_url"
     echo ""
 
@@ -147,7 +120,8 @@ main() {
     
     local migration_files=()
     for dir in "${MIGRATION_DIRS[@]}"; do
-        local full_path="$SCRIPT_DIR/$dir"
+        local full_path="$dir"
+        echo "Processing directory: $dir"
         if [ -d "$full_path" ]; then
             # Find all .sql files in the directory, add them to the list
             while IFS= read -r file; do
