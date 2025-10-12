@@ -1,5 +1,8 @@
 -- migrate:up
-CREATE VIEW discussion_post_details_view WITH (security_invoker = true) AS
+CREATE VIEW
+    discussion_post_details_view
+WITH
+    (security_invoker = true) AS
 SELECT
     dp.id,
     dp."challengeId",
@@ -17,7 +20,10 @@ FROM
     discussion_posts dp
     JOIN profiles p ON dp."authorId" = p.id;
 
-CREATE VIEW discussion_reply_details_view WITH (security_invoker = true) AS
+CREATE VIEW
+    discussion_reply_details_view
+WITH
+    (security_invoker = true) AS
 SELECT
     dr.id,
     dr."postId",
@@ -35,4 +41,5 @@ FROM
 
 -- migrate:down
 DROP VIEW IF EXISTS discussion_post_details_view;
+
 DROP VIEW IF EXISTS discussion_reply_details_view;

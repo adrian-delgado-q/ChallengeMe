@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("SUPABASE_DB_URL")
+  url      = env("SUPABASE_DB_URL_STRING")
 }
 
 model Profile {
@@ -91,7 +91,6 @@ model Challenge {
   milestones          Milestone[]
   posts               Post[]
   supportedActivities ChallengeActivityType[] // Many-to-many relation for supported activity types
-  // progress relation removed - now using challenge_progress view
 
   // Discussion relations
   discussionPosts      DiscussionPost[]
@@ -158,7 +157,6 @@ model ChallengeParticipant {
   user              Profile?            @relation(fields: [userId], references: [id], onDelete: Cascade)
   milestoneProgress MilestoneProgress[]
   posts             Post[]
-  // progress relation removed - now using challenge_progress view
 
   // Partial unique constraints for preventing duplicate participations
   // Note: These are implemented as partial unique indexes in SQL since Prisma doesn't support conditional unique constraints
@@ -179,7 +177,6 @@ model ActivityType {
   activities  Activity[]
   milestones  Milestone[]
   challenges  ChallengeActivityType[]
-  // progress relation removed - now using challenge_progress view
 
   @@map("activity_types")
 }
@@ -201,9 +198,6 @@ model Activity {
 
   @@map("activities")
 }
-
-// ChallengeProgress model removed - replaced with challenge_progress view
-// The view dynamically calculates progress from Activity data
 
 model Post {
   id            String               @id @default(uuid()) @db.Uuid
@@ -233,7 +227,6 @@ model Comment {
   @@map("comments")
 }
 
-// New Discussion Models for Threaded Comments
 model DiscussionPost {
   id          String    @id @default(uuid()) @db.Uuid
   challengeId String    @db.Uuid

@@ -1,14 +1,17 @@
 -- migrate:up
 -- Challenge Progress View
 -- =============================================================================
-CREATE OR REPLACE VIEW challenge_progress WITH (security_invoker = true) AS
+CREATE OR REPLACE VIEW
+    challenge_progress
+WITH
+    (security_invoker = true) AS
 SELECT
-    gen_random_uuid() as id,
+    gen_random_uuid () as id,
     a."challengeId",
     a."participantId",
     a."activityTypeId",
     SUM(a.value) as "totalValue",
-    COUNT(*) :: int as "activityCount",
+    COUNT(*)::int as "activityCount",
     AVG(a.value) as "averageValue",
     MAX(a.value) as "bestValue",
     MAX(a.date) as "lastActivityDate",
@@ -17,9 +20,9 @@ SELECT
 FROM
     "activities" a
 WHERE
-    a."challengeId" IS NOT NULL
-    AND a."participantId" IS NOT NULL
-    AND a."activityTypeId" IS NOT NULL
+    a."challengeId" IS NOT NULL AND
+    a."participantId" IS NOT NULL AND
+    a."activityTypeId" IS NOT NULL
 GROUP BY
     a."challengeId",
     a."participantId",

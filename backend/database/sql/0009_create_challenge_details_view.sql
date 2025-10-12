@@ -1,5 +1,8 @@
 -- migrate:up
-CREATE VIEW challenge_details_view WITH (security_invoker = true) AS
+CREATE VIEW
+    challenge_details_view
+WITH
+    (security_invoker = true) AS
 SELECT
     c.id,
     c.title,

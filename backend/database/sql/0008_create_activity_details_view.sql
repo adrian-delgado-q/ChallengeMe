@@ -1,5 +1,8 @@
 -- migrate:up
-CREATE VIEW activity_details_view WITH (security_invoker = true) AS
+CREATE VIEW
+    activity_details_view
+WITH
+    (security_invoker = true) AS
 SELECT
     a.id,
     a."participantId",

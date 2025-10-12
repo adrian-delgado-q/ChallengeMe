@@ -4,48 +4,33 @@
 # ChallengeMe - Production Database Migration Script
 #
 # Description:
-#   Applies SQL migrations to the database in a consistent, ordered, and
-#   automated manner. It's designed to be robust for both local development
-#   and CI/CD environments.
+#   Applies or reverts SQL migrations using dbmate.
 #
 # Usage:
-#   ./migrate.sh
+#   ./migrate-sql.sh [up|down|revert]
+#
+#   up:     Applies all pending migrations.
+#   down:   Reverts the most recent migration.
+#   revert: Alias for down.
 #
 # Prerequisites:
-#   - `psql` (PostgreSQL client) must be installed and in the system's PATH.
-#   - A `SUPABASE_DB_URL_STRING` environment variable must be set, or a .env file
-#     must be present in this script's directory or the parent directory.
-#
-# File Structure Convention:
-#   - Ordered migrations: Place in the same directory as the script.
-#     Must be prefixed with a number (e.g., `01_setup.sql`, `02_functions.sql`).
-#   - Views: Place all view definitions in a `views/` subdirectory.
-#   - Validation: A final check script can be named `99_validation.sql`.
+#   - `dbmate` must be installed and in the system's PATH.
+#   - A `DATABASE_URL` environment variable must be set, or a .env file
+#     must be present.
 # ==============================================================================
 
 # --- Strict Mode & Error Handling ---
-# set -e: Exit immediately if a command exits with a non-zero status.
-# set -u: Treat unset variables as an error when substituting.
-# set -o pipefail: The return value of a pipeline is the status of the last
-#                  command to exit with a non-zero status, or zero if no
-#                  command exited with a non-zero status.
 set -euo pipefail
 
 # --- Script Directory ---
-# Find the script's own directory to reliably locate other files.
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
+BACKEND_ROOT=$(dirname "$SCRIPT_DIR")
+
 # --- Configuration ---
-# Add directories here. They will be processed in the order they are listed.
-# Files within each directory will be sorted alphabetically.
-MIGRATION_DIRS=(
-    "$SCRIPT_DIR/../sql"         # Migration files directory
-    "$SCRIPT_DIR/../sql/views"   # Views subdirectory
-)
-VALIDATION_FILE="$SCRIPT_DIR/../sql/99_validation.sql"
+MIGRATIONS_DIR="${BACKEND_ROOT}/database/sql"
 
 # --- Colors & Logging ---
-# Use tput to check for color support and set color variables.
 if tput setaf 1 &> /dev/null; then
     RED=$(tput setaf 1)
     GREEN=$(tput setaf 2)
@@ -62,7 +47,6 @@ else
     NC=""
 fi
 
-# Logging functions for consistent output
 log_info() { echo -e "${BLUE}${BOLD}INFO:${NC} $1"; }
 log_success() { echo -e "${GREEN}✅ $1${NC}"; }
 log_warn() { echo -e "${YELLOW}⚠️ $1${NC}"; }
@@ -71,93 +55,51 @@ die() { log_error "$1"; exit 1; }
 
 # --- Helper Functions ---
 
-# Checks for required command-line tools.
 check_dependencies() {
-    if ! command -v psql &> /dev/null; then
-        die "psql is not installed or not in your PATH. Please install the PostgreSQL client."
+    if ! command -v dbmate &> /dev/null; then
+        die "dbmate is not installed or not in your PATH. Please install dbmate."
     fi
-}
-
-# Applies a single SQL file using psql.
-# Globals: SUPABASE_DB_URL_STRING
-# Arguments:
-#   $1: Path to the SQL file to apply.
-apply_sql_file() {
-    local file_path="$1"
-    local file_name
-    file_name=$(basename "$file_path")
-
-    echo -e "${YELLOW}📄 Applying ${file_name}...${NC}"
-    
-    # The `|| die ...` construct handles errors gracefully due to `set -e`.
-    psql "$SUPABASE_DB_URL_STRING" --quiet --single-transaction --file "$file_path"
-    
-    log_success "${file_name} applied successfully."
 }
 
 # --- Main Execution Logic ---
 main() {
     check_dependencies
-    
-    echo -e "${GREEN}${BOLD}🚀 ChallengeMe Database Migration${NC}"
-    echo "=================================="
+
+    echo -e "${GREEN}${BOLD}🚀 ChallengeMe Database Migration (dbmate)${NC}"
+    echo "============================================"
 
     source "$SCRIPT_DIR/env-loader.sh"
-    
-    # Ensure database URL is set
+
     if [ -z "${SUPABASE_DB_URL_STRING:-}" ]; then
         die "SUPABASE_DB_URL_STRING is not set. Please define it in your environment or a .env file."
     fi
 
-    # Redact password for safe logging
+    export DATABASE_URL="$SUPABASE_DB_URL_STRING"
+
     local safe_db_url
-    safe_db_url=$(echo "$SUPABASE_DB_URL_STRING" | sed 's/:[^:]*@/@****@/')
+    safe_db_url=$(echo "$DATABASE_URL" | sed 's/:[^:]*@/@****@/')
     log_info "Connecting to database: $safe_db_url"
+    log_info "Migrations directory: $MIGRATIONS_DIR"
     echo ""
 
-    # --- Discover and Run Migrations ---
-    log_info "Discovering and running migration files..."
-    
-    local migration_files=()
-    for dir in "${MIGRATION_DIRS[@]}"; do
-        local full_path="$dir"
-        echo "Processing directory: $dir"
-        if [ -d "$full_path" ]; then
-            # Find all .sql files in the directory, add them to the list
-            while IFS= read -r file; do
-                migration_files+=("$file")
-            done < <(find "$full_path" -maxdepth 1 -name "*.sql" -not -name "$VALIDATION_FILE" | sort)
-        else
-            log_warn "Directory '$dir' not found, skipping."
-        fi
-    done
-    
-    if [ ${#migration_files[@]} -eq 0 ]; then
-        log_warn "No migration files found. Nothing to apply."
-    else
-        for file in "${migration_files[@]}"; do
-            apply_sql_file "$file"
-            echo ""
-        done
-    fi
-    
-    # --- Run Validation ---
-    local validation_path="$SCRIPT_DIR/$VALIDATION_FILE"
-    if [ -f "$validation_path" ]; then
-        log_info "🔍 Running validation checks..."
-        apply_sql_file "$validation_path"
-        echo ""
-    else
-        log_warn "Validation file ($VALIDATION_FILE) not found, skipping."
-    fi
-    
-    # --- Final Summary ---
-    echo ""
-    log_success "🎉 All database migrations completed successfully!"
-    echo -e "${GREEN}   Your database is ready for ChallengeMe!${NC}"
+    local action=${1:-up}
+
+    case "$action" in
+        up)
+            log_info "Applying all pending migrations..."
+            dbmate --url "$DATABASE_URL" --migrations-dir "$MIGRATIONS_DIR" up
+            log_success "🎉 All pending migrations applied successfully!"
+            ;;
+        down|revert)
+            log_info "Reverting the most recent migration..."
+            dbmate --url "$DATABASE_URL" --migrations-dir "$MIGRATIONS_DIR" down
+            log_success "🎉 The most recent migration was reverted successfully."
+            ;;
+        *)
+            die "Invalid command: '$action'. Use 'up', 'down', or 'revert'."
+            ;;
+    esac
 }
 
-# Run the main function
-# The `trap` ensures the error message is more informative on failure.
 trap 'die "An error occurred on line $LINENO. Aborting."' ERR
-main
+main "$@"

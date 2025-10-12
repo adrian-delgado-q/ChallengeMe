@@ -1,5 +1,8 @@
 -- migrate:up
-CREATE VIEW team_details_view WITH (security_invoker = true) AS
+CREATE VIEW
+    team_details_view
+WITH
+    (security_invoker = true) AS
 SELECT
     t.id,
     t.name,

@@ -1,5 +1,8 @@
 -- migrate:up
-CREATE VIEW post_details_view WITH (security_invoker = true) AS
+CREATE VIEW
+    post_details_view
+WITH
+    (security_invoker = true) AS
 SELECT
     post.id,
     post."createdAt",
