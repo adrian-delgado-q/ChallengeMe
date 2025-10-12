@@ -1,32 +1,32 @@
 {
-  "name": "backend",
-  "private": true,
-  "version": "1.0.3",
-  "scripts": {
-    "format": "prettier --config ../.prettierrc --ignore-path ../.prettierignore --write \"**/*.{ts,json}\"",
-    "db:seed": "ts-node database/seeder/seed.ts",
-    "db:validate": "ts-node database/seeder/validate_data.ts",
-    "migrate:sql:dev": "cd scripts && NODE_ENV=development ./migrate-sql.sh up",
-    "migrate:sql:prod": "cd scripts && NODE_ENV=production ./migrate-sql.sh up",
-    "env:load:dev": "cd scripts && NODE_ENV=development ./env-loader.sh",
-    "env:load:prod": "cd scripts && NODE_ENV=production ./env-loader.sh",
-    "migrate:prisma:dev": "DOTENV_CONFIG_PATH=.env/.env.development prisma migrate dev --schema=./prisma/schema.prisma",
-    "migrate:prisma:prod": "DOTENV_CONFIG_PATH=.env/.env.production prisma migrate deploy --schema=./prisma/schema.prisma"
-  },
-  "dependencies": {
-    "@prisma/client": "^6.10.1",
-    "@supabase/supabase-js": "^2.0.0",
-    "dotenv": "^16.0.0",
-    "pg": "^8.16.0",
-    "prisma": "^6.10.1"
-  },
-  "devDependencies": {
-    "@faker-js/faker": "^9.8.0",
-    "@types/node": "^20.0.0",
-    "@types/pg": "^8.15.4",
-    "dbmate": "^2.28.0",
-    "prettier": "^3.6.2",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
-  }
+	"name": "backend",
+	"private": true,
+	"version": "1.0.3",
+	"scripts": {
+		"format": "prettier --config ../.prettierrc --ignore-path ../.prettierignore --write \"**/*.{ts,json}\"",
+		"db:seed": "NODE_ENV=development ts-node database/seeder/seed.ts",
+		"db:validate": "ts-node database/seeder/validate_data.ts",
+		"migrate:sql:dev": "cd scripts && NODE_ENV=development ./migrate-sql.sh up",
+		"migrate:sql:prod": "cd scripts && NODE_ENV=production ./migrate-sql.sh up",
+		"env:load:dev": "cd scripts && NODE_ENV=development ./env-loader.sh",
+		"env:load:prod": "cd scripts && NODE_ENV=production ./env-loader.sh",
+		"migrate:prisma:dev": "DOTENV_CONFIG_PATH=.env/.env.development prisma migrate dev --schema=./prisma/schema.prisma",
+		"migrate:prisma:prod": "DOTENV_CONFIG_PATH=.env/.env.production prisma migrate deploy --schema=./prisma/schema.prisma"
+	},
+	"dependencies": {
+		"@prisma/client": "^6.10.1",
+		"@supabase/supabase-js": "^2.0.0",
+		"dotenv": "^16.0.0",
+		"pg": "^8.16.0",
+		"prisma": "^6.10.1"
+	},
+	"devDependencies": {
+		"@faker-js/faker": "^9.8.0",
+		"@types/node": "^20.0.0",
+		"@types/pg": "^8.15.4",
+		"dbmate": "^2.28.0",
+		"prettier": "^3.6.2",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.8.3"
+	}
 }

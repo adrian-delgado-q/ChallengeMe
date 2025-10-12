@@ -182,18 +182,18 @@ export type ProfileWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   activities?: Prisma.ActivityListRelationFilter
-  createdChallenges?: Prisma.ChallengeListRelationFilter
   challengeEntries?: Prisma.ChallengeParticipantListRelationFilter
+  createdChallenges?: Prisma.ChallengeListRelationFilter
   comments?: Prisma.CommentListRelationFilter
-  posts?: Prisma.PostListRelationFilter
-  createdTeams?: Prisma.TeamListRelationFilter
-  teamMemberships?: Prisma.TeamMembershipListRelationFilter
+  bannedUsers?: Prisma.DiscussionBanListRelationFilter
+  discussionBans?: Prisma.DiscussionBanListRelationFilter
+  grantedModerators?: Prisma.DiscussionModeratorListRelationFilter
+  moderatorRoles?: Prisma.DiscussionModeratorListRelationFilter
   discussionPosts?: Prisma.DiscussionPostListRelationFilter
   discussionReplies?: Prisma.DiscussionReplyListRelationFilter
-  moderatorRoles?: Prisma.DiscussionModeratorListRelationFilter
-  grantedModerators?: Prisma.DiscussionModeratorListRelationFilter
-  discussionBans?: Prisma.DiscussionBanListRelationFilter
-  bannedUsers?: Prisma.DiscussionBanListRelationFilter
+  posts?: Prisma.PostListRelationFilter
+  teamMemberships?: Prisma.TeamMembershipListRelationFilter
+  createdTeams?: Prisma.TeamListRelationFilter
 }
 
 export type ProfileOrderByWithRelationInput = {
@@ -203,18 +203,18 @@ export type ProfileOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   activities?: Prisma.ActivityOrderByRelationAggregateInput
-  createdChallenges?: Prisma.ChallengeOrderByRelationAggregateInput
   challengeEntries?: Prisma.ChallengeParticipantOrderByRelationAggregateInput
+  createdChallenges?: Prisma.ChallengeOrderByRelationAggregateInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
-  posts?: Prisma.PostOrderByRelationAggregateInput
-  createdTeams?: Prisma.TeamOrderByRelationAggregateInput
-  teamMemberships?: Prisma.TeamMembershipOrderByRelationAggregateInput
+  bannedUsers?: Prisma.DiscussionBanOrderByRelationAggregateInput
+  discussionBans?: Prisma.DiscussionBanOrderByRelationAggregateInput
+  grantedModerators?: Prisma.DiscussionModeratorOrderByRelationAggregateInput
+  moderatorRoles?: Prisma.DiscussionModeratorOrderByRelationAggregateInput
   discussionPosts?: Prisma.DiscussionPostOrderByRelationAggregateInput
   discussionReplies?: Prisma.DiscussionReplyOrderByRelationAggregateInput
-  moderatorRoles?: Prisma.DiscussionModeratorOrderByRelationAggregateInput
-  grantedModerators?: Prisma.DiscussionModeratorOrderByRelationAggregateInput
-  discussionBans?: Prisma.DiscussionBanOrderByRelationAggregateInput
-  bannedUsers?: Prisma.DiscussionBanOrderByRelationAggregateInput
+  posts?: Prisma.PostOrderByRelationAggregateInput
+  teamMemberships?: Prisma.TeamMembershipOrderByRelationAggregateInput
+  createdTeams?: Prisma.TeamOrderByRelationAggregateInput
 }
 
 export type ProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -227,18 +227,18 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   activities?: Prisma.ActivityListRelationFilter
-  createdChallenges?: Prisma.ChallengeListRelationFilter
   challengeEntries?: Prisma.ChallengeParticipantListRelationFilter
+  createdChallenges?: Prisma.ChallengeListRelationFilter
   comments?: Prisma.CommentListRelationFilter
-  posts?: Prisma.PostListRelationFilter
-  createdTeams?: Prisma.TeamListRelationFilter
-  teamMemberships?: Prisma.TeamMembershipListRelationFilter
+  bannedUsers?: Prisma.DiscussionBanListRelationFilter
+  discussionBans?: Prisma.DiscussionBanListRelationFilter
+  grantedModerators?: Prisma.DiscussionModeratorListRelationFilter
+  moderatorRoles?: Prisma.DiscussionModeratorListRelationFilter
   discussionPosts?: Prisma.DiscussionPostListRelationFilter
   discussionReplies?: Prisma.DiscussionReplyListRelationFilter
-  moderatorRoles?: Prisma.DiscussionModeratorListRelationFilter
-  grantedModerators?: Prisma.DiscussionModeratorListRelationFilter
-  discussionBans?: Prisma.DiscussionBanListRelationFilter
-  bannedUsers?: Prisma.DiscussionBanListRelationFilter
+  posts?: Prisma.PostListRelationFilter
+  teamMemberships?: Prisma.TeamMembershipListRelationFilter
+  createdTeams?: Prisma.TeamListRelationFilter
 }, "id" | "username">
 
 export type ProfileOrderByWithAggregationInput = {
@@ -270,18 +270,18 @@ export type ProfileCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileUncheckedCreateInput = {
@@ -291,18 +291,18 @@ export type ProfileUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileUpdateInput = {
@@ -312,18 +312,18 @@ export type ProfileUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileUncheckedUpdateInput = {
@@ -333,18 +333,18 @@ export type ProfileUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileCreateManyInput = {
@@ -549,24 +549,16 @@ export type ProfileUpdateOneRequiredWithoutDiscussionRepliesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutDiscussionRepliesInput, Prisma.ProfileUpdateWithoutDiscussionRepliesInput>, Prisma.ProfileUncheckedUpdateWithoutDiscussionRepliesInput>
 }
 
-export type ProfileCreateNestedOneWithoutModeratorRolesInput = {
-  create?: Prisma.XOR<Prisma.ProfileCreateWithoutModeratorRolesInput, Prisma.ProfileUncheckedCreateWithoutModeratorRolesInput>
-  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutModeratorRolesInput
-  connect?: Prisma.ProfileWhereUniqueInput
-}
-
 export type ProfileCreateNestedOneWithoutGrantedModeratorsInput = {
   create?: Prisma.XOR<Prisma.ProfileCreateWithoutGrantedModeratorsInput, Prisma.ProfileUncheckedCreateWithoutGrantedModeratorsInput>
   connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutGrantedModeratorsInput
   connect?: Prisma.ProfileWhereUniqueInput
 }
 
-export type ProfileUpdateOneRequiredWithoutModeratorRolesNestedInput = {
+export type ProfileCreateNestedOneWithoutModeratorRolesInput = {
   create?: Prisma.XOR<Prisma.ProfileCreateWithoutModeratorRolesInput, Prisma.ProfileUncheckedCreateWithoutModeratorRolesInput>
   connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutModeratorRolesInput
-  upsert?: Prisma.ProfileUpsertWithoutModeratorRolesInput
   connect?: Prisma.ProfileWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutModeratorRolesInput, Prisma.ProfileUpdateWithoutModeratorRolesInput>, Prisma.ProfileUncheckedUpdateWithoutModeratorRolesInput>
 }
 
 export type ProfileUpdateOneRequiredWithoutGrantedModeratorsNestedInput = {
@@ -577,10 +569,12 @@ export type ProfileUpdateOneRequiredWithoutGrantedModeratorsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutGrantedModeratorsInput, Prisma.ProfileUpdateWithoutGrantedModeratorsInput>, Prisma.ProfileUncheckedUpdateWithoutGrantedModeratorsInput>
 }
 
-export type ProfileCreateNestedOneWithoutDiscussionBansInput = {
-  create?: Prisma.XOR<Prisma.ProfileCreateWithoutDiscussionBansInput, Prisma.ProfileUncheckedCreateWithoutDiscussionBansInput>
-  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutDiscussionBansInput
+export type ProfileUpdateOneRequiredWithoutModeratorRolesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutModeratorRolesInput, Prisma.ProfileUncheckedCreateWithoutModeratorRolesInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutModeratorRolesInput
+  upsert?: Prisma.ProfileUpsertWithoutModeratorRolesInput
   connect?: Prisma.ProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutModeratorRolesInput, Prisma.ProfileUpdateWithoutModeratorRolesInput>, Prisma.ProfileUncheckedUpdateWithoutModeratorRolesInput>
 }
 
 export type ProfileCreateNestedOneWithoutBannedUsersInput = {
@@ -589,12 +583,10 @@ export type ProfileCreateNestedOneWithoutBannedUsersInput = {
   connect?: Prisma.ProfileWhereUniqueInput
 }
 
-export type ProfileUpdateOneRequiredWithoutDiscussionBansNestedInput = {
+export type ProfileCreateNestedOneWithoutDiscussionBansInput = {
   create?: Prisma.XOR<Prisma.ProfileCreateWithoutDiscussionBansInput, Prisma.ProfileUncheckedCreateWithoutDiscussionBansInput>
   connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutDiscussionBansInput
-  upsert?: Prisma.ProfileUpsertWithoutDiscussionBansInput
   connect?: Prisma.ProfileWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutDiscussionBansInput, Prisma.ProfileUpdateWithoutDiscussionBansInput>, Prisma.ProfileUncheckedUpdateWithoutDiscussionBansInput>
 }
 
 export type ProfileUpdateOneRequiredWithoutBannedUsersNestedInput = {
@@ -605,6 +597,14 @@ export type ProfileUpdateOneRequiredWithoutBannedUsersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutBannedUsersInput, Prisma.ProfileUpdateWithoutBannedUsersInput>, Prisma.ProfileUncheckedUpdateWithoutBannedUsersInput>
 }
 
+export type ProfileUpdateOneRequiredWithoutDiscussionBansNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutDiscussionBansInput, Prisma.ProfileUncheckedCreateWithoutDiscussionBansInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutDiscussionBansInput
+  upsert?: Prisma.ProfileUpsertWithoutDiscussionBansInput
+  connect?: Prisma.ProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutDiscussionBansInput, Prisma.ProfileUpdateWithoutDiscussionBansInput>, Prisma.ProfileUncheckedUpdateWithoutDiscussionBansInput>
+}
+
 export type ProfileCreateWithoutCreatedTeamsInput = {
   id: string
   username?: string | null
@@ -612,17 +612,17 @@ export type ProfileCreateWithoutCreatedTeamsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
 }
 
 export type ProfileUncheckedCreateWithoutCreatedTeamsInput = {
@@ -632,17 +632,17 @@ export type ProfileUncheckedCreateWithoutCreatedTeamsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type ProfileCreateOrConnectWithoutCreatedTeamsInput = {
@@ -668,17 +668,17 @@ export type ProfileUpdateWithoutCreatedTeamsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutCreatedTeamsInput = {
@@ -688,17 +688,17 @@ export type ProfileUncheckedUpdateWithoutCreatedTeamsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type ProfileCreateWithoutTeamMembershipsInput = {
@@ -708,17 +708,17 @@ export type ProfileCreateWithoutTeamMembershipsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileUncheckedCreateWithoutTeamMembershipsInput = {
@@ -728,17 +728,17 @@ export type ProfileUncheckedCreateWithoutTeamMembershipsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileCreateOrConnectWithoutTeamMembershipsInput = {
@@ -764,17 +764,17 @@ export type ProfileUpdateWithoutTeamMembershipsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -784,17 +784,17 @@ export type ProfileUncheckedUpdateWithoutTeamMembershipsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileCreateWithoutCreatedChallengesInput = {
@@ -806,15 +806,15 @@ export type ProfileCreateWithoutCreatedChallengesInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileUncheckedCreateWithoutCreatedChallengesInput = {
@@ -826,15 +826,15 @@ export type ProfileUncheckedCreateWithoutCreatedChallengesInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileCreateOrConnectWithoutCreatedChallengesInput = {
@@ -862,15 +862,15 @@ export type ProfileUpdateWithoutCreatedChallengesInput = {
   activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutCreatedChallengesInput = {
@@ -882,15 +882,15 @@ export type ProfileUncheckedUpdateWithoutCreatedChallengesInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileCreateWithoutChallengeEntriesInput = {
@@ -902,15 +902,15 @@ export type ProfileCreateWithoutChallengeEntriesInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
   createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileUncheckedCreateWithoutChallengeEntriesInput = {
@@ -922,15 +922,15 @@ export type ProfileUncheckedCreateWithoutChallengeEntriesInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
   createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileCreateOrConnectWithoutChallengeEntriesInput = {
@@ -958,15 +958,15 @@ export type ProfileUpdateWithoutChallengeEntriesInput = {
   activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
   createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutChallengeEntriesInput = {
@@ -978,15 +978,15 @@ export type ProfileUncheckedUpdateWithoutChallengeEntriesInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
   createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileCreateWithoutActivitiesInput = {
@@ -995,18 +995,18 @@ export type ProfileCreateWithoutActivitiesInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileUncheckedCreateWithoutActivitiesInput = {
@@ -1015,18 +1015,18 @@ export type ProfileUncheckedCreateWithoutActivitiesInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileCreateOrConnectWithoutActivitiesInput = {
@@ -1051,18 +1051,18 @@ export type ProfileUpdateWithoutActivitiesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutActivitiesInput = {
@@ -1071,18 +1071,18 @@ export type ProfileUncheckedUpdateWithoutActivitiesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileCreateWithoutPostsInput = {
@@ -1092,17 +1092,17 @@ export type ProfileCreateWithoutPostsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileUncheckedCreateWithoutPostsInput = {
@@ -1112,17 +1112,17 @@ export type ProfileUncheckedCreateWithoutPostsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileCreateOrConnectWithoutPostsInput = {
@@ -1148,17 +1148,17 @@ export type ProfileUpdateWithoutPostsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutPostsInput = {
@@ -1168,17 +1168,17 @@ export type ProfileUncheckedUpdateWithoutPostsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileCreateWithoutCommentsInput = {
@@ -1188,17 +1188,17 @@ export type ProfileCreateWithoutCommentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
+  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileUncheckedCreateWithoutCommentsInput = {
@@ -1208,17 +1208,17 @@ export type ProfileUncheckedCreateWithoutCommentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileCreateOrConnectWithoutCommentsInput = {
@@ -1244,17 +1244,17 @@ export type ProfileUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
+  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutCommentsInput = {
@@ -1264,17 +1264,17 @@ export type ProfileUncheckedUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileCreateWithoutDiscussionPostsInput = {
@@ -1284,17 +1284,17 @@ export type ProfileCreateWithoutDiscussionPostsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
-  discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
   bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
+  discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileUncheckedCreateWithoutDiscussionPostsInput = {
@@ -1304,17 +1304,17 @@ export type ProfileUncheckedCreateWithoutDiscussionPostsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
-  discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
   bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
+  discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileCreateOrConnectWithoutDiscussionPostsInput = {
@@ -1340,17 +1340,17 @@ export type ProfileUpdateWithoutDiscussionPostsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
-  discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
   bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
+  discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutDiscussionPostsInput = {
@@ -1360,17 +1360,17 @@ export type ProfileUncheckedUpdateWithoutDiscussionPostsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
-  discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
   bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
+  discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileCreateWithoutDiscussionRepliesInput = {
@@ -1380,17 +1380,17 @@ export type ProfileCreateWithoutDiscussionRepliesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
-  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
   bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileUncheckedCreateWithoutDiscussionRepliesInput = {
@@ -1400,17 +1400,17 @@ export type ProfileUncheckedCreateWithoutDiscussionRepliesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
-  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
   bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileCreateOrConnectWithoutDiscussionRepliesInput = {
@@ -1436,17 +1436,17 @@ export type ProfileUpdateWithoutDiscussionRepliesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
-  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
   bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutDiscussionRepliesInput = {
@@ -1456,62 +1456,17 @@ export type ProfileUncheckedUpdateWithoutDiscussionRepliesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
-  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
   bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
-}
-
-export type ProfileCreateWithoutModeratorRolesInput = {
-  id: string
-  username?: string | null
-  avatarUrl?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
-  challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
-  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
-  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
-  discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
-  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
-}
-
-export type ProfileUncheckedCreateWithoutModeratorRolesInput = {
-  id: string
-  username?: string | null
-  avatarUrl?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
-  challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
-  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
-  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
-  discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
-}
-
-export type ProfileCreateOrConnectWithoutModeratorRolesInput = {
-  where: Prisma.ProfileWhereUniqueInput
-  create: Prisma.XOR<Prisma.ProfileCreateWithoutModeratorRolesInput, Prisma.ProfileUncheckedCreateWithoutModeratorRolesInput>
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileCreateWithoutGrantedModeratorsInput = {
@@ -1521,17 +1476,17 @@ export type ProfileCreateWithoutGrantedModeratorsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
-  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileUncheckedCreateWithoutGrantedModeratorsInput = {
@@ -1541,17 +1496,17 @@ export type ProfileUncheckedCreateWithoutGrantedModeratorsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
-  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileCreateOrConnectWithoutGrantedModeratorsInput = {
@@ -1559,55 +1514,49 @@ export type ProfileCreateOrConnectWithoutGrantedModeratorsInput = {
   create: Prisma.XOR<Prisma.ProfileCreateWithoutGrantedModeratorsInput, Prisma.ProfileUncheckedCreateWithoutGrantedModeratorsInput>
 }
 
-export type ProfileUpsertWithoutModeratorRolesInput = {
-  update: Prisma.XOR<Prisma.ProfileUpdateWithoutModeratorRolesInput, Prisma.ProfileUncheckedUpdateWithoutModeratorRolesInput>
+export type ProfileCreateWithoutModeratorRolesInput = {
+  id: string
+  username?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
+  challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+}
+
+export type ProfileUncheckedCreateWithoutModeratorRolesInput = {
+  id: string
+  username?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
+  challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type ProfileCreateOrConnectWithoutModeratorRolesInput = {
+  where: Prisma.ProfileWhereUniqueInput
   create: Prisma.XOR<Prisma.ProfileCreateWithoutModeratorRolesInput, Prisma.ProfileUncheckedCreateWithoutModeratorRolesInput>
-  where?: Prisma.ProfileWhereInput
-}
-
-export type ProfileUpdateToOneWithWhereWithoutModeratorRolesInput = {
-  where?: Prisma.ProfileWhereInput
-  data: Prisma.XOR<Prisma.ProfileUpdateWithoutModeratorRolesInput, Prisma.ProfileUncheckedUpdateWithoutModeratorRolesInput>
-}
-
-export type ProfileUpdateWithoutModeratorRolesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
-  challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
-  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
-  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
-  discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
-}
-
-export type ProfileUncheckedUpdateWithoutModeratorRolesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
-  challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
-  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
-  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
-  discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
 }
 
 export type ProfileUpsertWithoutGrantedModeratorsInput = {
@@ -1628,17 +1577,17 @@ export type ProfileUpdateWithoutGrantedModeratorsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
-  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
-  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutGrantedModeratorsInput = {
@@ -1648,62 +1597,68 @@ export type ProfileUncheckedUpdateWithoutGrantedModeratorsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
-  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type ProfileUpsertWithoutModeratorRolesInput = {
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutModeratorRolesInput, Prisma.ProfileUncheckedUpdateWithoutModeratorRolesInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutModeratorRolesInput, Prisma.ProfileUncheckedCreateWithoutModeratorRolesInput>
+  where?: Prisma.ProfileWhereInput
+}
+
+export type ProfileUpdateToOneWithWhereWithoutModeratorRolesInput = {
+  where?: Prisma.ProfileWhereInput
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutModeratorRolesInput, Prisma.ProfileUncheckedUpdateWithoutModeratorRolesInput>
+}
+
+export type ProfileUpdateWithoutModeratorRolesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
+  challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+}
+
+export type ProfileUncheckedUpdateWithoutModeratorRolesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
+  challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
   bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
-}
-
-export type ProfileCreateWithoutDiscussionBansInput = {
-  id: string
-  username?: string | null
-  avatarUrl?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
-  challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
-  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
-  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
-  discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
-  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
-}
-
-export type ProfileUncheckedCreateWithoutDiscussionBansInput = {
-  id: string
-  username?: string | null
-  avatarUrl?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
-  challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
-  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
-  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
-  discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
-}
-
-export type ProfileCreateOrConnectWithoutDiscussionBansInput = {
-  where: Prisma.ProfileWhereUniqueInput
-  create: Prisma.XOR<Prisma.ProfileCreateWithoutDiscussionBansInput, Prisma.ProfileUncheckedCreateWithoutDiscussionBansInput>
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileCreateWithoutBannedUsersInput = {
@@ -1713,17 +1668,17 @@ export type ProfileCreateWithoutBannedUsersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileUncheckedCreateWithoutBannedUsersInput = {
@@ -1733,17 +1688,17 @@ export type ProfileUncheckedCreateWithoutBannedUsersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
-  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
-  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
   discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
-  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type ProfileCreateOrConnectWithoutBannedUsersInput = {
@@ -1751,55 +1706,49 @@ export type ProfileCreateOrConnectWithoutBannedUsersInput = {
   create: Prisma.XOR<Prisma.ProfileCreateWithoutBannedUsersInput, Prisma.ProfileUncheckedCreateWithoutBannedUsersInput>
 }
 
-export type ProfileUpsertWithoutDiscussionBansInput = {
-  update: Prisma.XOR<Prisma.ProfileUpdateWithoutDiscussionBansInput, Prisma.ProfileUncheckedUpdateWithoutDiscussionBansInput>
+export type ProfileCreateWithoutDiscussionBansInput = {
+  id: string
+  username?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
+  challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+}
+
+export type ProfileUncheckedCreateWithoutDiscussionBansInput = {
+  id: string
+  username?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
+  challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type ProfileCreateOrConnectWithoutDiscussionBansInput = {
+  where: Prisma.ProfileWhereUniqueInput
   create: Prisma.XOR<Prisma.ProfileCreateWithoutDiscussionBansInput, Prisma.ProfileUncheckedCreateWithoutDiscussionBansInput>
-  where?: Prisma.ProfileWhereInput
-}
-
-export type ProfileUpdateToOneWithWhereWithoutDiscussionBansInput = {
-  where?: Prisma.ProfileWhereInput
-  data: Prisma.XOR<Prisma.ProfileUpdateWithoutDiscussionBansInput, Prisma.ProfileUncheckedUpdateWithoutDiscussionBansInput>
-}
-
-export type ProfileUpdateWithoutDiscussionBansInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
-  challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
-  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
-  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
-  discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
-  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
-}
-
-export type ProfileUncheckedUpdateWithoutDiscussionBansInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
-  challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
-  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
-  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
-  discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
-  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
 }
 
 export type ProfileUpsertWithoutBannedUsersInput = {
@@ -1820,17 +1769,17 @@ export type ProfileUpdateWithoutBannedUsersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
-  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutBannedUsersInput = {
@@ -1840,17 +1789,68 @@ export type ProfileUncheckedUpdateWithoutBannedUsersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
-  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
-  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
-  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
   discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
   discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
-  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type ProfileUpsertWithoutDiscussionBansInput = {
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutDiscussionBansInput, Prisma.ProfileUncheckedUpdateWithoutDiscussionBansInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutDiscussionBansInput, Prisma.ProfileUncheckedCreateWithoutDiscussionBansInput>
+  where?: Prisma.ProfileWhereInput
+}
+
+export type ProfileUpdateToOneWithWhereWithoutDiscussionBansInput = {
+  where?: Prisma.ProfileWhereInput
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutDiscussionBansInput, Prisma.ProfileUncheckedUpdateWithoutDiscussionBansInput>
+}
+
+export type ProfileUpdateWithoutDiscussionBansInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
+  challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+}
+
+export type ProfileUncheckedUpdateWithoutDiscussionBansInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
+  challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
   grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
-  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 
@@ -1860,34 +1860,34 @@ export type ProfileUncheckedUpdateWithoutBannedUsersInput = {
 
 export type ProfileCountOutputType = {
   activities: number
-  createdChallenges: number
   challengeEntries: number
+  createdChallenges: number
   comments: number
-  posts: number
-  createdTeams: number
-  teamMemberships: number
+  bannedUsers: number
+  discussionBans: number
+  grantedModerators: number
+  moderatorRoles: number
   discussionPosts: number
   discussionReplies: number
-  moderatorRoles: number
-  grantedModerators: number
-  discussionBans: number
-  bannedUsers: number
+  posts: number
+  teamMemberships: number
+  createdTeams: number
 }
 
 export type ProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | ProfileCountOutputTypeCountActivitiesArgs
-  createdChallenges?: boolean | ProfileCountOutputTypeCountCreatedChallengesArgs
   challengeEntries?: boolean | ProfileCountOutputTypeCountChallengeEntriesArgs
+  createdChallenges?: boolean | ProfileCountOutputTypeCountCreatedChallengesArgs
   comments?: boolean | ProfileCountOutputTypeCountCommentsArgs
-  posts?: boolean | ProfileCountOutputTypeCountPostsArgs
-  createdTeams?: boolean | ProfileCountOutputTypeCountCreatedTeamsArgs
-  teamMemberships?: boolean | ProfileCountOutputTypeCountTeamMembershipsArgs
+  bannedUsers?: boolean | ProfileCountOutputTypeCountBannedUsersArgs
+  discussionBans?: boolean | ProfileCountOutputTypeCountDiscussionBansArgs
+  grantedModerators?: boolean | ProfileCountOutputTypeCountGrantedModeratorsArgs
+  moderatorRoles?: boolean | ProfileCountOutputTypeCountModeratorRolesArgs
   discussionPosts?: boolean | ProfileCountOutputTypeCountDiscussionPostsArgs
   discussionReplies?: boolean | ProfileCountOutputTypeCountDiscussionRepliesArgs
-  moderatorRoles?: boolean | ProfileCountOutputTypeCountModeratorRolesArgs
-  grantedModerators?: boolean | ProfileCountOutputTypeCountGrantedModeratorsArgs
-  discussionBans?: boolean | ProfileCountOutputTypeCountDiscussionBansArgs
-  bannedUsers?: boolean | ProfileCountOutputTypeCountBannedUsersArgs
+  posts?: boolean | ProfileCountOutputTypeCountPostsArgs
+  teamMemberships?: boolean | ProfileCountOutputTypeCountTeamMembershipsArgs
+  createdTeams?: boolean | ProfileCountOutputTypeCountCreatedTeamsArgs
 }
 
 /**
@@ -1910,15 +1910,15 @@ export type ProfileCountOutputTypeCountActivitiesArgs<ExtArgs extends runtime.Ty
 /**
  * ProfileCountOutputType without action
  */
-export type ProfileCountOutputTypeCountCreatedChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ChallengeWhereInput
+export type ProfileCountOutputTypeCountChallengeEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChallengeParticipantWhereInput
 }
 
 /**
  * ProfileCountOutputType without action
  */
-export type ProfileCountOutputTypeCountChallengeEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ChallengeParticipantWhereInput
+export type ProfileCountOutputTypeCountCreatedChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChallengeWhereInput
 }
 
 /**
@@ -1931,22 +1931,29 @@ export type ProfileCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Type
 /**
  * ProfileCountOutputType without action
  */
-export type ProfileCountOutputTypeCountPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PostWhereInput
+export type ProfileCountOutputTypeCountBannedUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionBanWhereInput
 }
 
 /**
  * ProfileCountOutputType without action
  */
-export type ProfileCountOutputTypeCountCreatedTeamsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.TeamWhereInput
+export type ProfileCountOutputTypeCountDiscussionBansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionBanWhereInput
 }
 
 /**
  * ProfileCountOutputType without action
  */
-export type ProfileCountOutputTypeCountTeamMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.TeamMembershipWhereInput
+export type ProfileCountOutputTypeCountGrantedModeratorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionModeratorWhereInput
+}
+
+/**
+ * ProfileCountOutputType without action
+ */
+export type ProfileCountOutputTypeCountModeratorRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionModeratorWhereInput
 }
 
 /**
@@ -1966,29 +1973,22 @@ export type ProfileCountOutputTypeCountDiscussionRepliesArgs<ExtArgs extends run
 /**
  * ProfileCountOutputType without action
  */
-export type ProfileCountOutputTypeCountModeratorRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.DiscussionModeratorWhereInput
+export type ProfileCountOutputTypeCountPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostWhereInput
 }
 
 /**
  * ProfileCountOutputType without action
  */
-export type ProfileCountOutputTypeCountGrantedModeratorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.DiscussionModeratorWhereInput
+export type ProfileCountOutputTypeCountTeamMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TeamMembershipWhereInput
 }
 
 /**
  * ProfileCountOutputType without action
  */
-export type ProfileCountOutputTypeCountDiscussionBansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.DiscussionBanWhereInput
-}
-
-/**
- * ProfileCountOutputType without action
- */
-export type ProfileCountOutputTypeCountBannedUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.DiscussionBanWhereInput
+export type ProfileCountOutputTypeCountCreatedTeamsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TeamWhereInput
 }
 
 
@@ -1999,18 +1999,18 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdAt?: boolean
   updatedAt?: boolean
   activities?: boolean | Prisma.Profile$activitiesArgs<ExtArgs>
-  createdChallenges?: boolean | Prisma.Profile$createdChallengesArgs<ExtArgs>
   challengeEntries?: boolean | Prisma.Profile$challengeEntriesArgs<ExtArgs>
+  createdChallenges?: boolean | Prisma.Profile$createdChallengesArgs<ExtArgs>
   comments?: boolean | Prisma.Profile$commentsArgs<ExtArgs>
-  posts?: boolean | Prisma.Profile$postsArgs<ExtArgs>
-  createdTeams?: boolean | Prisma.Profile$createdTeamsArgs<ExtArgs>
-  teamMemberships?: boolean | Prisma.Profile$teamMembershipsArgs<ExtArgs>
+  bannedUsers?: boolean | Prisma.Profile$bannedUsersArgs<ExtArgs>
+  discussionBans?: boolean | Prisma.Profile$discussionBansArgs<ExtArgs>
+  grantedModerators?: boolean | Prisma.Profile$grantedModeratorsArgs<ExtArgs>
+  moderatorRoles?: boolean | Prisma.Profile$moderatorRolesArgs<ExtArgs>
   discussionPosts?: boolean | Prisma.Profile$discussionPostsArgs<ExtArgs>
   discussionReplies?: boolean | Prisma.Profile$discussionRepliesArgs<ExtArgs>
-  moderatorRoles?: boolean | Prisma.Profile$moderatorRolesArgs<ExtArgs>
-  grantedModerators?: boolean | Prisma.Profile$grantedModeratorsArgs<ExtArgs>
-  discussionBans?: boolean | Prisma.Profile$discussionBansArgs<ExtArgs>
-  bannedUsers?: boolean | Prisma.Profile$bannedUsersArgs<ExtArgs>
+  posts?: boolean | Prisma.Profile$postsArgs<ExtArgs>
+  teamMemberships?: boolean | Prisma.Profile$teamMembershipsArgs<ExtArgs>
+  createdTeams?: boolean | Prisma.Profile$createdTeamsArgs<ExtArgs>
   _count?: boolean | Prisma.ProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profile"]>
 
@@ -2041,18 +2041,18 @@ export type ProfileSelectScalar = {
 export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "avatarUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | Prisma.Profile$activitiesArgs<ExtArgs>
-  createdChallenges?: boolean | Prisma.Profile$createdChallengesArgs<ExtArgs>
   challengeEntries?: boolean | Prisma.Profile$challengeEntriesArgs<ExtArgs>
+  createdChallenges?: boolean | Prisma.Profile$createdChallengesArgs<ExtArgs>
   comments?: boolean | Prisma.Profile$commentsArgs<ExtArgs>
-  posts?: boolean | Prisma.Profile$postsArgs<ExtArgs>
-  createdTeams?: boolean | Prisma.Profile$createdTeamsArgs<ExtArgs>
-  teamMemberships?: boolean | Prisma.Profile$teamMembershipsArgs<ExtArgs>
+  bannedUsers?: boolean | Prisma.Profile$bannedUsersArgs<ExtArgs>
+  discussionBans?: boolean | Prisma.Profile$discussionBansArgs<ExtArgs>
+  grantedModerators?: boolean | Prisma.Profile$grantedModeratorsArgs<ExtArgs>
+  moderatorRoles?: boolean | Prisma.Profile$moderatorRolesArgs<ExtArgs>
   discussionPosts?: boolean | Prisma.Profile$discussionPostsArgs<ExtArgs>
   discussionReplies?: boolean | Prisma.Profile$discussionRepliesArgs<ExtArgs>
-  moderatorRoles?: boolean | Prisma.Profile$moderatorRolesArgs<ExtArgs>
-  grantedModerators?: boolean | Prisma.Profile$grantedModeratorsArgs<ExtArgs>
-  discussionBans?: boolean | Prisma.Profile$discussionBansArgs<ExtArgs>
-  bannedUsers?: boolean | Prisma.Profile$bannedUsersArgs<ExtArgs>
+  posts?: boolean | Prisma.Profile$postsArgs<ExtArgs>
+  teamMemberships?: boolean | Prisma.Profile$teamMembershipsArgs<ExtArgs>
+  createdTeams?: boolean | Prisma.Profile$createdTeamsArgs<ExtArgs>
   _count?: boolean | Prisma.ProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2062,18 +2062,18 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Profile"
   objects: {
     activities: Prisma.$ActivityPayload<ExtArgs>[]
-    createdChallenges: Prisma.$ChallengePayload<ExtArgs>[]
     challengeEntries: Prisma.$ChallengeParticipantPayload<ExtArgs>[]
+    createdChallenges: Prisma.$ChallengePayload<ExtArgs>[]
     comments: Prisma.$CommentPayload<ExtArgs>[]
-    posts: Prisma.$PostPayload<ExtArgs>[]
-    createdTeams: Prisma.$TeamPayload<ExtArgs>[]
-    teamMemberships: Prisma.$TeamMembershipPayload<ExtArgs>[]
+    bannedUsers: Prisma.$DiscussionBanPayload<ExtArgs>[]
+    discussionBans: Prisma.$DiscussionBanPayload<ExtArgs>[]
+    grantedModerators: Prisma.$DiscussionModeratorPayload<ExtArgs>[]
+    moderatorRoles: Prisma.$DiscussionModeratorPayload<ExtArgs>[]
     discussionPosts: Prisma.$DiscussionPostPayload<ExtArgs>[]
     discussionReplies: Prisma.$DiscussionReplyPayload<ExtArgs>[]
-    moderatorRoles: Prisma.$DiscussionModeratorPayload<ExtArgs>[]
-    grantedModerators: Prisma.$DiscussionModeratorPayload<ExtArgs>[]
-    discussionBans: Prisma.$DiscussionBanPayload<ExtArgs>[]
-    bannedUsers: Prisma.$DiscussionBanPayload<ExtArgs>[]
+    posts: Prisma.$PostPayload<ExtArgs>[]
+    teamMemberships: Prisma.$TeamMembershipPayload<ExtArgs>[]
+    createdTeams: Prisma.$TeamPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2476,18 +2476,18 @@ readonly fields: ProfileFieldRefs;
 export interface Prisma__ProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   activities<T extends Prisma.Profile$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  createdChallenges<T extends Prisma.Profile$createdChallengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$createdChallengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   challengeEntries<T extends Prisma.Profile$challengeEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$challengeEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengeParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdChallenges<T extends Prisma.Profile$createdChallengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$createdChallengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.Profile$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  posts<T extends Prisma.Profile$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  createdTeams<T extends Prisma.Profile$createdTeamsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$createdTeamsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  teamMemberships<T extends Prisma.Profile$teamMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$teamMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  bannedUsers<T extends Prisma.Profile$bannedUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$bannedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionBanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  discussionBans<T extends Prisma.Profile$discussionBansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$discussionBansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionBanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  grantedModerators<T extends Prisma.Profile$grantedModeratorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$grantedModeratorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionModeratorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  moderatorRoles<T extends Prisma.Profile$moderatorRolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$moderatorRolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionModeratorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   discussionPosts<T extends Prisma.Profile$discussionPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$discussionPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   discussionReplies<T extends Prisma.Profile$discussionRepliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$discussionRepliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  moderatorRoles<T extends Prisma.Profile$moderatorRolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$moderatorRolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionModeratorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  grantedModerators<T extends Prisma.Profile$grantedModeratorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$grantedModeratorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionModeratorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  discussionBans<T extends Prisma.Profile$discussionBansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$discussionBansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionBanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  bannedUsers<T extends Prisma.Profile$bannedUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$bannedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionBanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  posts<T extends Prisma.Profile$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  teamMemberships<T extends Prisma.Profile$teamMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$teamMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdTeams<T extends Prisma.Profile$createdTeamsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$createdTeamsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2934,30 +2934,6 @@ export type Profile$activitiesArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
- * Profile.createdChallenges
- */
-export type Profile$createdChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Challenge
-   */
-  select?: Prisma.ChallengeSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Challenge
-   */
-  omit?: Prisma.ChallengeOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ChallengeInclude<ExtArgs> | null
-  where?: Prisma.ChallengeWhereInput
-  orderBy?: Prisma.ChallengeOrderByWithRelationInput | Prisma.ChallengeOrderByWithRelationInput[]
-  cursor?: Prisma.ChallengeWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ChallengeScalarFieldEnum | Prisma.ChallengeScalarFieldEnum[]
-}
-
-/**
  * Profile.challengeEntries
  */
 export type Profile$challengeEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2979,6 +2955,30 @@ export type Profile$challengeEntriesArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.ChallengeParticipantScalarFieldEnum | Prisma.ChallengeParticipantScalarFieldEnum[]
+}
+
+/**
+ * Profile.createdChallenges
+ */
+export type Profile$createdChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Challenge
+   */
+  select?: Prisma.ChallengeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Challenge
+   */
+  omit?: Prisma.ChallengeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChallengeInclude<ExtArgs> | null
+  where?: Prisma.ChallengeWhereInput
+  orderBy?: Prisma.ChallengeOrderByWithRelationInput | Prisma.ChallengeOrderByWithRelationInput[]
+  cursor?: Prisma.ChallengeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChallengeScalarFieldEnum | Prisma.ChallengeScalarFieldEnum[]
 }
 
 /**
@@ -3006,75 +3006,99 @@ export type Profile$commentsArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
- * Profile.posts
+ * Profile.bannedUsers
  */
-export type Profile$postsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Profile$bannedUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Post
+   * Select specific fields to fetch from the DiscussionBan
    */
-  select?: Prisma.PostSelect<ExtArgs> | null
+  select?: Prisma.DiscussionBanSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Post
+   * Omit specific fields from the DiscussionBan
    */
-  omit?: Prisma.PostOmit<ExtArgs> | null
+  omit?: Prisma.DiscussionBanOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PostInclude<ExtArgs> | null
-  where?: Prisma.PostWhereInput
-  orderBy?: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]
-  cursor?: Prisma.PostWhereUniqueInput
+  include?: Prisma.DiscussionBanInclude<ExtArgs> | null
+  where?: Prisma.DiscussionBanWhereInput
+  orderBy?: Prisma.DiscussionBanOrderByWithRelationInput | Prisma.DiscussionBanOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionBanWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
+  distinct?: Prisma.DiscussionBanScalarFieldEnum | Prisma.DiscussionBanScalarFieldEnum[]
 }
 
 /**
- * Profile.createdTeams
+ * Profile.discussionBans
  */
-export type Profile$createdTeamsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Profile$discussionBansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Team
+   * Select specific fields to fetch from the DiscussionBan
    */
-  select?: Prisma.TeamSelect<ExtArgs> | null
+  select?: Prisma.DiscussionBanSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Team
+   * Omit specific fields from the DiscussionBan
    */
-  omit?: Prisma.TeamOmit<ExtArgs> | null
+  omit?: Prisma.DiscussionBanOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.TeamInclude<ExtArgs> | null
-  where?: Prisma.TeamWhereInput
-  orderBy?: Prisma.TeamOrderByWithRelationInput | Prisma.TeamOrderByWithRelationInput[]
-  cursor?: Prisma.TeamWhereUniqueInput
+  include?: Prisma.DiscussionBanInclude<ExtArgs> | null
+  where?: Prisma.DiscussionBanWhereInput
+  orderBy?: Prisma.DiscussionBanOrderByWithRelationInput | Prisma.DiscussionBanOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionBanWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.TeamScalarFieldEnum | Prisma.TeamScalarFieldEnum[]
+  distinct?: Prisma.DiscussionBanScalarFieldEnum | Prisma.DiscussionBanScalarFieldEnum[]
 }
 
 /**
- * Profile.teamMemberships
+ * Profile.grantedModerators
  */
-export type Profile$teamMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Profile$grantedModeratorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the TeamMembership
+   * Select specific fields to fetch from the DiscussionModerator
    */
-  select?: Prisma.TeamMembershipSelect<ExtArgs> | null
+  select?: Prisma.DiscussionModeratorSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the TeamMembership
+   * Omit specific fields from the DiscussionModerator
    */
-  omit?: Prisma.TeamMembershipOmit<ExtArgs> | null
+  omit?: Prisma.DiscussionModeratorOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.TeamMembershipInclude<ExtArgs> | null
-  where?: Prisma.TeamMembershipWhereInput
-  orderBy?: Prisma.TeamMembershipOrderByWithRelationInput | Prisma.TeamMembershipOrderByWithRelationInput[]
-  cursor?: Prisma.TeamMembershipWhereUniqueInput
+  include?: Prisma.DiscussionModeratorInclude<ExtArgs> | null
+  where?: Prisma.DiscussionModeratorWhereInput
+  orderBy?: Prisma.DiscussionModeratorOrderByWithRelationInput | Prisma.DiscussionModeratorOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionModeratorWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.TeamMembershipScalarFieldEnum | Prisma.TeamMembershipScalarFieldEnum[]
+  distinct?: Prisma.DiscussionModeratorScalarFieldEnum | Prisma.DiscussionModeratorScalarFieldEnum[]
+}
+
+/**
+ * Profile.moderatorRoles
+ */
+export type Profile$moderatorRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscussionModerator
+   */
+  select?: Prisma.DiscussionModeratorSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscussionModerator
+   */
+  omit?: Prisma.DiscussionModeratorOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscussionModeratorInclude<ExtArgs> | null
+  where?: Prisma.DiscussionModeratorWhereInput
+  orderBy?: Prisma.DiscussionModeratorOrderByWithRelationInput | Prisma.DiscussionModeratorOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionModeratorWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscussionModeratorScalarFieldEnum | Prisma.DiscussionModeratorScalarFieldEnum[]
 }
 
 /**
@@ -3126,99 +3150,75 @@ export type Profile$discussionRepliesArgs<ExtArgs extends runtime.Types.Extensio
 }
 
 /**
- * Profile.moderatorRoles
+ * Profile.posts
  */
-export type Profile$moderatorRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Profile$postsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the DiscussionModerator
+   * Select specific fields to fetch from the Post
    */
-  select?: Prisma.DiscussionModeratorSelect<ExtArgs> | null
+  select?: Prisma.PostSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the DiscussionModerator
+   * Omit specific fields from the Post
    */
-  omit?: Prisma.DiscussionModeratorOmit<ExtArgs> | null
+  omit?: Prisma.PostOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.DiscussionModeratorInclude<ExtArgs> | null
-  where?: Prisma.DiscussionModeratorWhereInput
-  orderBy?: Prisma.DiscussionModeratorOrderByWithRelationInput | Prisma.DiscussionModeratorOrderByWithRelationInput[]
-  cursor?: Prisma.DiscussionModeratorWhereUniqueInput
+  include?: Prisma.PostInclude<ExtArgs> | null
+  where?: Prisma.PostWhereInput
+  orderBy?: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]
+  cursor?: Prisma.PostWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.DiscussionModeratorScalarFieldEnum | Prisma.DiscussionModeratorScalarFieldEnum[]
+  distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
 }
 
 /**
- * Profile.grantedModerators
+ * Profile.teamMemberships
  */
-export type Profile$grantedModeratorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Profile$teamMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the DiscussionModerator
+   * Select specific fields to fetch from the TeamMembership
    */
-  select?: Prisma.DiscussionModeratorSelect<ExtArgs> | null
+  select?: Prisma.TeamMembershipSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the DiscussionModerator
+   * Omit specific fields from the TeamMembership
    */
-  omit?: Prisma.DiscussionModeratorOmit<ExtArgs> | null
+  omit?: Prisma.TeamMembershipOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.DiscussionModeratorInclude<ExtArgs> | null
-  where?: Prisma.DiscussionModeratorWhereInput
-  orderBy?: Prisma.DiscussionModeratorOrderByWithRelationInput | Prisma.DiscussionModeratorOrderByWithRelationInput[]
-  cursor?: Prisma.DiscussionModeratorWhereUniqueInput
+  include?: Prisma.TeamMembershipInclude<ExtArgs> | null
+  where?: Prisma.TeamMembershipWhereInput
+  orderBy?: Prisma.TeamMembershipOrderByWithRelationInput | Prisma.TeamMembershipOrderByWithRelationInput[]
+  cursor?: Prisma.TeamMembershipWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.DiscussionModeratorScalarFieldEnum | Prisma.DiscussionModeratorScalarFieldEnum[]
+  distinct?: Prisma.TeamMembershipScalarFieldEnum | Prisma.TeamMembershipScalarFieldEnum[]
 }
 
 /**
- * Profile.discussionBans
+ * Profile.createdTeams
  */
-export type Profile$discussionBansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Profile$createdTeamsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the DiscussionBan
+   * Select specific fields to fetch from the Team
    */
-  select?: Prisma.DiscussionBanSelect<ExtArgs> | null
+  select?: Prisma.TeamSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the DiscussionBan
+   * Omit specific fields from the Team
    */
-  omit?: Prisma.DiscussionBanOmit<ExtArgs> | null
+  omit?: Prisma.TeamOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.DiscussionBanInclude<ExtArgs> | null
-  where?: Prisma.DiscussionBanWhereInput
-  orderBy?: Prisma.DiscussionBanOrderByWithRelationInput | Prisma.DiscussionBanOrderByWithRelationInput[]
-  cursor?: Prisma.DiscussionBanWhereUniqueInput
+  include?: Prisma.TeamInclude<ExtArgs> | null
+  where?: Prisma.TeamWhereInput
+  orderBy?: Prisma.TeamOrderByWithRelationInput | Prisma.TeamOrderByWithRelationInput[]
+  cursor?: Prisma.TeamWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.DiscussionBanScalarFieldEnum | Prisma.DiscussionBanScalarFieldEnum[]
-}
-
-/**
- * Profile.bannedUsers
- */
-export type Profile$bannedUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the DiscussionBan
-   */
-  select?: Prisma.DiscussionBanSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the DiscussionBan
-   */
-  omit?: Prisma.DiscussionBanOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.DiscussionBanInclude<ExtArgs> | null
-  where?: Prisma.DiscussionBanWhereInput
-  orderBy?: Prisma.DiscussionBanOrderByWithRelationInput | Prisma.DiscussionBanOrderByWithRelationInput[]
-  cursor?: Prisma.DiscussionBanWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.DiscussionBanScalarFieldEnum | Prisma.DiscussionBanScalarFieldEnum[]
+  distinct?: Prisma.TeamScalarFieldEnum | Prisma.TeamScalarFieldEnum[]
 }
 
 /**

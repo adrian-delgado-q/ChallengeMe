@@ -10,28 +10,119 @@ import {
 } from '../../prisma/prisma-generated-client/client';
 import { faker } from '@faker-js/faker';
 import activityTypes from './activityTypes';
+import dotenv from 'dotenv';
+import path from 'path';
+import { exit } from 'process';
+
+loadEnvironmentVariables();
 
 const prisma = new PrismaClient();
 
 async function main() {
 	console.log('Start seeding...');
 
-	// 1. Create Users (Profiles)
-	const users: Profile[] = await Promise.all(
-		Array.from({ length: 10 }).map(() =>
-			prisma.profile.create({
-				data: {
-					id: faker.string.uuid(),
-					username: faker.internet.userName(),
-					avatarUrl: faker.image.avatar(),
-				},
-			})
-		)
-	);
+	let users: Profile[] = [
+		{
+			id: '11457ad5-e9bd-4b1f-b9d1-11adbd8a2104',
+			username: 'Hosea.Douglas',
+			avatarUrl: 'https://cdn.jsdelivr.net/gh/faker-js/assets-person-portrait/male/512/31.jpg',
+			createdAt: new Date('2025-10-12T21:37:29.303Z'),
+			updatedAt: new Date('2025-10-12T21:37:29.303Z'),
+		},
+		{
+			id: 'e5b3afba-246c-446b-af30-7f1f614889ba',
+			username: 'Ramiro.Ledner',
+			avatarUrl: 'https://avatars.githubusercontent.com/u/65758055',
+			createdAt: new Date('2025-10-12T21:37:29.304Z'),
+			updatedAt: new Date('2025-10-12T21:37:29.304Z'),
+		},
+		{
+			id: 'f17bb1f3-4d9a-4237-9e25-35f72c9144f9',
+			username: 'Gregory.Rice',
+			avatarUrl: 'https://avatars.githubusercontent.com/u/80904485',
+			createdAt: new Date('2025-10-12T21:37:29.303Z'),
+			updatedAt: new Date('2025-10-12T21:37:29.303Z'),
+		},
+		{
+			id: '19a550d4-adf6-4aff-ac16-ff12bca6d41f',
+			username: 'Elisha_Langosh-Welch',
+			avatarUrl: 'https://avatars.githubusercontent.com/u/11715011',
+			createdAt: new Date('2025-10-12T21:37:29.303Z'),
+			updatedAt: new Date('2025-10-12T21:37:29.303Z'),
+		},
+		{
+			id: '1d78e5ab-b908-4df9-8f95-bbe527048a1e',
+			username: 'Landen60',
+			avatarUrl: 'https://cdn.jsdelivr.net/gh/faker-js/assets-person-portrait/male/512/31.jpg',
+			createdAt: new Date('2025-10-12T21:37:29.303Z'),
+			updatedAt: new Date('2025-10-12T21:37:29.303Z'),
+		},
+		{
+			id: '81c8f7bd-0988-4538-a4c9-374345d5eed0',
+			username: 'Terence99',
+			avatarUrl: 'https://avatars.githubusercontent.com/u/27516265',
+			createdAt: new Date('2025-10-12T21:37:29.303Z'),
+			updatedAt: new Date('2025-10-12T21:37:29.303Z'),
+		},
+		{
+			id: '7886a175-30e3-4977-a1e4-a9be5ecfbfc3',
+			username: 'Nedra11',
+			avatarUrl: 'https://cdn.jsdelivr.net/gh/faker-js/assets-person-portrait/male/512/55.jpg',
+			createdAt: new Date('2025-10-12T21:37:29.303Z'),
+			updatedAt: new Date('2025-10-12T21:37:29.303Z'),
+		},
+		{
+			id: '49bc61ac-1cfb-4c0b-bf03-988d83448587',
+			username: 'Kelley12',
+			avatarUrl: 'https://avatars.githubusercontent.com/u/18041784',
+			createdAt: new Date('2025-10-12T21:37:29.303Z'),
+			updatedAt: new Date('2025-10-12T21:37:29.303Z'),
+		},
+		{
+			id: 'ca89fa35-5338-4472-a32f-4d7419c30f9b',
+			username: 'Petra_McDermott',
+			avatarUrl: 'https://cdn.jsdelivr.net/gh/faker-js/assets-person-portrait/male/512/67.jpg',
+			createdAt: new Date('2025-10-12T21:37:29.303Z'),
+			updatedAt: new Date('2025-10-12T21:37:29.303Z'),
+		},
+		{
+			id: '98ecfa5d-41c8-41b0-91ad-0acbbfccb6af',
+			username: 'Ole_Schaefer',
+			avatarUrl: 'https://cdn.jsdelivr.net/gh/faker-js/assets-person-portrait/male/512/59.jpg',
+			createdAt: new Date('2025-10-12T21:37:29.303Z'),
+			updatedAt: new Date('2025-10-12T21:37:29.303Z'),
+		},
+	];
+	for (const user of users) {
+		try {
+			await prisma.profile.upsert({
+				where: { id: user.id },
+				update: user,
+				create: user,
+			});
+		} catch (error) {
+			console.error(`Error creating user ${user.username}:`, error);
+		}
+	}
+
 	console.log(`${users.length} users created.`);
 
 	// 2. Create ActivityTypes
-	console.log(`${activityTypes.length} activity types imported`);
+	console.log('Seeding activity types...');
+	for (const activityTypeData of activityTypes) {
+		try {
+			await prisma.activityType.upsert({
+				where: { name: activityTypeData.name },
+				update: activityTypeData,
+				create: activityTypeData,
+			});
+		} catch (error) {
+			console.error(`Error creating activity type ${activityTypeData.name}:`, error);
+		}
+	}
+	// Fetch all activity types with IDs
+	const dbActivityTypes: ActivityType[] = await prisma.activityType.findMany();
+	console.log(`${dbActivityTypes.length} activity types available`);
 
 	// 3. Create Challenges
 	const challenges: Challenge[] = await Promise.all(
@@ -54,6 +145,29 @@ async function main() {
 	);
 	console.log(`${challenges.length} challenges created.`);
 
+	// 3.5. Create ChallengeActivityTypes (define which activity types each challenge supports)
+	console.log('Creating challenge activity types...');
+	for (const challenge of challenges) {
+		// Each challenge supports 3-7 random activity types
+		const supportedActivityTypes = faker.helpers.arrayElements(
+			dbActivityTypes,
+			faker.number.int({ min: 3, max: 7 })
+		) as ActivityType[];
+
+		for (const activityType of supportedActivityTypes) {
+			await prisma.challengeActivityType.create({
+				data: {
+					challengeId: challenge.id,
+					activityTypeId: activityType.id,
+				},
+			});
+		}
+		console.log(
+			`Challenge "${challenge.title}" supports ${supportedActivityTypes.length} activity types`
+		);
+	}
+	console.log('Challenge activity types created.');
+
 	// 4. Create Teams
 	const teams: Team[] = await Promise.all(
 		Array.from({ length: 3 }).map(() =>
@@ -64,7 +178,7 @@ async function main() {
 					description: faker.lorem.sentence(),
 					avatarUrl: faker.image.url(),
 					isPublic: faker.datatype.boolean(),
-					sportsTypes: [(faker.helpers.arrayElement(activityTypes) as ActivityType).name],
+					sportsTypes: [(faker.helpers.arrayElement(dbActivityTypes) as ActivityType).name],
 				},
 			})
 		)
@@ -125,10 +239,11 @@ async function main() {
 	for (const challenge of challenges) {
 		const milestoneCount = faker.number.int({ min: 1, max: 3 });
 		for (let i = 0; i < milestoneCount; i++) {
+			const activityType = faker.helpers.arrayElement(dbActivityTypes) as ActivityType;
 			await prisma.milestone.create({
 				data: {
 					challengeId: challenge.id,
-					activityTypeId: (faker.helpers.arrayElement(activityTypes) as ActivityType).id,
+					activityTypeId: activityType.id,
 					name: faker.lorem.words(2),
 					description: faker.lorem.sentence(),
 					targetValue: faker.number.int({ min: 10, max: 1000 }),
@@ -140,82 +255,156 @@ async function main() {
 	console.log('Milestones created.');
 
 	// 8. Create Activities
-	const challengeParticipants: ChallengeParticipant[] = await prisma.challengeParticipant.findMany();
-	for (const participant of challengeParticipants) {
-		const activityCount = faker.number.int({ min: 1, max: 5 });
-		for (let i = 0; i < activityCount; i++) {
-			const challenge = challenges.find(c => c.id === participant.challengeId);
-			if (challenge) {
+	for (const challenge of challenges) {
+		const challengeParticipants: ChallengeParticipant[] = await prisma.challengeParticipant.findMany({
+			where: { challengeId: challenge.id },
+		});
+
+		console.log('The challenge has the followingg properties: ', { ...challenge });
+
+		console.log(
+			`Seeding activities for challenge ${challenge.id} with ${challengeParticipants.length} participants...`
+		);
+
+		if (challengeParticipants.length === 0) {
+			console.warn(`No participants found for challenge ${challenge.id}, skipping activity creation.`);
+			continue;
+		}
+
+		// Get the activity types supported by this challenge
+		const supportedActivityTypes = await prisma.challengeActivityType.findMany({
+			where: { challengeId: challenge.id },
+		});
+
+		supportedActivityTypes.map(cat => {
+			console.log(`The challenge supports the following activity types: `, { ...cat });
+		});
+
+		if (supportedActivityTypes.length === 0) {
+			console.warn(
+				`No supported activity types found for challenge ${challenge.id}, skipping activity creation.`
+			);
+			continue;
+		}
+
+		console.log(
+			`Challenge "${challenge.title}" supports ${supportedActivityTypes.length} activity types`
+		);
+
+		for (const participant of challengeParticipants) {
+			const activityCount = faker.number.int({ min: 1, max: 5 });
+			for (let i = 0; i < activityCount; i++) {
+				// Only use activity types that are supported by this challenge
+				const activityType = faker.helpers.arrayElement(supportedActivityTypes);
+
+				// For team challenges, pick a random team member to perform the activity
+				let profileId = participant.userId; // For individual challenges
+				if (challenge.challengeType === 'TEAM' && participant.teamId) {
+					// Get team members and pick one randomly
+					const teamMembers = await prisma.teamMembership.findMany({
+						where: { teamId: participant.teamId },
+					});
+					if (teamMembers.length > 0) {
+						const randomMember = faker.helpers.arrayElement(teamMembers);
+						profileId = randomMember.userId;
+					}
+				}
+
+				const data = {
+					id: faker.string.uuid(),
+					participantId: participant.id,
+					activityTypeId: activityType.activityTypeId,
+					value: faker.number.int({ min: 1, max: 100 }),
+					date: faker.date.between({ from: challenge.startDate, to: challenge.endDate }),
+					notes: faker.lorem.sentence(),
+					uploadedAt: faker.date.recent(),
+					profileId: profileId,
+					challengeId: challenge.id,
+				};
+
+				console.log(`Creating activity with the following data: `, { ...data });
 				await prisma.activity.create({
+					data: data,
+				});
+			}
+		}
+
+		console.log('Activities created.');
+
+		// 9. Create Posts and Comments
+		for (const participant of challengeParticipants) {
+			const postCount = faker.number.int({ min: 0, max: 2 });
+			for (let i = 0; i < postCount; i++) {
+				const post: Post = await prisma.post.create({
 					data: {
 						participantId: participant.id,
-						activityTypeId: (faker.helpers.arrayElement(activityTypes) as ActivityType).id,
-						value: faker.number.int({ min: 1, max: 100 }),
-						date: faker.date.between({ from: challenge.startDate, to: challenge.endDate }),
+						content: faker.lorem.paragraph(),
+						imageUrl: faker.datatype.boolean() ? faker.image.url() : undefined,
 						profileId: participant.userId,
 						challengeId: participant.challengeId,
 					},
 				});
+
+				const commentCount = faker.number.int({ min: 0, max: 3 });
+				for (let j = 0; j < commentCount; j++) {
+					await prisma.comment.create({
+						data: {
+							postId: post.id,
+							authorId: (faker.helpers.arrayElement(users) as Profile).id,
+							content: faker.lorem.sentence(),
+						},
+					});
+				}
 			}
 		}
-	}
-	console.log('Activities created.');
+		console.log('Posts and comments created.');
 
-	// 9. Create Posts and Comments
-	for (const participant of challengeParticipants) {
-		const postCount = faker.number.int({ min: 0, max: 2 });
-		for (let i = 0; i < postCount; i++) {
-			const post: Post = await prisma.post.create({
-				data: {
-					participantId: participant.id,
-					content: faker.lorem.paragraph(),
-					imageUrl: faker.datatype.boolean() ? faker.image.url() : undefined,
-					profileId: participant.userId,
-					challengeId: participant.challengeId,
-				},
-			});
-
-			const commentCount = faker.number.int({ min: 0, max: 3 });
-			for (let j = 0; j < commentCount; j++) {
-				await prisma.comment.create({
+		// 10. Create Discussion Posts and Replies
+		for (const challenge of challenges) {
+			const postCount = faker.number.int({ min: 1, max: 3 });
+			for (let i = 0; i < postCount; i++) {
+				const post: DiscussionPost = await prisma.discussionPost.create({
 					data: {
-						postId: post.id,
+						challengeId: challenge.id,
 						authorId: (faker.helpers.arrayElement(users) as Profile).id,
-						content: faker.lorem.sentence(),
+						content: faker.lorem.paragraph(),
 					},
 				});
+
+				const replyCount = faker.number.int({ min: 0, max: 4 });
+				for (let j = 0; j < replyCount; j++) {
+					await prisma.discussionReply.create({
+						data: {
+							postId: post.id,
+							authorId: (faker.helpers.arrayElement(users) as Profile).id,
+							content: faker.lorem.sentence(),
+						},
+					});
+				}
 			}
 		}
+		console.log('Discussion posts and replies created.');
+
+		console.log('Seeding finished.');
 	}
-	console.log('Posts and comments created.');
+}
 
-	// 10. Create Discussion Posts and Replies
-	for (const challenge of challenges) {
-		const postCount = faker.number.int({ min: 1, max: 3 });
-		for (let i = 0; i < postCount; i++) {
-			const post: DiscussionPost = await prisma.discussionPost.create({
-				data: {
-					challengeId: challenge.id,
-					authorId: (faker.helpers.arrayElement(users) as Profile).id,
-					content: faker.lorem.paragraph(),
-				},
-			});
-
-			const replyCount = faker.number.int({ min: 0, max: 4 });
-			for (let j = 0; j < replyCount; j++) {
-				await prisma.discussionReply.create({
-					data: {
-						postId: post.id,
-						authorId: (faker.helpers.arrayElement(users) as Profile).id,
-						content: faker.lorem.sentence(),
-					},
-				});
-			}
+function loadEnvironmentVariables() {
+	const backendRoot = path.resolve(__dirname, '../../..');
+	let envFile = '';
+	if (process.env.NODE_ENV === 'development') {
+		envFile = path.join(backendRoot, '.env/.env.development');
+	} else if (process.env.NODE_ENV === 'production') {
+		envFile = path.join(backendRoot, '.env/.env.production');
+	}
+	if (envFile) {
+		const result = dotenv.config({ path: envFile });
+		if (result.error) {
+			console.error('Error loading .env file:', result.error);
 		}
+	} else {
+		console.warn('No .env file loaded, unknown NODE_ENV:', process.env.NODE_ENV);
 	}
-	console.log('Discussion posts and replies created.');
-
-	console.log('Seeding finished.');
 }
 
 main()

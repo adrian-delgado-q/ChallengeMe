@@ -205,10 +205,10 @@ export type DiscussionReplyWhereInput = {
   isDeleted?: Prisma.BoolFilter<"DiscussionReply"> | boolean
   createdAt?: Prisma.DateTimeFilter<"DiscussionReply"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DiscussionReply"> | Date | string
-  post?: Prisma.XOR<Prisma.DiscussionPostScalarRelationFilter, Prisma.DiscussionPostWhereInput>
+  author?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
   parent?: Prisma.XOR<Prisma.DiscussionReplyNullableScalarRelationFilter, Prisma.DiscussionReplyWhereInput> | null
   replies?: Prisma.DiscussionReplyListRelationFilter
-  author?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
+  post?: Prisma.XOR<Prisma.DiscussionPostScalarRelationFilter, Prisma.DiscussionPostWhereInput>
 }
 
 export type DiscussionReplyOrderByWithRelationInput = {
@@ -220,10 +220,10 @@ export type DiscussionReplyOrderByWithRelationInput = {
   isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  post?: Prisma.DiscussionPostOrderByWithRelationInput
+  author?: Prisma.ProfileOrderByWithRelationInput
   parent?: Prisma.DiscussionReplyOrderByWithRelationInput
   replies?: Prisma.DiscussionReplyOrderByRelationAggregateInput
-  author?: Prisma.ProfileOrderByWithRelationInput
+  post?: Prisma.DiscussionPostOrderByWithRelationInput
 }
 
 export type DiscussionReplyWhereUniqueInput = Prisma.AtLeast<{
@@ -238,10 +238,10 @@ export type DiscussionReplyWhereUniqueInput = Prisma.AtLeast<{
   isDeleted?: Prisma.BoolFilter<"DiscussionReply"> | boolean
   createdAt?: Prisma.DateTimeFilter<"DiscussionReply"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DiscussionReply"> | Date | string
-  post?: Prisma.XOR<Prisma.DiscussionPostScalarRelationFilter, Prisma.DiscussionPostWhereInput>
+  author?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
   parent?: Prisma.XOR<Prisma.DiscussionReplyNullableScalarRelationFilter, Prisma.DiscussionReplyWhereInput> | null
   replies?: Prisma.DiscussionReplyListRelationFilter
-  author?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
+  post?: Prisma.XOR<Prisma.DiscussionPostScalarRelationFilter, Prisma.DiscussionPostWhereInput>
 }, "id">
 
 export type DiscussionReplyOrderByWithAggregationInput = {
@@ -278,10 +278,10 @@ export type DiscussionReplyCreateInput = {
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  post: Prisma.DiscussionPostCreateNestedOneWithoutRepliesInput
+  author: Prisma.ProfileCreateNestedOneWithoutDiscussionRepliesInput
   parent?: Prisma.DiscussionReplyCreateNestedOneWithoutRepliesInput
   replies?: Prisma.DiscussionReplyCreateNestedManyWithoutParentInput
-  author: Prisma.ProfileCreateNestedOneWithoutDiscussionRepliesInput
+  post: Prisma.DiscussionPostCreateNestedOneWithoutRepliesInput
 }
 
 export type DiscussionReplyUncheckedCreateInput = {
@@ -302,10 +302,10 @@ export type DiscussionReplyUpdateInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  post?: Prisma.DiscussionPostUpdateOneRequiredWithoutRepliesNestedInput
+  author?: Prisma.ProfileUpdateOneRequiredWithoutDiscussionRepliesNestedInput
   parent?: Prisma.DiscussionReplyUpdateOneWithoutRepliesNestedInput
   replies?: Prisma.DiscussionReplyUpdateManyWithoutParentNestedInput
-  author?: Prisma.ProfileUpdateOneRequiredWithoutDiscussionRepliesNestedInput
+  post?: Prisma.DiscussionPostUpdateOneRequiredWithoutRepliesNestedInput
 }
 
 export type DiscussionReplyUncheckedUpdateInput = {
@@ -546,9 +546,9 @@ export type DiscussionReplyCreateWithoutAuthorInput = {
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  post: Prisma.DiscussionPostCreateNestedOneWithoutRepliesInput
   parent?: Prisma.DiscussionReplyCreateNestedOneWithoutRepliesInput
   replies?: Prisma.DiscussionReplyCreateNestedManyWithoutParentInput
+  post: Prisma.DiscussionPostCreateNestedOneWithoutRepliesInput
 }
 
 export type DiscussionReplyUncheckedCreateWithoutAuthorInput = {
@@ -608,9 +608,9 @@ export type DiscussionReplyCreateWithoutPostInput = {
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  author: Prisma.ProfileCreateNestedOneWithoutDiscussionRepliesInput
   parent?: Prisma.DiscussionReplyCreateNestedOneWithoutRepliesInput
   replies?: Prisma.DiscussionReplyCreateNestedManyWithoutParentInput
-  author: Prisma.ProfileCreateNestedOneWithoutDiscussionRepliesInput
 }
 
 export type DiscussionReplyUncheckedCreateWithoutPostInput = {
@@ -656,9 +656,9 @@ export type DiscussionReplyCreateWithoutRepliesInput = {
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  post: Prisma.DiscussionPostCreateNestedOneWithoutRepliesInput
-  parent?: Prisma.DiscussionReplyCreateNestedOneWithoutRepliesInput
   author: Prisma.ProfileCreateNestedOneWithoutDiscussionRepliesInput
+  parent?: Prisma.DiscussionReplyCreateNestedOneWithoutRepliesInput
+  post: Prisma.DiscussionPostCreateNestedOneWithoutRepliesInput
 }
 
 export type DiscussionReplyUncheckedCreateWithoutRepliesInput = {
@@ -683,9 +683,9 @@ export type DiscussionReplyCreateWithoutParentInput = {
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  post: Prisma.DiscussionPostCreateNestedOneWithoutRepliesInput
-  replies?: Prisma.DiscussionReplyCreateNestedManyWithoutParentInput
   author: Prisma.ProfileCreateNestedOneWithoutDiscussionRepliesInput
+  replies?: Prisma.DiscussionReplyCreateNestedManyWithoutParentInput
+  post: Prisma.DiscussionPostCreateNestedOneWithoutRepliesInput
 }
 
 export type DiscussionReplyUncheckedCreateWithoutParentInput = {
@@ -726,9 +726,9 @@ export type DiscussionReplyUpdateWithoutRepliesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  post?: Prisma.DiscussionPostUpdateOneRequiredWithoutRepliesNestedInput
-  parent?: Prisma.DiscussionReplyUpdateOneWithoutRepliesNestedInput
   author?: Prisma.ProfileUpdateOneRequiredWithoutDiscussionRepliesNestedInput
+  parent?: Prisma.DiscussionReplyUpdateOneWithoutRepliesNestedInput
+  post?: Prisma.DiscussionPostUpdateOneRequiredWithoutRepliesNestedInput
 }
 
 export type DiscussionReplyUncheckedUpdateWithoutRepliesInput = {
@@ -774,9 +774,9 @@ export type DiscussionReplyUpdateWithoutAuthorInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  post?: Prisma.DiscussionPostUpdateOneRequiredWithoutRepliesNestedInput
   parent?: Prisma.DiscussionReplyUpdateOneWithoutRepliesNestedInput
   replies?: Prisma.DiscussionReplyUpdateManyWithoutParentNestedInput
+  post?: Prisma.DiscussionPostUpdateOneRequiredWithoutRepliesNestedInput
 }
 
 export type DiscussionReplyUncheckedUpdateWithoutAuthorInput = {
@@ -816,9 +816,9 @@ export type DiscussionReplyUpdateWithoutPostInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.ProfileUpdateOneRequiredWithoutDiscussionRepliesNestedInput
   parent?: Prisma.DiscussionReplyUpdateOneWithoutRepliesNestedInput
   replies?: Prisma.DiscussionReplyUpdateManyWithoutParentNestedInput
-  author?: Prisma.ProfileUpdateOneRequiredWithoutDiscussionRepliesNestedInput
 }
 
 export type DiscussionReplyUncheckedUpdateWithoutPostInput = {
@@ -858,9 +858,9 @@ export type DiscussionReplyUpdateWithoutParentInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  post?: Prisma.DiscussionPostUpdateOneRequiredWithoutRepliesNestedInput
-  replies?: Prisma.DiscussionReplyUpdateManyWithoutParentNestedInput
   author?: Prisma.ProfileUpdateOneRequiredWithoutDiscussionRepliesNestedInput
+  replies?: Prisma.DiscussionReplyUpdateManyWithoutParentNestedInput
+  post?: Prisma.DiscussionPostUpdateOneRequiredWithoutRepliesNestedInput
 }
 
 export type DiscussionReplyUncheckedUpdateWithoutParentInput = {
@@ -924,10 +924,10 @@ export type DiscussionReplySelect<ExtArgs extends runtime.Types.Extensions.Inter
   isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  post?: boolean | Prisma.DiscussionPostDefaultArgs<ExtArgs>
+  author?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
   replies?: boolean | Prisma.DiscussionReply$repliesArgs<ExtArgs>
-  author?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  post?: boolean | Prisma.DiscussionPostDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.DiscussionReplyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["discussionReply"]>
 
@@ -940,9 +940,9 @@ export type DiscussionReplySelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  post?: boolean | Prisma.DiscussionPostDefaultArgs<ExtArgs>
-  parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
   author?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
+  post?: boolean | Prisma.DiscussionPostDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["discussionReply"]>
 
 export type DiscussionReplySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -954,9 +954,9 @@ export type DiscussionReplySelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  post?: boolean | Prisma.DiscussionPostDefaultArgs<ExtArgs>
-  parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
   author?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
+  post?: boolean | Prisma.DiscussionPostDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["discussionReply"]>
 
 export type DiscussionReplySelectScalar = {
@@ -972,30 +972,30 @@ export type DiscussionReplySelectScalar = {
 
 export type DiscussionReplyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "postId" | "parentId" | "authorId" | "content" | "isDeleted" | "createdAt" | "updatedAt", ExtArgs["result"]["discussionReply"]>
 export type DiscussionReplyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  post?: boolean | Prisma.DiscussionPostDefaultArgs<ExtArgs>
+  author?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
   replies?: boolean | Prisma.DiscussionReply$repliesArgs<ExtArgs>
-  author?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  post?: boolean | Prisma.DiscussionPostDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.DiscussionReplyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DiscussionReplyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  post?: boolean | Prisma.DiscussionPostDefaultArgs<ExtArgs>
-  parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
   author?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
+  post?: boolean | Prisma.DiscussionPostDefaultArgs<ExtArgs>
 }
 export type DiscussionReplyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  post?: boolean | Prisma.DiscussionPostDefaultArgs<ExtArgs>
-  parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
   author?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
+  post?: boolean | Prisma.DiscussionPostDefaultArgs<ExtArgs>
 }
 
 export type $DiscussionReplyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "DiscussionReply"
   objects: {
-    post: Prisma.$DiscussionPostPayload<ExtArgs>
+    author: Prisma.$ProfilePayload<ExtArgs>
     parent: Prisma.$DiscussionReplyPayload<ExtArgs> | null
     replies: Prisma.$DiscussionReplyPayload<ExtArgs>[]
-    author: Prisma.$ProfilePayload<ExtArgs>
+    post: Prisma.$DiscussionPostPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1400,10 +1400,10 @@ readonly fields: DiscussionReplyFieldRefs;
  */
 export interface Prisma__DiscussionReplyClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  post<T extends Prisma.DiscussionPostDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DiscussionPostDefaultArgs<ExtArgs>>): Prisma.Prisma__DiscussionPostClient<runtime.Types.Result.GetResult<Prisma.$DiscussionPostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  author<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   parent<T extends Prisma.DiscussionReply$parentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DiscussionReply$parentArgs<ExtArgs>>): Prisma.Prisma__DiscussionReplyClient<runtime.Types.Result.GetResult<Prisma.$DiscussionReplyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   replies<T extends Prisma.DiscussionReply$repliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DiscussionReply$repliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  author<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  post<T extends Prisma.DiscussionPostDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DiscussionPostDefaultArgs<ExtArgs>>): Prisma.Prisma__DiscussionPostClient<runtime.Types.Result.GetResult<Prisma.$DiscussionPostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

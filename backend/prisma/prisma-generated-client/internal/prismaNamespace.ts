@@ -409,7 +409,8 @@ export const ModelName = {
   DiscussionPost: 'DiscussionPost',
   DiscussionReply: 'DiscussionReply',
   DiscussionModerator: 'DiscussionModerator',
-  DiscussionBan: 'DiscussionBan'
+  DiscussionBan: 'DiscussionBan',
+  schema_migrations: 'schema_migrations'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -425,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "profile" | "team" | "teamMembership" | "challenge" | "challengeActivityType" | "milestone" | "milestoneProgress" | "challengeParticipant" | "activityType" | "activity" | "post" | "comment" | "discussionPost" | "discussionReply" | "discussionModerator" | "discussionBan"
+    modelProps: "profile" | "team" | "teamMembership" | "challenge" | "challengeActivityType" | "milestone" | "milestoneProgress" | "challengeParticipant" | "activityType" | "activity" | "post" | "comment" | "discussionPost" | "discussionReply" | "discussionModerator" | "discussionBan" | "schema_migrations"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1613,6 +1614,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    schema_migrations: {
+      payload: Prisma.$schema_migrationsPayload<ExtArgs>
+      fields: Prisma.schema_migrationsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.schema_migrationsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$schema_migrationsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.schema_migrationsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$schema_migrationsPayload>
+        }
+        findFirst: {
+          args: Prisma.schema_migrationsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$schema_migrationsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.schema_migrationsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$schema_migrationsPayload>
+        }
+        findMany: {
+          args: Prisma.schema_migrationsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$schema_migrationsPayload>[]
+        }
+        create: {
+          args: Prisma.schema_migrationsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$schema_migrationsPayload>
+        }
+        createMany: {
+          args: Prisma.schema_migrationsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.schema_migrationsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$schema_migrationsPayload>[]
+        }
+        delete: {
+          args: Prisma.schema_migrationsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$schema_migrationsPayload>
+        }
+        update: {
+          args: Prisma.schema_migrationsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$schema_migrationsPayload>
+        }
+        deleteMany: {
+          args: Prisma.schema_migrationsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.schema_migrationsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.schema_migrationsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$schema_migrationsPayload>[]
+        }
+        upsert: {
+          args: Prisma.schema_migrationsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$schema_migrationsPayload>
+        }
+        aggregate: {
+          args: Prisma.Schema_migrationsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSchema_migrations>
+        }
+        groupBy: {
+          args: Prisma.schema_migrationsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Schema_migrationsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.schema_migrationsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Schema_migrationsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1873,6 +1948,13 @@ export const DiscussionBanScalarFieldEnum = {
 export type DiscussionBanScalarFieldEnum = (typeof DiscussionBanScalarFieldEnum)[keyof typeof DiscussionBanScalarFieldEnum]
 
 
+export const Schema_migrationsScalarFieldEnum = {
+  version: 'version'
+} as const
+
+export type Schema_migrationsScalarFieldEnum = (typeof Schema_migrationsScalarFieldEnum)[keyof typeof Schema_migrationsScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2112,6 +2194,7 @@ export type GlobalOmitConfig = {
   discussionReply?: Prisma.DiscussionReplyOmit
   discussionModerator?: Prisma.DiscussionModeratorOmit
   discussionBan?: Prisma.DiscussionBanOmit
+  schema_migrations?: Prisma.schema_migrationsOmit
 }
 
 /* Types for Logging */

@@ -165,16 +165,16 @@ export type ChallengeActivityTypeWhereInput = {
   id?: Prisma.UuidFilter<"ChallengeActivityType"> | string
   challengeId?: Prisma.UuidFilter<"ChallengeActivityType"> | string
   activityTypeId?: Prisma.UuidFilter<"ChallengeActivityType"> | string
-  challenge?: Prisma.XOR<Prisma.ChallengeScalarRelationFilter, Prisma.ChallengeWhereInput>
   activityType?: Prisma.XOR<Prisma.ActivityTypeScalarRelationFilter, Prisma.ActivityTypeWhereInput>
+  challenge?: Prisma.XOR<Prisma.ChallengeScalarRelationFilter, Prisma.ChallengeWhereInput>
 }
 
 export type ChallengeActivityTypeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   challengeId?: Prisma.SortOrder
   activityTypeId?: Prisma.SortOrder
-  challenge?: Prisma.ChallengeOrderByWithRelationInput
   activityType?: Prisma.ActivityTypeOrderByWithRelationInput
+  challenge?: Prisma.ChallengeOrderByWithRelationInput
 }
 
 export type ChallengeActivityTypeWhereUniqueInput = Prisma.AtLeast<{
@@ -185,8 +185,8 @@ export type ChallengeActivityTypeWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ChallengeActivityTypeWhereInput | Prisma.ChallengeActivityTypeWhereInput[]
   challengeId?: Prisma.UuidFilter<"ChallengeActivityType"> | string
   activityTypeId?: Prisma.UuidFilter<"ChallengeActivityType"> | string
-  challenge?: Prisma.XOR<Prisma.ChallengeScalarRelationFilter, Prisma.ChallengeWhereInput>
   activityType?: Prisma.XOR<Prisma.ActivityTypeScalarRelationFilter, Prisma.ActivityTypeWhereInput>
+  challenge?: Prisma.XOR<Prisma.ChallengeScalarRelationFilter, Prisma.ChallengeWhereInput>
 }, "id" | "challengeId_activityTypeId">
 
 export type ChallengeActivityTypeOrderByWithAggregationInput = {
@@ -209,8 +209,8 @@ export type ChallengeActivityTypeScalarWhereWithAggregatesInput = {
 
 export type ChallengeActivityTypeCreateInput = {
   id?: string
-  challenge: Prisma.ChallengeCreateNestedOneWithoutSupportedActivitiesInput
   activityType: Prisma.ActivityTypeCreateNestedOneWithoutChallengesInput
+  challenge: Prisma.ChallengeCreateNestedOneWithoutSupportedActivitiesInput
 }
 
 export type ChallengeActivityTypeUncheckedCreateInput = {
@@ -221,8 +221,8 @@ export type ChallengeActivityTypeUncheckedCreateInput = {
 
 export type ChallengeActivityTypeUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  challenge?: Prisma.ChallengeUpdateOneRequiredWithoutSupportedActivitiesNestedInput
   activityType?: Prisma.ActivityTypeUpdateOneRequiredWithoutChallengesNestedInput
+  challenge?: Prisma.ChallengeUpdateOneRequiredWithoutSupportedActivitiesNestedInput
 }
 
 export type ChallengeActivityTypeUncheckedUpdateInput = {
@@ -491,24 +491,24 @@ export type ChallengeActivityTypeSelect<ExtArgs extends runtime.Types.Extensions
   id?: boolean
   challengeId?: boolean
   activityTypeId?: boolean
-  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   activityType?: boolean | Prisma.ActivityTypeDefaultArgs<ExtArgs>
+  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["challengeActivityType"]>
 
 export type ChallengeActivityTypeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   challengeId?: boolean
   activityTypeId?: boolean
-  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   activityType?: boolean | Prisma.ActivityTypeDefaultArgs<ExtArgs>
+  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["challengeActivityType"]>
 
 export type ChallengeActivityTypeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   challengeId?: boolean
   activityTypeId?: boolean
-  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   activityType?: boolean | Prisma.ActivityTypeDefaultArgs<ExtArgs>
+  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["challengeActivityType"]>
 
 export type ChallengeActivityTypeSelectScalar = {
@@ -519,23 +519,23 @@ export type ChallengeActivityTypeSelectScalar = {
 
 export type ChallengeActivityTypeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "challengeId" | "activityTypeId", ExtArgs["result"]["challengeActivityType"]>
 export type ChallengeActivityTypeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   activityType?: boolean | Prisma.ActivityTypeDefaultArgs<ExtArgs>
+  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
 }
 export type ChallengeActivityTypeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   activityType?: boolean | Prisma.ActivityTypeDefaultArgs<ExtArgs>
+  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
 }
 export type ChallengeActivityTypeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   activityType?: boolean | Prisma.ActivityTypeDefaultArgs<ExtArgs>
+  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
 }
 
 export type $ChallengeActivityTypePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ChallengeActivityType"
   objects: {
-    challenge: Prisma.$ChallengePayload<ExtArgs>
     activityType: Prisma.$ActivityTypePayload<ExtArgs>
+    challenge: Prisma.$ChallengePayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -935,8 +935,8 @@ readonly fields: ChallengeActivityTypeFieldRefs;
  */
 export interface Prisma__ChallengeActivityTypeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  challenge<T extends Prisma.ChallengeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChallengeDefaultArgs<ExtArgs>>): Prisma.Prisma__ChallengeClient<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   activityType<T extends Prisma.ActivityTypeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityTypeDefaultArgs<ExtArgs>>): Prisma.Prisma__ActivityTypeClient<runtime.Types.Result.GetResult<Prisma.$ActivityTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  challenge<T extends Prisma.ChallengeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChallengeDefaultArgs<ExtArgs>>): Prisma.Prisma__ChallengeClient<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

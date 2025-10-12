@@ -272,8 +272,8 @@ export type TeamWhereInput = {
   memberCount?: Prisma.IntFilter<"Team"> | number
   sportsTypes?: Prisma.StringNullableListFilter<"Team">
   challengeEntries?: Prisma.ChallengeParticipantListRelationFilter
-  creator?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
   teamMemberships?: Prisma.TeamMembershipListRelationFilter
+  creator?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
 }
 
 export type TeamOrderByWithRelationInput = {
@@ -290,8 +290,8 @@ export type TeamOrderByWithRelationInput = {
   memberCount?: Prisma.SortOrder
   sportsTypes?: Prisma.SortOrder
   challengeEntries?: Prisma.ChallengeParticipantOrderByRelationAggregateInput
-  creator?: Prisma.ProfileOrderByWithRelationInput
   teamMemberships?: Prisma.TeamMembershipOrderByRelationAggregateInput
+  creator?: Prisma.ProfileOrderByWithRelationInput
 }
 
 export type TeamWhereUniqueInput = Prisma.AtLeast<{
@@ -311,8 +311,8 @@ export type TeamWhereUniqueInput = Prisma.AtLeast<{
   memberCount?: Prisma.IntFilter<"Team"> | number
   sportsTypes?: Prisma.StringNullableListFilter<"Team">
   challengeEntries?: Prisma.ChallengeParticipantListRelationFilter
-  creator?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
   teamMemberships?: Prisma.TeamMembershipListRelationFilter
+  creator?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
 }, "id">
 
 export type TeamOrderByWithAggregationInput = {
@@ -366,8 +366,8 @@ export type TeamCreateInput = {
   memberCount?: number
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutTeamInput
-  creator: Prisma.ProfileCreateNestedOneWithoutCreatedTeamsInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutTeamInput
+  creator: Prisma.ProfileCreateNestedOneWithoutCreatedTeamsInput
 }
 
 export type TeamUncheckedCreateInput = {
@@ -400,8 +400,8 @@ export type TeamUpdateInput = {
   memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutTeamNestedInput
-  creator?: Prisma.ProfileUpdateOneRequiredWithoutCreatedTeamsNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutTeamNestedInput
+  creator?: Prisma.ProfileUpdateOneRequiredWithoutCreatedTeamsNestedInput
 }
 
 export type TeamUncheckedUpdateInput = {
@@ -819,8 +819,8 @@ export type TeamCreateWithoutChallengeEntriesInput = {
   maxMembers?: number | null
   memberCount?: number
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
-  creator: Prisma.ProfileCreateNestedOneWithoutCreatedTeamsInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutTeamInput
+  creator: Prisma.ProfileCreateNestedOneWithoutCreatedTeamsInput
 }
 
 export type TeamUncheckedCreateWithoutChallengeEntriesInput = {
@@ -867,8 +867,8 @@ export type TeamUpdateWithoutChallengeEntriesInput = {
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
-  creator?: Prisma.ProfileUpdateOneRequiredWithoutCreatedTeamsNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutTeamNestedInput
+  creator?: Prisma.ProfileUpdateOneRequiredWithoutCreatedTeamsNestedInput
 }
 
 export type TeamUncheckedUpdateWithoutChallengeEntriesInput = {
@@ -1001,8 +1001,8 @@ export type TeamSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   memberCount?: boolean
   sportsTypes?: boolean
   challengeEntries?: boolean | Prisma.Team$challengeEntriesArgs<ExtArgs>
-  creator?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   teamMemberships?: boolean | Prisma.Team$teamMembershipsArgs<ExtArgs>
+  creator?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.TeamCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["team"]>
 
@@ -1056,8 +1056,8 @@ export type TeamSelectScalar = {
 export type TeamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "name" | "description" | "avatarUrl" | "isPublic" | "accessCode" | "createdAt" | "expiresAt" | "maxMembers" | "memberCount" | "sportsTypes", ExtArgs["result"]["team"]>
 export type TeamInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   challengeEntries?: boolean | Prisma.Team$challengeEntriesArgs<ExtArgs>
-  creator?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   teamMemberships?: boolean | Prisma.Team$teamMembershipsArgs<ExtArgs>
+  creator?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.TeamCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TeamIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1071,8 +1071,8 @@ export type $TeamPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "Team"
   objects: {
     challengeEntries: Prisma.$ChallengeParticipantPayload<ExtArgs>[]
-    creator: Prisma.$ProfilePayload<ExtArgs>
     teamMemberships: Prisma.$TeamMembershipPayload<ExtArgs>[]
+    creator: Prisma.$ProfilePayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1482,8 +1482,8 @@ readonly fields: TeamFieldRefs;
 export interface Prisma__TeamClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   challengeEntries<T extends Prisma.Team$challengeEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$challengeEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengeParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  creator<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   teamMemberships<T extends Prisma.Team$teamMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$teamMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  creator<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

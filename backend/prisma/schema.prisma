@@ -15,20 +15,18 @@ model Profile {
   createdAt         DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt         DateTime               @updatedAt @map("updated_at") @db.Timestamptz(6)
   activities        Activity[]
-  createdChallenges Challenge[]            @relation("ChallengeCreator")
   challengeEntries  ChallengeParticipant[]
+  createdChallenges Challenge[]            @relation("ChallengeCreator")
   comments          Comment[]
-  posts             Post[]
-  createdTeams      Team[]                 @relation("TeamCreator")
-  teamMemberships   TeamMembership[]
-
-  // Discussion relations
+  bannedUsers       DiscussionBan[]        @relation("BannedUsers")
+  discussionBans    DiscussionBan[]
+  grantedModerators DiscussionModerator[]  @relation("GrantedModerators")
+  moderatorRoles    DiscussionModerator[]
   discussionPosts   DiscussionPost[]
   discussionReplies DiscussionReply[]
-  moderatorRoles    DiscussionModerator[]
-  grantedModerators DiscussionModerator[] @relation("GrantedModerators")
-  discussionBans    DiscussionBan[]
-  bannedUsers       DiscussionBan[]       @relation("BannedUsers")
+  posts             Post[]
+  teamMemberships   TeamMembership[]
+  createdTeams      Team[]                 @relation("TeamCreator")
 
   @@map("profiles")
 }
@@ -40,15 +38,15 @@ model Team {
   description      String?
   avatarUrl        String?
   isPublic         Boolean                @default(true)
-  accessCode       String? // Optional access code for private teams
+  accessCode       String?
   createdAt        DateTime               @default(now()) @db.Timestamptz(6)
   expiresAt        DateTime?              @db.Timestamptz(6)
   maxMembers       Int?
-  memberCount      Int                    @default(0) // Add this field that triggers maintain
+  memberCount      Int                    @default(0)
   sportsTypes      String[]
   challengeEntries ChallengeParticipant[]
-  creator          Profile                @relation("TeamCreator", fields: [creatorId], references: [id])
   teamMemberships  TeamMembership[]
+  creator          Profile                @relation("TeamCreator", fields: [creatorId], references: [id])
 
   @@map("teams")
 }
@@ -68,34 +66,32 @@ model TeamMembership {
 }
 
 model Challenge {
-  id                  String                   @id @default(uuid()) @db.Uuid
-  creatorId           String                   @db.Uuid
-  title               String
-  description         String?
-  instructions        String? // Detailed instructions for the challenge
-  imageUrl            String? // Challenge image for cards and detail pages
-  challengeType       ChallengeParticipantType @default(INDIVIDUAL)
-  maxParticipants     Int?
-  participantCount    Int                      @default(0) // Add this field that triggers maintain
-  startDate           DateTime                 @db.Date
-  endDate             DateTime                 @db.Date
-  isPublic            Boolean                  @default(true)
-  accessCode          String? // Optional access code for private challenges
-  createdAt           DateTime                 @default(now()) @db.Timestamptz(6)
-  expiresAt           DateTime?                @db.Timestamptz(6)
-  maxTeamSize         Int?
-  status              ChallengeStatus          @default(ACTIVE)
-  activities          Activity[]
-  creator             Profile                  @relation("ChallengeCreator", fields: [creatorId], references: [id])
-  participants        ChallengeParticipant[]
-  milestones          Milestone[]
-  posts               Post[]
-  supportedActivities ChallengeActivityType[] // Many-to-many relation for supported activity types
-
-  // Discussion relations
-  discussionPosts      DiscussionPost[]
-  discussionModerators DiscussionModerator[]
+  id                   String                   @id @default(uuid()) @db.Uuid
+  creatorId            String                   @db.Uuid
+  title                String
+  description          String?
+  instructions         String?
+  imageUrl             String?
+  challengeType        ChallengeParticipantType @default(INDIVIDUAL)
+  maxParticipants      Int?
+  participantCount     Int                      @default(0)
+  startDate            DateTime                 @db.Date
+  endDate              DateTime                 @db.Date
+  isPublic             Boolean                  @default(true)
+  accessCode           String?
+  createdAt            DateTime                 @default(now()) @db.Timestamptz(6)
+  expiresAt            DateTime?                @db.Timestamptz(6)
+  maxTeamSize          Int?
+  status               ChallengeStatus          @default(ACTIVE)
+  activities           Activity[]
+  supportedActivities  ChallengeActivityType[]
+  participants         ChallengeParticipant[]
+  creator              Profile                  @relation("ChallengeCreator", fields: [creatorId], references: [id])
   discussionBans       DiscussionBan[]
+  discussionModerators DiscussionModerator[]
+  discussionPosts      DiscussionPost[]
+  milestones           Milestone[]
+  posts                Post[]
 
   @@index([creatorId, status], map: "idx_challenge_creator_status")
   @@index([status], map: "idx_challenge_status")
@@ -106,8 +102,8 @@ model ChallengeActivityType {
   id             String       @id @default(uuid()) @db.Uuid
   challengeId    String       @db.Uuid
   activityTypeId String       @db.Uuid
-  challenge      Challenge    @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
+  challenge      Challenge    @relation(fields: [challengeId], references: [id], onDelete: Cascade)
 
   @@unique([challengeId, activityTypeId])
   @@map("challenge_activity_types")
@@ -116,15 +112,15 @@ model ChallengeActivityType {
 model Milestone {
   id                  String              @id @default(uuid()) @db.Uuid
   challengeId         String              @db.Uuid
-  activityTypeId      String              @db.Uuid // Which activity type this milestone is for
+  activityTypeId      String              @db.Uuid
   name                String
   description         String?
-  targetValue         Float // Target value in the activity's unit
+  targetValue         Float
   order               Int
   createdAt           DateTime            @default(now()) @db.Timestamptz(6)
+  participantProgress MilestoneProgress[]
   activityType        ActivityType        @relation(fields: [activityTypeId], references: [id])
   challenge           Challenge           @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  participantProgress MilestoneProgress[]
 
   @@map("milestones")
 }
@@ -158,8 +154,6 @@ model ChallengeParticipant {
   milestoneProgress MilestoneProgress[]
   posts             Post[]
 
-  // Partial unique constraints for preventing duplicate participations
-  // Note: These are implemented as partial unique indexes in SQL since Prisma doesn't support conditional unique constraints
   @@index([challengeId, userId], map: "idx_challengeparticipant_challengeid_userid_unique")
   @@index([challengeId, teamId], map: "idx_challengeparticipant_challengeid_teamid_unique")
   @@map("challenge_participants")
@@ -167,16 +161,16 @@ model ChallengeParticipant {
 
 model ActivityType {
   id          String                  @id @default(uuid()) @db.Uuid
-  name        String                  @unique // e.g., "Running", "Cycling", "Push-ups", "Meditation"
-  category    String // e.g., "Cardio", "Strength", "Flexibility", "Mindfulness"
-  unit        String // e.g., "km", "minutes", "reps", "sets"
-  unitLabel   String // e.g., "kilometers", "minutes", "repetitions", "sets"
+  name        String                  @unique
+  category    String
+  unit        String
+  unitLabel   String
   description String?
   isActive    Boolean                 @default(true)
   createdAt   DateTime                @default(now()) @db.Timestamptz(6)
   activities  Activity[]
-  milestones  Milestone[]
   challenges  ChallengeActivityType[]
+  milestones  Milestone[]
 
   @@map("activity_types")
 }
@@ -185,7 +179,7 @@ model Activity {
   id             String               @id @default(uuid()) @db.Uuid
   participantId  String               @db.Uuid
   activityTypeId String               @db.Uuid
-  value          Float // The numeric value (distance, time, reps, etc.)
+  value          Float
   notes          String?
   date           DateTime             @db.Date
   uploadedAt     DateTime             @default(now()) @db.Timestamptz(6)
@@ -228,45 +222,43 @@ model Comment {
 }
 
 model DiscussionPost {
-  id          String    @id @default(uuid()) @db.Uuid
-  challengeId String    @db.Uuid
-  authorId    String    @db.Uuid
+  id          String            @id @default(uuid()) @db.Uuid
+  challengeId String            @db.Uuid
+  authorId    String            @db.Uuid
   content     String
-  isPinned    Boolean   @default(false)
-  isDeleted   Boolean   @default(false)
-  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
-  replyCount  Int       @default(0)
-  lastReplyAt DateTime? @db.Timestamptz(6)
-
-  // Relations
-  challenge Challenge         @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  author    Profile           @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  replies   DiscussionReply[]
+  isPinned    Boolean           @default(false)
+  isDeleted   Boolean           @default(false)
+  createdAt   DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime          @default(now()) @updatedAt @db.Timestamptz(6)
+  replyCount  Int               @default(0)
+  lastReplyAt DateTime?         @db.Timestamptz(6)
+  author      Profile           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  challenge   Challenge         @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  replies     DiscussionReply[]
 
   @@index([challengeId, createdAt])
   @@index([challengeId, isPinned, createdAt])
+  @@index([challengeId, authorId], map: "idx_discussion_posts_challenge_author")
   @@map("discussion_posts")
 }
 
 model DiscussionReply {
-  id        String   @id @default(uuid()) @db.Uuid
-  postId    String   @db.Uuid
-  parentId  String?  @db.Uuid // For nested replies
-  authorId  String   @db.Uuid
+  id        String            @id @default(uuid()) @db.Uuid
+  postId    String            @db.Uuid
+  parentId  String?           @db.Uuid
+  authorId  String            @db.Uuid
   content   String
-  isDeleted Boolean  @default(false)
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(6)
-
-  // Relations
-  post    DiscussionPost    @relation(fields: [postId], references: [id], onDelete: Cascade)
-  parent  DiscussionReply?  @relation("ReplyThread", fields: [parentId], references: [id], onDelete: Cascade)
-  replies DiscussionReply[] @relation("ReplyThread")
-  author  Profile           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  isDeleted Boolean           @default(false)
+  createdAt DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime          @default(now()) @updatedAt @db.Timestamptz(6)
+  author    Profile           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent    DiscussionReply?  @relation("ReplyThread", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   DiscussionReply[] @relation("ReplyThread")
+  post      DiscussionPost    @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@index([postId, createdAt])
   @@index([parentId, createdAt])
+  @@index([postId, authorId], map: "idx_discussion_replies_post_author")
   @@map("discussion_replies")
 }
 
@@ -277,13 +269,12 @@ model DiscussionModerator {
   role        ModeratorRole @default(MODERATOR)
   grantedAt   DateTime      @default(now()) @db.Timestamptz(6)
   grantedById String        @db.Uuid
-
-  // Relations
-  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  user      Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  grantedBy Profile   @relation("GrantedModerators", fields: [grantedById], references: [id])
+  challenge   Challenge     @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  grantedBy   Profile       @relation("GrantedModerators", fields: [grantedById], references: [id])
+  user        Profile       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([challengeId, userId])
+  @@index([challengeId, userId], map: "idx_discussion_moderators_challenge_user")
   @@map("discussion_moderators")
 }
 
@@ -293,18 +284,21 @@ model DiscussionBan {
   userId      String    @db.Uuid
   reason      String?
   bannedAt    DateTime  @default(now()) @db.Timestamptz(6)
-  expiresAt   DateTime? @db.Timestamptz(6) // null = permanent ban
+  expiresAt   DateTime? @db.Timestamptz(6)
   bannedById  String    @db.Uuid
   isActive    Boolean   @default(true)
+  bannedBy    Profile   @relation("BannedUsers", fields: [bannedById], references: [id])
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  user        Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // Relations
-  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  user      Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bannedBy  Profile   @relation("BannedUsers", fields: [bannedById], references: [id])
-
-  @@unique([challengeId, userId, isActive]) // Only one active ban per user per challenge
+  @@unique([challengeId, userId, isActive])
   @@index([challengeId, isActive])
+  @@index([challengeId, userId, isActive], map: "idx_discussion_bans_challenge_user_active")
   @@map("discussion_bans")
+}
+
+model schema_migrations {
+  version String @id @db.VarChar
 }
 
 enum TeamRole {

@@ -255,8 +255,8 @@ export type DiscussionPostWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"DiscussionPost"> | Date | string
   replyCount?: Prisma.IntFilter<"DiscussionPost"> | number
   lastReplyAt?: Prisma.DateTimeNullableFilter<"DiscussionPost"> | Date | string | null
-  challenge?: Prisma.XOR<Prisma.ChallengeScalarRelationFilter, Prisma.ChallengeWhereInput>
   author?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
+  challenge?: Prisma.XOR<Prisma.ChallengeScalarRelationFilter, Prisma.ChallengeWhereInput>
   replies?: Prisma.DiscussionReplyListRelationFilter
 }
 
@@ -271,8 +271,8 @@ export type DiscussionPostOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   replyCount?: Prisma.SortOrder
   lastReplyAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  challenge?: Prisma.ChallengeOrderByWithRelationInput
   author?: Prisma.ProfileOrderByWithRelationInput
+  challenge?: Prisma.ChallengeOrderByWithRelationInput
   replies?: Prisma.DiscussionReplyOrderByRelationAggregateInput
 }
 
@@ -290,8 +290,8 @@ export type DiscussionPostWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"DiscussionPost"> | Date | string
   replyCount?: Prisma.IntFilter<"DiscussionPost"> | number
   lastReplyAt?: Prisma.DateTimeNullableFilter<"DiscussionPost"> | Date | string | null
-  challenge?: Prisma.XOR<Prisma.ChallengeScalarRelationFilter, Prisma.ChallengeWhereInput>
   author?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
+  challenge?: Prisma.XOR<Prisma.ChallengeScalarRelationFilter, Prisma.ChallengeWhereInput>
   replies?: Prisma.DiscussionReplyListRelationFilter
 }, "id">
 
@@ -338,8 +338,8 @@ export type DiscussionPostCreateInput = {
   updatedAt?: Date | string
   replyCount?: number
   lastReplyAt?: Date | string | null
-  challenge: Prisma.ChallengeCreateNestedOneWithoutDiscussionPostsInput
   author: Prisma.ProfileCreateNestedOneWithoutDiscussionPostsInput
+  challenge: Prisma.ChallengeCreateNestedOneWithoutDiscussionPostsInput
   replies?: Prisma.DiscussionReplyCreateNestedManyWithoutPostInput
 }
 
@@ -366,8 +366,8 @@ export type DiscussionPostUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replyCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastReplyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  challenge?: Prisma.ChallengeUpdateOneRequiredWithoutDiscussionPostsNestedInput
   author?: Prisma.ProfileUpdateOneRequiredWithoutDiscussionPostsNestedInput
+  challenge?: Prisma.ChallengeUpdateOneRequiredWithoutDiscussionPostsNestedInput
   replies?: Prisma.DiscussionReplyUpdateManyWithoutPostNestedInput
 }
 
@@ -711,8 +711,8 @@ export type DiscussionPostCreateWithoutRepliesInput = {
   updatedAt?: Date | string
   replyCount?: number
   lastReplyAt?: Date | string | null
-  challenge: Prisma.ChallengeCreateNestedOneWithoutDiscussionPostsInput
   author: Prisma.ProfileCreateNestedOneWithoutDiscussionPostsInput
+  challenge: Prisma.ChallengeCreateNestedOneWithoutDiscussionPostsInput
 }
 
 export type DiscussionPostUncheckedCreateWithoutRepliesInput = {
@@ -753,8 +753,8 @@ export type DiscussionPostUpdateWithoutRepliesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replyCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastReplyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  challenge?: Prisma.ChallengeUpdateOneRequiredWithoutDiscussionPostsNestedInput
   author?: Prisma.ProfileUpdateOneRequiredWithoutDiscussionPostsNestedInput
+  challenge?: Prisma.ChallengeUpdateOneRequiredWithoutDiscussionPostsNestedInput
 }
 
 export type DiscussionPostUncheckedUpdateWithoutRepliesInput = {
@@ -912,8 +912,8 @@ export type DiscussionPostSelect<ExtArgs extends runtime.Types.Extensions.Intern
   updatedAt?: boolean
   replyCount?: boolean
   lastReplyAt?: boolean
-  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   author?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   replies?: boolean | Prisma.DiscussionPost$repliesArgs<ExtArgs>
   _count?: boolean | Prisma.DiscussionPostCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["discussionPost"]>
@@ -929,8 +929,8 @@ export type DiscussionPostSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   updatedAt?: boolean
   replyCount?: boolean
   lastReplyAt?: boolean
-  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   author?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["discussionPost"]>
 
 export type DiscussionPostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -944,8 +944,8 @@ export type DiscussionPostSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   updatedAt?: boolean
   replyCount?: boolean
   lastReplyAt?: boolean
-  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   author?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["discussionPost"]>
 
 export type DiscussionPostSelectScalar = {
@@ -963,25 +963,25 @@ export type DiscussionPostSelectScalar = {
 
 export type DiscussionPostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "challengeId" | "authorId" | "content" | "isPinned" | "isDeleted" | "createdAt" | "updatedAt" | "replyCount" | "lastReplyAt", ExtArgs["result"]["discussionPost"]>
 export type DiscussionPostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   author?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   replies?: boolean | Prisma.DiscussionPost$repliesArgs<ExtArgs>
   _count?: boolean | Prisma.DiscussionPostCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DiscussionPostIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   author?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
 }
 export type DiscussionPostIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   author?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
 }
 
 export type $DiscussionPostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "DiscussionPost"
   objects: {
-    challenge: Prisma.$ChallengePayload<ExtArgs>
     author: Prisma.$ProfilePayload<ExtArgs>
+    challenge: Prisma.$ChallengePayload<ExtArgs>
     replies: Prisma.$DiscussionReplyPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1389,8 +1389,8 @@ readonly fields: DiscussionPostFieldRefs;
  */
 export interface Prisma__DiscussionPostClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  challenge<T extends Prisma.ChallengeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChallengeDefaultArgs<ExtArgs>>): Prisma.Prisma__ChallengeClient<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   author<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  challenge<T extends Prisma.ChallengeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChallengeDefaultArgs<ExtArgs>>): Prisma.Prisma__ChallengeClient<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   replies<T extends Prisma.DiscussionPost$repliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DiscussionPost$repliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.

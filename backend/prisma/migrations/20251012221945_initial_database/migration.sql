@@ -1,139 +1,25 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "TeamRole" AS ENUM ('ADMIN', 'MEMBER');
 
-  - You are about to drop the `Activity` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `ActivityType` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Challenge` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `ChallengeActivityType` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `ChallengeParticipant` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Comment` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Milestone` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `MilestoneProgress` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Post` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Team` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `TeamMembership` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `challenge_progress` table. If the table is not empty, all the data it contains will be lost.
+-- CreateEnum
+CREATE TYPE "ChallengeParticipantType" AS ENUM ('INDIVIDUAL', 'TEAM');
 
-*/
--- DropForeignKey
-ALTER TABLE "Activity" DROP CONSTRAINT "Activity_activityTypeId_fkey";
+-- CreateEnum
+CREATE TYPE "ChallengeStatus" AS ENUM ('ACTIVE', 'CLOSED', 'CANCELLED');
 
--- DropForeignKey
-ALTER TABLE "Activity" DROP CONSTRAINT "Activity_challengeId_fkey";
+-- CreateEnum
+CREATE TYPE "ModeratorRole" AS ENUM ('MODERATOR', 'ADMIN');
 
--- DropForeignKey
-ALTER TABLE "Activity" DROP CONSTRAINT "Activity_participantId_fkey";
+-- CreateTable
+CREATE TABLE "profiles" (
+    "id" UUID NOT NULL,
+    "username" TEXT,
+    "avatar_url" TEXT,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
--- DropForeignKey
-ALTER TABLE "Activity" DROP CONSTRAINT "Activity_profileId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Challenge" DROP CONSTRAINT "Challenge_creatorId_fkey";
-
--- DropForeignKey
-ALTER TABLE "ChallengeActivityType" DROP CONSTRAINT "ChallengeActivityType_activityTypeId_fkey";
-
--- DropForeignKey
-ALTER TABLE "ChallengeActivityType" DROP CONSTRAINT "ChallengeActivityType_challengeId_fkey";
-
--- DropForeignKey
-ALTER TABLE "ChallengeParticipant" DROP CONSTRAINT "ChallengeParticipant_challengeId_fkey";
-
--- DropForeignKey
-ALTER TABLE "ChallengeParticipant" DROP CONSTRAINT "ChallengeParticipant_teamId_fkey";
-
--- DropForeignKey
-ALTER TABLE "ChallengeParticipant" DROP CONSTRAINT "ChallengeParticipant_userId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Comment" DROP CONSTRAINT "Comment_authorId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Comment" DROP CONSTRAINT "Comment_postId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Milestone" DROP CONSTRAINT "Milestone_activityTypeId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Milestone" DROP CONSTRAINT "Milestone_challengeId_fkey";
-
--- DropForeignKey
-ALTER TABLE "MilestoneProgress" DROP CONSTRAINT "MilestoneProgress_milestoneId_fkey";
-
--- DropForeignKey
-ALTER TABLE "MilestoneProgress" DROP CONSTRAINT "MilestoneProgress_participantId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Post" DROP CONSTRAINT "Post_challengeId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Post" DROP CONSTRAINT "Post_participantId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Post" DROP CONSTRAINT "Post_profileId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Team" DROP CONSTRAINT "Team_creatorId_fkey";
-
--- DropForeignKey
-ALTER TABLE "TeamMembership" DROP CONSTRAINT "TeamMembership_teamId_fkey";
-
--- DropForeignKey
-ALTER TABLE "TeamMembership" DROP CONSTRAINT "TeamMembership_userId_fkey";
-
--- DropForeignKey
-ALTER TABLE "challenge_progress" DROP CONSTRAINT "challenge_progress_activityTypeId_fkey";
-
--- DropForeignKey
-ALTER TABLE "challenge_progress" DROP CONSTRAINT "challenge_progress_challengeId_fkey";
-
--- DropForeignKey
-ALTER TABLE "challenge_progress" DROP CONSTRAINT "challenge_progress_participantId_fkey";
-
--- DropForeignKey
-ALTER TABLE "discussion_bans" DROP CONSTRAINT "discussion_bans_challengeId_fkey";
-
--- DropForeignKey
-ALTER TABLE "discussion_moderators" DROP CONSTRAINT "discussion_moderators_challengeId_fkey";
-
--- DropForeignKey
-ALTER TABLE "discussion_posts" DROP CONSTRAINT "discussion_posts_challengeId_fkey";
-
--- DropTable
-DROP TABLE "Activity";
-
--- DropTable
-DROP TABLE "ActivityType";
-
--- DropTable
-DROP TABLE "Challenge";
-
--- DropTable
-DROP TABLE "ChallengeActivityType";
-
--- DropTable
-DROP TABLE "ChallengeParticipant";
-
--- DropTable
-DROP TABLE "Comment";
-
--- DropTable
-DROP TABLE "Milestone";
-
--- DropTable
-DROP TABLE "MilestoneProgress";
-
--- DropTable
-DROP TABLE "Post";
-
--- DropTable
-DROP TABLE "Team";
-
--- DropTable
-DROP TABLE "TeamMembership";
-
--- DropTable
-DROP TABLE "challenge_progress";
+    CONSTRAINT "profiles_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "teams" (
@@ -289,6 +175,65 @@ CREATE TABLE "comments" (
     CONSTRAINT "comments_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "discussion_posts" (
+    "id" UUID NOT NULL,
+    "challengeId" UUID NOT NULL,
+    "authorId" UUID NOT NULL,
+    "content" TEXT NOT NULL,
+    "isPinned" BOOLEAN NOT NULL DEFAULT false,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "replyCount" INTEGER NOT NULL DEFAULT 0,
+    "lastReplyAt" TIMESTAMPTZ(6),
+
+    CONSTRAINT "discussion_posts_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "discussion_replies" (
+    "id" UUID NOT NULL,
+    "postId" UUID NOT NULL,
+    "parentId" UUID,
+    "authorId" UUID NOT NULL,
+    "content" TEXT NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "discussion_replies_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "discussion_moderators" (
+    "id" UUID NOT NULL,
+    "challengeId" UUID NOT NULL,
+    "userId" UUID NOT NULL,
+    "role" "ModeratorRole" NOT NULL DEFAULT 'MODERATOR',
+    "grantedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "grantedById" UUID NOT NULL,
+
+    CONSTRAINT "discussion_moderators_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "discussion_bans" (
+    "id" UUID NOT NULL,
+    "challengeId" UUID NOT NULL,
+    "userId" UUID NOT NULL,
+    "reason" TEXT,
+    "bannedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expiresAt" TIMESTAMPTZ(6),
+    "bannedById" UUID NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+
+    CONSTRAINT "discussion_bans_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "profiles_username_key" ON "profiles"("username");
+
 -- CreateIndex
 CREATE UNIQUE INDEX "team_memberships_teamId_userId_key" ON "team_memberships"("teamId", "userId");
 
@@ -312,6 +257,27 @@ CREATE INDEX "idx_challengeparticipant_challengeid_teamid_unique" ON "challenge_
 
 -- CreateIndex
 CREATE UNIQUE INDEX "activity_types_name_key" ON "activity_types"("name");
+
+-- CreateIndex
+CREATE INDEX "discussion_posts_challengeId_createdAt_idx" ON "discussion_posts"("challengeId", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "discussion_posts_challengeId_isPinned_createdAt_idx" ON "discussion_posts"("challengeId", "isPinned", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "discussion_replies_postId_createdAt_idx" ON "discussion_replies"("postId", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "discussion_replies_parentId_createdAt_idx" ON "discussion_replies"("parentId", "createdAt");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "discussion_moderators_challengeId_userId_key" ON "discussion_moderators"("challengeId", "userId");
+
+-- CreateIndex
+CREATE INDEX "discussion_bans_challengeId_isActive_idx" ON "discussion_bans"("challengeId", "isActive");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "discussion_bans_challengeId_userId_isActive_key" ON "discussion_bans"("challengeId", "userId", "isActive");
 
 -- AddForeignKey
 ALTER TABLE "teams" ADD CONSTRAINT "teams_creatorId_fkey" FOREIGN KEY ("creatorId") REFERENCES "profiles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -383,7 +349,31 @@ ALTER TABLE "comments" ADD CONSTRAINT "comments_postId_fkey" FOREIGN KEY ("postI
 ALTER TABLE "discussion_posts" ADD CONSTRAINT "discussion_posts_challengeId_fkey" FOREIGN KEY ("challengeId") REFERENCES "challenges"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "discussion_posts" ADD CONSTRAINT "discussion_posts_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "discussion_replies" ADD CONSTRAINT "discussion_replies_postId_fkey" FOREIGN KEY ("postId") REFERENCES "discussion_posts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "discussion_replies" ADD CONSTRAINT "discussion_replies_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "discussion_replies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "discussion_replies" ADD CONSTRAINT "discussion_replies_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "discussion_moderators" ADD CONSTRAINT "discussion_moderators_challengeId_fkey" FOREIGN KEY ("challengeId") REFERENCES "challenges"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "discussion_moderators" ADD CONSTRAINT "discussion_moderators_userId_fkey" FOREIGN KEY ("userId") REFERENCES "profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "discussion_moderators" ADD CONSTRAINT "discussion_moderators_grantedById_fkey" FOREIGN KEY ("grantedById") REFERENCES "profiles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "discussion_bans" ADD CONSTRAINT "discussion_bans_challengeId_fkey" FOREIGN KEY ("challengeId") REFERENCES "challenges"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "discussion_bans" ADD CONSTRAINT "discussion_bans_userId_fkey" FOREIGN KEY ("userId") REFERENCES "profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "discussion_bans" ADD CONSTRAINT "discussion_bans_bannedById_fkey" FOREIGN KEY ("bannedById") REFERENCES "profiles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

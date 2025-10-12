@@ -206,8 +206,8 @@ export type ActivityTypeWhereInput = {
   isActive?: Prisma.BoolFilter<"ActivityType"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ActivityType"> | Date | string
   activities?: Prisma.ActivityListRelationFilter
-  milestones?: Prisma.MilestoneListRelationFilter
   challenges?: Prisma.ChallengeActivityTypeListRelationFilter
+  milestones?: Prisma.MilestoneListRelationFilter
 }
 
 export type ActivityTypeOrderByWithRelationInput = {
@@ -220,8 +220,8 @@ export type ActivityTypeOrderByWithRelationInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   activities?: Prisma.ActivityOrderByRelationAggregateInput
-  milestones?: Prisma.MilestoneOrderByRelationAggregateInput
   challenges?: Prisma.ChallengeActivityTypeOrderByRelationAggregateInput
+  milestones?: Prisma.MilestoneOrderByRelationAggregateInput
 }
 
 export type ActivityTypeWhereUniqueInput = Prisma.AtLeast<{
@@ -237,8 +237,8 @@ export type ActivityTypeWhereUniqueInput = Prisma.AtLeast<{
   isActive?: Prisma.BoolFilter<"ActivityType"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ActivityType"> | Date | string
   activities?: Prisma.ActivityListRelationFilter
-  milestones?: Prisma.MilestoneListRelationFilter
   challenges?: Prisma.ChallengeActivityTypeListRelationFilter
+  milestones?: Prisma.MilestoneListRelationFilter
 }, "id" | "name">
 
 export type ActivityTypeOrderByWithAggregationInput = {
@@ -279,8 +279,8 @@ export type ActivityTypeCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutActivityTypeInput
-  milestones?: Prisma.MilestoneCreateNestedManyWithoutActivityTypeInput
   challenges?: Prisma.ChallengeActivityTypeCreateNestedManyWithoutActivityTypeInput
+  milestones?: Prisma.MilestoneCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeUncheckedCreateInput = {
@@ -293,8 +293,8 @@ export type ActivityTypeUncheckedCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActivityTypeInput
-  milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutActivityTypeInput
   challenges?: Prisma.ChallengeActivityTypeUncheckedCreateNestedManyWithoutActivityTypeInput
+  milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeUpdateInput = {
@@ -307,8 +307,8 @@ export type ActivityTypeUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutActivityTypeNestedInput
-  milestones?: Prisma.MilestoneUpdateManyWithoutActivityTypeNestedInput
   challenges?: Prisma.ChallengeActivityTypeUpdateManyWithoutActivityTypeNestedInput
+  milestones?: Prisma.MilestoneUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeUncheckedUpdateInput = {
@@ -321,8 +321,8 @@ export type ActivityTypeUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutActivityTypeNestedInput
-  milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutActivityTypeNestedInput
   challenges?: Prisma.ChallengeActivityTypeUncheckedUpdateManyWithoutActivityTypeNestedInput
+  milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeCreateManyInput = {
@@ -583,8 +583,8 @@ export type ActivityTypeCreateWithoutActivitiesInput = {
   description?: string | null
   isActive?: boolean
   createdAt?: Date | string
-  milestones?: Prisma.MilestoneCreateNestedManyWithoutActivityTypeInput
   challenges?: Prisma.ChallengeActivityTypeCreateNestedManyWithoutActivityTypeInput
+  milestones?: Prisma.MilestoneCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeUncheckedCreateWithoutActivitiesInput = {
@@ -596,8 +596,8 @@ export type ActivityTypeUncheckedCreateWithoutActivitiesInput = {
   description?: string | null
   isActive?: boolean
   createdAt?: Date | string
-  milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutActivityTypeInput
   challenges?: Prisma.ChallengeActivityTypeUncheckedCreateNestedManyWithoutActivityTypeInput
+  milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeCreateOrConnectWithoutActivitiesInput = {
@@ -625,8 +625,8 @@ export type ActivityTypeUpdateWithoutActivitiesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  milestones?: Prisma.MilestoneUpdateManyWithoutActivityTypeNestedInput
   challenges?: Prisma.ChallengeActivityTypeUpdateManyWithoutActivityTypeNestedInput
+  milestones?: Prisma.MilestoneUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeUncheckedUpdateWithoutActivitiesInput = {
@@ -638,8 +638,8 @@ export type ActivityTypeUncheckedUpdateWithoutActivitiesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutActivityTypeNestedInput
   challenges?: Prisma.ChallengeActivityTypeUncheckedUpdateManyWithoutActivityTypeNestedInput
+  milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutActivityTypeNestedInput
 }
 
 
@@ -649,14 +649,14 @@ export type ActivityTypeUncheckedUpdateWithoutActivitiesInput = {
 
 export type ActivityTypeCountOutputType = {
   activities: number
-  milestones: number
   challenges: number
+  milestones: number
 }
 
 export type ActivityTypeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | ActivityTypeCountOutputTypeCountActivitiesArgs
-  milestones?: boolean | ActivityTypeCountOutputTypeCountMilestonesArgs
   challenges?: boolean | ActivityTypeCountOutputTypeCountChallengesArgs
+  milestones?: boolean | ActivityTypeCountOutputTypeCountMilestonesArgs
 }
 
 /**
@@ -679,15 +679,15 @@ export type ActivityTypeCountOutputTypeCountActivitiesArgs<ExtArgs extends runti
 /**
  * ActivityTypeCountOutputType without action
  */
-export type ActivityTypeCountOutputTypeCountMilestonesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.MilestoneWhereInput
+export type ActivityTypeCountOutputTypeCountChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChallengeActivityTypeWhereInput
 }
 
 /**
  * ActivityTypeCountOutputType without action
  */
-export type ActivityTypeCountOutputTypeCountChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ChallengeActivityTypeWhereInput
+export type ActivityTypeCountOutputTypeCountMilestonesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MilestoneWhereInput
 }
 
 
@@ -701,8 +701,8 @@ export type ActivityTypeSelect<ExtArgs extends runtime.Types.Extensions.Internal
   isActive?: boolean
   createdAt?: boolean
   activities?: boolean | Prisma.ActivityType$activitiesArgs<ExtArgs>
-  milestones?: boolean | Prisma.ActivityType$milestonesArgs<ExtArgs>
   challenges?: boolean | Prisma.ActivityType$challengesArgs<ExtArgs>
+  milestones?: boolean | Prisma.ActivityType$milestonesArgs<ExtArgs>
   _count?: boolean | Prisma.ActivityTypeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["activityType"]>
 
@@ -742,8 +742,8 @@ export type ActivityTypeSelectScalar = {
 export type ActivityTypeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "category" | "unit" | "unitLabel" | "description" | "isActive" | "createdAt", ExtArgs["result"]["activityType"]>
 export type ActivityTypeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | Prisma.ActivityType$activitiesArgs<ExtArgs>
-  milestones?: boolean | Prisma.ActivityType$milestonesArgs<ExtArgs>
   challenges?: boolean | Prisma.ActivityType$challengesArgs<ExtArgs>
+  milestones?: boolean | Prisma.ActivityType$milestonesArgs<ExtArgs>
   _count?: boolean | Prisma.ActivityTypeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ActivityTypeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -753,8 +753,8 @@ export type $ActivityTypePayload<ExtArgs extends runtime.Types.Extensions.Intern
   name: "ActivityType"
   objects: {
     activities: Prisma.$ActivityPayload<ExtArgs>[]
-    milestones: Prisma.$MilestonePayload<ExtArgs>[]
     challenges: Prisma.$ChallengeActivityTypePayload<ExtArgs>[]
+    milestones: Prisma.$MilestonePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1160,8 +1160,8 @@ readonly fields: ActivityTypeFieldRefs;
 export interface Prisma__ActivityTypeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   activities<T extends Prisma.ActivityType$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityType$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  milestones<T extends Prisma.ActivityType$milestonesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityType$milestonesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MilestonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   challenges<T extends Prisma.ActivityType$challengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityType$challengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengeActivityTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  milestones<T extends Prisma.ActivityType$milestonesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityType$milestonesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MilestonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1611,30 +1611,6 @@ export type ActivityType$activitiesArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
- * ActivityType.milestones
- */
-export type ActivityType$milestonesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Milestone
-   */
-  select?: Prisma.MilestoneSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Milestone
-   */
-  omit?: Prisma.MilestoneOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MilestoneInclude<ExtArgs> | null
-  where?: Prisma.MilestoneWhereInput
-  orderBy?: Prisma.MilestoneOrderByWithRelationInput | Prisma.MilestoneOrderByWithRelationInput[]
-  cursor?: Prisma.MilestoneWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.MilestoneScalarFieldEnum | Prisma.MilestoneScalarFieldEnum[]
-}
-
-/**
  * ActivityType.challenges
  */
 export type ActivityType$challengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1656,6 +1632,30 @@ export type ActivityType$challengesArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.ChallengeActivityTypeScalarFieldEnum | Prisma.ChallengeActivityTypeScalarFieldEnum[]
+}
+
+/**
+ * ActivityType.milestones
+ */
+export type ActivityType$milestonesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Milestone
+   */
+  select?: Prisma.MilestoneSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Milestone
+   */
+  omit?: Prisma.MilestoneOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MilestoneInclude<ExtArgs> | null
+  where?: Prisma.MilestoneWhereInput
+  orderBy?: Prisma.MilestoneOrderByWithRelationInput | Prisma.MilestoneOrderByWithRelationInput[]
+  cursor?: Prisma.MilestoneWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MilestoneScalarFieldEnum | Prisma.MilestoneScalarFieldEnum[]
 }
 
 /**

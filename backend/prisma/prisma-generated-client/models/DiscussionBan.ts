@@ -205,9 +205,9 @@ export type DiscussionBanWhereInput = {
   expiresAt?: Prisma.DateTimeNullableFilter<"DiscussionBan"> | Date | string | null
   bannedById?: Prisma.UuidFilter<"DiscussionBan"> | string
   isActive?: Prisma.BoolFilter<"DiscussionBan"> | boolean
+  bannedBy?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
   challenge?: Prisma.XOR<Prisma.ChallengeScalarRelationFilter, Prisma.ChallengeWhereInput>
   user?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
-  bannedBy?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
 }
 
 export type DiscussionBanOrderByWithRelationInput = {
@@ -219,9 +219,9 @@ export type DiscussionBanOrderByWithRelationInput = {
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   bannedById?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  bannedBy?: Prisma.ProfileOrderByWithRelationInput
   challenge?: Prisma.ChallengeOrderByWithRelationInput
   user?: Prisma.ProfileOrderByWithRelationInput
-  bannedBy?: Prisma.ProfileOrderByWithRelationInput
 }
 
 export type DiscussionBanWhereUniqueInput = Prisma.AtLeast<{
@@ -237,9 +237,9 @@ export type DiscussionBanWhereUniqueInput = Prisma.AtLeast<{
   expiresAt?: Prisma.DateTimeNullableFilter<"DiscussionBan"> | Date | string | null
   bannedById?: Prisma.UuidFilter<"DiscussionBan"> | string
   isActive?: Prisma.BoolFilter<"DiscussionBan"> | boolean
+  bannedBy?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
   challenge?: Prisma.XOR<Prisma.ChallengeScalarRelationFilter, Prisma.ChallengeWhereInput>
   user?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
-  bannedBy?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
 }, "id" | "challengeId_userId_isActive">
 
 export type DiscussionBanOrderByWithAggregationInput = {
@@ -276,9 +276,9 @@ export type DiscussionBanCreateInput = {
   bannedAt?: Date | string
   expiresAt?: Date | string | null
   isActive?: boolean
+  bannedBy: Prisma.ProfileCreateNestedOneWithoutBannedUsersInput
   challenge: Prisma.ChallengeCreateNestedOneWithoutDiscussionBansInput
   user: Prisma.ProfileCreateNestedOneWithoutDiscussionBansInput
-  bannedBy: Prisma.ProfileCreateNestedOneWithoutBannedUsersInput
 }
 
 export type DiscussionBanUncheckedCreateInput = {
@@ -298,9 +298,9 @@ export type DiscussionBanUpdateInput = {
   bannedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedBy?: Prisma.ProfileUpdateOneRequiredWithoutBannedUsersNestedInput
   challenge?: Prisma.ChallengeUpdateOneRequiredWithoutDiscussionBansNestedInput
   user?: Prisma.ProfileUpdateOneRequiredWithoutDiscussionBansNestedInput
-  bannedBy?: Prisma.ProfileUpdateOneRequiredWithoutBannedUsersNestedInput
 }
 
 export type DiscussionBanUncheckedUpdateInput = {
@@ -393,13 +393,6 @@ export type DiscussionBanMinOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
 }
 
-export type DiscussionBanCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.DiscussionBanCreateWithoutUserInput, Prisma.DiscussionBanUncheckedCreateWithoutUserInput> | Prisma.DiscussionBanCreateWithoutUserInput[] | Prisma.DiscussionBanUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.DiscussionBanCreateOrConnectWithoutUserInput | Prisma.DiscussionBanCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.DiscussionBanCreateManyUserInputEnvelope
-  connect?: Prisma.DiscussionBanWhereUniqueInput | Prisma.DiscussionBanWhereUniqueInput[]
-}
-
 export type DiscussionBanCreateNestedManyWithoutBannedByInput = {
   create?: Prisma.XOR<Prisma.DiscussionBanCreateWithoutBannedByInput, Prisma.DiscussionBanUncheckedCreateWithoutBannedByInput> | Prisma.DiscussionBanCreateWithoutBannedByInput[] | Prisma.DiscussionBanUncheckedCreateWithoutBannedByInput[]
   connectOrCreate?: Prisma.DiscussionBanCreateOrConnectWithoutBannedByInput | Prisma.DiscussionBanCreateOrConnectWithoutBannedByInput[]
@@ -407,7 +400,7 @@ export type DiscussionBanCreateNestedManyWithoutBannedByInput = {
   connect?: Prisma.DiscussionBanWhereUniqueInput | Prisma.DiscussionBanWhereUniqueInput[]
 }
 
-export type DiscussionBanUncheckedCreateNestedManyWithoutUserInput = {
+export type DiscussionBanCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.DiscussionBanCreateWithoutUserInput, Prisma.DiscussionBanUncheckedCreateWithoutUserInput> | Prisma.DiscussionBanCreateWithoutUserInput[] | Prisma.DiscussionBanUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.DiscussionBanCreateOrConnectWithoutUserInput | Prisma.DiscussionBanCreateOrConnectWithoutUserInput[]
   createMany?: Prisma.DiscussionBanCreateManyUserInputEnvelope
@@ -421,18 +414,11 @@ export type DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput = {
   connect?: Prisma.DiscussionBanWhereUniqueInput | Prisma.DiscussionBanWhereUniqueInput[]
 }
 
-export type DiscussionBanUpdateManyWithoutUserNestedInput = {
+export type DiscussionBanUncheckedCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.DiscussionBanCreateWithoutUserInput, Prisma.DiscussionBanUncheckedCreateWithoutUserInput> | Prisma.DiscussionBanCreateWithoutUserInput[] | Prisma.DiscussionBanUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.DiscussionBanCreateOrConnectWithoutUserInput | Prisma.DiscussionBanCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.DiscussionBanUpsertWithWhereUniqueWithoutUserInput | Prisma.DiscussionBanUpsertWithWhereUniqueWithoutUserInput[]
   createMany?: Prisma.DiscussionBanCreateManyUserInputEnvelope
-  set?: Prisma.DiscussionBanWhereUniqueInput | Prisma.DiscussionBanWhereUniqueInput[]
-  disconnect?: Prisma.DiscussionBanWhereUniqueInput | Prisma.DiscussionBanWhereUniqueInput[]
-  delete?: Prisma.DiscussionBanWhereUniqueInput | Prisma.DiscussionBanWhereUniqueInput[]
   connect?: Prisma.DiscussionBanWhereUniqueInput | Prisma.DiscussionBanWhereUniqueInput[]
-  update?: Prisma.DiscussionBanUpdateWithWhereUniqueWithoutUserInput | Prisma.DiscussionBanUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.DiscussionBanUpdateManyWithWhereWithoutUserInput | Prisma.DiscussionBanUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.DiscussionBanScalarWhereInput | Prisma.DiscussionBanScalarWhereInput[]
 }
 
 export type DiscussionBanUpdateManyWithoutBannedByNestedInput = {
@@ -449,7 +435,7 @@ export type DiscussionBanUpdateManyWithoutBannedByNestedInput = {
   deleteMany?: Prisma.DiscussionBanScalarWhereInput | Prisma.DiscussionBanScalarWhereInput[]
 }
 
-export type DiscussionBanUncheckedUpdateManyWithoutUserNestedInput = {
+export type DiscussionBanUpdateManyWithoutUserNestedInput = {
   create?: Prisma.XOR<Prisma.DiscussionBanCreateWithoutUserInput, Prisma.DiscussionBanUncheckedCreateWithoutUserInput> | Prisma.DiscussionBanCreateWithoutUserInput[] | Prisma.DiscussionBanUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.DiscussionBanCreateOrConnectWithoutUserInput | Prisma.DiscussionBanCreateOrConnectWithoutUserInput[]
   upsert?: Prisma.DiscussionBanUpsertWithWhereUniqueWithoutUserInput | Prisma.DiscussionBanUpsertWithWhereUniqueWithoutUserInput[]
@@ -474,6 +460,20 @@ export type DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput = {
   connect?: Prisma.DiscussionBanWhereUniqueInput | Prisma.DiscussionBanWhereUniqueInput[]
   update?: Prisma.DiscussionBanUpdateWithWhereUniqueWithoutBannedByInput | Prisma.DiscussionBanUpdateWithWhereUniqueWithoutBannedByInput[]
   updateMany?: Prisma.DiscussionBanUpdateManyWithWhereWithoutBannedByInput | Prisma.DiscussionBanUpdateManyWithWhereWithoutBannedByInput[]
+  deleteMany?: Prisma.DiscussionBanScalarWhereInput | Prisma.DiscussionBanScalarWhereInput[]
+}
+
+export type DiscussionBanUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.DiscussionBanCreateWithoutUserInput, Prisma.DiscussionBanUncheckedCreateWithoutUserInput> | Prisma.DiscussionBanCreateWithoutUserInput[] | Prisma.DiscussionBanUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.DiscussionBanCreateOrConnectWithoutUserInput | Prisma.DiscussionBanCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.DiscussionBanUpsertWithWhereUniqueWithoutUserInput | Prisma.DiscussionBanUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.DiscussionBanCreateManyUserInputEnvelope
+  set?: Prisma.DiscussionBanWhereUniqueInput | Prisma.DiscussionBanWhereUniqueInput[]
+  disconnect?: Prisma.DiscussionBanWhereUniqueInput | Prisma.DiscussionBanWhereUniqueInput[]
+  delete?: Prisma.DiscussionBanWhereUniqueInput | Prisma.DiscussionBanWhereUniqueInput[]
+  connect?: Prisma.DiscussionBanWhereUniqueInput | Prisma.DiscussionBanWhereUniqueInput[]
+  update?: Prisma.DiscussionBanUpdateWithWhereUniqueWithoutUserInput | Prisma.DiscussionBanUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.DiscussionBanUpdateManyWithWhereWithoutUserInput | Prisma.DiscussionBanUpdateManyWithWhereWithoutUserInput[]
   deleteMany?: Prisma.DiscussionBanScalarWhereInput | Prisma.DiscussionBanScalarWhereInput[]
 }
 
@@ -519,36 +519,6 @@ export type DiscussionBanUncheckedUpdateManyWithoutChallengeNestedInput = {
   deleteMany?: Prisma.DiscussionBanScalarWhereInput | Prisma.DiscussionBanScalarWhereInput[]
 }
 
-export type DiscussionBanCreateWithoutUserInput = {
-  id?: string
-  reason?: string | null
-  bannedAt?: Date | string
-  expiresAt?: Date | string | null
-  isActive?: boolean
-  challenge: Prisma.ChallengeCreateNestedOneWithoutDiscussionBansInput
-  bannedBy: Prisma.ProfileCreateNestedOneWithoutBannedUsersInput
-}
-
-export type DiscussionBanUncheckedCreateWithoutUserInput = {
-  id?: string
-  challengeId: string
-  reason?: string | null
-  bannedAt?: Date | string
-  expiresAt?: Date | string | null
-  bannedById: string
-  isActive?: boolean
-}
-
-export type DiscussionBanCreateOrConnectWithoutUserInput = {
-  where: Prisma.DiscussionBanWhereUniqueInput
-  create: Prisma.XOR<Prisma.DiscussionBanCreateWithoutUserInput, Prisma.DiscussionBanUncheckedCreateWithoutUserInput>
-}
-
-export type DiscussionBanCreateManyUserInputEnvelope = {
-  data: Prisma.DiscussionBanCreateManyUserInput | Prisma.DiscussionBanCreateManyUserInput[]
-  skipDuplicates?: boolean
-}
-
 export type DiscussionBanCreateWithoutBannedByInput = {
   id?: string
   reason?: string | null
@@ -579,34 +549,34 @@ export type DiscussionBanCreateManyBannedByInputEnvelope = {
   skipDuplicates?: boolean
 }
 
-export type DiscussionBanUpsertWithWhereUniqueWithoutUserInput = {
+export type DiscussionBanCreateWithoutUserInput = {
+  id?: string
+  reason?: string | null
+  bannedAt?: Date | string
+  expiresAt?: Date | string | null
+  isActive?: boolean
+  bannedBy: Prisma.ProfileCreateNestedOneWithoutBannedUsersInput
+  challenge: Prisma.ChallengeCreateNestedOneWithoutDiscussionBansInput
+}
+
+export type DiscussionBanUncheckedCreateWithoutUserInput = {
+  id?: string
+  challengeId: string
+  reason?: string | null
+  bannedAt?: Date | string
+  expiresAt?: Date | string | null
+  bannedById: string
+  isActive?: boolean
+}
+
+export type DiscussionBanCreateOrConnectWithoutUserInput = {
   where: Prisma.DiscussionBanWhereUniqueInput
-  update: Prisma.XOR<Prisma.DiscussionBanUpdateWithoutUserInput, Prisma.DiscussionBanUncheckedUpdateWithoutUserInput>
   create: Prisma.XOR<Prisma.DiscussionBanCreateWithoutUserInput, Prisma.DiscussionBanUncheckedCreateWithoutUserInput>
 }
 
-export type DiscussionBanUpdateWithWhereUniqueWithoutUserInput = {
-  where: Prisma.DiscussionBanWhereUniqueInput
-  data: Prisma.XOR<Prisma.DiscussionBanUpdateWithoutUserInput, Prisma.DiscussionBanUncheckedUpdateWithoutUserInput>
-}
-
-export type DiscussionBanUpdateManyWithWhereWithoutUserInput = {
-  where: Prisma.DiscussionBanScalarWhereInput
-  data: Prisma.XOR<Prisma.DiscussionBanUpdateManyMutationInput, Prisma.DiscussionBanUncheckedUpdateManyWithoutUserInput>
-}
-
-export type DiscussionBanScalarWhereInput = {
-  AND?: Prisma.DiscussionBanScalarWhereInput | Prisma.DiscussionBanScalarWhereInput[]
-  OR?: Prisma.DiscussionBanScalarWhereInput[]
-  NOT?: Prisma.DiscussionBanScalarWhereInput | Prisma.DiscussionBanScalarWhereInput[]
-  id?: Prisma.UuidFilter<"DiscussionBan"> | string
-  challengeId?: Prisma.UuidFilter<"DiscussionBan"> | string
-  userId?: Prisma.UuidFilter<"DiscussionBan"> | string
-  reason?: Prisma.StringNullableFilter<"DiscussionBan"> | string | null
-  bannedAt?: Prisma.DateTimeFilter<"DiscussionBan"> | Date | string
-  expiresAt?: Prisma.DateTimeNullableFilter<"DiscussionBan"> | Date | string | null
-  bannedById?: Prisma.UuidFilter<"DiscussionBan"> | string
-  isActive?: Prisma.BoolFilter<"DiscussionBan"> | boolean
+export type DiscussionBanCreateManyUserInputEnvelope = {
+  data: Prisma.DiscussionBanCreateManyUserInput | Prisma.DiscussionBanCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type DiscussionBanUpsertWithWhereUniqueWithoutBannedByInput = {
@@ -625,14 +595,44 @@ export type DiscussionBanUpdateManyWithWhereWithoutBannedByInput = {
   data: Prisma.XOR<Prisma.DiscussionBanUpdateManyMutationInput, Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByInput>
 }
 
+export type DiscussionBanScalarWhereInput = {
+  AND?: Prisma.DiscussionBanScalarWhereInput | Prisma.DiscussionBanScalarWhereInput[]
+  OR?: Prisma.DiscussionBanScalarWhereInput[]
+  NOT?: Prisma.DiscussionBanScalarWhereInput | Prisma.DiscussionBanScalarWhereInput[]
+  id?: Prisma.UuidFilter<"DiscussionBan"> | string
+  challengeId?: Prisma.UuidFilter<"DiscussionBan"> | string
+  userId?: Prisma.UuidFilter<"DiscussionBan"> | string
+  reason?: Prisma.StringNullableFilter<"DiscussionBan"> | string | null
+  bannedAt?: Prisma.DateTimeFilter<"DiscussionBan"> | Date | string
+  expiresAt?: Prisma.DateTimeNullableFilter<"DiscussionBan"> | Date | string | null
+  bannedById?: Prisma.UuidFilter<"DiscussionBan"> | string
+  isActive?: Prisma.BoolFilter<"DiscussionBan"> | boolean
+}
+
+export type DiscussionBanUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.DiscussionBanWhereUniqueInput
+  update: Prisma.XOR<Prisma.DiscussionBanUpdateWithoutUserInput, Prisma.DiscussionBanUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.DiscussionBanCreateWithoutUserInput, Prisma.DiscussionBanUncheckedCreateWithoutUserInput>
+}
+
+export type DiscussionBanUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.DiscussionBanWhereUniqueInput
+  data: Prisma.XOR<Prisma.DiscussionBanUpdateWithoutUserInput, Prisma.DiscussionBanUncheckedUpdateWithoutUserInput>
+}
+
+export type DiscussionBanUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.DiscussionBanScalarWhereInput
+  data: Prisma.XOR<Prisma.DiscussionBanUpdateManyMutationInput, Prisma.DiscussionBanUncheckedUpdateManyWithoutUserInput>
+}
+
 export type DiscussionBanCreateWithoutChallengeInput = {
   id?: string
   reason?: string | null
   bannedAt?: Date | string
   expiresAt?: Date | string | null
   isActive?: boolean
-  user: Prisma.ProfileCreateNestedOneWithoutDiscussionBansInput
   bannedBy: Prisma.ProfileCreateNestedOneWithoutBannedUsersInput
+  user: Prisma.ProfileCreateNestedOneWithoutDiscussionBansInput
 }
 
 export type DiscussionBanUncheckedCreateWithoutChallengeInput = {
@@ -671,16 +671,6 @@ export type DiscussionBanUpdateManyWithWhereWithoutChallengeInput = {
   data: Prisma.XOR<Prisma.DiscussionBanUpdateManyMutationInput, Prisma.DiscussionBanUncheckedUpdateManyWithoutChallengeInput>
 }
 
-export type DiscussionBanCreateManyUserInput = {
-  id?: string
-  challengeId: string
-  reason?: string | null
-  bannedAt?: Date | string
-  expiresAt?: Date | string | null
-  bannedById: string
-  isActive?: boolean
-}
-
 export type DiscussionBanCreateManyBannedByInput = {
   id?: string
   challengeId: string
@@ -691,34 +681,14 @@ export type DiscussionBanCreateManyBannedByInput = {
   isActive?: boolean
 }
 
-export type DiscussionBanUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bannedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  challenge?: Prisma.ChallengeUpdateOneRequiredWithoutDiscussionBansNestedInput
-  bannedBy?: Prisma.ProfileUpdateOneRequiredWithoutBannedUsersNestedInput
-}
-
-export type DiscussionBanUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  challengeId?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bannedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  bannedById?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-}
-
-export type DiscussionBanUncheckedUpdateManyWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  challengeId?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bannedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  bannedById?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+export type DiscussionBanCreateManyUserInput = {
+  id?: string
+  challengeId: string
+  reason?: string | null
+  bannedAt?: Date | string
+  expiresAt?: Date | string | null
+  bannedById: string
+  isActive?: boolean
 }
 
 export type DiscussionBanUpdateWithoutBannedByInput = {
@@ -751,6 +721,36 @@ export type DiscussionBanUncheckedUpdateManyWithoutBannedByInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
+export type DiscussionBanUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedBy?: Prisma.ProfileUpdateOneRequiredWithoutBannedUsersNestedInput
+  challenge?: Prisma.ChallengeUpdateOneRequiredWithoutDiscussionBansNestedInput
+}
+
+export type DiscussionBanUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  challengeId?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  bannedById?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+}
+
+export type DiscussionBanUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  challengeId?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  bannedById?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+}
+
 export type DiscussionBanCreateManyChallengeInput = {
   id?: string
   userId: string
@@ -767,8 +767,8 @@ export type DiscussionBanUpdateWithoutChallengeInput = {
   bannedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  user?: Prisma.ProfileUpdateOneRequiredWithoutDiscussionBansNestedInput
   bannedBy?: Prisma.ProfileUpdateOneRequiredWithoutBannedUsersNestedInput
+  user?: Prisma.ProfileUpdateOneRequiredWithoutDiscussionBansNestedInput
 }
 
 export type DiscussionBanUncheckedUpdateWithoutChallengeInput = {
@@ -802,9 +802,9 @@ export type DiscussionBanSelect<ExtArgs extends runtime.Types.Extensions.Interna
   expiresAt?: boolean
   bannedById?: boolean
   isActive?: boolean
+  bannedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
-  bannedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["discussionBan"]>
 
 export type DiscussionBanSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -816,9 +816,9 @@ export type DiscussionBanSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   expiresAt?: boolean
   bannedById?: boolean
   isActive?: boolean
+  bannedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
-  bannedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["discussionBan"]>
 
 export type DiscussionBanSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -830,9 +830,9 @@ export type DiscussionBanSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   expiresAt?: boolean
   bannedById?: boolean
   isActive?: boolean
+  bannedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
-  bannedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["discussionBan"]>
 
 export type DiscussionBanSelectScalar = {
@@ -848,27 +848,27 @@ export type DiscussionBanSelectScalar = {
 
 export type DiscussionBanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "challengeId" | "userId" | "reason" | "bannedAt" | "expiresAt" | "bannedById" | "isActive", ExtArgs["result"]["discussionBan"]>
 export type DiscussionBanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  bannedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
-  bannedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
 export type DiscussionBanIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  bannedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
-  bannedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
 export type DiscussionBanIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  bannedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
   user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
-  bannedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
 
 export type $DiscussionBanPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "DiscussionBan"
   objects: {
+    bannedBy: Prisma.$ProfilePayload<ExtArgs>
     challenge: Prisma.$ChallengePayload<ExtArgs>
     user: Prisma.$ProfilePayload<ExtArgs>
-    bannedBy: Prisma.$ProfilePayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1273,9 +1273,9 @@ readonly fields: DiscussionBanFieldRefs;
  */
 export interface Prisma__DiscussionBanClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  bannedBy<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   challenge<T extends Prisma.ChallengeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChallengeDefaultArgs<ExtArgs>>): Prisma.Prisma__ChallengeClient<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  bannedBy<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

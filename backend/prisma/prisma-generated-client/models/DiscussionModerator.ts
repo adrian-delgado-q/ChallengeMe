@@ -190,8 +190,8 @@ export type DiscussionModeratorWhereInput = {
   grantedAt?: Prisma.DateTimeFilter<"DiscussionModerator"> | Date | string
   grantedById?: Prisma.UuidFilter<"DiscussionModerator"> | string
   challenge?: Prisma.XOR<Prisma.ChallengeScalarRelationFilter, Prisma.ChallengeWhereInput>
-  user?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
   grantedBy?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
+  user?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
 }
 
 export type DiscussionModeratorOrderByWithRelationInput = {
@@ -202,8 +202,8 @@ export type DiscussionModeratorOrderByWithRelationInput = {
   grantedAt?: Prisma.SortOrder
   grantedById?: Prisma.SortOrder
   challenge?: Prisma.ChallengeOrderByWithRelationInput
-  user?: Prisma.ProfileOrderByWithRelationInput
   grantedBy?: Prisma.ProfileOrderByWithRelationInput
+  user?: Prisma.ProfileOrderByWithRelationInput
 }
 
 export type DiscussionModeratorWhereUniqueInput = Prisma.AtLeast<{
@@ -218,8 +218,8 @@ export type DiscussionModeratorWhereUniqueInput = Prisma.AtLeast<{
   grantedAt?: Prisma.DateTimeFilter<"DiscussionModerator"> | Date | string
   grantedById?: Prisma.UuidFilter<"DiscussionModerator"> | string
   challenge?: Prisma.XOR<Prisma.ChallengeScalarRelationFilter, Prisma.ChallengeWhereInput>
-  user?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
   grantedBy?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
+  user?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
 }, "id" | "challengeId_userId">
 
 export type DiscussionModeratorOrderByWithAggregationInput = {
@@ -251,8 +251,8 @@ export type DiscussionModeratorCreateInput = {
   role?: $Enums.ModeratorRole
   grantedAt?: Date | string
   challenge: Prisma.ChallengeCreateNestedOneWithoutDiscussionModeratorsInput
-  user: Prisma.ProfileCreateNestedOneWithoutModeratorRolesInput
   grantedBy: Prisma.ProfileCreateNestedOneWithoutGrantedModeratorsInput
+  user: Prisma.ProfileCreateNestedOneWithoutModeratorRolesInput
 }
 
 export type DiscussionModeratorUncheckedCreateInput = {
@@ -269,8 +269,8 @@ export type DiscussionModeratorUpdateInput = {
   role?: Prisma.EnumModeratorRoleFieldUpdateOperationsInput | $Enums.ModeratorRole
   grantedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   challenge?: Prisma.ChallengeUpdateOneRequiredWithoutDiscussionModeratorsNestedInput
-  user?: Prisma.ProfileUpdateOneRequiredWithoutModeratorRolesNestedInput
   grantedBy?: Prisma.ProfileUpdateOneRequiredWithoutGrantedModeratorsNestedInput
+  user?: Prisma.ProfileUpdateOneRequiredWithoutModeratorRolesNestedInput
 }
 
 export type DiscussionModeratorUncheckedUpdateInput = {
@@ -348,13 +348,6 @@ export type DiscussionModeratorMinOrderByAggregateInput = {
   grantedById?: Prisma.SortOrder
 }
 
-export type DiscussionModeratorCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.DiscussionModeratorCreateWithoutUserInput, Prisma.DiscussionModeratorUncheckedCreateWithoutUserInput> | Prisma.DiscussionModeratorCreateWithoutUserInput[] | Prisma.DiscussionModeratorUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.DiscussionModeratorCreateOrConnectWithoutUserInput | Prisma.DiscussionModeratorCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.DiscussionModeratorCreateManyUserInputEnvelope
-  connect?: Prisma.DiscussionModeratorWhereUniqueInput | Prisma.DiscussionModeratorWhereUniqueInput[]
-}
-
 export type DiscussionModeratorCreateNestedManyWithoutGrantedByInput = {
   create?: Prisma.XOR<Prisma.DiscussionModeratorCreateWithoutGrantedByInput, Prisma.DiscussionModeratorUncheckedCreateWithoutGrantedByInput> | Prisma.DiscussionModeratorCreateWithoutGrantedByInput[] | Prisma.DiscussionModeratorUncheckedCreateWithoutGrantedByInput[]
   connectOrCreate?: Prisma.DiscussionModeratorCreateOrConnectWithoutGrantedByInput | Prisma.DiscussionModeratorCreateOrConnectWithoutGrantedByInput[]
@@ -362,7 +355,7 @@ export type DiscussionModeratorCreateNestedManyWithoutGrantedByInput = {
   connect?: Prisma.DiscussionModeratorWhereUniqueInput | Prisma.DiscussionModeratorWhereUniqueInput[]
 }
 
-export type DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput = {
+export type DiscussionModeratorCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.DiscussionModeratorCreateWithoutUserInput, Prisma.DiscussionModeratorUncheckedCreateWithoutUserInput> | Prisma.DiscussionModeratorCreateWithoutUserInput[] | Prisma.DiscussionModeratorUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.DiscussionModeratorCreateOrConnectWithoutUserInput | Prisma.DiscussionModeratorCreateOrConnectWithoutUserInput[]
   createMany?: Prisma.DiscussionModeratorCreateManyUserInputEnvelope
@@ -376,18 +369,11 @@ export type DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput = 
   connect?: Prisma.DiscussionModeratorWhereUniqueInput | Prisma.DiscussionModeratorWhereUniqueInput[]
 }
 
-export type DiscussionModeratorUpdateManyWithoutUserNestedInput = {
+export type DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.DiscussionModeratorCreateWithoutUserInput, Prisma.DiscussionModeratorUncheckedCreateWithoutUserInput> | Prisma.DiscussionModeratorCreateWithoutUserInput[] | Prisma.DiscussionModeratorUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.DiscussionModeratorCreateOrConnectWithoutUserInput | Prisma.DiscussionModeratorCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.DiscussionModeratorUpsertWithWhereUniqueWithoutUserInput | Prisma.DiscussionModeratorUpsertWithWhereUniqueWithoutUserInput[]
   createMany?: Prisma.DiscussionModeratorCreateManyUserInputEnvelope
-  set?: Prisma.DiscussionModeratorWhereUniqueInput | Prisma.DiscussionModeratorWhereUniqueInput[]
-  disconnect?: Prisma.DiscussionModeratorWhereUniqueInput | Prisma.DiscussionModeratorWhereUniqueInput[]
-  delete?: Prisma.DiscussionModeratorWhereUniqueInput | Prisma.DiscussionModeratorWhereUniqueInput[]
   connect?: Prisma.DiscussionModeratorWhereUniqueInput | Prisma.DiscussionModeratorWhereUniqueInput[]
-  update?: Prisma.DiscussionModeratorUpdateWithWhereUniqueWithoutUserInput | Prisma.DiscussionModeratorUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.DiscussionModeratorUpdateManyWithWhereWithoutUserInput | Prisma.DiscussionModeratorUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.DiscussionModeratorScalarWhereInput | Prisma.DiscussionModeratorScalarWhereInput[]
 }
 
 export type DiscussionModeratorUpdateManyWithoutGrantedByNestedInput = {
@@ -404,7 +390,7 @@ export type DiscussionModeratorUpdateManyWithoutGrantedByNestedInput = {
   deleteMany?: Prisma.DiscussionModeratorScalarWhereInput | Prisma.DiscussionModeratorScalarWhereInput[]
 }
 
-export type DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput = {
+export type DiscussionModeratorUpdateManyWithoutUserNestedInput = {
   create?: Prisma.XOR<Prisma.DiscussionModeratorCreateWithoutUserInput, Prisma.DiscussionModeratorUncheckedCreateWithoutUserInput> | Prisma.DiscussionModeratorCreateWithoutUserInput[] | Prisma.DiscussionModeratorUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.DiscussionModeratorCreateOrConnectWithoutUserInput | Prisma.DiscussionModeratorCreateOrConnectWithoutUserInput[]
   upsert?: Prisma.DiscussionModeratorUpsertWithWhereUniqueWithoutUserInput | Prisma.DiscussionModeratorUpsertWithWhereUniqueWithoutUserInput[]
@@ -429,6 +415,20 @@ export type DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput = 
   connect?: Prisma.DiscussionModeratorWhereUniqueInput | Prisma.DiscussionModeratorWhereUniqueInput[]
   update?: Prisma.DiscussionModeratorUpdateWithWhereUniqueWithoutGrantedByInput | Prisma.DiscussionModeratorUpdateWithWhereUniqueWithoutGrantedByInput[]
   updateMany?: Prisma.DiscussionModeratorUpdateManyWithWhereWithoutGrantedByInput | Prisma.DiscussionModeratorUpdateManyWithWhereWithoutGrantedByInput[]
+  deleteMany?: Prisma.DiscussionModeratorScalarWhereInput | Prisma.DiscussionModeratorScalarWhereInput[]
+}
+
+export type DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.DiscussionModeratorCreateWithoutUserInput, Prisma.DiscussionModeratorUncheckedCreateWithoutUserInput> | Prisma.DiscussionModeratorCreateWithoutUserInput[] | Prisma.DiscussionModeratorUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.DiscussionModeratorCreateOrConnectWithoutUserInput | Prisma.DiscussionModeratorCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.DiscussionModeratorUpsertWithWhereUniqueWithoutUserInput | Prisma.DiscussionModeratorUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.DiscussionModeratorCreateManyUserInputEnvelope
+  set?: Prisma.DiscussionModeratorWhereUniqueInput | Prisma.DiscussionModeratorWhereUniqueInput[]
+  disconnect?: Prisma.DiscussionModeratorWhereUniqueInput | Prisma.DiscussionModeratorWhereUniqueInput[]
+  delete?: Prisma.DiscussionModeratorWhereUniqueInput | Prisma.DiscussionModeratorWhereUniqueInput[]
+  connect?: Prisma.DiscussionModeratorWhereUniqueInput | Prisma.DiscussionModeratorWhereUniqueInput[]
+  update?: Prisma.DiscussionModeratorUpdateWithWhereUniqueWithoutUserInput | Prisma.DiscussionModeratorUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.DiscussionModeratorUpdateManyWithWhereWithoutUserInput | Prisma.DiscussionModeratorUpdateManyWithWhereWithoutUserInput[]
   deleteMany?: Prisma.DiscussionModeratorScalarWhereInput | Prisma.DiscussionModeratorScalarWhereInput[]
 }
 
@@ -478,32 +478,6 @@ export type EnumModeratorRoleFieldUpdateOperationsInput = {
   set?: $Enums.ModeratorRole
 }
 
-export type DiscussionModeratorCreateWithoutUserInput = {
-  id?: string
-  role?: $Enums.ModeratorRole
-  grantedAt?: Date | string
-  challenge: Prisma.ChallengeCreateNestedOneWithoutDiscussionModeratorsInput
-  grantedBy: Prisma.ProfileCreateNestedOneWithoutGrantedModeratorsInput
-}
-
-export type DiscussionModeratorUncheckedCreateWithoutUserInput = {
-  id?: string
-  challengeId: string
-  role?: $Enums.ModeratorRole
-  grantedAt?: Date | string
-  grantedById: string
-}
-
-export type DiscussionModeratorCreateOrConnectWithoutUserInput = {
-  where: Prisma.DiscussionModeratorWhereUniqueInput
-  create: Prisma.XOR<Prisma.DiscussionModeratorCreateWithoutUserInput, Prisma.DiscussionModeratorUncheckedCreateWithoutUserInput>
-}
-
-export type DiscussionModeratorCreateManyUserInputEnvelope = {
-  data: Prisma.DiscussionModeratorCreateManyUserInput | Prisma.DiscussionModeratorCreateManyUserInput[]
-  skipDuplicates?: boolean
-}
-
 export type DiscussionModeratorCreateWithoutGrantedByInput = {
   id?: string
   role?: $Enums.ModeratorRole
@@ -530,32 +504,30 @@ export type DiscussionModeratorCreateManyGrantedByInputEnvelope = {
   skipDuplicates?: boolean
 }
 
-export type DiscussionModeratorUpsertWithWhereUniqueWithoutUserInput = {
+export type DiscussionModeratorCreateWithoutUserInput = {
+  id?: string
+  role?: $Enums.ModeratorRole
+  grantedAt?: Date | string
+  challenge: Prisma.ChallengeCreateNestedOneWithoutDiscussionModeratorsInput
+  grantedBy: Prisma.ProfileCreateNestedOneWithoutGrantedModeratorsInput
+}
+
+export type DiscussionModeratorUncheckedCreateWithoutUserInput = {
+  id?: string
+  challengeId: string
+  role?: $Enums.ModeratorRole
+  grantedAt?: Date | string
+  grantedById: string
+}
+
+export type DiscussionModeratorCreateOrConnectWithoutUserInput = {
   where: Prisma.DiscussionModeratorWhereUniqueInput
-  update: Prisma.XOR<Prisma.DiscussionModeratorUpdateWithoutUserInput, Prisma.DiscussionModeratorUncheckedUpdateWithoutUserInput>
   create: Prisma.XOR<Prisma.DiscussionModeratorCreateWithoutUserInput, Prisma.DiscussionModeratorUncheckedCreateWithoutUserInput>
 }
 
-export type DiscussionModeratorUpdateWithWhereUniqueWithoutUserInput = {
-  where: Prisma.DiscussionModeratorWhereUniqueInput
-  data: Prisma.XOR<Prisma.DiscussionModeratorUpdateWithoutUserInput, Prisma.DiscussionModeratorUncheckedUpdateWithoutUserInput>
-}
-
-export type DiscussionModeratorUpdateManyWithWhereWithoutUserInput = {
-  where: Prisma.DiscussionModeratorScalarWhereInput
-  data: Prisma.XOR<Prisma.DiscussionModeratorUpdateManyMutationInput, Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserInput>
-}
-
-export type DiscussionModeratorScalarWhereInput = {
-  AND?: Prisma.DiscussionModeratorScalarWhereInput | Prisma.DiscussionModeratorScalarWhereInput[]
-  OR?: Prisma.DiscussionModeratorScalarWhereInput[]
-  NOT?: Prisma.DiscussionModeratorScalarWhereInput | Prisma.DiscussionModeratorScalarWhereInput[]
-  id?: Prisma.UuidFilter<"DiscussionModerator"> | string
-  challengeId?: Prisma.UuidFilter<"DiscussionModerator"> | string
-  userId?: Prisma.UuidFilter<"DiscussionModerator"> | string
-  role?: Prisma.EnumModeratorRoleFilter<"DiscussionModerator"> | $Enums.ModeratorRole
-  grantedAt?: Prisma.DateTimeFilter<"DiscussionModerator"> | Date | string
-  grantedById?: Prisma.UuidFilter<"DiscussionModerator"> | string
+export type DiscussionModeratorCreateManyUserInputEnvelope = {
+  data: Prisma.DiscussionModeratorCreateManyUserInput | Prisma.DiscussionModeratorCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type DiscussionModeratorUpsertWithWhereUniqueWithoutGrantedByInput = {
@@ -574,12 +546,40 @@ export type DiscussionModeratorUpdateManyWithWhereWithoutGrantedByInput = {
   data: Prisma.XOR<Prisma.DiscussionModeratorUpdateManyMutationInput, Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByInput>
 }
 
+export type DiscussionModeratorScalarWhereInput = {
+  AND?: Prisma.DiscussionModeratorScalarWhereInput | Prisma.DiscussionModeratorScalarWhereInput[]
+  OR?: Prisma.DiscussionModeratorScalarWhereInput[]
+  NOT?: Prisma.DiscussionModeratorScalarWhereInput | Prisma.DiscussionModeratorScalarWhereInput[]
+  id?: Prisma.UuidFilter<"DiscussionModerator"> | string
+  challengeId?: Prisma.UuidFilter<"DiscussionModerator"> | string
+  userId?: Prisma.UuidFilter<"DiscussionModerator"> | string
+  role?: Prisma.EnumModeratorRoleFilter<"DiscussionModerator"> | $Enums.ModeratorRole
+  grantedAt?: Prisma.DateTimeFilter<"DiscussionModerator"> | Date | string
+  grantedById?: Prisma.UuidFilter<"DiscussionModerator"> | string
+}
+
+export type DiscussionModeratorUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.DiscussionModeratorWhereUniqueInput
+  update: Prisma.XOR<Prisma.DiscussionModeratorUpdateWithoutUserInput, Prisma.DiscussionModeratorUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.DiscussionModeratorCreateWithoutUserInput, Prisma.DiscussionModeratorUncheckedCreateWithoutUserInput>
+}
+
+export type DiscussionModeratorUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.DiscussionModeratorWhereUniqueInput
+  data: Prisma.XOR<Prisma.DiscussionModeratorUpdateWithoutUserInput, Prisma.DiscussionModeratorUncheckedUpdateWithoutUserInput>
+}
+
+export type DiscussionModeratorUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.DiscussionModeratorScalarWhereInput
+  data: Prisma.XOR<Prisma.DiscussionModeratorUpdateManyMutationInput, Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserInput>
+}
+
 export type DiscussionModeratorCreateWithoutChallengeInput = {
   id?: string
   role?: $Enums.ModeratorRole
   grantedAt?: Date | string
-  user: Prisma.ProfileCreateNestedOneWithoutModeratorRolesInput
   grantedBy: Prisma.ProfileCreateNestedOneWithoutGrantedModeratorsInput
+  user: Prisma.ProfileCreateNestedOneWithoutModeratorRolesInput
 }
 
 export type DiscussionModeratorUncheckedCreateWithoutChallengeInput = {
@@ -616,14 +616,6 @@ export type DiscussionModeratorUpdateManyWithWhereWithoutChallengeInput = {
   data: Prisma.XOR<Prisma.DiscussionModeratorUpdateManyMutationInput, Prisma.DiscussionModeratorUncheckedUpdateManyWithoutChallengeInput>
 }
 
-export type DiscussionModeratorCreateManyUserInput = {
-  id?: string
-  challengeId: string
-  role?: $Enums.ModeratorRole
-  grantedAt?: Date | string
-  grantedById: string
-}
-
 export type DiscussionModeratorCreateManyGrantedByInput = {
   id?: string
   challengeId: string
@@ -632,28 +624,12 @@ export type DiscussionModeratorCreateManyGrantedByInput = {
   grantedAt?: Date | string
 }
 
-export type DiscussionModeratorUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumModeratorRoleFieldUpdateOperationsInput | $Enums.ModeratorRole
-  grantedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  challenge?: Prisma.ChallengeUpdateOneRequiredWithoutDiscussionModeratorsNestedInput
-  grantedBy?: Prisma.ProfileUpdateOneRequiredWithoutGrantedModeratorsNestedInput
-}
-
-export type DiscussionModeratorUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  challengeId?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumModeratorRoleFieldUpdateOperationsInput | $Enums.ModeratorRole
-  grantedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  grantedById?: Prisma.StringFieldUpdateOperationsInput | string
-}
-
-export type DiscussionModeratorUncheckedUpdateManyWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  challengeId?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumModeratorRoleFieldUpdateOperationsInput | $Enums.ModeratorRole
-  grantedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  grantedById?: Prisma.StringFieldUpdateOperationsInput | string
+export type DiscussionModeratorCreateManyUserInput = {
+  id?: string
+  challengeId: string
+  role?: $Enums.ModeratorRole
+  grantedAt?: Date | string
+  grantedById: string
 }
 
 export type DiscussionModeratorUpdateWithoutGrantedByInput = {
@@ -680,6 +656,30 @@ export type DiscussionModeratorUncheckedUpdateManyWithoutGrantedByInput = {
   grantedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type DiscussionModeratorUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumModeratorRoleFieldUpdateOperationsInput | $Enums.ModeratorRole
+  grantedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  challenge?: Prisma.ChallengeUpdateOneRequiredWithoutDiscussionModeratorsNestedInput
+  grantedBy?: Prisma.ProfileUpdateOneRequiredWithoutGrantedModeratorsNestedInput
+}
+
+export type DiscussionModeratorUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  challengeId?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumModeratorRoleFieldUpdateOperationsInput | $Enums.ModeratorRole
+  grantedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  grantedById?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type DiscussionModeratorUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  challengeId?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumModeratorRoleFieldUpdateOperationsInput | $Enums.ModeratorRole
+  grantedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  grantedById?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
 export type DiscussionModeratorCreateManyChallengeInput = {
   id?: string
   userId: string
@@ -692,8 +692,8 @@ export type DiscussionModeratorUpdateWithoutChallengeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumModeratorRoleFieldUpdateOperationsInput | $Enums.ModeratorRole
   grantedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.ProfileUpdateOneRequiredWithoutModeratorRolesNestedInput
   grantedBy?: Prisma.ProfileUpdateOneRequiredWithoutGrantedModeratorsNestedInput
+  user?: Prisma.ProfileUpdateOneRequiredWithoutModeratorRolesNestedInput
 }
 
 export type DiscussionModeratorUncheckedUpdateWithoutChallengeInput = {
@@ -722,8 +722,8 @@ export type DiscussionModeratorSelect<ExtArgs extends runtime.Types.Extensions.I
   grantedAt?: boolean
   grantedById?: boolean
   challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   grantedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["discussionModerator"]>
 
 export type DiscussionModeratorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -734,8 +734,8 @@ export type DiscussionModeratorSelectCreateManyAndReturn<ExtArgs extends runtime
   grantedAt?: boolean
   grantedById?: boolean
   challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   grantedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["discussionModerator"]>
 
 export type DiscussionModeratorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -746,8 +746,8 @@ export type DiscussionModeratorSelectUpdateManyAndReturn<ExtArgs extends runtime
   grantedAt?: boolean
   grantedById?: boolean
   challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   grantedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["discussionModerator"]>
 
 export type DiscussionModeratorSelectScalar = {
@@ -762,26 +762,26 @@ export type DiscussionModeratorSelectScalar = {
 export type DiscussionModeratorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "challengeId" | "userId" | "role" | "grantedAt" | "grantedById", ExtArgs["result"]["discussionModerator"]>
 export type DiscussionModeratorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   grantedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
 export type DiscussionModeratorIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   grantedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
 export type DiscussionModeratorIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   challenge?: boolean | Prisma.ChallengeDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   grantedBy?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
 
 export type $DiscussionModeratorPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "DiscussionModerator"
   objects: {
     challenge: Prisma.$ChallengePayload<ExtArgs>
-    user: Prisma.$ProfilePayload<ExtArgs>
     grantedBy: Prisma.$ProfilePayload<ExtArgs>
+    user: Prisma.$ProfilePayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1185,8 +1185,8 @@ readonly fields: DiscussionModeratorFieldRefs;
 export interface Prisma__DiscussionModeratorClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   challenge<T extends Prisma.ChallengeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChallengeDefaultArgs<ExtArgs>>): Prisma.Prisma__ChallengeClient<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  user<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   grantedBy<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
