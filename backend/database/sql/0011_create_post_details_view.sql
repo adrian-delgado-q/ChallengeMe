@@ -5,20 +5,20 @@ WITH
     (security_invoker = true) AS
 SELECT
     post.id,
-    post."createdAt",
+    post.created_at,
     post.content,
-    post."imageUrl",
-    post."participantId",
-    cp."userId",
+    post.image_url,
+    post.participant_id,
+    cp.user_id,
     p.username,
     p.avatar_url,
-    cp."challengeId",
+    cp.challenge_id,
     c.title AS challenge_title
 FROM
-    "posts" post
-    JOIN "challenge_participants" cp ON post."participantId" = cp.id
-    LEFT JOIN "profiles" p ON cp."userId" = p.id
-    JOIN "challenges" c ON cp."challengeId" = c.id;
+    posts post
+    JOIN challenge_participants cp ON post.participant_id = cp.id
+    LEFT JOIN profiles p ON cp.user_id = p.id
+    JOIN challenges c ON cp.challenge_id = c.id;
 
 -- migrate:down
 DROP VIEW IF EXISTS post_details_view;

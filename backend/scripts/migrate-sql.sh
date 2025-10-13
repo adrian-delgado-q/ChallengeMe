@@ -29,6 +29,7 @@ BACKEND_ROOT=$(dirname "$SCRIPT_DIR")
 
 # --- Configuration ---
 MIGRATIONS_DIR="${BACKEND_ROOT}/database/sql"
+DATABASE_DIR="${BACKEND_ROOT}/database/db"
 
 # --- Colors & Logging ---
 if tput setaf 1 &> /dev/null; then
@@ -87,12 +88,12 @@ main() {
     case "$action" in
         up)
             log_info "Applying all pending migrations..."
-            dbmate --url "$DATABASE_URL" --migrations-dir "$MIGRATIONS_DIR" up
+            dbmate --url "$DATABASE_URL" --migrations-dir "$MIGRATIONS_DIR" --schema-file "$DATABASE_DIR" up
             log_success "🎉 All pending migrations applied successfully!"
             ;;
         down|revert)
             log_info "Reverting the most recent migration..."
-            dbmate --url "$DATABASE_URL" --migrations-dir "$MIGRATIONS_DIR" down
+            dbmate --url "$DATABASE_URL" --migrations-dir "$MIGRATIONS_DIR" --schema-file "$DATABASE_DIR" down
             log_success "🎉 The most recent migration was reverted successfully."
             ;;
         *)

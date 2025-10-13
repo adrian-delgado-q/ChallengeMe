@@ -40,48 +40,48 @@ model SchemaMigration {
 }
 
 model Profile {
-  id                  String                   @id @db.Uuid
-  username            String?                  @unique
-  avatar_url          String?
-  created_at          DateTime                 @default(now()) @db.Timestamptz(6)
-  updated_at          DateTime                 @updatedAt @db.Timestamptz(6)
-  activities          Activity[]
-  challenge_entries   ChallengeParticipant[]
-  created_challenges  Challenge[]              @relation("challenge_creator")
-  comments            Comment[]
-  banned_users        DiscussionBan[]          @relation("banned_users")
-  discussion_bans     DiscussionBan[]
-  granted_moderators  DiscussionModerator[]    @relation("granted_moderators")
-  moderator_roles     DiscussionModerator[]
-  discussion_posts    DiscussionPost[]
-  discussion_replies  DiscussionReply[]
-  posts               Post[]
-  team_memberships    TeamMembership[]
-  created_teams       Team[]                   @relation("team_creator")
-  created_workouts    Workout[]                @relation("workout_creator")
-  workout_sessions    WorkoutSession[]
-  workout_comment     WorkoutComment[]
+  id                 String                 @id @db.Uuid
+  username           String?                @unique
+  avatar_url         String?
+  created_at         DateTime               @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime               @updatedAt @db.Timestamptz(6)
+  activities         Activity[]
+  challenge_entries  ChallengeParticipant[]
+  created_challenges Challenge[]            @relation("challenge_creator")
+  comments           Comment[]
+  banned_users       DiscussionBan[]        @relation("banned_users")
+  discussion_bans    DiscussionBan[]
+  granted_moderators DiscussionModerator[]  @relation("granted_moderators")
+  moderator_roles    DiscussionModerator[]
+  discussion_posts   DiscussionPost[]
+  discussion_replies DiscussionReply[]
+  posts              Post[]
+  team_memberships   TeamMembership[]
+  created_teams      Team[]                 @relation("team_creator")
+  created_workouts   Workout[]              @relation("workout_creator")
+  workout_sessions   WorkoutSession[]
+  workout_comment    WorkoutComment[]
 
   @@map("profiles")
 }
 
 model Team {
-  id                 String                   @id @default(uuid()) @db.Uuid
-  creator_id         String                   @db.Uuid
-  name               String
-  description        String?
-  avatar_url         String?
-  is_public          Boolean                  @default(true)
-  access_code        String?
-  created_at         DateTime                 @default(now()) @db.Timestamptz(6)
-  expires_at         DateTime?                @db.Timestamptz(6)
-  max_members        Int?
-  member_count       Int                      @default(0)
-  sports_types       String[]
-  challenge_entries  ChallengeParticipant[]
-  team_memberships   TeamMembership[]
-  creator            Profile                  @relation("team_creator", fields: [creator_id], references: [id])
-  workouts           Workout[]                @relation("TeamWorkouts")
+  id                String                 @id @default(uuid()) @db.Uuid
+  creator_id        String                 @db.Uuid
+  name              String
+  description       String?
+  avatar_url        String?
+  is_public         Boolean                @default(true)
+  access_code       String?
+  created_at        DateTime               @default(now()) @db.Timestamptz(6)
+  expires_at        DateTime?              @db.Timestamptz(6)
+  max_members       Int?
+  member_count      Int                    @default(0)
+  sports_types      String[]
+  challenge_entries ChallengeParticipant[]
+  team_memberships  TeamMembership[]
+  creator           Profile                @relation("team_creator", fields: [creator_id], references: [id])
+  workouts          Workout[]              @relation("TeamWorkouts")
 
   @@map("teams")
 }
@@ -101,32 +101,32 @@ model TeamMembership {
 }
 
 model Challenge {
-  id                     String                   @id @default(uuid()) @db.Uuid
-  creator_id             String                   @db.Uuid
-  title                  String
-  description            String?
-  instructions           String?
-  image_url              String?
-  challenge_type         ChallengeParticipantType @default(INDIVIDUAL)
-  max_participants       Int?
-  participant_count      Int                      @default(0)
-  start_date             DateTime                 @db.Date
-  end_date               DateTime                 @db.Date
-  is_public              Boolean                  @default(true)
-  access_code            String?
-  created_at             DateTime                 @default(now()) @db.Timestamptz(6)
-  expires_at             DateTime?                @db.Timestamptz(6)
-  max_team_size          Int?
-  status                 ChallengeStatus          @default(ACTIVE)
-  activities             Activity[]
-  supported_activities   ChallengeActivityType[]
-  participants           ChallengeParticipant[]
-  creator                Profile                  @relation("challenge_creator", fields: [creator_id], references: [id])
-  discussion_bans        DiscussionBan[]
-  discussion_moderators  DiscussionModerator[]
-  discussion_posts       DiscussionPost[]
-  milestones             Milestone[]
-  posts                  Post[]
+  id                    String                   @id @default(uuid()) @db.Uuid
+  creator_id            String                   @db.Uuid
+  title                 String
+  description           String?
+  instructions          String?
+  image_url             String?
+  challenge_type        ChallengeParticipantType @default(INDIVIDUAL)
+  max_participants      Int?
+  participant_count     Int                      @default(0)
+  start_date            DateTime                 @db.Date
+  end_date              DateTime                 @db.Date
+  is_public             Boolean                  @default(true)
+  access_code           String?
+  created_at            DateTime                 @default(now()) @db.Timestamptz(6)
+  expires_at            DateTime?                @db.Timestamptz(6)
+  max_team_size         Int?
+  status                ChallengeStatus          @default(ACTIVE)
+  activities            Activity[]
+  supported_activities  ChallengeActivityType[]
+  participants          ChallengeParticipant[]
+  creator               Profile                  @relation("challenge_creator", fields: [creator_id], references: [id])
+  discussion_bans       DiscussionBan[]
+  discussion_moderators DiscussionModerator[]
+  discussion_posts      DiscussionPost[]
+  milestones            Milestone[]
+  posts                 Post[]
 
   @@index([creator_id, status], map: "idx_challenge_creator_status")
   @@index([status], map: "idx_challenge_status")
@@ -145,17 +145,17 @@ model ChallengeActivityType {
 }
 
 model Milestone {
-  id                    String              @id @default(uuid()) @db.Uuid
-  challenge_id          String              @db.Uuid
-  activity_type_id      String              @db.Uuid
-  name                  String
-  description           String?
-  target_value          Float
-  order                 Int
-  created_at            DateTime            @default(now()) @db.Timestamptz(6)
-  participant_progress  MilestoneProgress[]
-  activity_type         ActivityType        @relation(fields: [activity_type_id], references: [id])
-  challenge             Challenge           @relation(fields: [challenge_id], references: [id], onDelete: Cascade)
+  id                   String              @id @default(uuid()) @db.Uuid
+  challenge_id         String              @db.Uuid
+  activity_type_id     String              @db.Uuid
+  name                 String
+  description          String?
+  target_value         Float
+  order                Int
+  created_at           DateTime            @default(now()) @db.Timestamptz(6)
+  participant_progress MilestoneProgress[]
+  activity_type        ActivityType        @relation(fields: [activity_type_id], references: [id])
+  challenge            Challenge           @relation(fields: [challenge_id], references: [id], onDelete: Cascade)
 
   @@map("milestones")
 }
@@ -195,18 +195,18 @@ model ChallengeParticipant {
 }
 
 model ActivityType {
-  id                 String                  @id @default(uuid()) @db.Uuid
-  name               String                  @unique
-  category           String
-  unit               String
-  unit_label         String
-  description        String?
-  is_active          Boolean                 @default(true)
-  created_at         DateTime                @default(now()) @db.Timestamptz(6)
-  activities         Activity[]
-  challenges         ChallengeActivityType[]
-  milestones         Milestone[]
-  workout_exercises  WorkoutExercise[]
+  id                String                  @id @default(uuid()) @db.Uuid
+  name              String                  @unique
+  category          String
+  unit              String
+  unit_label        String
+  description       String?
+  is_active         Boolean                 @default(true)
+  created_at        DateTime                @default(now()) @db.Timestamptz(6)
+  activities        Activity[]
+  challenges        ChallengeActivityType[]
+  milestones        Milestone[]
+  workout_exercises WorkoutExercise[]
 
   @@map("activity_types")
 }
@@ -335,8 +335,6 @@ model DiscussionBan {
   @@map("discussion_bans")
 }
 
-
-
 model Workout {
   id              String   @id @default(uuid()) @db.Uuid
   creator_id      String   @db.Uuid
@@ -379,12 +377,12 @@ model WorkoutExercise {
 }
 
 model WorkoutSession {
-  id                 String   @id @default(uuid()) @db.Uuid
-  workout_id         String   @db.Uuid
-  profile_id         String   @db.Uuid
-  session_date       DateTime @default(now()) @db.Date
-  notes              String?
-  created_at         DateTime @default(now()) @db.Timestamp(6)
+  id           String   @id @default(uuid()) @db.Uuid
+  workout_id   String   @db.Uuid
+  profile_id   String   @db.Uuid
+  session_date DateTime @default(now()) @db.Date
+  notes        String?
+  created_at   DateTime @default(now()) @db.Timestamp(6)
 
   workout           Workout    @relation(fields: [workout_id], references: [id], onDelete: Cascade)
   profile           Profile    @relation(fields: [profile_id], references: [id])

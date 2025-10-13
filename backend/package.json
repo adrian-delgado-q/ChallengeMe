@@ -11,17 +11,32 @@
 		"env:load:dev": "cd scripts && NODE_ENV=development ./env-loader.sh",
 		"env:load:prod": "cd scripts && NODE_ENV=production ./env-loader.sh",
 		"migrate:prisma:dev": "DOTENV_CONFIG_PATH=../.env/.env.development prisma migrate dev --schema=./prisma/schema.prisma",
-		"migrate:prisma:prod": "DOTENV_CONFIG_PATH=../.env/.env.production prisma migrate deploy --schema=./prisma/schema.prisma"
+		"migrate:prisma:prod": "DOTENV_CONFIG_PATH=../.env/.env.production prisma migrate deploy --schema=./prisma/schema.prisma",
+		"start:server": "NODE_ENV=development ts-node src/server.ts"
 	},
 	"dependencies": {
+		"@apollo/server": "^5.0.0",
+		"@apollo/server-plugin-response-cache": "^5.0.0",
+		"@as-integrations/express5": "^1.1.2",
+		"@pothos/core": "^4.10.0",
+		"@pothos/plugin-prisma": "^4.12.0",
 		"@prisma/client": "^6.10.1",
 		"@supabase/supabase-js": "^2.0.0",
+		"cors": "^2.8.5",
+		"dataloader": "^2.2.3",
 		"dotenv": "^16.0.0",
+		"express": "^5.1.0",
+		"graphql": "^16.11.0",
+		"ioredis": "^5.8.1",
 		"pg": "^8.16.0",
-		"prisma": "^6.10.1"
+		"prisma": "^6.10.1",
+		"prom-client": "^15.1.3",
+		"redis": "^5.8.3"
 	},
 	"devDependencies": {
 		"@faker-js/faker": "^9.8.0",
+		"@types/cors": "^2.8.19",
+		"@types/express": "^5.0.3",
 		"@types/node": "^20.0.0",
 		"@types/pg": "^8.15.4",
 		"dbmate": "^2.28.0",

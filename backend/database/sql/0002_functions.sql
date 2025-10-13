@@ -56,31 +56,31 @@ EXCEPTION
 END;
 $$;
 
--- Updates the memberCount on the Team table.
+-- Updates the member_count on the Team table.
 CREATE OR
 REPLACE FUNCTION public.update_team_member_count () RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
     IF (TG_OP = 'INSERT') THEN
-        UPDATE "public"."teams" SET "memberCount" = "memberCount" + 1 WHERE id = NEW."teamId";
+        UPDATE public.teams SET member_count = member_count + 1 WHERE id = NEW.team_id;
         RETURN NEW;
     ELSIF (TG_OP = 'DELETE') THEN
-        UPDATE "public"."teams" SET "memberCount" = "memberCount" - 1 WHERE id = OLD."teamId";
+        UPDATE public.teams SET member_count = member_count - 1 WHERE id = OLD.team_id;
         RETURN OLD;
     END IF;
     RETURN NULL;
 END;
 $$;
 
--- Updates the participantCount on the Challenge table.
+-- Updates the participant_count on the Challenge table.
 CREATE OR
 REPLACE FUNCTION public.update_challenge_participant_count () RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
     IF (TG_OP = 'INSERT') THEN
-        UPDATE "public"."challenges" SET "participantCount" = "participantCount" + 1 WHERE id = NEW."challengeId";
+        UPDATE public.challenges SET participant_count = participant_count + 1 WHERE id = NEW.challenge_id;
         RETURN NEW;
     ELSIF (TG_OP = 'DELETE') THEN
-        IF EXISTS (SELECT 1 FROM "public"."challenges" WHERE id = OLD."challengeId") THEN
-            UPDATE "public"."challenges" SET "participantCount" = "participantCount" - 1 WHERE id = OLD."challengeId";
+        IF EXISTS (SELECT 1 FROM public.challenges WHERE id = OLD.challenge_id) THEN
+            UPDATE public.challenges SET participant_count = participant_count - 1 WHERE id = OLD.challenge_id;
         END IF;
         RETURN OLD;
     END IF;
@@ -93,12 +93,12 @@ CREATE OR
 REPLACE FUNCTION public.validate_activity_challenge_agreement () RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
     -- Only run the validation if the activity is being linked to a challenge.
-    IF NEW."challengeId" IS NOT NULL THEN
+    IF NEW.challenge_id IS NOT NULL THEN
         IF NOT EXISTS (
             SELECT 1
             FROM public.challenge_activity_types cat
-            WHERE cat."challengeId" = NEW."challengeId"
-              AND cat."activityTypeId" = NEW."activityTypeId"
+            WHERE cat.challenge_id = NEW.challenge_id
+              AND cat.activity_type_id = NEW.activity_type_id
         ) THEN
             RAISE EXCEPTION 'Activity type is not supported by this challenge. Only activities that match the challenge''s supported activity types can be recorded.';
         END IF;

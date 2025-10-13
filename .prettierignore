@@ -1,5 +1,5 @@
 # generated libraries
-prisma-generated-client/
+backend/prisma/prisma-client/
 
 # Prettier ignore file
 # Dependencies
@@ -27,7 +27,7 @@ yarn.lock
 pnpm-lock.yaml
 
 # Prisma generated files
-**/prisma-generated-client/**
+**/prisma-client/**
 
 # Build outputs
 .next/

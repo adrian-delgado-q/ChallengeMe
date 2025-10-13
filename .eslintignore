@@ -1,0 +1,2 @@
+# Ignore generated Prisma client and schema
+backend/prisma/prisma-client/

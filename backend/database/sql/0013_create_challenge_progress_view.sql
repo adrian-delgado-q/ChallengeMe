@@ -7,26 +7,26 @@ WITH
     (security_invoker = true) AS
 SELECT
     gen_random_uuid () as id,
-    a."challengeId",
-    a."participantId",
-    a."activityTypeId",
-    SUM(a.value) as "totalValue",
-    COUNT(*)::int as "activityCount",
-    AVG(a.value) as "averageValue",
-    MAX(a.value) as "bestValue",
-    MAX(a.date) as "lastActivityDate",
-    MIN(a."uploadedAt") as "createdAt",
-    MAX(a."uploadedAt") as "updatedAt"
+    a.challenge_id,
+    a.participant_id,
+    a.activity_type_id,
+    SUM(a.value) as total_value,
+    COUNT(*)::int as activity_count,
+    AVG(a.value) as average_value,
+    MAX(a.value) as best_value,
+    MAX(a.date) as last_activity_date,
+    MIN(a.uploaded_at) as created_at,
+    MAX(a.uploaded_at) as updated_at
 FROM
-    "activities" a
+    activities a
 WHERE
-    a."challengeId" IS NOT NULL AND
-    a."participantId" IS NOT NULL AND
-    a."activityTypeId" IS NOT NULL
+    a.challenge_id IS NOT NULL AND
+    a.participant_id IS NOT NULL AND
+    a.activity_type_id IS NOT NULL
 GROUP BY
-    a."challengeId",
-    a."participantId",
-    a."activityTypeId";
+    a.challenge_id,
+    a.participant_id,
+    a.activity_type_id;
 
 COMMENT ON VIEW challenge_progress IS 'Dynamic view that calculates challenge progress aggregations from Activity data in real-time. Replaces the previous challenge_progress table.';
 

@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../prisma/prisma-generated-client/client';
+import { PrismaClient } from '../../prisma/prisma-client/client';
 
 import activityTypes from './activityTypes';
 import dotenv from 'dotenv';
@@ -9,16 +9,16 @@ const prisma = new PrismaClient();
 async function main() {
 	console.log('Seeding activity types...');
 
-	for (const activityTypeData of activityTypes) {
+	for (const activity_type_data of activityTypes) {
 		try {
 			const activityType = await prisma.activityType.upsert({
-				where: { name: activityTypeData.name },
-				update: activityTypeData,
-				create: activityTypeData,
+				where: { name: activity_type_data.name },
+				update: activity_type_data,
+				create: activity_type_data,
 			});
 			console.log(`Created/Updated activity type: ${activityType.name}`);
 		} catch (error) {
-			console.error(`Error creating activity type ${activityTypeData.name}:`, error);
+			console.error(`Error creating activity type ${activity_type_data.name}:`, error);
 		}
 	}
 
