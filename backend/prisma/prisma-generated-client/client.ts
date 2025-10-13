@@ -37,7 +37,7 @@ export { Prisma }
 
 // file annotations for bundling tools to include these files
 path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node")
-path.join(process.cwd(), "prisma-generated-client/libquery_engine-debian-openssl-3.0.x.so.node")
+path.join(process.cwd(), "prisma/prisma-generated-client/libquery_engine-debian-openssl-3.0.x.so.node")
 
 /**
  * Model Profile
@@ -124,6 +124,26 @@ export type DiscussionBan = Prisma.DiscussionBanModel
  * 
  */
 export type schema_migrations = Prisma.schema_migrationsModel
+/**
+ * Model Workout
+ * 
+ */
+export type Workout = Prisma.WorkoutModel
+/**
+ * Model WorkoutExercise
+ * 
+ */
+export type WorkoutExercise = Prisma.WorkoutExerciseModel
+/**
+ * Model WorkoutSession
+ * 
+ */
+export type WorkoutSession = Prisma.WorkoutSessionModel
+/**
+ * Model WorkoutComment
+ * 
+ */
+export type WorkoutComment = Prisma.WorkoutCommentModel
 
 export type TeamRole = $Enums.TeamRole
 export const TeamRole = $Enums.TeamRole

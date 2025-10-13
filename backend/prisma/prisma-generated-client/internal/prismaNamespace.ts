@@ -410,7 +410,11 @@ export const ModelName = {
   DiscussionReply: 'DiscussionReply',
   DiscussionModerator: 'DiscussionModerator',
   DiscussionBan: 'DiscussionBan',
-  schema_migrations: 'schema_migrations'
+  schema_migrations: 'schema_migrations',
+  Workout: 'Workout',
+  WorkoutExercise: 'WorkoutExercise',
+  WorkoutSession: 'WorkoutSession',
+  WorkoutComment: 'WorkoutComment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -426,7 +430,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "profile" | "team" | "teamMembership" | "challenge" | "challengeActivityType" | "milestone" | "milestoneProgress" | "challengeParticipant" | "activityType" | "activity" | "post" | "comment" | "discussionPost" | "discussionReply" | "discussionModerator" | "discussionBan" | "schema_migrations"
+    modelProps: "profile" | "team" | "teamMembership" | "challenge" | "challengeActivityType" | "milestone" | "milestoneProgress" | "challengeParticipant" | "activityType" | "activity" | "post" | "comment" | "discussionPost" | "discussionReply" | "discussionModerator" | "discussionBan" | "schema_migrations" | "workout" | "workoutExercise" | "workoutSession" | "workoutComment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1688,6 +1692,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Workout: {
+      payload: Prisma.$WorkoutPayload<ExtArgs>
+      fields: Prisma.WorkoutFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkoutFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkoutFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutPayload>
+        }
+        findFirst: {
+          args: Prisma.WorkoutFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkoutFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutPayload>
+        }
+        findMany: {
+          args: Prisma.WorkoutFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutPayload>[]
+        }
+        create: {
+          args: Prisma.WorkoutCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutPayload>
+        }
+        createMany: {
+          args: Prisma.WorkoutCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkoutCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutPayload>[]
+        }
+        delete: {
+          args: Prisma.WorkoutDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutPayload>
+        }
+        update: {
+          args: Prisma.WorkoutUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutPayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkoutDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkoutUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkoutUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutPayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkoutUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutPayload>
+        }
+        aggregate: {
+          args: Prisma.WorkoutAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkout>
+        }
+        groupBy: {
+          args: Prisma.WorkoutGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkoutGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkoutCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkoutCountAggregateOutputType> | number
+        }
+      }
+    }
+    WorkoutExercise: {
+      payload: Prisma.$WorkoutExercisePayload<ExtArgs>
+      fields: Prisma.WorkoutExerciseFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkoutExerciseFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutExercisePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkoutExerciseFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutExercisePayload>
+        }
+        findFirst: {
+          args: Prisma.WorkoutExerciseFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutExercisePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkoutExerciseFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutExercisePayload>
+        }
+        findMany: {
+          args: Prisma.WorkoutExerciseFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutExercisePayload>[]
+        }
+        create: {
+          args: Prisma.WorkoutExerciseCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutExercisePayload>
+        }
+        createMany: {
+          args: Prisma.WorkoutExerciseCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkoutExerciseCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutExercisePayload>[]
+        }
+        delete: {
+          args: Prisma.WorkoutExerciseDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutExercisePayload>
+        }
+        update: {
+          args: Prisma.WorkoutExerciseUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutExercisePayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkoutExerciseDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkoutExerciseUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkoutExerciseUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutExercisePayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkoutExerciseUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutExercisePayload>
+        }
+        aggregate: {
+          args: Prisma.WorkoutExerciseAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkoutExercise>
+        }
+        groupBy: {
+          args: Prisma.WorkoutExerciseGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkoutExerciseGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkoutExerciseCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkoutExerciseCountAggregateOutputType> | number
+        }
+      }
+    }
+    WorkoutSession: {
+      payload: Prisma.$WorkoutSessionPayload<ExtArgs>
+      fields: Prisma.WorkoutSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkoutSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkoutSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.WorkoutSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkoutSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>
+        }
+        findMany: {
+          args: Prisma.WorkoutSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>[]
+        }
+        create: {
+          args: Prisma.WorkoutSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>
+        }
+        createMany: {
+          args: Prisma.WorkoutSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkoutSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.WorkoutSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>
+        }
+        update: {
+          args: Prisma.WorkoutSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkoutSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkoutSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkoutSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkoutSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.WorkoutSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkoutSession>
+        }
+        groupBy: {
+          args: Prisma.WorkoutSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkoutSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkoutSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkoutSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    WorkoutComment: {
+      payload: Prisma.$WorkoutCommentPayload<ExtArgs>
+      fields: Prisma.WorkoutCommentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkoutCommentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutCommentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkoutCommentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutCommentPayload>
+        }
+        findFirst: {
+          args: Prisma.WorkoutCommentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutCommentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkoutCommentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutCommentPayload>
+        }
+        findMany: {
+          args: Prisma.WorkoutCommentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutCommentPayload>[]
+        }
+        create: {
+          args: Prisma.WorkoutCommentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutCommentPayload>
+        }
+        createMany: {
+          args: Prisma.WorkoutCommentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkoutCommentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutCommentPayload>[]
+        }
+        delete: {
+          args: Prisma.WorkoutCommentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutCommentPayload>
+        }
+        update: {
+          args: Prisma.WorkoutCommentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutCommentPayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkoutCommentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkoutCommentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkoutCommentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutCommentPayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkoutCommentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkoutCommentPayload>
+        }
+        aggregate: {
+          args: Prisma.WorkoutCommentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkoutComment>
+        }
+        groupBy: {
+          args: Prisma.WorkoutCommentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkoutCommentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkoutCommentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkoutCommentCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1862,7 +2162,8 @@ export const ActivityScalarFieldEnum = {
   date: 'date',
   uploadedAt: 'uploadedAt',
   profileId: 'profileId',
-  challengeId: 'challengeId'
+  challengeId: 'challengeId',
+  workoutSessionId: 'workoutSessionId'
 } as const
 
 export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
@@ -1955,12 +2256,74 @@ export const Schema_migrationsScalarFieldEnum = {
 export type Schema_migrationsScalarFieldEnum = (typeof Schema_migrationsScalarFieldEnum)[keyof typeof Schema_migrationsScalarFieldEnum]
 
 
+export const WorkoutScalarFieldEnum = {
+  id: 'id',
+  creatorId: 'creatorId',
+  teamId: 'teamId',
+  name: 'name',
+  description: 'description',
+  isTeamWorkout: 'isTeamWorkout',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  generatedByAI: 'generatedByAI',
+  aiModel: 'aiModel',
+  aiRawResponse: 'aiRawResponse'
+} as const
+
+export type WorkoutScalarFieldEnum = (typeof WorkoutScalarFieldEnum)[keyof typeof WorkoutScalarFieldEnum]
+
+
+export const WorkoutExerciseScalarFieldEnum = {
+  id: 'id',
+  workoutId: 'workoutId',
+  activityTypeId: 'activityTypeId',
+  orderIndex: 'orderIndex',
+  sets: 'sets',
+  reps: 'reps',
+  restTime: 'restTime',
+  notes: 'notes'
+} as const
+
+export type WorkoutExerciseScalarFieldEnum = (typeof WorkoutExerciseScalarFieldEnum)[keyof typeof WorkoutExerciseScalarFieldEnum]
+
+
+export const WorkoutSessionScalarFieldEnum = {
+  id: 'id',
+  workoutId: 'workoutId',
+  profileId: 'profileId',
+  sessionDate: 'sessionDate',
+  notes: 'notes',
+  createdAt: 'createdAt'
+} as const
+
+export type WorkoutSessionScalarFieldEnum = (typeof WorkoutSessionScalarFieldEnum)[keyof typeof WorkoutSessionScalarFieldEnum]
+
+
+export const WorkoutCommentScalarFieldEnum = {
+  id: 'id',
+  authorId: 'authorId',
+  workoutId: 'workoutId',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type WorkoutCommentScalarFieldEnum = (typeof WorkoutCommentScalarFieldEnum)[keyof typeof WorkoutCommentScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1977,6 +2340,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -2103,6 +2475,20 @@ export type EnumModeratorRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
 export type ListEnumModeratorRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModeratorRole[]'>
     
 
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -2195,6 +2581,10 @@ export type GlobalOmitConfig = {
   discussionModerator?: Prisma.DiscussionModeratorOmit
   discussionBan?: Prisma.DiscussionBanOmit
   schema_migrations?: Prisma.schema_migrationsOmit
+  workout?: Prisma.WorkoutOmit
+  workoutExercise?: Prisma.WorkoutExerciseOmit
+  workoutSession?: Prisma.WorkoutSessionOmit
+  workoutComment?: Prisma.WorkoutCommentOmit
 }
 
 /* Types for Logging */

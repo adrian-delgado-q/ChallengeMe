@@ -346,6 +346,11 @@ export type ChallengeParticipantMinOrderByAggregateInput = {
   joinedAt?: Prisma.SortOrder
 }
 
+export type ChallengeParticipantNullableScalarRelationFilter = {
+  is?: Prisma.ChallengeParticipantWhereInput | null
+  isNot?: Prisma.ChallengeParticipantWhereInput | null
+}
+
 export type ChallengeParticipantCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.ChallengeParticipantCreateWithoutUserInput, Prisma.ChallengeParticipantUncheckedCreateWithoutUserInput> | Prisma.ChallengeParticipantCreateWithoutUserInput[] | Prisma.ChallengeParticipantUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.ChallengeParticipantCreateOrConnectWithoutUserInput | Prisma.ChallengeParticipantCreateOrConnectWithoutUserInput[]
@@ -492,10 +497,12 @@ export type ChallengeParticipantCreateNestedOneWithoutActivitiesInput = {
   connect?: Prisma.ChallengeParticipantWhereUniqueInput
 }
 
-export type ChallengeParticipantUpdateOneRequiredWithoutActivitiesNestedInput = {
+export type ChallengeParticipantUpdateOneWithoutActivitiesNestedInput = {
   create?: Prisma.XOR<Prisma.ChallengeParticipantCreateWithoutActivitiesInput, Prisma.ChallengeParticipantUncheckedCreateWithoutActivitiesInput>
   connectOrCreate?: Prisma.ChallengeParticipantCreateOrConnectWithoutActivitiesInput
   upsert?: Prisma.ChallengeParticipantUpsertWithoutActivitiesInput
+  disconnect?: Prisma.ChallengeParticipantWhereInput | boolean
+  delete?: Prisma.ChallengeParticipantWhereInput | boolean
   connect?: Prisma.ChallengeParticipantWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ChallengeParticipantUpdateToOneWithWhereWithoutActivitiesInput, Prisma.ChallengeParticipantUpdateWithoutActivitiesInput>, Prisma.ChallengeParticipantUncheckedUpdateWithoutActivitiesInput>
 }

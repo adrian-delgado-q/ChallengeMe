@@ -274,6 +274,7 @@ export type TeamWhereInput = {
   challengeEntries?: Prisma.ChallengeParticipantListRelationFilter
   teamMemberships?: Prisma.TeamMembershipListRelationFilter
   creator?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
+  workouts?: Prisma.WorkoutListRelationFilter
 }
 
 export type TeamOrderByWithRelationInput = {
@@ -292,6 +293,7 @@ export type TeamOrderByWithRelationInput = {
   challengeEntries?: Prisma.ChallengeParticipantOrderByRelationAggregateInput
   teamMemberships?: Prisma.TeamMembershipOrderByRelationAggregateInput
   creator?: Prisma.ProfileOrderByWithRelationInput
+  workouts?: Prisma.WorkoutOrderByRelationAggregateInput
 }
 
 export type TeamWhereUniqueInput = Prisma.AtLeast<{
@@ -313,6 +315,7 @@ export type TeamWhereUniqueInput = Prisma.AtLeast<{
   challengeEntries?: Prisma.ChallengeParticipantListRelationFilter
   teamMemberships?: Prisma.TeamMembershipListRelationFilter
   creator?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
+  workouts?: Prisma.WorkoutListRelationFilter
 }, "id">
 
 export type TeamOrderByWithAggregationInput = {
@@ -368,6 +371,7 @@ export type TeamCreateInput = {
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutTeamInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutTeamInput
   creator: Prisma.ProfileCreateNestedOneWithoutCreatedTeamsInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUncheckedCreateInput = {
@@ -385,6 +389,7 @@ export type TeamUncheckedCreateInput = {
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutTeamInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutTeamInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUpdateInput = {
@@ -402,6 +407,7 @@ export type TeamUpdateInput = {
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutTeamNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutTeamNestedInput
   creator?: Prisma.ProfileUpdateOneRequiredWithoutCreatedTeamsNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateInput = {
@@ -419,6 +425,7 @@ export type TeamUncheckedUpdateInput = {
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutTeamNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutTeamNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamCreateManyInput = {
@@ -651,6 +658,22 @@ export type TeamUpdateOneWithoutChallengeEntriesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TeamUpdateToOneWithWhereWithoutChallengeEntriesInput, Prisma.TeamUpdateWithoutChallengeEntriesInput>, Prisma.TeamUncheckedUpdateWithoutChallengeEntriesInput>
 }
 
+export type TeamCreateNestedOneWithoutWorkoutsInput = {
+  create?: Prisma.XOR<Prisma.TeamCreateWithoutWorkoutsInput, Prisma.TeamUncheckedCreateWithoutWorkoutsInput>
+  connectOrCreate?: Prisma.TeamCreateOrConnectWithoutWorkoutsInput
+  connect?: Prisma.TeamWhereUniqueInput
+}
+
+export type TeamUpdateOneWithoutWorkoutsNestedInput = {
+  create?: Prisma.XOR<Prisma.TeamCreateWithoutWorkoutsInput, Prisma.TeamUncheckedCreateWithoutWorkoutsInput>
+  connectOrCreate?: Prisma.TeamCreateOrConnectWithoutWorkoutsInput
+  upsert?: Prisma.TeamUpsertWithoutWorkoutsInput
+  disconnect?: Prisma.TeamWhereInput | boolean
+  delete?: Prisma.TeamWhereInput | boolean
+  connect?: Prisma.TeamWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TeamUpdateToOneWithWhereWithoutWorkoutsInput, Prisma.TeamUpdateWithoutWorkoutsInput>, Prisma.TeamUncheckedUpdateWithoutWorkoutsInput>
+}
+
 export type TeamCreateWithoutCreatorInput = {
   id?: string
   name: string
@@ -665,6 +688,7 @@ export type TeamCreateWithoutCreatorInput = {
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutTeamInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutTeamInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUncheckedCreateWithoutCreatorInput = {
@@ -681,6 +705,7 @@ export type TeamUncheckedCreateWithoutCreatorInput = {
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutTeamInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutTeamInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutTeamInput
 }
 
 export type TeamCreateOrConnectWithoutCreatorInput = {
@@ -741,6 +766,7 @@ export type TeamCreateWithoutTeamMembershipsInput = {
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutTeamInput
   creator: Prisma.ProfileCreateNestedOneWithoutCreatedTeamsInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUncheckedCreateWithoutTeamMembershipsInput = {
@@ -757,6 +783,7 @@ export type TeamUncheckedCreateWithoutTeamMembershipsInput = {
   memberCount?: number
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutTeamInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutTeamInput
 }
 
 export type TeamCreateOrConnectWithoutTeamMembershipsInput = {
@@ -789,6 +816,7 @@ export type TeamUpdateWithoutTeamMembershipsInput = {
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutTeamNestedInput
   creator?: Prisma.ProfileUpdateOneRequiredWithoutCreatedTeamsNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -805,6 +833,7 @@ export type TeamUncheckedUpdateWithoutTeamMembershipsInput = {
   memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutTeamNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamCreateWithoutChallengeEntriesInput = {
@@ -821,6 +850,7 @@ export type TeamCreateWithoutChallengeEntriesInput = {
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutTeamInput
   creator: Prisma.ProfileCreateNestedOneWithoutCreatedTeamsInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUncheckedCreateWithoutChallengeEntriesInput = {
@@ -837,6 +867,7 @@ export type TeamUncheckedCreateWithoutChallengeEntriesInput = {
   memberCount?: number
   sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutTeamInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutTeamInput
 }
 
 export type TeamCreateOrConnectWithoutChallengeEntriesInput = {
@@ -869,6 +900,7 @@ export type TeamUpdateWithoutChallengeEntriesInput = {
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutTeamNestedInput
   creator?: Prisma.ProfileUpdateOneRequiredWithoutCreatedTeamsNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateWithoutChallengeEntriesInput = {
@@ -884,6 +916,91 @@ export type TeamUncheckedUpdateWithoutChallengeEntriesInput = {
   maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   memberCount?: Prisma.IntFieldUpdateOperationsInput | number
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutTeamNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutTeamNestedInput
+}
+
+export type TeamCreateWithoutWorkoutsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  avatarUrl?: string | null
+  isPublic?: boolean
+  accessCode?: string | null
+  createdAt?: Date | string
+  expiresAt?: Date | string | null
+  maxMembers?: number | null
+  memberCount?: number
+  sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
+  challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutTeamInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutTeamInput
+  creator: Prisma.ProfileCreateNestedOneWithoutCreatedTeamsInput
+}
+
+export type TeamUncheckedCreateWithoutWorkoutsInput = {
+  id?: string
+  creatorId: string
+  name: string
+  description?: string | null
+  avatarUrl?: string | null
+  isPublic?: boolean
+  accessCode?: string | null
+  createdAt?: Date | string
+  expiresAt?: Date | string | null
+  maxMembers?: number | null
+  memberCount?: number
+  sportsTypes?: Prisma.TeamCreatesportsTypesInput | string[]
+  challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutTeamInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutTeamInput
+}
+
+export type TeamCreateOrConnectWithoutWorkoutsInput = {
+  where: Prisma.TeamWhereUniqueInput
+  create: Prisma.XOR<Prisma.TeamCreateWithoutWorkoutsInput, Prisma.TeamUncheckedCreateWithoutWorkoutsInput>
+}
+
+export type TeamUpsertWithoutWorkoutsInput = {
+  update: Prisma.XOR<Prisma.TeamUpdateWithoutWorkoutsInput, Prisma.TeamUncheckedUpdateWithoutWorkoutsInput>
+  create: Prisma.XOR<Prisma.TeamCreateWithoutWorkoutsInput, Prisma.TeamUncheckedCreateWithoutWorkoutsInput>
+  where?: Prisma.TeamWhereInput
+}
+
+export type TeamUpdateToOneWithWhereWithoutWorkoutsInput = {
+  where?: Prisma.TeamWhereInput
+  data: Prisma.XOR<Prisma.TeamUpdateWithoutWorkoutsInput, Prisma.TeamUncheckedUpdateWithoutWorkoutsInput>
+}
+
+export type TeamUpdateWithoutWorkoutsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
+  challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutTeamNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutTeamNestedInput
+  creator?: Prisma.ProfileUpdateOneRequiredWithoutCreatedTeamsNestedInput
+}
+
+export type TeamUncheckedUpdateWithoutWorkoutsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  creatorId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maxMembers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
+  challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutTeamNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutTeamNestedInput
 }
 
@@ -915,6 +1032,7 @@ export type TeamUpdateWithoutCreatorInput = {
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutTeamNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutTeamNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateWithoutCreatorInput = {
@@ -931,6 +1049,7 @@ export type TeamUncheckedUpdateWithoutCreatorInput = {
   sportsTypes?: Prisma.TeamUpdatesportsTypesInput | string[]
   challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutTeamNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutTeamNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateManyWithoutCreatorInput = {
@@ -955,11 +1074,13 @@ export type TeamUncheckedUpdateManyWithoutCreatorInput = {
 export type TeamCountOutputType = {
   challengeEntries: number
   teamMemberships: number
+  workouts: number
 }
 
 export type TeamCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   challengeEntries?: boolean | TeamCountOutputTypeCountChallengeEntriesArgs
   teamMemberships?: boolean | TeamCountOutputTypeCountTeamMembershipsArgs
+  workouts?: boolean | TeamCountOutputTypeCountWorkoutsArgs
 }
 
 /**
@@ -986,6 +1107,13 @@ export type TeamCountOutputTypeCountTeamMembershipsArgs<ExtArgs extends runtime.
   where?: Prisma.TeamMembershipWhereInput
 }
 
+/**
+ * TeamCountOutputType without action
+ */
+export type TeamCountOutputTypeCountWorkoutsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkoutWhereInput
+}
+
 
 export type TeamSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1003,6 +1131,7 @@ export type TeamSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   challengeEntries?: boolean | Prisma.Team$challengeEntriesArgs<ExtArgs>
   teamMemberships?: boolean | Prisma.Team$teamMembershipsArgs<ExtArgs>
   creator?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  workouts?: boolean | Prisma.Team$workoutsArgs<ExtArgs>
   _count?: boolean | Prisma.TeamCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["team"]>
 
@@ -1058,6 +1187,7 @@ export type TeamInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   challengeEntries?: boolean | Prisma.Team$challengeEntriesArgs<ExtArgs>
   teamMemberships?: boolean | Prisma.Team$teamMembershipsArgs<ExtArgs>
   creator?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  workouts?: boolean | Prisma.Team$workoutsArgs<ExtArgs>
   _count?: boolean | Prisma.TeamCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TeamIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1073,6 +1203,7 @@ export type $TeamPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     challengeEntries: Prisma.$ChallengeParticipantPayload<ExtArgs>[]
     teamMemberships: Prisma.$TeamMembershipPayload<ExtArgs>[]
     creator: Prisma.$ProfilePayload<ExtArgs>
+    workouts: Prisma.$WorkoutPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1484,6 +1615,7 @@ export interface Prisma__TeamClient<T, Null = never, ExtArgs extends runtime.Typ
   challengeEntries<T extends Prisma.Team$challengeEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$challengeEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengeParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   teamMemberships<T extends Prisma.Team$teamMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$teamMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   creator<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  workouts<T extends Prisma.Team$workoutsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$workoutsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1966,6 +2098,30 @@ export type Team$teamMembershipsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.TeamMembershipScalarFieldEnum | Prisma.TeamMembershipScalarFieldEnum[]
+}
+
+/**
+ * Team.workouts
+ */
+export type Team$workoutsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Workout
+   */
+  select?: Prisma.WorkoutSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Workout
+   */
+  omit?: Prisma.WorkoutOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkoutInclude<ExtArgs> | null
+  where?: Prisma.WorkoutWhereInput
+  orderBy?: Prisma.WorkoutOrderByWithRelationInput | Prisma.WorkoutOrderByWithRelationInput[]
+  cursor?: Prisma.WorkoutWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkoutScalarFieldEnum | Prisma.WorkoutScalarFieldEnum[]
 }
 
 /**

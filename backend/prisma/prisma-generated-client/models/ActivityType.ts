@@ -208,6 +208,7 @@ export type ActivityTypeWhereInput = {
   activities?: Prisma.ActivityListRelationFilter
   challenges?: Prisma.ChallengeActivityTypeListRelationFilter
   milestones?: Prisma.MilestoneListRelationFilter
+  workoutExercises?: Prisma.WorkoutExerciseListRelationFilter
 }
 
 export type ActivityTypeOrderByWithRelationInput = {
@@ -222,6 +223,7 @@ export type ActivityTypeOrderByWithRelationInput = {
   activities?: Prisma.ActivityOrderByRelationAggregateInput
   challenges?: Prisma.ChallengeActivityTypeOrderByRelationAggregateInput
   milestones?: Prisma.MilestoneOrderByRelationAggregateInput
+  workoutExercises?: Prisma.WorkoutExerciseOrderByRelationAggregateInput
 }
 
 export type ActivityTypeWhereUniqueInput = Prisma.AtLeast<{
@@ -239,6 +241,7 @@ export type ActivityTypeWhereUniqueInput = Prisma.AtLeast<{
   activities?: Prisma.ActivityListRelationFilter
   challenges?: Prisma.ChallengeActivityTypeListRelationFilter
   milestones?: Prisma.MilestoneListRelationFilter
+  workoutExercises?: Prisma.WorkoutExerciseListRelationFilter
 }, "id" | "name">
 
 export type ActivityTypeOrderByWithAggregationInput = {
@@ -281,6 +284,7 @@ export type ActivityTypeCreateInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutActivityTypeInput
   challenges?: Prisma.ChallengeActivityTypeCreateNestedManyWithoutActivityTypeInput
   milestones?: Prisma.MilestoneCreateNestedManyWithoutActivityTypeInput
+  workoutExercises?: Prisma.WorkoutExerciseCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeUncheckedCreateInput = {
@@ -295,6 +299,7 @@ export type ActivityTypeUncheckedCreateInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActivityTypeInput
   challenges?: Prisma.ChallengeActivityTypeUncheckedCreateNestedManyWithoutActivityTypeInput
   milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutActivityTypeInput
+  workoutExercises?: Prisma.WorkoutExerciseUncheckedCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeUpdateInput = {
@@ -309,6 +314,7 @@ export type ActivityTypeUpdateInput = {
   activities?: Prisma.ActivityUpdateManyWithoutActivityTypeNestedInput
   challenges?: Prisma.ChallengeActivityTypeUpdateManyWithoutActivityTypeNestedInput
   milestones?: Prisma.MilestoneUpdateManyWithoutActivityTypeNestedInput
+  workoutExercises?: Prisma.WorkoutExerciseUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeUncheckedUpdateInput = {
@@ -323,6 +329,7 @@ export type ActivityTypeUncheckedUpdateInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutActivityTypeNestedInput
   challenges?: Prisma.ChallengeActivityTypeUncheckedUpdateManyWithoutActivityTypeNestedInput
   milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutActivityTypeNestedInput
+  workoutExercises?: Prisma.WorkoutExerciseUncheckedUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeCreateManyInput = {
@@ -438,6 +445,20 @@ export type ActivityTypeUpdateOneRequiredWithoutActivitiesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ActivityTypeUpdateToOneWithWhereWithoutActivitiesInput, Prisma.ActivityTypeUpdateWithoutActivitiesInput>, Prisma.ActivityTypeUncheckedUpdateWithoutActivitiesInput>
 }
 
+export type ActivityTypeCreateNestedOneWithoutWorkoutExercisesInput = {
+  create?: Prisma.XOR<Prisma.ActivityTypeCreateWithoutWorkoutExercisesInput, Prisma.ActivityTypeUncheckedCreateWithoutWorkoutExercisesInput>
+  connectOrCreate?: Prisma.ActivityTypeCreateOrConnectWithoutWorkoutExercisesInput
+  connect?: Prisma.ActivityTypeWhereUniqueInput
+}
+
+export type ActivityTypeUpdateOneRequiredWithoutWorkoutExercisesNestedInput = {
+  create?: Prisma.XOR<Prisma.ActivityTypeCreateWithoutWorkoutExercisesInput, Prisma.ActivityTypeUncheckedCreateWithoutWorkoutExercisesInput>
+  connectOrCreate?: Prisma.ActivityTypeCreateOrConnectWithoutWorkoutExercisesInput
+  upsert?: Prisma.ActivityTypeUpsertWithoutWorkoutExercisesInput
+  connect?: Prisma.ActivityTypeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ActivityTypeUpdateToOneWithWhereWithoutWorkoutExercisesInput, Prisma.ActivityTypeUpdateWithoutWorkoutExercisesInput>, Prisma.ActivityTypeUncheckedUpdateWithoutWorkoutExercisesInput>
+}
+
 export type ActivityTypeCreateWithoutChallengesInput = {
   id?: string
   name: string
@@ -449,6 +470,7 @@ export type ActivityTypeCreateWithoutChallengesInput = {
   createdAt?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutActivityTypeInput
   milestones?: Prisma.MilestoneCreateNestedManyWithoutActivityTypeInput
+  workoutExercises?: Prisma.WorkoutExerciseCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeUncheckedCreateWithoutChallengesInput = {
@@ -462,6 +484,7 @@ export type ActivityTypeUncheckedCreateWithoutChallengesInput = {
   createdAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActivityTypeInput
   milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutActivityTypeInput
+  workoutExercises?: Prisma.WorkoutExerciseUncheckedCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeCreateOrConnectWithoutChallengesInput = {
@@ -491,6 +514,7 @@ export type ActivityTypeUpdateWithoutChallengesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutActivityTypeNestedInput
   milestones?: Prisma.MilestoneUpdateManyWithoutActivityTypeNestedInput
+  workoutExercises?: Prisma.WorkoutExerciseUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeUncheckedUpdateWithoutChallengesInput = {
@@ -504,6 +528,7 @@ export type ActivityTypeUncheckedUpdateWithoutChallengesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutActivityTypeNestedInput
   milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutActivityTypeNestedInput
+  workoutExercises?: Prisma.WorkoutExerciseUncheckedUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeCreateWithoutMilestonesInput = {
@@ -517,6 +542,7 @@ export type ActivityTypeCreateWithoutMilestonesInput = {
   createdAt?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutActivityTypeInput
   challenges?: Prisma.ChallengeActivityTypeCreateNestedManyWithoutActivityTypeInput
+  workoutExercises?: Prisma.WorkoutExerciseCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeUncheckedCreateWithoutMilestonesInput = {
@@ -530,6 +556,7 @@ export type ActivityTypeUncheckedCreateWithoutMilestonesInput = {
   createdAt?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActivityTypeInput
   challenges?: Prisma.ChallengeActivityTypeUncheckedCreateNestedManyWithoutActivityTypeInput
+  workoutExercises?: Prisma.WorkoutExerciseUncheckedCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeCreateOrConnectWithoutMilestonesInput = {
@@ -559,6 +586,7 @@ export type ActivityTypeUpdateWithoutMilestonesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutActivityTypeNestedInput
   challenges?: Prisma.ChallengeActivityTypeUpdateManyWithoutActivityTypeNestedInput
+  workoutExercises?: Prisma.WorkoutExerciseUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeUncheckedUpdateWithoutMilestonesInput = {
@@ -572,6 +600,7 @@ export type ActivityTypeUncheckedUpdateWithoutMilestonesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutActivityTypeNestedInput
   challenges?: Prisma.ChallengeActivityTypeUncheckedUpdateManyWithoutActivityTypeNestedInput
+  workoutExercises?: Prisma.WorkoutExerciseUncheckedUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeCreateWithoutActivitiesInput = {
@@ -585,6 +614,7 @@ export type ActivityTypeCreateWithoutActivitiesInput = {
   createdAt?: Date | string
   challenges?: Prisma.ChallengeActivityTypeCreateNestedManyWithoutActivityTypeInput
   milestones?: Prisma.MilestoneCreateNestedManyWithoutActivityTypeInput
+  workoutExercises?: Prisma.WorkoutExerciseCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeUncheckedCreateWithoutActivitiesInput = {
@@ -598,6 +628,7 @@ export type ActivityTypeUncheckedCreateWithoutActivitiesInput = {
   createdAt?: Date | string
   challenges?: Prisma.ChallengeActivityTypeUncheckedCreateNestedManyWithoutActivityTypeInput
   milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutActivityTypeInput
+  workoutExercises?: Prisma.WorkoutExerciseUncheckedCreateNestedManyWithoutActivityTypeInput
 }
 
 export type ActivityTypeCreateOrConnectWithoutActivitiesInput = {
@@ -627,6 +658,7 @@ export type ActivityTypeUpdateWithoutActivitiesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   challenges?: Prisma.ChallengeActivityTypeUpdateManyWithoutActivityTypeNestedInput
   milestones?: Prisma.MilestoneUpdateManyWithoutActivityTypeNestedInput
+  workoutExercises?: Prisma.WorkoutExerciseUpdateManyWithoutActivityTypeNestedInput
 }
 
 export type ActivityTypeUncheckedUpdateWithoutActivitiesInput = {
@@ -640,6 +672,79 @@ export type ActivityTypeUncheckedUpdateWithoutActivitiesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   challenges?: Prisma.ChallengeActivityTypeUncheckedUpdateManyWithoutActivityTypeNestedInput
   milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutActivityTypeNestedInput
+  workoutExercises?: Prisma.WorkoutExerciseUncheckedUpdateManyWithoutActivityTypeNestedInput
+}
+
+export type ActivityTypeCreateWithoutWorkoutExercisesInput = {
+  id?: string
+  name: string
+  category: string
+  unit: string
+  unitLabel: string
+  description?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  activities?: Prisma.ActivityCreateNestedManyWithoutActivityTypeInput
+  challenges?: Prisma.ChallengeActivityTypeCreateNestedManyWithoutActivityTypeInput
+  milestones?: Prisma.MilestoneCreateNestedManyWithoutActivityTypeInput
+}
+
+export type ActivityTypeUncheckedCreateWithoutWorkoutExercisesInput = {
+  id?: string
+  name: string
+  category: string
+  unit: string
+  unitLabel: string
+  description?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActivityTypeInput
+  challenges?: Prisma.ChallengeActivityTypeUncheckedCreateNestedManyWithoutActivityTypeInput
+  milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutActivityTypeInput
+}
+
+export type ActivityTypeCreateOrConnectWithoutWorkoutExercisesInput = {
+  where: Prisma.ActivityTypeWhereUniqueInput
+  create: Prisma.XOR<Prisma.ActivityTypeCreateWithoutWorkoutExercisesInput, Prisma.ActivityTypeUncheckedCreateWithoutWorkoutExercisesInput>
+}
+
+export type ActivityTypeUpsertWithoutWorkoutExercisesInput = {
+  update: Prisma.XOR<Prisma.ActivityTypeUpdateWithoutWorkoutExercisesInput, Prisma.ActivityTypeUncheckedUpdateWithoutWorkoutExercisesInput>
+  create: Prisma.XOR<Prisma.ActivityTypeCreateWithoutWorkoutExercisesInput, Prisma.ActivityTypeUncheckedCreateWithoutWorkoutExercisesInput>
+  where?: Prisma.ActivityTypeWhereInput
+}
+
+export type ActivityTypeUpdateToOneWithWhereWithoutWorkoutExercisesInput = {
+  where?: Prisma.ActivityTypeWhereInput
+  data: Prisma.XOR<Prisma.ActivityTypeUpdateWithoutWorkoutExercisesInput, Prisma.ActivityTypeUncheckedUpdateWithoutWorkoutExercisesInput>
+}
+
+export type ActivityTypeUpdateWithoutWorkoutExercisesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  unitLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUpdateManyWithoutActivityTypeNestedInput
+  challenges?: Prisma.ChallengeActivityTypeUpdateManyWithoutActivityTypeNestedInput
+  milestones?: Prisma.MilestoneUpdateManyWithoutActivityTypeNestedInput
+}
+
+export type ActivityTypeUncheckedUpdateWithoutWorkoutExercisesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  unitLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActivityTypeNestedInput
+  challenges?: Prisma.ChallengeActivityTypeUncheckedUpdateManyWithoutActivityTypeNestedInput
+  milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutActivityTypeNestedInput
 }
 
 
@@ -651,12 +756,14 @@ export type ActivityTypeCountOutputType = {
   activities: number
   challenges: number
   milestones: number
+  workoutExercises: number
 }
 
 export type ActivityTypeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | ActivityTypeCountOutputTypeCountActivitiesArgs
   challenges?: boolean | ActivityTypeCountOutputTypeCountChallengesArgs
   milestones?: boolean | ActivityTypeCountOutputTypeCountMilestonesArgs
+  workoutExercises?: boolean | ActivityTypeCountOutputTypeCountWorkoutExercisesArgs
 }
 
 /**
@@ -690,6 +797,13 @@ export type ActivityTypeCountOutputTypeCountMilestonesArgs<ExtArgs extends runti
   where?: Prisma.MilestoneWhereInput
 }
 
+/**
+ * ActivityTypeCountOutputType without action
+ */
+export type ActivityTypeCountOutputTypeCountWorkoutExercisesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkoutExerciseWhereInput
+}
+
 
 export type ActivityTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -703,6 +817,7 @@ export type ActivityTypeSelect<ExtArgs extends runtime.Types.Extensions.Internal
   activities?: boolean | Prisma.ActivityType$activitiesArgs<ExtArgs>
   challenges?: boolean | Prisma.ActivityType$challengesArgs<ExtArgs>
   milestones?: boolean | Prisma.ActivityType$milestonesArgs<ExtArgs>
+  workoutExercises?: boolean | Prisma.ActivityType$workoutExercisesArgs<ExtArgs>
   _count?: boolean | Prisma.ActivityTypeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["activityType"]>
 
@@ -744,6 +859,7 @@ export type ActivityTypeInclude<ExtArgs extends runtime.Types.Extensions.Interna
   activities?: boolean | Prisma.ActivityType$activitiesArgs<ExtArgs>
   challenges?: boolean | Prisma.ActivityType$challengesArgs<ExtArgs>
   milestones?: boolean | Prisma.ActivityType$milestonesArgs<ExtArgs>
+  workoutExercises?: boolean | Prisma.ActivityType$workoutExercisesArgs<ExtArgs>
   _count?: boolean | Prisma.ActivityTypeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ActivityTypeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -755,6 +871,7 @@ export type $ActivityTypePayload<ExtArgs extends runtime.Types.Extensions.Intern
     activities: Prisma.$ActivityPayload<ExtArgs>[]
     challenges: Prisma.$ChallengeActivityTypePayload<ExtArgs>[]
     milestones: Prisma.$MilestonePayload<ExtArgs>[]
+    workoutExercises: Prisma.$WorkoutExercisePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1162,6 +1279,7 @@ export interface Prisma__ActivityTypeClient<T, Null = never, ExtArgs extends run
   activities<T extends Prisma.ActivityType$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityType$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   challenges<T extends Prisma.ActivityType$challengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityType$challengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengeActivityTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   milestones<T extends Prisma.ActivityType$milestonesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityType$milestonesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MilestonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  workoutExercises<T extends Prisma.ActivityType$workoutExercisesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityType$workoutExercisesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkoutExercisePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1656,6 +1774,30 @@ export type ActivityType$milestonesArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.MilestoneScalarFieldEnum | Prisma.MilestoneScalarFieldEnum[]
+}
+
+/**
+ * ActivityType.workoutExercises
+ */
+export type ActivityType$workoutExercisesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkoutExercise
+   */
+  select?: Prisma.WorkoutExerciseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkoutExercise
+   */
+  omit?: Prisma.WorkoutExerciseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkoutExerciseInclude<ExtArgs> | null
+  where?: Prisma.WorkoutExerciseWhereInput
+  orderBy?: Prisma.WorkoutExerciseOrderByWithRelationInput | Prisma.WorkoutExerciseOrderByWithRelationInput[]
+  cursor?: Prisma.WorkoutExerciseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkoutExerciseScalarFieldEnum | Prisma.WorkoutExerciseScalarFieldEnum[]
 }
 
 /**

@@ -27,6 +27,9 @@ model Profile {
   posts             Post[]
   teamMemberships   TeamMembership[]
   createdTeams      Team[]                 @relation("TeamCreator")
+  createdWorkouts   Workout[]              @relation("WorkoutCreator")
+  workoutSessions   WorkoutSession[]
+  WorkoutComment    WorkoutComment[]
 
   @@map("profiles")
 }
@@ -47,6 +50,7 @@ model Team {
   challengeEntries ChallengeParticipant[]
   teamMemberships  TeamMembership[]
   creator          Profile                @relation("TeamCreator", fields: [creatorId], references: [id])
+  workouts         Workout[]              @relation("TeamWorkouts")
 
   @@map("teams")
 }
@@ -160,35 +164,38 @@ model ChallengeParticipant {
 }
 
 model ActivityType {
-  id          String                  @id @default(uuid()) @db.Uuid
-  name        String                  @unique
-  category    String
-  unit        String
-  unitLabel   String
-  description String?
-  isActive    Boolean                 @default(true)
-  createdAt   DateTime                @default(now()) @db.Timestamptz(6)
-  activities  Activity[]
-  challenges  ChallengeActivityType[]
-  milestones  Milestone[]
+  id               String                  @id @default(uuid()) @db.Uuid
+  name             String                  @unique
+  category         String
+  unit             String
+  unitLabel        String
+  description      String?
+  isActive         Boolean                 @default(true)
+  createdAt        DateTime                @default(now()) @db.Timestamptz(6)
+  activities       Activity[]
+  challenges       ChallengeActivityType[]
+  milestones       Milestone[]
+  workoutExercises WorkoutExercise[]
 
   @@map("activity_types")
 }
 
 model Activity {
-  id             String               @id @default(uuid()) @db.Uuid
-  participantId  String               @db.Uuid
-  activityTypeId String               @db.Uuid
-  value          Float
-  notes          String?
-  date           DateTime             @db.Date
-  uploadedAt     DateTime             @default(now()) @db.Timestamptz(6)
-  profileId      String?              @db.Uuid
-  challengeId    String?              @db.Uuid
-  activityType   ActivityType         @relation(fields: [activityTypeId], references: [id])
-  Challenge      Challenge?           @relation(fields: [challengeId], references: [id])
-  participant    ChallengeParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
-  Profile        Profile?             @relation(fields: [profileId], references: [id])
+  id               String               @id @default(uuid()) @db.Uuid
+  participantId    String?              @db.Uuid
+  activityTypeId   String               @db.Uuid
+  value            Float
+  notes            String?
+  date             DateTime             @db.Date
+  uploadedAt       DateTime             @default(now()) @db.Timestamptz(6)
+  profileId        String?              @db.Uuid
+  challengeId      String?              @db.Uuid
+  workoutSessionId String?              @db.Uuid
+  activityType     ActivityType         @relation(fields: [activityTypeId], references: [id])
+  Challenge        Challenge?           @relation(fields: [challengeId], references: [id])
+  participant      ChallengeParticipant? @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  Profile          Profile?             @relation(fields: [profileId], references: [id])
+  workoutSession   WorkoutSession?      @relation(fields: [workoutSessionId], references: [id])
 
   @@map("activities")
 }
@@ -320,4 +327,73 @@ enum ChallengeStatus {
 enum ModeratorRole {
   MODERATOR
   ADMIN
+}
+
+model Workout {
+  id            String   @id @default(uuid()) @db.Uuid
+  creatorId     String   @db.Uuid
+  teamId        String?  @db.Uuid
+  name          String
+  description   String?
+  isTeamWorkout Boolean  @default(false)
+  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime @updatedAt @db.Timestamptz(6)
+
+  // AI Generation Fields
+  generatedByAI Boolean @default(false)
+  aiModel       String?
+  aiRawResponse Json?
+
+  creator   Profile           @relation("WorkoutCreator", fields: [creatorId], references: [id])
+  team      Team?             @relation("TeamWorkouts", fields: [teamId], references: [id])
+  exercises WorkoutExercise[]
+  sessions  WorkoutSession[]
+  comments  WorkoutComment[]
+
+  @@map("workouts")
+}
+
+model WorkoutExercise {
+  id             String  @id @default(uuid()) @db.Uuid
+  workoutId      String  @db.Uuid
+  activityTypeId String  @db.Uuid
+  orderIndex     Int
+  sets           Int?
+  reps           Int?
+  restTime       Int? // In seconds
+  notes          String?
+
+  workout      Workout      @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  activityType ActivityType @relation(fields: [activityTypeId], references: [id])
+
+  @@unique([workoutId, orderIndex])
+  @@map("workout_exercises")
+}
+
+model WorkoutSession {
+  id          String   @id @default(uuid()) @db.Uuid
+  workoutId   String   @db.Uuid
+  profileId   String   @db.Uuid
+  sessionDate DateTime @default(now()) @db.Date
+  notes       String?
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  workout          Workout    @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  profile          Profile    @relation(fields: [profileId], references: [id])
+  loggedActivities Activity[] // This links a session to the actual performed activities
+
+  @@map("workout_sessions")
+}
+
+model WorkoutComment {
+  id        String   @id @default(uuid()) @db.Uuid
+  authorId  String   @db.Uuid
+  workoutId String   @db.Uuid
+  content   String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  author  Profile @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  workout Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+
+  @@map("workout_comments")
 }

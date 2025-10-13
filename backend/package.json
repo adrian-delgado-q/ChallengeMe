@@ -10,8 +10,8 @@
 		"migrate:sql:prod": "cd scripts && NODE_ENV=production ./migrate-sql.sh up",
 		"env:load:dev": "cd scripts && NODE_ENV=development ./env-loader.sh",
 		"env:load:prod": "cd scripts && NODE_ENV=production ./env-loader.sh",
-		"migrate:prisma:dev": "DOTENV_CONFIG_PATH=.env/.env.development prisma migrate dev --schema=./prisma/schema.prisma",
-		"migrate:prisma:prod": "DOTENV_CONFIG_PATH=.env/.env.production prisma migrate deploy --schema=./prisma/schema.prisma"
+		"migrate:prisma:dev": "DOTENV_CONFIG_PATH=../.env/.env.development prisma migrate dev --schema=./prisma/schema.prisma",
+		"migrate:prisma:prod": "DOTENV_CONFIG_PATH=../.env/.env.production prisma migrate deploy --schema=./prisma/schema.prisma"
 	},
 	"dependencies": {
 		"@prisma/client": "^6.10.1",

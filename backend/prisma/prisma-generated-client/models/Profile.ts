@@ -194,6 +194,9 @@ export type ProfileWhereInput = {
   posts?: Prisma.PostListRelationFilter
   teamMemberships?: Prisma.TeamMembershipListRelationFilter
   createdTeams?: Prisma.TeamListRelationFilter
+  createdWorkouts?: Prisma.WorkoutListRelationFilter
+  workoutSessions?: Prisma.WorkoutSessionListRelationFilter
+  WorkoutComment?: Prisma.WorkoutCommentListRelationFilter
 }
 
 export type ProfileOrderByWithRelationInput = {
@@ -215,6 +218,9 @@ export type ProfileOrderByWithRelationInput = {
   posts?: Prisma.PostOrderByRelationAggregateInput
   teamMemberships?: Prisma.TeamMembershipOrderByRelationAggregateInput
   createdTeams?: Prisma.TeamOrderByRelationAggregateInput
+  createdWorkouts?: Prisma.WorkoutOrderByRelationAggregateInput
+  workoutSessions?: Prisma.WorkoutSessionOrderByRelationAggregateInput
+  WorkoutComment?: Prisma.WorkoutCommentOrderByRelationAggregateInput
 }
 
 export type ProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -239,6 +245,9 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   posts?: Prisma.PostListRelationFilter
   teamMemberships?: Prisma.TeamMembershipListRelationFilter
   createdTeams?: Prisma.TeamListRelationFilter
+  createdWorkouts?: Prisma.WorkoutListRelationFilter
+  workoutSessions?: Prisma.WorkoutSessionListRelationFilter
+  WorkoutComment?: Prisma.WorkoutCommentListRelationFilter
 }, "id" | "username">
 
 export type ProfileOrderByWithAggregationInput = {
@@ -282,6 +291,9 @@ export type ProfileCreateInput = {
   posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateInput = {
@@ -303,6 +315,9 @@ export type ProfileUncheckedCreateInput = {
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUpdateInput = {
@@ -324,6 +339,9 @@ export type ProfileUpdateInput = {
   posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateInput = {
@@ -345,6 +363,9 @@ export type ProfileUncheckedUpdateInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateManyInput = {
@@ -605,6 +626,48 @@ export type ProfileUpdateOneRequiredWithoutDiscussionBansNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutDiscussionBansInput, Prisma.ProfileUpdateWithoutDiscussionBansInput>, Prisma.ProfileUncheckedUpdateWithoutDiscussionBansInput>
 }
 
+export type ProfileCreateNestedOneWithoutCreatedWorkoutsInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutCreatedWorkoutsInput, Prisma.ProfileUncheckedCreateWithoutCreatedWorkoutsInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutCreatedWorkoutsInput
+  connect?: Prisma.ProfileWhereUniqueInput
+}
+
+export type ProfileUpdateOneRequiredWithoutCreatedWorkoutsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutCreatedWorkoutsInput, Prisma.ProfileUncheckedCreateWithoutCreatedWorkoutsInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutCreatedWorkoutsInput
+  upsert?: Prisma.ProfileUpsertWithoutCreatedWorkoutsInput
+  connect?: Prisma.ProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutCreatedWorkoutsInput, Prisma.ProfileUpdateWithoutCreatedWorkoutsInput>, Prisma.ProfileUncheckedUpdateWithoutCreatedWorkoutsInput>
+}
+
+export type ProfileCreateNestedOneWithoutWorkoutSessionsInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutWorkoutSessionsInput, Prisma.ProfileUncheckedCreateWithoutWorkoutSessionsInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutWorkoutSessionsInput
+  connect?: Prisma.ProfileWhereUniqueInput
+}
+
+export type ProfileUpdateOneRequiredWithoutWorkoutSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutWorkoutSessionsInput, Prisma.ProfileUncheckedCreateWithoutWorkoutSessionsInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutWorkoutSessionsInput
+  upsert?: Prisma.ProfileUpsertWithoutWorkoutSessionsInput
+  connect?: Prisma.ProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutWorkoutSessionsInput, Prisma.ProfileUpdateWithoutWorkoutSessionsInput>, Prisma.ProfileUncheckedUpdateWithoutWorkoutSessionsInput>
+}
+
+export type ProfileCreateNestedOneWithoutWorkoutCommentInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutWorkoutCommentInput, Prisma.ProfileUncheckedCreateWithoutWorkoutCommentInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutWorkoutCommentInput
+  connect?: Prisma.ProfileWhereUniqueInput
+}
+
+export type ProfileUpdateOneRequiredWithoutWorkoutCommentNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutWorkoutCommentInput, Prisma.ProfileUncheckedCreateWithoutWorkoutCommentInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutWorkoutCommentInput
+  upsert?: Prisma.ProfileUpsertWithoutWorkoutCommentInput
+  connect?: Prisma.ProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutWorkoutCommentInput, Prisma.ProfileUpdateWithoutWorkoutCommentInput>, Prisma.ProfileUncheckedUpdateWithoutWorkoutCommentInput>
+}
+
 export type ProfileCreateWithoutCreatedTeamsInput = {
   id: string
   username?: string | null
@@ -623,6 +686,9 @@ export type ProfileCreateWithoutCreatedTeamsInput = {
   discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
   posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutCreatedTeamsInput = {
@@ -643,6 +709,9 @@ export type ProfileUncheckedCreateWithoutCreatedTeamsInput = {
   discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutCreatedTeamsInput = {
@@ -679,6 +748,9 @@ export type ProfileUpdateWithoutCreatedTeamsInput = {
   discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
   posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutCreatedTeamsInput = {
@@ -699,6 +771,9 @@ export type ProfileUncheckedUpdateWithoutCreatedTeamsInput = {
   discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateWithoutTeamMembershipsInput = {
@@ -719,6 +794,9 @@ export type ProfileCreateWithoutTeamMembershipsInput = {
   discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
   posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutTeamMembershipsInput = {
@@ -739,6 +817,9 @@ export type ProfileUncheckedCreateWithoutTeamMembershipsInput = {
   discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutTeamMembershipsInput = {
@@ -775,6 +856,9 @@ export type ProfileUpdateWithoutTeamMembershipsInput = {
   discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
   posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -795,6 +879,9 @@ export type ProfileUncheckedUpdateWithoutTeamMembershipsInput = {
   discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateWithoutCreatedChallengesInput = {
@@ -815,6 +902,9 @@ export type ProfileCreateWithoutCreatedChallengesInput = {
   posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutCreatedChallengesInput = {
@@ -835,6 +925,9 @@ export type ProfileUncheckedCreateWithoutCreatedChallengesInput = {
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutCreatedChallengesInput = {
@@ -871,6 +964,9 @@ export type ProfileUpdateWithoutCreatedChallengesInput = {
   posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutCreatedChallengesInput = {
@@ -891,6 +987,9 @@ export type ProfileUncheckedUpdateWithoutCreatedChallengesInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateWithoutChallengeEntriesInput = {
@@ -911,6 +1010,9 @@ export type ProfileCreateWithoutChallengeEntriesInput = {
   posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutChallengeEntriesInput = {
@@ -931,6 +1033,9 @@ export type ProfileUncheckedCreateWithoutChallengeEntriesInput = {
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutChallengeEntriesInput = {
@@ -967,6 +1072,9 @@ export type ProfileUpdateWithoutChallengeEntriesInput = {
   posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutChallengeEntriesInput = {
@@ -987,6 +1095,9 @@ export type ProfileUncheckedUpdateWithoutChallengeEntriesInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateWithoutActivitiesInput = {
@@ -1007,6 +1118,9 @@ export type ProfileCreateWithoutActivitiesInput = {
   posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutActivitiesInput = {
@@ -1027,6 +1141,9 @@ export type ProfileUncheckedCreateWithoutActivitiesInput = {
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutActivitiesInput = {
@@ -1063,6 +1180,9 @@ export type ProfileUpdateWithoutActivitiesInput = {
   posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutActivitiesInput = {
@@ -1083,6 +1203,9 @@ export type ProfileUncheckedUpdateWithoutActivitiesInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateWithoutPostsInput = {
@@ -1103,6 +1226,9 @@ export type ProfileCreateWithoutPostsInput = {
   discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutPostsInput = {
@@ -1123,6 +1249,9 @@ export type ProfileUncheckedCreateWithoutPostsInput = {
   discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutPostsInput = {
@@ -1159,6 +1288,9 @@ export type ProfileUpdateWithoutPostsInput = {
   discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutPostsInput = {
@@ -1179,6 +1311,9 @@ export type ProfileUncheckedUpdateWithoutPostsInput = {
   discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateWithoutCommentsInput = {
@@ -1199,6 +1334,9 @@ export type ProfileCreateWithoutCommentsInput = {
   posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutCommentsInput = {
@@ -1219,6 +1357,9 @@ export type ProfileUncheckedCreateWithoutCommentsInput = {
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutCommentsInput = {
@@ -1255,6 +1396,9 @@ export type ProfileUpdateWithoutCommentsInput = {
   posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutCommentsInput = {
@@ -1275,6 +1419,9 @@ export type ProfileUncheckedUpdateWithoutCommentsInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateWithoutDiscussionPostsInput = {
@@ -1295,6 +1442,9 @@ export type ProfileCreateWithoutDiscussionPostsInput = {
   posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutDiscussionPostsInput = {
@@ -1315,6 +1465,9 @@ export type ProfileUncheckedCreateWithoutDiscussionPostsInput = {
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutDiscussionPostsInput = {
@@ -1351,6 +1504,9 @@ export type ProfileUpdateWithoutDiscussionPostsInput = {
   posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutDiscussionPostsInput = {
@@ -1371,6 +1527,9 @@ export type ProfileUncheckedUpdateWithoutDiscussionPostsInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateWithoutDiscussionRepliesInput = {
@@ -1391,6 +1550,9 @@ export type ProfileCreateWithoutDiscussionRepliesInput = {
   posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutDiscussionRepliesInput = {
@@ -1411,6 +1573,9 @@ export type ProfileUncheckedCreateWithoutDiscussionRepliesInput = {
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutDiscussionRepliesInput = {
@@ -1447,6 +1612,9 @@ export type ProfileUpdateWithoutDiscussionRepliesInput = {
   posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutDiscussionRepliesInput = {
@@ -1467,6 +1635,9 @@ export type ProfileUncheckedUpdateWithoutDiscussionRepliesInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateWithoutGrantedModeratorsInput = {
@@ -1487,6 +1658,9 @@ export type ProfileCreateWithoutGrantedModeratorsInput = {
   posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutGrantedModeratorsInput = {
@@ -1507,6 +1681,9 @@ export type ProfileUncheckedCreateWithoutGrantedModeratorsInput = {
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutGrantedModeratorsInput = {
@@ -1532,6 +1709,9 @@ export type ProfileCreateWithoutModeratorRolesInput = {
   posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutModeratorRolesInput = {
@@ -1552,6 +1732,9 @@ export type ProfileUncheckedCreateWithoutModeratorRolesInput = {
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutModeratorRolesInput = {
@@ -1588,6 +1771,9 @@ export type ProfileUpdateWithoutGrantedModeratorsInput = {
   posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutGrantedModeratorsInput = {
@@ -1608,6 +1794,9 @@ export type ProfileUncheckedUpdateWithoutGrantedModeratorsInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUpsertWithoutModeratorRolesInput = {
@@ -1639,6 +1828,9 @@ export type ProfileUpdateWithoutModeratorRolesInput = {
   posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutModeratorRolesInput = {
@@ -1659,6 +1851,9 @@ export type ProfileUncheckedUpdateWithoutModeratorRolesInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateWithoutBannedUsersInput = {
@@ -1679,6 +1874,9 @@ export type ProfileCreateWithoutBannedUsersInput = {
   posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutBannedUsersInput = {
@@ -1699,6 +1897,9 @@ export type ProfileUncheckedCreateWithoutBannedUsersInput = {
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutBannedUsersInput = {
@@ -1724,6 +1925,9 @@ export type ProfileCreateWithoutDiscussionBansInput = {
   posts?: Prisma.PostCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutDiscussionBansInput = {
@@ -1744,6 +1948,9 @@ export type ProfileUncheckedCreateWithoutDiscussionBansInput = {
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutDiscussionBansInput = {
@@ -1780,6 +1987,9 @@ export type ProfileUpdateWithoutBannedUsersInput = {
   posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutBannedUsersInput = {
@@ -1800,6 +2010,9 @@ export type ProfileUncheckedUpdateWithoutBannedUsersInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUpsertWithoutDiscussionBansInput = {
@@ -1831,6 +2044,9 @@ export type ProfileUpdateWithoutDiscussionBansInput = {
   posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutDiscussionBansInput = {
@@ -1851,6 +2067,333 @@ export type ProfileUncheckedUpdateWithoutDiscussionBansInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
+export type ProfileCreateWithoutCreatedWorkoutsInput = {
+  id: string
+  username?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
+  challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
+}
+
+export type ProfileUncheckedCreateWithoutCreatedWorkoutsInput = {
+  id: string
+  username?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
+  challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type ProfileCreateOrConnectWithoutCreatedWorkoutsInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutCreatedWorkoutsInput, Prisma.ProfileUncheckedCreateWithoutCreatedWorkoutsInput>
+}
+
+export type ProfileUpsertWithoutCreatedWorkoutsInput = {
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutCreatedWorkoutsInput, Prisma.ProfileUncheckedUpdateWithoutCreatedWorkoutsInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutCreatedWorkoutsInput, Prisma.ProfileUncheckedCreateWithoutCreatedWorkoutsInput>
+  where?: Prisma.ProfileWhereInput
+}
+
+export type ProfileUpdateToOneWithWhereWithoutCreatedWorkoutsInput = {
+  where?: Prisma.ProfileWhereInput
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutCreatedWorkoutsInput, Prisma.ProfileUncheckedUpdateWithoutCreatedWorkoutsInput>
+}
+
+export type ProfileUpdateWithoutCreatedWorkoutsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
+  challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
+}
+
+export type ProfileUncheckedUpdateWithoutCreatedWorkoutsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
+  challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
+export type ProfileCreateWithoutWorkoutSessionsInput = {
+  id: string
+  username?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
+  challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  WorkoutComment?: Prisma.WorkoutCommentCreateNestedManyWithoutAuthorInput
+}
+
+export type ProfileUncheckedCreateWithoutWorkoutSessionsInput = {
+  id: string
+  username?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
+  challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type ProfileCreateOrConnectWithoutWorkoutSessionsInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutWorkoutSessionsInput, Prisma.ProfileUncheckedCreateWithoutWorkoutSessionsInput>
+}
+
+export type ProfileUpsertWithoutWorkoutSessionsInput = {
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutWorkoutSessionsInput, Prisma.ProfileUncheckedUpdateWithoutWorkoutSessionsInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutWorkoutSessionsInput, Prisma.ProfileUncheckedCreateWithoutWorkoutSessionsInput>
+  where?: Prisma.ProfileWhereInput
+}
+
+export type ProfileUpdateToOneWithWhereWithoutWorkoutSessionsInput = {
+  where?: Prisma.ProfileWhereInput
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutWorkoutSessionsInput, Prisma.ProfileUncheckedUpdateWithoutWorkoutSessionsInput>
+}
+
+export type ProfileUpdateWithoutWorkoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
+  challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUpdateManyWithoutAuthorNestedInput
+}
+
+export type ProfileUncheckedUpdateWithoutWorkoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
+  challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  WorkoutComment?: Prisma.WorkoutCommentUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
+export type ProfileCreateWithoutWorkoutCommentInput = {
+  id: string
+  username?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activities?: Prisma.ActivityCreateNestedManyWithoutProfileInput
+  challengeEntries?: Prisma.ChallengeParticipantCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeCreateNestedManyWithoutCreatorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  bannedUsers?: Prisma.DiscussionBanCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionReplies?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileUncheckedCreateWithoutWorkoutCommentInput = {
+  id: string
+  username?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProfileInput
+  challengeEntries?: Prisma.ChallengeParticipantUncheckedCreateNestedManyWithoutUserInput
+  createdChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutCreatorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutBannedByInput
+  discussionBans?: Prisma.DiscussionBanUncheckedCreateNestedManyWithoutUserInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutGrantedByInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReplies?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutProfileInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatorInput
+  createdWorkouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutCreatorInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileCreateOrConnectWithoutWorkoutCommentInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutWorkoutCommentInput, Prisma.ProfileUncheckedCreateWithoutWorkoutCommentInput>
+}
+
+export type ProfileUpsertWithoutWorkoutCommentInput = {
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutWorkoutCommentInput, Prisma.ProfileUncheckedUpdateWithoutWorkoutCommentInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutWorkoutCommentInput, Prisma.ProfileUncheckedCreateWithoutWorkoutCommentInput>
+  where?: Prisma.ProfileWhereInput
+}
+
+export type ProfileUpdateToOneWithWhereWithoutWorkoutCommentInput = {
+  where?: Prisma.ProfileWhereInput
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutWorkoutCommentInput, Prisma.ProfileUncheckedUpdateWithoutWorkoutCommentInput>
+}
+
+export type ProfileUpdateWithoutWorkoutCommentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUpdateManyWithoutProfileNestedInput
+  challengeEntries?: Prisma.ChallengeParticipantUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUpdateManyWithoutCreatorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  bannedUsers?: Prisma.DiscussionBanUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionReplies?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUpdateManyWithoutProfileNestedInput
+}
+
+export type ProfileUncheckedUpdateWithoutWorkoutCommentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProfileNestedInput
+  challengeEntries?: Prisma.ChallengeParticipantUncheckedUpdateManyWithoutUserNestedInput
+  createdChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutCreatorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bannedUsers?: Prisma.DiscussionBanUncheckedUpdateManyWithoutBannedByNestedInput
+  discussionBans?: Prisma.DiscussionBanUncheckedUpdateManyWithoutUserNestedInput
+  grantedModerators?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  moderatorRoles?: Prisma.DiscussionModeratorUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReplies?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutProfileNestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatorNestedInput
+  createdWorkouts?: Prisma.WorkoutUncheckedUpdateManyWithoutCreatorNestedInput
+  workoutSessions?: Prisma.WorkoutSessionUncheckedUpdateManyWithoutProfileNestedInput
 }
 
 
@@ -1872,6 +2415,9 @@ export type ProfileCountOutputType = {
   posts: number
   teamMemberships: number
   createdTeams: number
+  createdWorkouts: number
+  workoutSessions: number
+  WorkoutComment: number
 }
 
 export type ProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1888,6 +2434,9 @@ export type ProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   posts?: boolean | ProfileCountOutputTypeCountPostsArgs
   teamMemberships?: boolean | ProfileCountOutputTypeCountTeamMembershipsArgs
   createdTeams?: boolean | ProfileCountOutputTypeCountCreatedTeamsArgs
+  createdWorkouts?: boolean | ProfileCountOutputTypeCountCreatedWorkoutsArgs
+  workoutSessions?: boolean | ProfileCountOutputTypeCountWorkoutSessionsArgs
+  WorkoutComment?: boolean | ProfileCountOutputTypeCountWorkoutCommentArgs
 }
 
 /**
@@ -1991,6 +2540,27 @@ export type ProfileCountOutputTypeCountCreatedTeamsArgs<ExtArgs extends runtime.
   where?: Prisma.TeamWhereInput
 }
 
+/**
+ * ProfileCountOutputType without action
+ */
+export type ProfileCountOutputTypeCountCreatedWorkoutsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkoutWhereInput
+}
+
+/**
+ * ProfileCountOutputType without action
+ */
+export type ProfileCountOutputTypeCountWorkoutSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkoutSessionWhereInput
+}
+
+/**
+ * ProfileCountOutputType without action
+ */
+export type ProfileCountOutputTypeCountWorkoutCommentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkoutCommentWhereInput
+}
+
 
 export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2011,6 +2581,9 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   posts?: boolean | Prisma.Profile$postsArgs<ExtArgs>
   teamMemberships?: boolean | Prisma.Profile$teamMembershipsArgs<ExtArgs>
   createdTeams?: boolean | Prisma.Profile$createdTeamsArgs<ExtArgs>
+  createdWorkouts?: boolean | Prisma.Profile$createdWorkoutsArgs<ExtArgs>
+  workoutSessions?: boolean | Prisma.Profile$workoutSessionsArgs<ExtArgs>
+  WorkoutComment?: boolean | Prisma.Profile$WorkoutCommentArgs<ExtArgs>
   _count?: boolean | Prisma.ProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profile"]>
 
@@ -2053,6 +2626,9 @@ export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   posts?: boolean | Prisma.Profile$postsArgs<ExtArgs>
   teamMemberships?: boolean | Prisma.Profile$teamMembershipsArgs<ExtArgs>
   createdTeams?: boolean | Prisma.Profile$createdTeamsArgs<ExtArgs>
+  createdWorkouts?: boolean | Prisma.Profile$createdWorkoutsArgs<ExtArgs>
+  workoutSessions?: boolean | Prisma.Profile$workoutSessionsArgs<ExtArgs>
+  WorkoutComment?: boolean | Prisma.Profile$WorkoutCommentArgs<ExtArgs>
   _count?: boolean | Prisma.ProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2074,6 +2650,9 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     posts: Prisma.$PostPayload<ExtArgs>[]
     teamMemberships: Prisma.$TeamMembershipPayload<ExtArgs>[]
     createdTeams: Prisma.$TeamPayload<ExtArgs>[]
+    createdWorkouts: Prisma.$WorkoutPayload<ExtArgs>[]
+    workoutSessions: Prisma.$WorkoutSessionPayload<ExtArgs>[]
+    WorkoutComment: Prisma.$WorkoutCommentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2488,6 +3067,9 @@ export interface Prisma__ProfileClient<T, Null = never, ExtArgs extends runtime.
   posts<T extends Prisma.Profile$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   teamMemberships<T extends Prisma.Profile$teamMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$teamMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdTeams<T extends Prisma.Profile$createdTeamsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$createdTeamsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdWorkouts<T extends Prisma.Profile$createdWorkoutsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$createdWorkoutsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  workoutSessions<T extends Prisma.Profile$workoutSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$workoutSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  WorkoutComment<T extends Prisma.Profile$WorkoutCommentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$WorkoutCommentArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkoutCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3219,6 +3801,78 @@ export type Profile$createdTeamsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.TeamScalarFieldEnum | Prisma.TeamScalarFieldEnum[]
+}
+
+/**
+ * Profile.createdWorkouts
+ */
+export type Profile$createdWorkoutsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Workout
+   */
+  select?: Prisma.WorkoutSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Workout
+   */
+  omit?: Prisma.WorkoutOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkoutInclude<ExtArgs> | null
+  where?: Prisma.WorkoutWhereInput
+  orderBy?: Prisma.WorkoutOrderByWithRelationInput | Prisma.WorkoutOrderByWithRelationInput[]
+  cursor?: Prisma.WorkoutWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkoutScalarFieldEnum | Prisma.WorkoutScalarFieldEnum[]
+}
+
+/**
+ * Profile.workoutSessions
+ */
+export type Profile$workoutSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkoutSession
+   */
+  select?: Prisma.WorkoutSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkoutSession
+   */
+  omit?: Prisma.WorkoutSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkoutSessionInclude<ExtArgs> | null
+  where?: Prisma.WorkoutSessionWhereInput
+  orderBy?: Prisma.WorkoutSessionOrderByWithRelationInput | Prisma.WorkoutSessionOrderByWithRelationInput[]
+  cursor?: Prisma.WorkoutSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkoutSessionScalarFieldEnum | Prisma.WorkoutSessionScalarFieldEnum[]
+}
+
+/**
+ * Profile.WorkoutComment
+ */
+export type Profile$WorkoutCommentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkoutComment
+   */
+  select?: Prisma.WorkoutCommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkoutComment
+   */
+  omit?: Prisma.WorkoutCommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkoutCommentInclude<ExtArgs> | null
+  where?: Prisma.WorkoutCommentWhereInput
+  orderBy?: Prisma.WorkoutCommentOrderByWithRelationInput | Prisma.WorkoutCommentOrderByWithRelationInput[]
+  cursor?: Prisma.WorkoutCommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkoutCommentScalarFieldEnum | Prisma.WorkoutCommentScalarFieldEnum[]
 }
 
 /**

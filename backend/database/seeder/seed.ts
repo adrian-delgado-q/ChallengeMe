@@ -7,6 +7,9 @@ import {
 	ChallengeParticipant,
 	Post,
 	DiscussionPost,
+	Workout,
+	WorkoutExercise,
+	WorkoutSession,
 } from '../../prisma/prisma-generated-client/client';
 import { faker } from '@faker-js/faker';
 import activityTypes from './activityTypes';
@@ -384,6 +387,105 @@ async function main() {
 			}
 		}
 		console.log('Discussion posts and replies created.');
+
+		// 11. Create Workouts
+		console.log('Creating workouts...');
+		const workouts: Workout[] = [];
+		for (let i = 0; i < 5; i++) {
+			const isTeamWorkout = faker.datatype.boolean();
+			const creator = faker.helpers.arrayElement(users) as Profile;
+			const team = faker.helpers.arrayElement(teams) as Team;
+
+			const workout = await prisma.workout.create({
+				data: {
+					creatorId: creator.id,
+					teamId: isTeamWorkout ? team.id : null,
+					name: faker.lorem.words(3) + ' Workout',
+					description: faker.lorem.sentence(),
+					isTeamWorkout: isTeamWorkout,
+					generatedByAI: faker.datatype.boolean(0.3), // 30% chance of being AI generated
+					aiModel: 'gpt-4-turbo',
+					aiRawResponse: { prompt: 'some prompt', response: 'some response' },
+				},
+			});
+			workouts.push(workout);
+		}
+		console.log(`${workouts.length} workouts created.`);
+
+		// 12. Create WorkoutExercises
+		console.log('Creating workout exercises...');
+		for (const workout of workouts) {
+			const exerciseCount = faker.number.int({ min: 4, max: 8 });
+			for (let i = 0; i < exerciseCount; i++) {
+				const activityType = faker.helpers.arrayElement(dbActivityTypes) as ActivityType;
+				await prisma.workoutExercise.create({
+					data: {
+						workoutId: workout.id,
+						activityTypeId: activityType.id,
+						orderIndex: i + 1,
+						sets: faker.number.int({ min: 2, max: 5 }),
+						reps: faker.number.int({ min: 8, max: 15 }),
+						restTime: faker.helpers.arrayElement([30, 60, 90]),
+						notes: faker.lorem.sentence(),
+					},
+				});
+			}
+		}
+		console.log('Workout exercises created.');
+
+		// 13. Create WorkoutSessions and associated Activities
+		console.log('Creating workout sessions...');
+		const workoutSessions: WorkoutSession[] = [];
+		for (const workout of workouts) {
+			const sessionCount = faker.number.int({ min: 0, max: 3 });
+			for (let i = 0; i < sessionCount; i++) {
+				const user = faker.helpers.arrayElement(users) as Profile;
+				const session = await prisma.workoutSession.create({
+					data: {
+						workoutId: workout.id,
+						profileId: user.id,
+						sessionDate: faker.date.recent({ days: 30 }),
+						notes: faker.lorem.sentence(),
+					},
+				});
+				workoutSessions.push(session);
+
+				// Now, log activities for this session based on the workout's exercises
+				const workoutExercises = await prisma.workoutExercise.findMany({
+					where: { workoutId: workout.id },
+				});
+
+				for (const exercise of workoutExercises) {
+					await prisma.activity.create({
+						data: {
+							profileId: session.profileId, // Link directly to the user
+							activityTypeId: exercise.activityTypeId,
+							value: faker.number.int({ min: 1, max: 100 }), // Or use exercise details
+							date: session.sessionDate,
+							notes: 'Completed during workout session.',
+							workoutSessionId: session.id,
+						},
+					});
+				}
+			}
+		}
+		console.log(`${workoutSessions.length} workout sessions created.`);
+
+		// 14. Create WorkoutComments
+		console.log('Creating workout comments...');
+		for (const workout of workouts) {
+			const commentCount = faker.number.int({ min: 0, max: 5 });
+			for (let i = 0; i < commentCount; i++) {
+				await prisma.workoutComment.create({
+					data: {
+						workoutId: workout.id,
+						authorId: (faker.helpers.arrayElement(users) as Profile).id,
+						content: faker.lorem.sentence(),
+					},
+				});
+			}
+		}
+		console.log('Workout comments created.');
 
 		console.log('Seeding finished.');
 	}

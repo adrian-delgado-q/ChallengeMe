@@ -43,6 +43,7 @@ export type ActivityMinAggregateOutputType = {
   uploadedAt: Date | null
   profileId: string | null
   challengeId: string | null
+  workoutSessionId: string | null
 }
 
 export type ActivityMaxAggregateOutputType = {
@@ -55,6 +56,7 @@ export type ActivityMaxAggregateOutputType = {
   uploadedAt: Date | null
   profileId: string | null
   challengeId: string | null
+  workoutSessionId: string | null
 }
 
 export type ActivityCountAggregateOutputType = {
@@ -67,6 +69,7 @@ export type ActivityCountAggregateOutputType = {
   uploadedAt: number
   profileId: number
   challengeId: number
+  workoutSessionId: number
   _all: number
 }
 
@@ -89,6 +92,7 @@ export type ActivityMinAggregateInputType = {
   uploadedAt?: true
   profileId?: true
   challengeId?: true
+  workoutSessionId?: true
 }
 
 export type ActivityMaxAggregateInputType = {
@@ -101,6 +105,7 @@ export type ActivityMaxAggregateInputType = {
   uploadedAt?: true
   profileId?: true
   challengeId?: true
+  workoutSessionId?: true
 }
 
 export type ActivityCountAggregateInputType = {
@@ -113,6 +118,7 @@ export type ActivityCountAggregateInputType = {
   uploadedAt?: true
   profileId?: true
   challengeId?: true
+  workoutSessionId?: true
   _all?: true
 }
 
@@ -204,7 +210,7 @@ export type ActivityGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type ActivityGroupByOutputType = {
   id: string
-  participantId: string
+  participantId: string | null
   activityTypeId: string
   value: number
   notes: string | null
@@ -212,6 +218,7 @@ export type ActivityGroupByOutputType = {
   uploadedAt: Date
   profileId: string | null
   challengeId: string | null
+  workoutSessionId: string | null
   _count: ActivityCountAggregateOutputType | null
   _avg: ActivityAvgAggregateOutputType | null
   _sum: ActivitySumAggregateOutputType | null
@@ -239,7 +246,7 @@ export type ActivityWhereInput = {
   OR?: Prisma.ActivityWhereInput[]
   NOT?: Prisma.ActivityWhereInput | Prisma.ActivityWhereInput[]
   id?: Prisma.UuidFilter<"Activity"> | string
-  participantId?: Prisma.UuidFilter<"Activity"> | string
+  participantId?: Prisma.UuidNullableFilter<"Activity"> | string | null
   activityTypeId?: Prisma.UuidFilter<"Activity"> | string
   value?: Prisma.FloatFilter<"Activity"> | number
   notes?: Prisma.StringNullableFilter<"Activity"> | string | null
@@ -247,15 +254,17 @@ export type ActivityWhereInput = {
   uploadedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   profileId?: Prisma.UuidNullableFilter<"Activity"> | string | null
   challengeId?: Prisma.UuidNullableFilter<"Activity"> | string | null
+  workoutSessionId?: Prisma.UuidNullableFilter<"Activity"> | string | null
   activityType?: Prisma.XOR<Prisma.ActivityTypeScalarRelationFilter, Prisma.ActivityTypeWhereInput>
   Challenge?: Prisma.XOR<Prisma.ChallengeNullableScalarRelationFilter, Prisma.ChallengeWhereInput> | null
-  participant?: Prisma.XOR<Prisma.ChallengeParticipantScalarRelationFilter, Prisma.ChallengeParticipantWhereInput>
+  participant?: Prisma.XOR<Prisma.ChallengeParticipantNullableScalarRelationFilter, Prisma.ChallengeParticipantWhereInput> | null
   Profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
+  workoutSession?: Prisma.XOR<Prisma.WorkoutSessionNullableScalarRelationFilter, Prisma.WorkoutSessionWhereInput> | null
 }
 
 export type ActivityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  participantId?: Prisma.SortOrder
+  participantId?: Prisma.SortOrderInput | Prisma.SortOrder
   activityTypeId?: Prisma.SortOrder
   value?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -263,10 +272,12 @@ export type ActivityOrderByWithRelationInput = {
   uploadedAt?: Prisma.SortOrder
   profileId?: Prisma.SortOrderInput | Prisma.SortOrder
   challengeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  workoutSessionId?: Prisma.SortOrderInput | Prisma.SortOrder
   activityType?: Prisma.ActivityTypeOrderByWithRelationInput
   Challenge?: Prisma.ChallengeOrderByWithRelationInput
   participant?: Prisma.ChallengeParticipantOrderByWithRelationInput
   Profile?: Prisma.ProfileOrderByWithRelationInput
+  workoutSession?: Prisma.WorkoutSessionOrderByWithRelationInput
 }
 
 export type ActivityWhereUniqueInput = Prisma.AtLeast<{
@@ -274,7 +285,7 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ActivityWhereInput | Prisma.ActivityWhereInput[]
   OR?: Prisma.ActivityWhereInput[]
   NOT?: Prisma.ActivityWhereInput | Prisma.ActivityWhereInput[]
-  participantId?: Prisma.UuidFilter<"Activity"> | string
+  participantId?: Prisma.UuidNullableFilter<"Activity"> | string | null
   activityTypeId?: Prisma.UuidFilter<"Activity"> | string
   value?: Prisma.FloatFilter<"Activity"> | number
   notes?: Prisma.StringNullableFilter<"Activity"> | string | null
@@ -282,15 +293,17 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
   uploadedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   profileId?: Prisma.UuidNullableFilter<"Activity"> | string | null
   challengeId?: Prisma.UuidNullableFilter<"Activity"> | string | null
+  workoutSessionId?: Prisma.UuidNullableFilter<"Activity"> | string | null
   activityType?: Prisma.XOR<Prisma.ActivityTypeScalarRelationFilter, Prisma.ActivityTypeWhereInput>
   Challenge?: Prisma.XOR<Prisma.ChallengeNullableScalarRelationFilter, Prisma.ChallengeWhereInput> | null
-  participant?: Prisma.XOR<Prisma.ChallengeParticipantScalarRelationFilter, Prisma.ChallengeParticipantWhereInput>
+  participant?: Prisma.XOR<Prisma.ChallengeParticipantNullableScalarRelationFilter, Prisma.ChallengeParticipantWhereInput> | null
   Profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
+  workoutSession?: Prisma.XOR<Prisma.WorkoutSessionNullableScalarRelationFilter, Prisma.WorkoutSessionWhereInput> | null
 }, "id">
 
 export type ActivityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  participantId?: Prisma.SortOrder
+  participantId?: Prisma.SortOrderInput | Prisma.SortOrder
   activityTypeId?: Prisma.SortOrder
   value?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -298,6 +311,7 @@ export type ActivityOrderByWithAggregationInput = {
   uploadedAt?: Prisma.SortOrder
   profileId?: Prisma.SortOrderInput | Prisma.SortOrder
   challengeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  workoutSessionId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ActivityCountOrderByAggregateInput
   _avg?: Prisma.ActivityAvgOrderByAggregateInput
   _max?: Prisma.ActivityMaxOrderByAggregateInput
@@ -310,7 +324,7 @@ export type ActivityScalarWhereWithAggregatesInput = {
   OR?: Prisma.ActivityScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ActivityScalarWhereWithAggregatesInput | Prisma.ActivityScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Activity"> | string
-  participantId?: Prisma.UuidWithAggregatesFilter<"Activity"> | string
+  participantId?: Prisma.UuidNullableWithAggregatesFilter<"Activity"> | string | null
   activityTypeId?: Prisma.UuidWithAggregatesFilter<"Activity"> | string
   value?: Prisma.FloatWithAggregatesFilter<"Activity"> | number
   notes?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
@@ -318,6 +332,7 @@ export type ActivityScalarWhereWithAggregatesInput = {
   uploadedAt?: Prisma.DateTimeWithAggregatesFilter<"Activity"> | Date | string
   profileId?: Prisma.UuidNullableWithAggregatesFilter<"Activity"> | string | null
   challengeId?: Prisma.UuidNullableWithAggregatesFilter<"Activity"> | string | null
+  workoutSessionId?: Prisma.UuidNullableWithAggregatesFilter<"Activity"> | string | null
 }
 
 export type ActivityCreateInput = {
@@ -328,13 +343,14 @@ export type ActivityCreateInput = {
   uploadedAt?: Date | string
   activityType: Prisma.ActivityTypeCreateNestedOneWithoutActivitiesInput
   Challenge?: Prisma.ChallengeCreateNestedOneWithoutActivitiesInput
-  participant: Prisma.ChallengeParticipantCreateNestedOneWithoutActivitiesInput
+  participant?: Prisma.ChallengeParticipantCreateNestedOneWithoutActivitiesInput
   Profile?: Prisma.ProfileCreateNestedOneWithoutActivitiesInput
+  workoutSession?: Prisma.WorkoutSessionCreateNestedOneWithoutLoggedActivitiesInput
 }
 
 export type ActivityUncheckedCreateInput = {
   id?: string
-  participantId: string
+  participantId?: string | null
   activityTypeId: string
   value: number
   notes?: string | null
@@ -342,6 +358,7 @@ export type ActivityUncheckedCreateInput = {
   uploadedAt?: Date | string
   profileId?: string | null
   challengeId?: string | null
+  workoutSessionId?: string | null
 }
 
 export type ActivityUpdateInput = {
@@ -352,13 +369,14 @@ export type ActivityUpdateInput = {
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activityType?: Prisma.ActivityTypeUpdateOneRequiredWithoutActivitiesNestedInput
   Challenge?: Prisma.ChallengeUpdateOneWithoutActivitiesNestedInput
-  participant?: Prisma.ChallengeParticipantUpdateOneRequiredWithoutActivitiesNestedInput
+  participant?: Prisma.ChallengeParticipantUpdateOneWithoutActivitiesNestedInput
   Profile?: Prisma.ProfileUpdateOneWithoutActivitiesNestedInput
+  workoutSession?: Prisma.WorkoutSessionUpdateOneWithoutLoggedActivitiesNestedInput
 }
 
 export type ActivityUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  participantId?: Prisma.StringFieldUpdateOperationsInput | string
+  participantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -366,11 +384,12 @@ export type ActivityUncheckedUpdateInput = {
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ActivityCreateManyInput = {
   id?: string
-  participantId: string
+  participantId?: string | null
   activityTypeId: string
   value: number
   notes?: string | null
@@ -378,6 +397,7 @@ export type ActivityCreateManyInput = {
   uploadedAt?: Date | string
   profileId?: string | null
   challengeId?: string | null
+  workoutSessionId?: string | null
 }
 
 export type ActivityUpdateManyMutationInput = {
@@ -390,7 +410,7 @@ export type ActivityUpdateManyMutationInput = {
 
 export type ActivityUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  participantId?: Prisma.StringFieldUpdateOperationsInput | string
+  participantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -398,6 +418,7 @@ export type ActivityUncheckedUpdateManyInput = {
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ActivityListRelationFilter = {
@@ -420,6 +441,7 @@ export type ActivityCountOrderByAggregateInput = {
   uploadedAt?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   challengeId?: Prisma.SortOrder
+  workoutSessionId?: Prisma.SortOrder
 }
 
 export type ActivityAvgOrderByAggregateInput = {
@@ -436,6 +458,7 @@ export type ActivityMaxOrderByAggregateInput = {
   uploadedAt?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   challengeId?: Prisma.SortOrder
+  workoutSessionId?: Prisma.SortOrder
 }
 
 export type ActivityMinOrderByAggregateInput = {
@@ -448,6 +471,7 @@ export type ActivityMinOrderByAggregateInput = {
   uploadedAt?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   challengeId?: Prisma.SortOrder
+  workoutSessionId?: Prisma.SortOrder
 }
 
 export type ActivitySumOrderByAggregateInput = {
@@ -622,6 +646,48 @@ export type ActivityUncheckedUpdateManyWithoutActivityTypeNestedInput = {
   deleteMany?: Prisma.ActivityScalarWhereInput | Prisma.ActivityScalarWhereInput[]
 }
 
+export type ActivityCreateNestedManyWithoutWorkoutSessionInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutWorkoutSessionInput, Prisma.ActivityUncheckedCreateWithoutWorkoutSessionInput> | Prisma.ActivityCreateWithoutWorkoutSessionInput[] | Prisma.ActivityUncheckedCreateWithoutWorkoutSessionInput[]
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutWorkoutSessionInput | Prisma.ActivityCreateOrConnectWithoutWorkoutSessionInput[]
+  createMany?: Prisma.ActivityCreateManyWorkoutSessionInputEnvelope
+  connect?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+}
+
+export type ActivityUncheckedCreateNestedManyWithoutWorkoutSessionInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutWorkoutSessionInput, Prisma.ActivityUncheckedCreateWithoutWorkoutSessionInput> | Prisma.ActivityCreateWithoutWorkoutSessionInput[] | Prisma.ActivityUncheckedCreateWithoutWorkoutSessionInput[]
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutWorkoutSessionInput | Prisma.ActivityCreateOrConnectWithoutWorkoutSessionInput[]
+  createMany?: Prisma.ActivityCreateManyWorkoutSessionInputEnvelope
+  connect?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+}
+
+export type ActivityUpdateManyWithoutWorkoutSessionNestedInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutWorkoutSessionInput, Prisma.ActivityUncheckedCreateWithoutWorkoutSessionInput> | Prisma.ActivityCreateWithoutWorkoutSessionInput[] | Prisma.ActivityUncheckedCreateWithoutWorkoutSessionInput[]
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutWorkoutSessionInput | Prisma.ActivityCreateOrConnectWithoutWorkoutSessionInput[]
+  upsert?: Prisma.ActivityUpsertWithWhereUniqueWithoutWorkoutSessionInput | Prisma.ActivityUpsertWithWhereUniqueWithoutWorkoutSessionInput[]
+  createMany?: Prisma.ActivityCreateManyWorkoutSessionInputEnvelope
+  set?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  disconnect?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  delete?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  connect?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  update?: Prisma.ActivityUpdateWithWhereUniqueWithoutWorkoutSessionInput | Prisma.ActivityUpdateWithWhereUniqueWithoutWorkoutSessionInput[]
+  updateMany?: Prisma.ActivityUpdateManyWithWhereWithoutWorkoutSessionInput | Prisma.ActivityUpdateManyWithWhereWithoutWorkoutSessionInput[]
+  deleteMany?: Prisma.ActivityScalarWhereInput | Prisma.ActivityScalarWhereInput[]
+}
+
+export type ActivityUncheckedUpdateManyWithoutWorkoutSessionNestedInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutWorkoutSessionInput, Prisma.ActivityUncheckedCreateWithoutWorkoutSessionInput> | Prisma.ActivityCreateWithoutWorkoutSessionInput[] | Prisma.ActivityUncheckedCreateWithoutWorkoutSessionInput[]
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutWorkoutSessionInput | Prisma.ActivityCreateOrConnectWithoutWorkoutSessionInput[]
+  upsert?: Prisma.ActivityUpsertWithWhereUniqueWithoutWorkoutSessionInput | Prisma.ActivityUpsertWithWhereUniqueWithoutWorkoutSessionInput[]
+  createMany?: Prisma.ActivityCreateManyWorkoutSessionInputEnvelope
+  set?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  disconnect?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  delete?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  connect?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  update?: Prisma.ActivityUpdateWithWhereUniqueWithoutWorkoutSessionInput | Prisma.ActivityUpdateWithWhereUniqueWithoutWorkoutSessionInput[]
+  updateMany?: Prisma.ActivityUpdateManyWithWhereWithoutWorkoutSessionInput | Prisma.ActivityUpdateManyWithWhereWithoutWorkoutSessionInput[]
+  deleteMany?: Prisma.ActivityScalarWhereInput | Prisma.ActivityScalarWhereInput[]
+}
+
 export type ActivityCreateWithoutProfileInput = {
   id?: string
   value: number
@@ -630,18 +696,20 @@ export type ActivityCreateWithoutProfileInput = {
   uploadedAt?: Date | string
   activityType: Prisma.ActivityTypeCreateNestedOneWithoutActivitiesInput
   Challenge?: Prisma.ChallengeCreateNestedOneWithoutActivitiesInput
-  participant: Prisma.ChallengeParticipantCreateNestedOneWithoutActivitiesInput
+  participant?: Prisma.ChallengeParticipantCreateNestedOneWithoutActivitiesInput
+  workoutSession?: Prisma.WorkoutSessionCreateNestedOneWithoutLoggedActivitiesInput
 }
 
 export type ActivityUncheckedCreateWithoutProfileInput = {
   id?: string
-  participantId: string
+  participantId?: string | null
   activityTypeId: string
   value: number
   notes?: string | null
   date: Date | string
   uploadedAt?: Date | string
   challengeId?: string | null
+  workoutSessionId?: string | null
 }
 
 export type ActivityCreateOrConnectWithoutProfileInput = {
@@ -675,7 +743,7 @@ export type ActivityScalarWhereInput = {
   OR?: Prisma.ActivityScalarWhereInput[]
   NOT?: Prisma.ActivityScalarWhereInput | Prisma.ActivityScalarWhereInput[]
   id?: Prisma.UuidFilter<"Activity"> | string
-  participantId?: Prisma.UuidFilter<"Activity"> | string
+  participantId?: Prisma.UuidNullableFilter<"Activity"> | string | null
   activityTypeId?: Prisma.UuidFilter<"Activity"> | string
   value?: Prisma.FloatFilter<"Activity"> | number
   notes?: Prisma.StringNullableFilter<"Activity"> | string | null
@@ -683,6 +751,7 @@ export type ActivityScalarWhereInput = {
   uploadedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   profileId?: Prisma.UuidNullableFilter<"Activity"> | string | null
   challengeId?: Prisma.UuidNullableFilter<"Activity"> | string | null
+  workoutSessionId?: Prisma.UuidNullableFilter<"Activity"> | string | null
 }
 
 export type ActivityCreateWithoutChallengeInput = {
@@ -692,19 +761,21 @@ export type ActivityCreateWithoutChallengeInput = {
   date: Date | string
   uploadedAt?: Date | string
   activityType: Prisma.ActivityTypeCreateNestedOneWithoutActivitiesInput
-  participant: Prisma.ChallengeParticipantCreateNestedOneWithoutActivitiesInput
+  participant?: Prisma.ChallengeParticipantCreateNestedOneWithoutActivitiesInput
   Profile?: Prisma.ProfileCreateNestedOneWithoutActivitiesInput
+  workoutSession?: Prisma.WorkoutSessionCreateNestedOneWithoutLoggedActivitiesInput
 }
 
 export type ActivityUncheckedCreateWithoutChallengeInput = {
   id?: string
-  participantId: string
+  participantId?: string | null
   activityTypeId: string
   value: number
   notes?: string | null
   date: Date | string
   uploadedAt?: Date | string
   profileId?: string | null
+  workoutSessionId?: string | null
 }
 
 export type ActivityCreateOrConnectWithoutChallengeInput = {
@@ -742,6 +813,7 @@ export type ActivityCreateWithoutParticipantInput = {
   activityType: Prisma.ActivityTypeCreateNestedOneWithoutActivitiesInput
   Challenge?: Prisma.ChallengeCreateNestedOneWithoutActivitiesInput
   Profile?: Prisma.ProfileCreateNestedOneWithoutActivitiesInput
+  workoutSession?: Prisma.WorkoutSessionCreateNestedOneWithoutLoggedActivitiesInput
 }
 
 export type ActivityUncheckedCreateWithoutParticipantInput = {
@@ -753,6 +825,7 @@ export type ActivityUncheckedCreateWithoutParticipantInput = {
   uploadedAt?: Date | string
   profileId?: string | null
   challengeId?: string | null
+  workoutSessionId?: string | null
 }
 
 export type ActivityCreateOrConnectWithoutParticipantInput = {
@@ -788,19 +861,21 @@ export type ActivityCreateWithoutActivityTypeInput = {
   date: Date | string
   uploadedAt?: Date | string
   Challenge?: Prisma.ChallengeCreateNestedOneWithoutActivitiesInput
-  participant: Prisma.ChallengeParticipantCreateNestedOneWithoutActivitiesInput
+  participant?: Prisma.ChallengeParticipantCreateNestedOneWithoutActivitiesInput
   Profile?: Prisma.ProfileCreateNestedOneWithoutActivitiesInput
+  workoutSession?: Prisma.WorkoutSessionCreateNestedOneWithoutLoggedActivitiesInput
 }
 
 export type ActivityUncheckedCreateWithoutActivityTypeInput = {
   id?: string
-  participantId: string
+  participantId?: string | null
   value: number
   notes?: string | null
   date: Date | string
   uploadedAt?: Date | string
   profileId?: string | null
   challengeId?: string | null
+  workoutSessionId?: string | null
 }
 
 export type ActivityCreateOrConnectWithoutActivityTypeInput = {
@@ -829,15 +904,66 @@ export type ActivityUpdateManyWithWhereWithoutActivityTypeInput = {
   data: Prisma.XOR<Prisma.ActivityUpdateManyMutationInput, Prisma.ActivityUncheckedUpdateManyWithoutActivityTypeInput>
 }
 
+export type ActivityCreateWithoutWorkoutSessionInput = {
+  id?: string
+  value: number
+  notes?: string | null
+  date: Date | string
+  uploadedAt?: Date | string
+  activityType: Prisma.ActivityTypeCreateNestedOneWithoutActivitiesInput
+  Challenge?: Prisma.ChallengeCreateNestedOneWithoutActivitiesInput
+  participant?: Prisma.ChallengeParticipantCreateNestedOneWithoutActivitiesInput
+  Profile?: Prisma.ProfileCreateNestedOneWithoutActivitiesInput
+}
+
+export type ActivityUncheckedCreateWithoutWorkoutSessionInput = {
+  id?: string
+  participantId?: string | null
+  activityTypeId: string
+  value: number
+  notes?: string | null
+  date: Date | string
+  uploadedAt?: Date | string
+  profileId?: string | null
+  challengeId?: string | null
+}
+
+export type ActivityCreateOrConnectWithoutWorkoutSessionInput = {
+  where: Prisma.ActivityWhereUniqueInput
+  create: Prisma.XOR<Prisma.ActivityCreateWithoutWorkoutSessionInput, Prisma.ActivityUncheckedCreateWithoutWorkoutSessionInput>
+}
+
+export type ActivityCreateManyWorkoutSessionInputEnvelope = {
+  data: Prisma.ActivityCreateManyWorkoutSessionInput | Prisma.ActivityCreateManyWorkoutSessionInput[]
+  skipDuplicates?: boolean
+}
+
+export type ActivityUpsertWithWhereUniqueWithoutWorkoutSessionInput = {
+  where: Prisma.ActivityWhereUniqueInput
+  update: Prisma.XOR<Prisma.ActivityUpdateWithoutWorkoutSessionInput, Prisma.ActivityUncheckedUpdateWithoutWorkoutSessionInput>
+  create: Prisma.XOR<Prisma.ActivityCreateWithoutWorkoutSessionInput, Prisma.ActivityUncheckedCreateWithoutWorkoutSessionInput>
+}
+
+export type ActivityUpdateWithWhereUniqueWithoutWorkoutSessionInput = {
+  where: Prisma.ActivityWhereUniqueInput
+  data: Prisma.XOR<Prisma.ActivityUpdateWithoutWorkoutSessionInput, Prisma.ActivityUncheckedUpdateWithoutWorkoutSessionInput>
+}
+
+export type ActivityUpdateManyWithWhereWithoutWorkoutSessionInput = {
+  where: Prisma.ActivityScalarWhereInput
+  data: Prisma.XOR<Prisma.ActivityUpdateManyMutationInput, Prisma.ActivityUncheckedUpdateManyWithoutWorkoutSessionInput>
+}
+
 export type ActivityCreateManyProfileInput = {
   id?: string
-  participantId: string
+  participantId?: string | null
   activityTypeId: string
   value: number
   notes?: string | null
   date: Date | string
   uploadedAt?: Date | string
   challengeId?: string | null
+  workoutSessionId?: string | null
 }
 
 export type ActivityUpdateWithoutProfileInput = {
@@ -848,40 +974,44 @@ export type ActivityUpdateWithoutProfileInput = {
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activityType?: Prisma.ActivityTypeUpdateOneRequiredWithoutActivitiesNestedInput
   Challenge?: Prisma.ChallengeUpdateOneWithoutActivitiesNestedInput
-  participant?: Prisma.ChallengeParticipantUpdateOneRequiredWithoutActivitiesNestedInput
+  participant?: Prisma.ChallengeParticipantUpdateOneWithoutActivitiesNestedInput
+  workoutSession?: Prisma.WorkoutSessionUpdateOneWithoutLoggedActivitiesNestedInput
 }
 
 export type ActivityUncheckedUpdateWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  participantId?: Prisma.StringFieldUpdateOperationsInput | string
+  participantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   challengeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ActivityUncheckedUpdateManyWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  participantId?: Prisma.StringFieldUpdateOperationsInput | string
+  participantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   challengeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ActivityCreateManyChallengeInput = {
   id?: string
-  participantId: string
+  participantId?: string | null
   activityTypeId: string
   value: number
   notes?: string | null
   date: Date | string
   uploadedAt?: Date | string
   profileId?: string | null
+  workoutSessionId?: string | null
 }
 
 export type ActivityUpdateWithoutChallengeInput = {
@@ -891,30 +1021,33 @@ export type ActivityUpdateWithoutChallengeInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activityType?: Prisma.ActivityTypeUpdateOneRequiredWithoutActivitiesNestedInput
-  participant?: Prisma.ChallengeParticipantUpdateOneRequiredWithoutActivitiesNestedInput
+  participant?: Prisma.ChallengeParticipantUpdateOneWithoutActivitiesNestedInput
   Profile?: Prisma.ProfileUpdateOneWithoutActivitiesNestedInput
+  workoutSession?: Prisma.WorkoutSessionUpdateOneWithoutLoggedActivitiesNestedInput
 }
 
 export type ActivityUncheckedUpdateWithoutChallengeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  participantId?: Prisma.StringFieldUpdateOperationsInput | string
+  participantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ActivityUncheckedUpdateManyWithoutChallengeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  participantId?: Prisma.StringFieldUpdateOperationsInput | string
+  participantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ActivityCreateManyParticipantInput = {
@@ -926,6 +1059,7 @@ export type ActivityCreateManyParticipantInput = {
   uploadedAt?: Date | string
   profileId?: string | null
   challengeId?: string | null
+  workoutSessionId?: string | null
 }
 
 export type ActivityUpdateWithoutParticipantInput = {
@@ -937,6 +1071,7 @@ export type ActivityUpdateWithoutParticipantInput = {
   activityType?: Prisma.ActivityTypeUpdateOneRequiredWithoutActivitiesNestedInput
   Challenge?: Prisma.ChallengeUpdateOneWithoutActivitiesNestedInput
   Profile?: Prisma.ProfileUpdateOneWithoutActivitiesNestedInput
+  workoutSession?: Prisma.WorkoutSessionUpdateOneWithoutLoggedActivitiesNestedInput
 }
 
 export type ActivityUncheckedUpdateWithoutParticipantInput = {
@@ -948,6 +1083,7 @@ export type ActivityUncheckedUpdateWithoutParticipantInput = {
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ActivityUncheckedUpdateManyWithoutParticipantInput = {
@@ -959,17 +1095,19 @@ export type ActivityUncheckedUpdateManyWithoutParticipantInput = {
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   challengeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ActivityCreateManyActivityTypeInput = {
   id?: string
-  participantId: string
+  participantId?: string | null
   value: number
   notes?: string | null
   date: Date | string
   uploadedAt?: Date | string
   profileId?: string | null
   challengeId?: string | null
+  workoutSessionId?: string | null
 }
 
 export type ActivityUpdateWithoutActivityTypeInput = {
@@ -979,13 +1117,63 @@ export type ActivityUpdateWithoutActivityTypeInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   Challenge?: Prisma.ChallengeUpdateOneWithoutActivitiesNestedInput
-  participant?: Prisma.ChallengeParticipantUpdateOneRequiredWithoutActivitiesNestedInput
+  participant?: Prisma.ChallengeParticipantUpdateOneWithoutActivitiesNestedInput
   Profile?: Prisma.ProfileUpdateOneWithoutActivitiesNestedInput
+  workoutSession?: Prisma.WorkoutSessionUpdateOneWithoutLoggedActivitiesNestedInput
 }
 
 export type ActivityUncheckedUpdateWithoutActivityTypeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  participantId?: Prisma.StringFieldUpdateOperationsInput | string
+  participantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  value?: Prisma.FloatFieldUpdateOperationsInput | number
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  challengeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ActivityUncheckedUpdateManyWithoutActivityTypeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  participantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  value?: Prisma.FloatFieldUpdateOperationsInput | number
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  challengeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ActivityCreateManyWorkoutSessionInput = {
+  id?: string
+  participantId?: string | null
+  activityTypeId: string
+  value: number
+  notes?: string | null
+  date: Date | string
+  uploadedAt?: Date | string
+  profileId?: string | null
+  challengeId?: string | null
+}
+
+export type ActivityUpdateWithoutWorkoutSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  value?: Prisma.FloatFieldUpdateOperationsInput | number
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activityType?: Prisma.ActivityTypeUpdateOneRequiredWithoutActivitiesNestedInput
+  Challenge?: Prisma.ChallengeUpdateOneWithoutActivitiesNestedInput
+  participant?: Prisma.ChallengeParticipantUpdateOneWithoutActivitiesNestedInput
+  Profile?: Prisma.ProfileUpdateOneWithoutActivitiesNestedInput
+}
+
+export type ActivityUncheckedUpdateWithoutWorkoutSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  participantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -994,9 +1182,10 @@ export type ActivityUncheckedUpdateWithoutActivityTypeInput = {
   challengeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type ActivityUncheckedUpdateManyWithoutActivityTypeInput = {
+export type ActivityUncheckedUpdateManyWithoutWorkoutSessionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  participantId?: Prisma.StringFieldUpdateOperationsInput | string
+  participantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1017,10 +1206,12 @@ export type ActivitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   uploadedAt?: boolean
   profileId?: boolean
   challengeId?: boolean
+  workoutSessionId?: boolean
   activityType?: boolean | Prisma.ActivityTypeDefaultArgs<ExtArgs>
   Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
-  participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
+  participant?: boolean | Prisma.Activity$participantArgs<ExtArgs>
   Profile?: boolean | Prisma.Activity$ProfileArgs<ExtArgs>
+  workoutSession?: boolean | Prisma.Activity$workoutSessionArgs<ExtArgs>
 }, ExtArgs["result"]["activity"]>
 
 export type ActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1033,10 +1224,12 @@ export type ActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   uploadedAt?: boolean
   profileId?: boolean
   challengeId?: boolean
+  workoutSessionId?: boolean
   activityType?: boolean | Prisma.ActivityTypeDefaultArgs<ExtArgs>
   Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
-  participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
+  participant?: boolean | Prisma.Activity$participantArgs<ExtArgs>
   Profile?: boolean | Prisma.Activity$ProfileArgs<ExtArgs>
+  workoutSession?: boolean | Prisma.Activity$workoutSessionArgs<ExtArgs>
 }, ExtArgs["result"]["activity"]>
 
 export type ActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1049,10 +1242,12 @@ export type ActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   uploadedAt?: boolean
   profileId?: boolean
   challengeId?: boolean
+  workoutSessionId?: boolean
   activityType?: boolean | Prisma.ActivityTypeDefaultArgs<ExtArgs>
   Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
-  participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
+  participant?: boolean | Prisma.Activity$participantArgs<ExtArgs>
   Profile?: boolean | Prisma.Activity$ProfileArgs<ExtArgs>
+  workoutSession?: boolean | Prisma.Activity$workoutSessionArgs<ExtArgs>
 }, ExtArgs["result"]["activity"]>
 
 export type ActivitySelectScalar = {
@@ -1065,26 +1260,30 @@ export type ActivitySelectScalar = {
   uploadedAt?: boolean
   profileId?: boolean
   challengeId?: boolean
+  workoutSessionId?: boolean
 }
 
-export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "participantId" | "activityTypeId" | "value" | "notes" | "date" | "uploadedAt" | "profileId" | "challengeId", ExtArgs["result"]["activity"]>
+export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "participantId" | "activityTypeId" | "value" | "notes" | "date" | "uploadedAt" | "profileId" | "challengeId" | "workoutSessionId", ExtArgs["result"]["activity"]>
 export type ActivityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activityType?: boolean | Prisma.ActivityTypeDefaultArgs<ExtArgs>
   Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
-  participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
+  participant?: boolean | Prisma.Activity$participantArgs<ExtArgs>
   Profile?: boolean | Prisma.Activity$ProfileArgs<ExtArgs>
+  workoutSession?: boolean | Prisma.Activity$workoutSessionArgs<ExtArgs>
 }
 export type ActivityIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activityType?: boolean | Prisma.ActivityTypeDefaultArgs<ExtArgs>
   Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
-  participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
+  participant?: boolean | Prisma.Activity$participantArgs<ExtArgs>
   Profile?: boolean | Prisma.Activity$ProfileArgs<ExtArgs>
+  workoutSession?: boolean | Prisma.Activity$workoutSessionArgs<ExtArgs>
 }
 export type ActivityIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activityType?: boolean | Prisma.ActivityTypeDefaultArgs<ExtArgs>
   Challenge?: boolean | Prisma.Activity$ChallengeArgs<ExtArgs>
-  participant?: boolean | Prisma.ChallengeParticipantDefaultArgs<ExtArgs>
+  participant?: boolean | Prisma.Activity$participantArgs<ExtArgs>
   Profile?: boolean | Prisma.Activity$ProfileArgs<ExtArgs>
+  workoutSession?: boolean | Prisma.Activity$workoutSessionArgs<ExtArgs>
 }
 
 export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1092,12 +1291,13 @@ export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     activityType: Prisma.$ActivityTypePayload<ExtArgs>
     Challenge: Prisma.$ChallengePayload<ExtArgs> | null
-    participant: Prisma.$ChallengeParticipantPayload<ExtArgs>
+    participant: Prisma.$ChallengeParticipantPayload<ExtArgs> | null
     Profile: Prisma.$ProfilePayload<ExtArgs> | null
+    workoutSession: Prisma.$WorkoutSessionPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    participantId: string
+    participantId: string | null
     activityTypeId: string
     value: number
     notes: string | null
@@ -1105,6 +1305,7 @@ export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     uploadedAt: Date
     profileId: string | null
     challengeId: string | null
+    workoutSessionId: string | null
   }, ExtArgs["result"]["activity"]>
   composites: {}
 }
@@ -1501,8 +1702,9 @@ export interface Prisma__ActivityClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   activityType<T extends Prisma.ActivityTypeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityTypeDefaultArgs<ExtArgs>>): Prisma.Prisma__ActivityTypeClient<runtime.Types.Result.GetResult<Prisma.$ActivityTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   Challenge<T extends Prisma.Activity$ChallengeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$ChallengeArgs<ExtArgs>>): Prisma.Prisma__ChallengeClient<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  participant<T extends Prisma.ChallengeParticipantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChallengeParticipantDefaultArgs<ExtArgs>>): Prisma.Prisma__ChallengeParticipantClient<runtime.Types.Result.GetResult<Prisma.$ChallengeParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  participant<T extends Prisma.Activity$participantArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$participantArgs<ExtArgs>>): Prisma.Prisma__ChallengeParticipantClient<runtime.Types.Result.GetResult<Prisma.$ChallengeParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   Profile<T extends Prisma.Activity$ProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$ProfileArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  workoutSession<T extends Prisma.Activity$workoutSessionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$workoutSessionArgs<ExtArgs>>): Prisma.Prisma__WorkoutSessionClient<runtime.Types.Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1541,6 +1743,7 @@ export interface ActivityFieldRefs {
   readonly uploadedAt: Prisma.FieldRef<"Activity", 'DateTime'>
   readonly profileId: Prisma.FieldRef<"Activity", 'String'>
   readonly challengeId: Prisma.FieldRef<"Activity", 'String'>
+  readonly workoutSessionId: Prisma.FieldRef<"Activity", 'String'>
 }
     
 
@@ -1956,6 +2159,25 @@ export type Activity$ChallengeArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
+ * Activity.participant
+ */
+export type Activity$participantArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChallengeParticipant
+   */
+  select?: Prisma.ChallengeParticipantSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChallengeParticipant
+   */
+  omit?: Prisma.ChallengeParticipantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChallengeParticipantInclude<ExtArgs> | null
+  where?: Prisma.ChallengeParticipantWhereInput
+}
+
+/**
  * Activity.Profile
  */
 export type Activity$ProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1972,6 +2194,25 @@ export type Activity$ProfileArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   include?: Prisma.ProfileInclude<ExtArgs> | null
   where?: Prisma.ProfileWhereInput
+}
+
+/**
+ * Activity.workoutSession
+ */
+export type Activity$workoutSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkoutSession
+   */
+  select?: Prisma.WorkoutSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkoutSession
+   */
+  omit?: Prisma.WorkoutSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkoutSessionInclude<ExtArgs> | null
+  where?: Prisma.WorkoutSessionWhereInput
 }
 
 /**

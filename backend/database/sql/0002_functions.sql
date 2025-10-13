@@ -91,15 +91,19 @@ $$;
 -- Validates that an activity's activity type is supported by its challenge.
 CREATE OR
 REPLACE FUNCTION public.validate_activity_challenge_agreement () RETURNS TRIGGER LANGUAGE plpgsql AS $$
-DECLARE
-    challenge_id UUID;
 BEGIN
-    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NEW.activityTypeId != OLD.activityTypeId)) THEN
-        SELECT cp."challengeId" INTO challenge_id FROM public."challenge_participants" cp WHERE cp.id = NEW."participantId";
-        IF NOT EXISTS (SELECT 1 FROM public."challenge_activity_types" cat WHERE cat."challengeId" = challenge_id AND cat."activityTypeId" = NEW."activityTypeId") THEN
+    -- Only run the validation if the activity is being linked to a challenge.
+    IF NEW."challengeId" IS NOT NULL THEN
+        IF NOT EXISTS (
+            SELECT 1
+            FROM public.challenge_activity_types cat
+            WHERE cat."challengeId" = NEW."challengeId"
+              AND cat."activityTypeId" = NEW."activityTypeId"
+        ) THEN
             RAISE EXCEPTION 'Activity type is not supported by this challenge. Only activities that match the challenge''s supported activity types can be recorded.';
         END IF;
     END IF;
+
     RETURN NEW;
 END;
 $$;

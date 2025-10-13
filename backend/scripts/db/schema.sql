@@ -1,4 +1,4 @@
-\restrict wISce5nE92Y4ri47mTBioY3VneFvMbFCcNwJy1XiQt6XcE149JejbFWQQf96mGk
+\restrict u9Sw9ky04VXzP3SyyOngXn8ONqeaenlh0h2iaip7SO3GtIuAwyQUO1RLqdcilfm
 
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.6 (Homebrew)
@@ -125,6 +125,20 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
 --
 
 COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
+--
+-- Name: pgjwt; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pgjwt WITH SCHEMA extensions;
+
+
+--
+-- Name: EXTENSION pgjwt; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pgjwt IS 'JSON Web Token API for Postgresql';
 
 
 --
@@ -847,15 +861,19 @@ $$;
 CREATE FUNCTION public.validate_activity_challenge_agreement() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-DECLARE
-    challenge_id UUID;
 BEGIN
-    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NEW.activityTypeId != OLD.activityTypeId)) THEN
-        SELECT cp."challengeId" INTO challenge_id FROM public."challenge_participants" cp WHERE cp.id = NEW."participantId";
-        IF NOT EXISTS (SELECT 1 FROM public."challenge_activity_types" cat WHERE cat."challengeId" = challenge_id AND cat."activityTypeId" = NEW."activityTypeId") THEN
+    -- Only run the validation if the activity is being linked to a challenge.
+    IF NEW."challengeId" IS NOT NULL THEN
+        IF NOT EXISTS (
+            SELECT 1
+            FROM public.challenge_activity_types cat
+            WHERE cat."challengeId" = NEW."challengeId"
+              AND cat."activityTypeId" = NEW."activityTypeId"
+        ) THEN
             RAISE EXCEPTION 'Activity type is not supported by this challenge. Only activities that match the challenge''s supported activity types can be recorded.';
         END IF;
     END IF;
+
     RETURN NEW;
 END;
 $$;
@@ -2962,14 +2980,15 @@ CREATE TABLE public._prisma_migrations (
 
 CREATE TABLE public.activities (
     id uuid NOT NULL,
-    "participantId" uuid NOT NULL,
+    "participantId" uuid,
     "activityTypeId" uuid NOT NULL,
     value double precision NOT NULL,
     notes text,
     date date NOT NULL,
     "uploadedAt" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "profileId" uuid,
-    "challengeId" uuid
+    "challengeId" uuid,
+    "workoutSessionId" uuid
 );
 
 
@@ -3423,6 +3442,68 @@ CREATE VIEW public.team_details_view WITH (security_invoker='true') AS
           WHERE (tm."teamId" = t.id)) AS member_count
    FROM (public.teams t
      JOIN public.profiles p ON ((t."creatorId" = p.id)));
+
+
+--
+-- Name: workout_comments; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.workout_comments (
+    id uuid NOT NULL,
+    "authorId" uuid NOT NULL,
+    "workoutId" uuid NOT NULL,
+    content text NOT NULL,
+    "createdAt" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+--
+-- Name: workout_exercises; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.workout_exercises (
+    id uuid NOT NULL,
+    "workoutId" uuid NOT NULL,
+    "activityTypeId" uuid NOT NULL,
+    "orderIndex" integer NOT NULL,
+    sets integer,
+    reps integer,
+    "restTime" integer,
+    notes text
+);
+
+
+--
+-- Name: workout_sessions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.workout_sessions (
+    id uuid NOT NULL,
+    "workoutId" uuid NOT NULL,
+    "profileId" uuid NOT NULL,
+    "sessionDate" date DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    notes text,
+    "createdAt" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+--
+-- Name: workouts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.workouts (
+    id uuid NOT NULL,
+    "creatorId" uuid NOT NULL,
+    "teamId" uuid,
+    name text NOT NULL,
+    description text,
+    "isTeamWorkout" boolean DEFAULT false NOT NULL,
+    "createdAt" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(6) with time zone NOT NULL,
+    "generatedByAI" boolean DEFAULT false NOT NULL,
+    "aiModel" text,
+    "aiRawResponse" jsonb
+);
 
 
 --
@@ -3949,6 +4030,38 @@ ALTER TABLE ONLY public.team_memberships
 
 ALTER TABLE ONLY public.teams
     ADD CONSTRAINT teams_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: workout_comments workout_comments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.workout_comments
+    ADD CONSTRAINT workout_comments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: workout_exercises workout_exercises_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.workout_exercises
+    ADD CONSTRAINT workout_exercises_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: workout_sessions workout_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.workout_sessions
+    ADD CONSTRAINT workout_sessions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: workouts workouts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.workouts
+    ADD CONSTRAINT workouts_pkey PRIMARY KEY (id);
 
 
 --
@@ -4481,6 +4594,13 @@ CREATE UNIQUE INDEX "team_memberships_teamId_userId_key" ON public.team_membersh
 
 
 --
+-- Name: workout_exercises_workoutId_orderIndex_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "workout_exercises_workoutId_orderIndex_key" ON public.workout_exercises USING btree ("workoutId", "orderIndex");
+
+
+--
 -- Name: ix_realtime_subscription_entity; Type: INDEX; Schema: realtime; Owner: -
 --
 
@@ -4769,6 +4889,14 @@ ALTER TABLE ONLY public.activities
 
 
 --
+-- Name: activities activities_workoutSessionId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.activities
+    ADD CONSTRAINT "activities_workoutSessionId_fkey" FOREIGN KEY ("workoutSessionId") REFERENCES public.workout_sessions(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
 -- Name: challenge_activity_types challenge_activity_types_activityTypeId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4998,6 +5126,70 @@ ALTER TABLE ONLY public.team_memberships
 
 ALTER TABLE ONLY public.teams
     ADD CONSTRAINT "teams_creatorId_fkey" FOREIGN KEY ("creatorId") REFERENCES public.profiles(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: workout_comments workout_comments_authorId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.workout_comments
+    ADD CONSTRAINT "workout_comments_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES public.profiles(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: workout_comments workout_comments_workoutId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.workout_comments
+    ADD CONSTRAINT "workout_comments_workoutId_fkey" FOREIGN KEY ("workoutId") REFERENCES public.workouts(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: workout_exercises workout_exercises_activityTypeId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.workout_exercises
+    ADD CONSTRAINT "workout_exercises_activityTypeId_fkey" FOREIGN KEY ("activityTypeId") REFERENCES public.activity_types(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: workout_exercises workout_exercises_workoutId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.workout_exercises
+    ADD CONSTRAINT "workout_exercises_workoutId_fkey" FOREIGN KEY ("workoutId") REFERENCES public.workouts(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: workout_sessions workout_sessions_profileId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.workout_sessions
+    ADD CONSTRAINT "workout_sessions_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES public.profiles(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: workout_sessions workout_sessions_workoutId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.workout_sessions
+    ADD CONSTRAINT "workout_sessions_workoutId_fkey" FOREIGN KEY ("workoutId") REFERENCES public.workouts(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: workouts workouts_creatorId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.workouts
+    ADD CONSTRAINT "workouts_creatorId_fkey" FOREIGN KEY ("creatorId") REFERENCES public.profiles(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: workouts workouts_teamId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.workouts
+    ADD CONSTRAINT "workouts_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES public.teams(id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 --
@@ -5853,7 +6045,7 @@ CREATE EVENT TRIGGER pgrst_drop_watch ON sql_drop
 -- PostgreSQL database dump complete
 --
 
-\unrestrict wISce5nE92Y4ri47mTBioY3VneFvMbFCcNwJy1XiQt6XcE149JejbFWQQf96mGk
+\unrestrict u9Sw9ky04VXzP3SyyOngXn8ONqeaenlh0h2iaip7SO3GtIuAwyQUO1RLqdcilfm
 
 
 --
@@ -5873,4 +6065,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('0011'),
     ('0012'),
     ('0013'),
-    ('0014');
+    ('0014'),
+    ('9999');
