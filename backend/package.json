@@ -12,12 +12,16 @@
 		"env:load:prod": "cd scripts && NODE_ENV=production ./env-loader.sh",
 		"migrate:prisma:dev": "DOTENV_CONFIG_PATH=../.env/.env.development prisma migrate dev --schema=./prisma/schema.prisma",
 		"migrate:prisma:prod": "DOTENV_CONFIG_PATH=../.env/.env.production prisma migrate deploy --schema=./prisma/schema.prisma",
-		"start:server": "NODE_ENV=development ts-node src/server.ts"
+		"dev": "NODE_ENV=development ts-node-dev --respawn --transpile-only api/server.ts"
 	},
 	"dependencies": {
+		"@apollo/cache-control-types": "^1.0.3",
 		"@apollo/server": "^5.0.0",
 		"@apollo/server-plugin-response-cache": "^5.0.0",
+		"@apollo/utils.keyvaluecache": "^4.0.0",
 		"@as-integrations/express5": "^1.1.2",
+		"@graphql-tools/schema": "^10.0.25",
+		"@graphql-tools/utils": "^10.9.1",
 		"@pothos/core": "^4.10.0",
 		"@pothos/plugin-prisma": "^4.12.0",
 		"@prisma/client": "^6.10.1",
@@ -27,6 +31,9 @@
 		"dotenv": "^16.0.0",
 		"express": "^5.1.0",
 		"graphql": "^16.11.0",
+		"graphql-middleware": "^6.1.35",
+		"graphql-scalars": "^1.24.2",
+		"graphql-shield": "^7.6.5",
 		"ioredis": "^5.8.1",
 		"pg": "^8.16.0",
 		"prisma": "^6.10.1",
@@ -42,6 +49,7 @@
 		"dbmate": "^2.28.0",
 		"prettier": "^3.6.2",
 		"ts-node": "^10.9.2",
+		"ts-node-dev": "^2.0.0",
 		"typescript": "^5.8.3"
 	}
 }
