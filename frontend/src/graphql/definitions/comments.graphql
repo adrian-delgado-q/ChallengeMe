@@ -1,0 +1,37 @@
+# frontend/src/graphql/definitions/comments.graphql
+
+fragment CommentDetails on Comment {
+    id
+    author_id
+    post_id
+    content
+    created_at
+    author {
+        id
+        username
+    }
+}
+
+query GetComments($post_id: String!) {
+    comments(post_id: $post_id) {
+        ...CommentDetails
+    }
+}
+
+mutation CreateComment($post_id: String!, $author_id: String!, $content: String!) {
+    createComment(post_id: $post_id, author_id: $author_id, content: $content) {
+        ...CommentDetails
+    }
+}
+
+mutation UpdateComment($id: String!, $content: String!) {
+    updateComment(id: $id, content: $content) {
+        ...CommentDetails
+    }
+}
+
+mutation DeleteComment($id: String!) {
+    deleteComment(id: $id) {
+        id
+    }
+}

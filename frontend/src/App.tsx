@@ -17,6 +17,7 @@ import ManageChallengePage from './pages/ManageChallengePage';
 import MyChallengesPage from './pages/MyChallengesPage';
 import { ActivityManagementPage } from './pages/ActivityManagementPage';
 import { DebugPanel } from './components/common/DebugPanel';
+import ChallengesDisplay from './components/challenges/ChallengesDisplay';
 
 // Protected route wrapper that requires authentication
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -61,6 +62,7 @@ const App: React.FC = () => {
 				{/* Public routes */}
 				<Route path="/auth" element={<AuthPage />} />
 				<Route path="/auth/callback" element={<AuthCallbackPage />} />
+				<Route path="/challenges-display" element={<ChallengesDisplay />} />
 
 				{/* Protected routes - each wrapped individually */}
 				<Route

@@ -168,7 +168,9 @@ export const DebugPanel: React.FC = () => {
 							<VStack align="stretch" spacing={1} mt={1}>
 								<HStack justify="space-between">
 									<Text fontSize="xs">Cache Time:</Text>
-									<Badge colorScheme="purple">{(parseInt(envVars.apiCacheTime) / 1000 / 60).toFixed(1)}m</Badge>
+									<Badge colorScheme="purple">
+										{(parseInt(envVars.apiCacheTime) / 1000 / 60).toFixed(1)}m
+									</Badge>
 								</HStack>
 								<HStack justify="space-between">
 									<Text fontSize="xs">Stale Time:</Text>

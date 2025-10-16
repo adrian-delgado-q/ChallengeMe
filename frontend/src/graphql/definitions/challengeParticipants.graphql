@@ -1,0 +1,35 @@
+# frontend/src/graphql/definitions/challengeParticipants.graphql
+
+fragment ChallengeParticipantDetails on ChallengeParticipant {
+    id
+    challenge_id
+    user_id
+    team_id
+    joined_at
+}
+
+query GetChallengeParticipants($challenge_id: String, $user_id: String, $team_id: String) {
+    challengeParticipants(challenge_id: $challenge_id, user_id: $user_id, team_id: $team_id) {
+        ...ChallengeParticipantDetails
+    }
+}
+
+mutation CreateChallengeParticipant(
+    $challenge_id: String!
+    $user_id: String
+    $team_id: String
+) {
+    createChallengeParticipant(
+        challenge_id: $challenge_id
+        user_id: $user_id
+        team_id: $team_id
+    ) {
+        ...ChallengeParticipantDetails
+    }
+}
+
+mutation DeleteChallengeParticipant($id: String!) {
+    deleteChallengeParticipant(id: $id) {
+        id
+    }
+}

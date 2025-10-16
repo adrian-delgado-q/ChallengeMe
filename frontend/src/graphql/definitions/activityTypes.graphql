@@ -1,0 +1,27 @@
+# src/graphql/definitions/activityTypes.graphql
+
+# Fragments
+
+fragment ActivityTypeDetails on ActivityType {
+    id
+    name
+    category
+    unit
+    unit_label
+    description
+    is_active
+}
+
+# Queries
+
+query GetActivityTypes {
+    activityTypes {
+        ...ActivityTypeDetails
+    }
+}
+
+query GetActivityType($id: String!) {
+    activityType(id: $id) {
+        ...ActivityTypeDetails
+    }
+}

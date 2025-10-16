@@ -1,0 +1,42 @@
+# src/graphql/definitions/profiles.graphql
+
+# Fragments
+
+fragment ProfileBasic on Profile {
+    id
+    username
+    avatar_url
+    created_at
+    updated_at
+}
+
+# Queries
+
+query GetProfile($id: String!) {
+    profile(id: $id) {
+        ...ProfileBasic
+    }
+}
+
+query GetProfiles {
+    profiles {
+        ...ProfileBasic
+    }
+}
+
+
+# Mutations
+
+mutation UpdateProfile(
+    $id: String!
+    $username: String
+    $avatar_url: String
+) {
+    updateProfile(
+        id: $id
+        username: $username
+        avatar_url: $avatar_url
+    ) {
+        ...ProfileBasic
+    }
+}

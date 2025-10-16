@@ -39,4 +39,10 @@ export default defineConfig({
     port: 4173,
     host: true,
   },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@challengeme/graphql': path.resolve(__dirname, './packages/graphql/client.ts'),
+    },
+  },
 })

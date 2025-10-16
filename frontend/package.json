@@ -3,6 +3,9 @@
   "private": true,
   "version": "1.0.3",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "dev": "NODE_ENV=development vite --port 5173 --host --mode development",
     "dev-build": "tsc -b && NODE_ENV=development vite build --mode development",
@@ -15,13 +18,15 @@
     "vercel-build": "tsc -b && vite build",
     "prepare": "husky install",
     "pre-commit": "lint-staged",
-    "generate": "npx dotenv -e ../.env/.env.development -- graphql-codegen --config codegen.yml"
+    "generate": "npx dotenv -e ../.env/.env.development -- graphql-codegen --config ./src/graphql/codegen.ts"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.2.4",
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@graphql-codegen/near-operation-file-preset": "^3.1.0",
+    "@graphql-codegen/typescript-react-query": "^6.1.1",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/ssr": "^0.6.1",

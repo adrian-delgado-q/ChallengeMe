@@ -1,0 +1,40 @@
+# frontend/src/graphql/definitions/discussionBans.graphql
+
+fragment DiscussionBanDetails on DiscussionBan {
+    id
+    challenge_id
+    user_id
+    reason
+    banned_at
+    expires_at
+    banned_by_id
+    is_active
+}
+
+query GetDiscussionBans($challenge_id: String!) {
+    discussionBans(challenge_id: $challenge_id) {
+        ...DiscussionBanDetails
+    }
+}
+
+mutation BanFromDiscussion(
+    $challenge_id: String!
+    $user_id: String!
+    $reason: String
+    $expires_at: Date
+) {
+    banFromDiscussion(
+        challenge_id: $challenge_id
+        user_id: $user_id
+        reason: $reason
+        expires_at: $expires_at
+    ) {
+        ...DiscussionBanDetails
+    }
+}
+
+mutation UnbanFromDiscussion($id: String!) {
+    unbanFromDiscussion(id: $id) {
+        ...DiscussionBanDetails
+    }
+}

@@ -1,0 +1,28 @@
+# frontend/src/graphql/definitions/discussionModerators.graphql
+
+fragment DiscussionModeratorDetails on DiscussionModerator {
+    id
+    challenge_id
+    user_id
+    role
+    granted_at
+    granted_by_id
+}
+
+query GetDiscussionModerators($challenge_id: String!) {
+    discussionModerators(challenge_id: $challenge_id) {
+        ...DiscussionModeratorDetails
+    }
+}
+
+mutation AddDiscussionModerator($challenge_id: String!, $user_id: String!, $role: ModeratorRole) {
+    addDiscussionModerator(challenge_id: $challenge_id, user_id: $user_id, role: $role) {
+        ...DiscussionModeratorDetails
+    }
+}
+
+mutation RemoveDiscussionModerator($id: String!) {
+    removeDiscussionModerator(id: $id) {
+        id
+    }
+}

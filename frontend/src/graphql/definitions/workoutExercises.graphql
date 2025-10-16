@@ -1,0 +1,64 @@
+# frontend/src/graphql/definitions/workoutExercises.graphql
+
+fragment WorkoutExerciseDetails on WorkoutExercise {
+    id
+    workout_id
+    activity_type_id
+    order_index
+    sets
+    reps
+    rest_time
+    notes
+}
+
+query GetWorkoutExercises($workout_id: String!) {
+    workoutExercises(workout_id: $workout_id) {
+        ...WorkoutExerciseDetails
+    }
+}
+
+mutation AddExerciseToWorkout(
+    $workout_id: String!
+    $activity_type_id: String!
+    $order_index: Int!
+    $sets: Int
+    $reps: Int
+    $rest_time: Int
+    $notes: String
+) {
+    addExerciseToWorkout(
+        workout_id: $workout_id
+        activity_type_id: $activity_type_id
+        order_index: $order_index
+        sets: $sets
+        reps: $reps
+        rest_time: $rest_time
+        notes: $notes
+    ) {
+        ...WorkoutExerciseDetails
+    }
+}
+
+mutation UpdateWorkoutExercise(
+    $id: String!
+    $sets: Int
+    $reps: Int
+    $rest_time: Int
+    $notes: String
+) {
+    updateWorkoutExercise(
+        id: $id
+        sets: $sets
+        reps: $reps
+        rest_time: $rest_time
+        notes: $notes
+    ) {
+        ...WorkoutExerciseDetails
+    }
+}
+
+mutation RemoveExerciseFromWorkout($id: String!) {
+    removeExerciseFromWorkout(id: $id) {
+        id
+    }
+}

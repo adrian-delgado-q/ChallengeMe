@@ -1,0 +1,65 @@
+# frontend/src/graphql/definitions/workouts.graphql
+
+fragment WorkoutDetails on Workout {
+    id
+    creator_id
+    team_id
+    name
+    description
+    is_team_workout
+    created_at
+    updated_at
+    generated_by_ai
+    ai_model
+    ai_raw_response
+}
+
+query GetWorkout($id: String!) {
+    workout(id: $id) {
+        ...WorkoutDetails
+    }
+}
+
+query GetWorkouts($creator_id: String, $team_id: String) {
+    workouts(creator_id: $creator_id, team_id: $team_id) {
+        ...WorkoutDetails
+    }
+}
+
+mutation CreateWorkout(
+    $creator_id: String!
+    $name: String!
+    $description: String
+    $team_id: String
+    $is_team_workout: Boolean
+) {
+    createWorkout(
+        creator_id: $creator_id
+        name: $name
+        description: $description
+        team_id: $team_id
+        is_team_workout: $is_team_workout
+    ) {
+        ...WorkoutDetails
+    }
+}
+
+mutation UpdateWorkout(
+    $id: String!
+    $name: String
+    $description: String
+) {
+    updateWorkout(
+        id: $id
+        name: $name
+        description: $description
+    ) {
+        ...WorkoutDetails
+    }
+}
+
+mutation DeleteWorkout($id: String!) {
+    deleteWorkout(id: $id) {
+        id
+    }
+}

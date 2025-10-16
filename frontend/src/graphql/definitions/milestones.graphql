@@ -1,0 +1,68 @@
+# frontend/src/graphql/definitions/milestones.graphql
+
+fragment MilestoneDetails on Milestone {
+    id
+    challenge_id
+    activity_type_id
+    name
+    description
+    target_value
+    order
+    created_at
+}
+
+query GetMilestone($id: String!) {
+    milestone(id: $id) {
+        ...MilestoneDetails
+    }
+}
+
+query GetMilestones($challenge_id: String) {
+    milestones(challenge_id: $challenge_id) {
+        ...MilestoneDetails
+    }
+}
+
+mutation CreateMilestone(
+    $challenge_id: String!
+    $activity_type_id: String!
+    $name: String!
+    $description: String
+    $target_value: Float!
+    $order: Int!
+) {
+    createMilestone(
+        challenge_id: $challenge_id
+        activity_type_id: $activity_type_id
+        name: $name
+        description: $description
+        target_value: $target_value
+        order: $order
+    ) {
+        ...MilestoneDetails
+    }
+}
+
+mutation UpdateMilestone(
+    $id: String!
+    $name: String
+    $description: String
+    $target_value: Float
+    $order: Int
+) {
+    updateMilestone(
+        id: $id
+        name: $name
+        description: $description
+        target_value: $target_value
+        order: $order
+    ) {
+        ...MilestoneDetails
+    }
+}
+
+mutation DeleteMilestone($id: String!) {
+    deleteMilestone(id: $id) {
+        id
+    }
+}

@@ -1,0 +1,143 @@
+# src/graphql/definitions/teams.graphql
+
+# Fragments
+
+fragment TeamCreator on Profile {
+    id
+    username
+    avatar_url
+}
+
+fragment TeamMember on TeamMembership {
+    id
+    user_id
+    role
+    joined_at
+    user {
+        id
+        username
+        avatar_url
+    }
+}
+
+fragment TeamBasic on Team {
+    id
+    name
+    description
+    avatar_url
+    is_public
+    access_code
+    member_count
+    max_members
+    sports_types
+    created_at
+    expires_at
+}
+
+fragment TeamFull on Team {
+    ...TeamBasic
+    creator {
+        ...TeamCreator
+    }
+    team_memberships {
+        ...TeamMember
+    }
+}
+
+# Queries
+
+query GetTeams(
+    $creator_id: String
+    $is_public: Boolean
+) {
+    teams(
+        creator_id: $creator_id
+        is_public: $is_public
+    ) {
+        ...TeamFull
+    }
+}
+
+query GetTeam($id: String!) {
+    team(id: $id) {
+        ...TeamFull
+    }
+}
+
+query GetMyTeams($user_id: String!) {
+    teams(creator_id: $user_id) {
+        ...TeamFull
+    }
+}
+
+# Mutations
+
+mutation CreateTeam(
+    $creator_id: String!
+    $name: String!
+    $description: String
+    $avatar_url: String
+    $is_public: Boolean
+    $access_code: String
+    $max_members: Int
+    $sports_types: [String!]
+) {
+    createTeam(
+        creator_id: $creator_id
+        name: $name
+        description: $description
+        avatar_url: $avatar_url
+        is_public: $is_public
+        access_code: $access_code
+        max_members: $max_members
+        sports_types: $sports_types
+    ) {
+        ...TeamFull
+    }
+}
+
+mutation UpdateTeam(
+    $id: String!
+    $name: String
+    $description: String
+    $avatar_url: String
+    $is_public: Boolean
+    $access_code: String
+    $max_members: Int
+    $sports_types: [String!]
+) {
+    updateTeam(
+        id: $id
+        name: $name
+        description: $description
+        avatar_url: $avatar_url
+        is_public: $is_public
+        access_code: $access_code
+        max_members: $max_members
+        sports_types: $sports_types
+    ) {
+        ...TeamFull
+    }
+}
+
+mutation DeleteTeam($id: String!) {
+    deleteTeam(id: $id) {
+        id
+    }
+}
+
+mutation AddTeamMember($team_id: String!, $user_id: String!, $role: String) {
+    createTeamMembership(
+        team_id: $team_id
+        user_id: $user_id
+        role: $role
+    ) {
+        ...TeamMember
+    }
+}
+
+mutation RemoveTeamMember($id: String!) {
+    deleteTeamMembership(id: $id) {
+        id
+    }
+}

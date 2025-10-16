@@ -1,0 +1,31 @@
+# frontend/src/graphql/definitions/workoutComments.graphql
+
+fragment WorkoutCommentDetails on WorkoutComment {
+    id
+    author_id
+    workout_id
+    content
+    created_at
+    author {
+        id
+        username
+    }
+}
+
+query GetWorkoutComments($workout_id: String!) {
+    workoutComments(workout_id: $workout_id) {
+        ...WorkoutCommentDetails
+    }
+}
+
+mutation CreateWorkoutComment($workout_id: String!, $author_id: String!, $content: String!) {
+    createWorkoutComment(workout_id: $workout_id, author_id: $author_id, content: $content) {
+        ...WorkoutCommentDetails
+    }
+}
+
+mutation DeleteWorkoutComment($id: String!) {
+    deleteWorkoutComment(id: $id) {
+        id
+    }
+}

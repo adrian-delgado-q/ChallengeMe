@@ -1,0 +1,289 @@
+# src/graphql/challenges.graphql
+
+# Fragments
+
+fragment ChallengeCreator on Profile {
+    id
+    username
+    avatar_url
+}
+
+fragment ChallengeMilestone on Milestone {
+    id
+    name
+    target_value
+    order
+    activity_type {
+        id
+        name
+        unit
+        unit_label
+    }
+}
+
+fragment ChallengeActivityType on ChallengeActivityType {
+    id
+    activity_type_id
+    activity_type {
+        id
+        name
+        category
+        unit
+        unit_label
+        description
+    }
+}
+
+fragment ChallengeParticipantDetails on ChallengeParticipant {
+    id
+    user_id
+    team_id
+    joined_at
+    team {
+        id
+        name
+        avatar_url
+    }
+    user {
+        id
+        username
+        avatar_url
+    }
+}
+
+fragment ChallengeBasic on Challenge {
+    id
+    title
+    description
+    instructions
+    image_url
+    challenge_type
+    max_participants
+    participant_count
+    max_team_size
+    start_date
+    end_date
+    is_public
+    access_code
+    status
+    created_at
+    expires_at
+}
+
+fragment ChallengeFull on Challenge {
+    ...ChallengeBasic
+    creator {
+        ...ChallengeCreator
+    }
+    milestones {
+        ...ChallengeMilestone
+    }
+    supported_activities {
+        ...ChallengeActivityType
+    }
+}
+
+
+# Queries
+
+query GetChallenges(
+    $creator_id: String
+    $status: String
+    $is_public: Boolean
+    $challenge_type: String
+) {
+    challenges(
+        creator_id: $creator_id
+        status: $status
+        is_public: $is_public
+        challenge_type: $challenge_type
+    ) {
+        ...ChallengeFull
+    }
+}
+
+query GetChallenge($id: String!) {
+    challenge(id: $id) {
+        ...ChallengeFull
+        participants {
+            ...ChallengeParticipantDetails
+        }
+    }
+}
+
+query GetMyChallenges($user_id: String!) {
+    challenges(creator_id: $user_id) {
+        ...ChallengeFull
+    }
+}
+
+query GetPublicChallenges {
+    challenges(is_public: true, status: "ACTIVE") {
+        ...ChallengeFull
+    }
+}
+
+query GetChallengeParticipants($challenge_id: String!) {
+    challengeParticipants(challenge_id: $challenge_id) {
+        ...ChallengeParticipantDetails
+    }
+}
+
+query GetUserChallengeParticipation($challenge_id: String!, $user_id: String!) {
+    challengeParticipants(challenge_id: $challenge_id, user_id: $user_id) {
+        ...ChallengeParticipantDetails
+    }
+}
+
+
+# Mutations
+
+mutation CreateChallenge(
+    $creator_id: String!
+    $title: String!
+    $description: String
+    $instructions: String
+    $image_url: String
+    $challenge_type: String
+    $max_participants: Int
+    $start_date: Date!
+    $end_date: Date!
+    $is_public: Boolean
+    $access_code: String
+    $expires_at: Date
+    $max_team_size: Int
+) {
+    createChallenge(
+        creator_id: $creator_id
+        title: $title
+        description: $description
+        instructions: $instructions
+        image_url: $image_url
+        challenge_type: $challenge_type
+        max_participants: $max_participants
+        start_date: $start_date
+        end_date: $end_date
+        is_public: $is_public
+        access_code: $access_code
+        expires_at: $expires_at
+        max_team_size: $max_team_size
+    ) {
+        ...ChallengeFull
+    }
+}
+
+mutation UpdateChallenge(
+    $id: String!
+    $title: String
+    $description: String
+    $instructions: String
+    $image_url: String
+    $max_participants: Int
+    $is_public: Boolean
+    $access_code: String
+    $status: String
+    $max_team_size: Int
+) {
+    updateChallenge(
+        id: $id
+        title: $title
+        description: $description
+        instructions: $instructions
+        image_url: $image_url
+        max_participants: $max_participants
+        is_public: $is_public
+        access_code: $access_code
+        status: $status
+        max_team_size: $max_team_size
+    ) {
+        ...ChallengeFull
+    }
+}
+
+mutation DeleteChallenge($id: String!) {
+    deleteChallenge(id: $id) {
+        id
+    }
+}
+
+mutation UpdateChallengeStatus($id: String!, $status: String!) {
+    updateChallenge(id: $id, status: $status) {
+        ...ChallengeFull
+    }
+}
+
+mutation JoinChallenge($challenge_id: String!, $user_id: String!) {
+    createChallengeParticipant(
+        challenge_id: $challenge_id
+        user_id: $user_id
+    ) {
+        ...ChallengeParticipantDetails
+    }
+}
+
+mutation JoinChallengeAsTeam($challenge_id: String!, $team_id: String!) {
+    createChallengeParticipant(
+        challenge_id: $challenge_id
+        team_id: $team_id
+    ) {
+        ...ChallengeParticipantDetails
+    }
+}
+
+mutation LeaveChallenge($id: String!) {
+    deleteChallengeParticipant(id: $id) {
+        id
+    }
+}
+
+mutation RemoveChallengeParticipant($id: String!) {
+    deleteChallengeParticipant(id: $id) {
+        id
+    }
+}
+
+mutation CreateMilestone(
+    $challenge_id: String!
+    $name: String!
+    $target_value: Float!
+    $activity_type_id: String!
+    $order: Int!
+) {
+    createMilestone(
+        challenge_id: $challenge_id
+        name: $name
+        target_value: $target_value
+        activity_type_id: $activity_type_id
+        order: $order
+    ) {
+        id
+        challenge_id
+        name
+        target_value
+        order
+        activity_type {
+            id
+            name
+            unit
+            unit_label
+        }
+    }
+}
+
+mutation AddChallengeActivityType($challenge_id: String!, $activity_type_id: String!) {
+    createChallengeActivityType(
+        challenge_id: $challenge_id
+        activity_type_id: $activity_type_id
+    ) {
+        id
+        challenge_id
+        activity_type_id
+        activity_type {
+            id
+            name
+            category
+            unit
+            unit_label
+        }
+    }
+}

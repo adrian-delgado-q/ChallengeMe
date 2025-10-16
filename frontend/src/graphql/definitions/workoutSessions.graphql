@@ -1,0 +1,41 @@
+# frontend/src/graphql/definitions/workoutSessions.graphql
+
+fragment WorkoutSessionDetails on WorkoutSession {
+    id
+    workout_id
+    profile_id
+    session_date
+    notes
+    created_at
+}
+
+query GetWorkoutSession($id: String!) {
+    workoutSession(id: $id) {
+        ...WorkoutSessionDetails
+    }
+}
+
+query GetWorkoutSessions($profile_id: String!, $workout_id: String) {
+    workoutSessions(profile_id: $profile_id, workout_id: $workout_id) {
+        ...WorkoutSessionDetails
+    }
+}
+
+mutation StartWorkoutSession($workout_id: String!, $profile_id: String!, $session_date: Date) {
+    startWorkoutSession(workout_id: $workout_id, profile_id: $profile_id, session_date: $session_date) {
+        ...WorkoutSessionDetails
+    }
+}
+
+mutation LogWorkoutActivity($session_id: String!, $activity_type_id: String!, $value: Float!, $notes: String) {
+    logWorkoutActivity(session_id: $session_id, activity_type_id: $activity_type_id, value: $value, notes: $notes) {
+        # Assuming this returns the activity, which is not the session
+        id
+    }
+}
+
+mutation CompleteWorkoutSession($id: String!, $notes: String) {
+    completeWorkoutSession(id: $id, notes: $notes) {
+        ...WorkoutSessionDetails
+    }
+}

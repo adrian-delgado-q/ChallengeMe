@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { ENV } from '../utils/env-loader';
 
 if (ENV.DEV) {
-  console.log('Running in Development Mode');
+	console.log('Running in Development Mode');
 }
 
 const supabaseUrl = ENV.SUPABASE_URL;

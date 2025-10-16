@@ -1,0 +1,98 @@
+# src/graphql/definitions/activities.graphql
+
+# Fragments
+
+fragment ActivityTypeBasic on ActivityType {
+    id
+    name
+    category
+    unit
+    unit_label
+    description
+}
+
+fragment ActivityBasic on Activity {
+    id
+    value
+    notes
+    date
+    uploaded_at
+}
+
+fragment ActivityWithRelations on Activity {
+    ...ActivityBasic
+    activity_type {
+        ...ActivityTypeBasic
+    }
+    Profile {
+        id
+        username
+        avatar_url
+    }
+}
+
+# Queries
+
+query GetActivities(
+    $profile_id: String
+    $challenge_id: String
+) {
+    activities(
+        profile_id: $profile_id
+        challenge_id: $challenge_id
+    ) {
+        ...ActivityWithRelations
+    }
+}
+
+query GetActivity($id: String!) {
+    activity(id: $id) {
+        ...ActivityWithRelations
+    }
+}
+
+# Mutations
+
+mutation CreateActivity(
+    $participant_id: String!
+    $activity_type_id: String!
+    $value: Float!
+    $notes: String
+    $date: Date!
+    $profile_id: String
+    $challenge_id: String
+) {
+    createActivity(
+        participant_id: $participant_id
+        activity_type_id: $activity_type_id
+        value: $value
+        notes: $notes
+        date: $date
+        profile_id: $profile_id
+        challenge_id: $challenge_id
+    ) {
+        ...ActivityWithRelations
+    }
+}
+
+mutation UpdateActivity(
+    $id: String!
+    $value: Float
+    $notes: String
+    $date: Date
+) {
+    updateActivity(
+        id: $id
+        value: $value
+        notes: $notes
+        date: $date
+    ) {
+        ...ActivityWithRelations
+    }
+}
+
+mutation DeleteActivity($id: String!) {
+    deleteActivity(id: $id) {
+        id
+    }
+}

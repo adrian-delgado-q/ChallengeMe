@@ -1,0 +1,115 @@
+# src/graphql/definitions/posts.graphql
+
+# Fragments
+
+fragment Author on Profile {
+    id
+    username
+    avatar_url
+}
+
+fragment CommentDetails on Comment {
+    id
+    content
+    created_at
+    author {
+        ...Author
+    }
+}
+
+fragment PostBasic on Post {
+    id
+    content
+    image_url
+    created_at
+}
+
+fragment PostWithRelations on Post {
+    ...PostBasic
+    Profile {
+        ...Author
+    }
+    comments {
+        ...CommentDetails
+    }
+}
+
+# Queries
+
+query GetPosts(
+    $challenge_id: String
+    $profile_id: String
+) {
+    posts(
+        challenge_id: $challenge_id
+        profile_id: $profile_id
+    ) {
+        ...PostWithRelations
+    }
+}
+
+query GetPost($id: String!) {
+    post(id: $id) {
+        ...PostWithRelations
+    }
+}
+
+# Mutations
+
+mutation CreatePost(
+    $participant_id: String!
+    $content: String
+    $image_url: String
+    $profile_id: String
+    $challenge_id: String
+) {
+    createPost(
+        participant_id: $participant_id
+        content: $content
+        image_url: $image_url
+        profile_id: $profile_id
+        challenge_id: $challenge_id
+    ) {
+        ...PostWithRelations
+    }
+}
+
+mutation UpdatePost(
+    $id: String!
+    $content: String
+    $image_url: String
+) {
+    updatePost(
+        id: $id
+        content: $content
+        image_url: $image_url
+    ) {
+        ...PostWithRelations
+    }
+}
+
+mutation DeletePost($id: String!) {
+    deletePost(id: $id) {
+        id
+    }
+}
+
+mutation CreateComment(
+    $post_id: String!
+    $author_id: String!
+    $content: String!
+) {
+    createComment(
+        post_id: $post_id
+        author_id: $author_id
+        content: $content
+    ) {
+        ...CommentDetails
+    }
+}
+
+mutation DeleteComment($id: String!) {
+    deleteComment(id: $id) {
+        id
+    }
+}

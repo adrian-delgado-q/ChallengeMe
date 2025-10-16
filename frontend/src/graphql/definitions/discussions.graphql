@@ -1,0 +1,112 @@
+# src/graphql/definitions/discussions.graphql
+
+# Fragments
+
+fragment DiscussionAuthor on Profile {
+    id
+    username
+    avatar_url
+}
+
+fragment DiscussionReplyDetails on DiscussionReply {
+    id
+    content
+    created_at
+    updated_at
+    author {
+        ...DiscussionAuthor
+    }
+}
+
+fragment DiscussionPostBasic on DiscussionPost {
+    id
+    content
+    is_pinned
+    is_deleted
+    created_at
+    updated_at
+    reply_count
+    last_reply_at
+}
+
+fragment DiscussionPostWithRelations on DiscussionPost {
+    ...DiscussionPostBasic
+    author {
+        ...DiscussionAuthor
+    }
+    replies {
+        ...DiscussionReplyDetails
+    }
+}
+
+# Queries
+
+query GetDiscussionPosts($challenge_id: String!) {
+    discussionPosts(challenge_id: $challenge_id) {
+        ...DiscussionPostWithRelations
+    }
+}
+
+query GetDiscussionPost($id: String!) {
+    discussionPost(id: $id) {
+        ...DiscussionPostWithRelations
+    }
+}
+
+# Mutations
+
+mutation CreateDiscussionPost(
+    $challenge_id: String!
+    $author_id: String!
+    $content: String!
+) {
+    createDiscussionPost(
+        challenge_id: $challenge_id
+        author_id: $author_id
+        content: $content
+    ) {
+        ...DiscussionPostWithRelations
+    }
+}
+
+mutation UpdateDiscussionPost(
+    $id: String!
+    $content: String
+    $is_pinned: Boolean
+) {
+    updateDiscussionPost(
+        id: $id
+        content: $content
+        is_pinned: $is_pinned
+    ) {
+        ...DiscussionPostWithRelations
+    }
+}
+
+mutation DeleteDiscussionPost($id: String!) {
+    deleteDiscussionPost(id: $id) {
+        id
+    }
+}
+
+mutation CreateDiscussionReply(
+    $post_id: String!
+    $author_id: String!
+    $content: String!
+    $parent_id: String
+) {
+    createDiscussionReply(
+        post_id: $post_id
+        author_id: $author_id
+        content: $content
+        parent_id: $parent_id
+    ) {
+        ...DiscussionReplyDetails
+    }
+}
+
+mutation DeleteDiscussionReply($id: String!) {
+    deleteDiscussionReply(id: $id) {
+        id
+    }
+}

@@ -1,0 +1,63 @@
+# frontend/src/graphql/definitions/teamMemberships.graphql
+
+# Fragments
+fragment TeamMembershipDetails on TeamMembership {
+    id
+    team_id
+    user_id
+    role
+    joined_at
+    expires_at
+    team {
+        id
+        name
+    }
+    user {
+        id
+        username
+    }
+}
+
+# Queries
+query GetTeamMemberships($team_id: String, $user_id: String) {
+    teamMemberships(team_id: $team_id, user_id: $user_id) {
+        ...TeamMembershipDetails
+    }
+}
+
+# Mutations
+mutation CreateTeamMembership(
+    $team_id: String!
+    $user_id: String!
+    $role: TeamRole
+    $expires_at: Date
+) {
+    createTeamMembership(
+        team_id: $team_id
+        user_id: $user_id
+        role: $role
+        expires_at: $expires_at
+    ) {
+        ...TeamMembershipDetails
+    }
+}
+
+mutation UpdateTeamMembership(
+    $id: String!
+    $role: TeamRole
+    $expires_at: Date
+) {
+    updateTeamMembership(
+        id: $id
+        role: $role
+        expires_at: $expires_at
+    ) {
+        ...TeamMembershipDetails
+    }
+}
+
+mutation DeleteTeamMembership($id: String!) {
+    deleteTeamMembership(id: $id) {
+        id
+    }
+}

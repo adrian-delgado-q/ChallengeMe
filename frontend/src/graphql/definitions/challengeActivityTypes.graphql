@@ -1,0 +1,33 @@
+# frontend/src/graphql/definitions/challengeActivityTypes.graphql
+
+fragment ChallengeActivityTypeDetails on ChallengeActivityType {
+    id
+    challenge_id
+    activity_type_id
+    activity_type {
+        id
+        name
+    }
+    challenge {
+        id
+        title
+    }
+}
+
+query GetChallengeActivityTypes($challenge_id: String) {
+    challengeActivityTypes(challenge_id: $challenge_id) {
+        ...ChallengeActivityTypeDetails
+    }
+}
+
+mutation CreateChallengeActivityType($challenge_id: String!, $activity_type_id: String!) {
+    createChallengeActivityType(challenge_id: $challenge_id, activity_type_id: $activity_type_id) {
+        ...ChallengeActivityTypeDetails
+    }
+}
+
+mutation DeleteChallengeActivityType($id: String!) {
+    deleteChallengeActivityType(id: $id) {
+        id
+    }
+}
