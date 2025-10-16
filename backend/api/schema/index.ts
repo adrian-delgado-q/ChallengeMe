@@ -1,7 +1,7 @@
 import { builder } from '../schema-builder';
 
 // Import all GraphQL types
-import './enums'
+import './enums';
 import './types/Profile';
 import './types/Team';
 import './types/TeamMembership';

@@ -1,91 +1,298 @@
 // THIS FILE IS GENERATED, DO NOT EDIT!
 import type * as Types from '../generated/graphql';
 
-import { useQuery, useMutation, type UseQueryOptions, type UseMutationOptions } from '@tanstack/react-query';
+import {
+	useQuery,
+	useMutation,
+	type UseQueryOptions,
+	type UseMutationOptions,
+} from '@tanstack/react-query';
 
-function fetcher<TData, TVariables>(endpoint: string, requestInit: RequestInit, query: string, variables?: TVariables) {
-  return async (): Promise<TData> => {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      ...requestInit,
-      body: JSON.stringify({ query, variables }),
-    });
+function fetcher<TData, TVariables>(
+	endpoint: string,
+	requestInit: RequestInit,
+	query: string,
+	variables?: TVariables
+) {
+	return async (): Promise<TData> => {
+		const res = await fetch(endpoint, {
+			method: 'POST',
+			...requestInit,
+			body: JSON.stringify({ query, variables }),
+		});
 
-    const json = await res.json();
+		const json = await res.json();
 
-    if (json.errors) {
-      const { message } = json.errors[0];
+		if (json.errors) {
+			const { message } = json.errors[0];
 
-      throw new Error(message);
-    }
+			throw new Error(message);
+		}
 
-    return json.data;
-  }
+		return json.data;
+	};
 }
-export type DiscussionAuthorFragment = { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null };
+export type DiscussionAuthorFragment = {
+	__typename?: 'Profile';
+	id?: string | null;
+	username?: string | null;
+	avatar_url?: string | null;
+};
 
-export type DiscussionReplyDetailsFragment = { __typename?: 'DiscussionReply', id?: string | null, content?: string | null, created_at?: string | null, updated_at?: string | null, author?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null };
+export type DiscussionReplyDetailsFragment = {
+	__typename?: 'DiscussionReply';
+	id?: string | null;
+	content?: string | null;
+	created_at?: string | null;
+	updated_at?: string | null;
+	author?: {
+		__typename?: 'Profile';
+		id?: string | null;
+		username?: string | null;
+		avatar_url?: string | null;
+	} | null;
+};
 
-export type DiscussionPostBasicFragment = { __typename?: 'DiscussionPost', id?: string | null, content?: string | null, is_pinned?: boolean | null, is_deleted?: boolean | null, created_at?: string | null, updated_at?: string | null, reply_count?: number | null, last_reply_at?: string | null };
+export type DiscussionPostBasicFragment = {
+	__typename?: 'DiscussionPost';
+	id?: string | null;
+	content?: string | null;
+	is_pinned?: boolean | null;
+	is_deleted?: boolean | null;
+	created_at?: string | null;
+	updated_at?: string | null;
+	reply_count?: number | null;
+	last_reply_at?: string | null;
+};
 
-export type DiscussionPostWithRelationsFragment = { __typename?: 'DiscussionPost', id?: string | null, content?: string | null, is_pinned?: boolean | null, is_deleted?: boolean | null, created_at?: string | null, updated_at?: string | null, reply_count?: number | null, last_reply_at?: string | null, author?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null, replies?: Array<{ __typename?: 'DiscussionReply', id?: string | null, content?: string | null, created_at?: string | null, updated_at?: string | null, author?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null }> | null };
+export type DiscussionPostWithRelationsFragment = {
+	__typename?: 'DiscussionPost';
+	id?: string | null;
+	content?: string | null;
+	is_pinned?: boolean | null;
+	is_deleted?: boolean | null;
+	created_at?: string | null;
+	updated_at?: string | null;
+	reply_count?: number | null;
+	last_reply_at?: string | null;
+	author?: {
+		__typename?: 'Profile';
+		id?: string | null;
+		username?: string | null;
+		avatar_url?: string | null;
+	} | null;
+	replies?: Array<{
+		__typename?: 'DiscussionReply';
+		id?: string | null;
+		content?: string | null;
+		created_at?: string | null;
+		updated_at?: string | null;
+		author?: {
+			__typename?: 'Profile';
+			id?: string | null;
+			username?: string | null;
+			avatar_url?: string | null;
+		} | null;
+	}> | null;
+};
 
 export type GetDiscussionPostsQueryVariables = Types.Exact<{
-  challenge_id: Types.Scalars['String']['input'];
+	challenge_id: Types.Scalars['String']['input'];
 }>;
 
-
-export type GetDiscussionPostsQuery = { __typename?: 'Query', discussionPosts?: Array<{ __typename?: 'DiscussionPost', id?: string | null, content?: string | null, is_pinned?: boolean | null, is_deleted?: boolean | null, created_at?: string | null, updated_at?: string | null, reply_count?: number | null, last_reply_at?: string | null, author?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null, replies?: Array<{ __typename?: 'DiscussionReply', id?: string | null, content?: string | null, created_at?: string | null, updated_at?: string | null, author?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null }> | null }> | null };
+export type GetDiscussionPostsQuery = {
+	__typename?: 'Query';
+	discussionPosts?: Array<{
+		__typename?: 'DiscussionPost';
+		id?: string | null;
+		content?: string | null;
+		is_pinned?: boolean | null;
+		is_deleted?: boolean | null;
+		created_at?: string | null;
+		updated_at?: string | null;
+		reply_count?: number | null;
+		last_reply_at?: string | null;
+		author?: {
+			__typename?: 'Profile';
+			id?: string | null;
+			username?: string | null;
+			avatar_url?: string | null;
+		} | null;
+		replies?: Array<{
+			__typename?: 'DiscussionReply';
+			id?: string | null;
+			content?: string | null;
+			created_at?: string | null;
+			updated_at?: string | null;
+			author?: {
+				__typename?: 'Profile';
+				id?: string | null;
+				username?: string | null;
+				avatar_url?: string | null;
+			} | null;
+		}> | null;
+	}> | null;
+};
 
 export type GetDiscussionPostQueryVariables = Types.Exact<{
-  id: Types.Scalars['String']['input'];
+	id: Types.Scalars['String']['input'];
 }>;
 
-
-export type GetDiscussionPostQuery = { __typename?: 'Query', discussionPost?: { __typename?: 'DiscussionPost', id?: string | null, content?: string | null, is_pinned?: boolean | null, is_deleted?: boolean | null, created_at?: string | null, updated_at?: string | null, reply_count?: number | null, last_reply_at?: string | null, author?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null, replies?: Array<{ __typename?: 'DiscussionReply', id?: string | null, content?: string | null, created_at?: string | null, updated_at?: string | null, author?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null }> | null } | null };
+export type GetDiscussionPostQuery = {
+	__typename?: 'Query';
+	discussionPost?: {
+		__typename?: 'DiscussionPost';
+		id?: string | null;
+		content?: string | null;
+		is_pinned?: boolean | null;
+		is_deleted?: boolean | null;
+		created_at?: string | null;
+		updated_at?: string | null;
+		reply_count?: number | null;
+		last_reply_at?: string | null;
+		author?: {
+			__typename?: 'Profile';
+			id?: string | null;
+			username?: string | null;
+			avatar_url?: string | null;
+		} | null;
+		replies?: Array<{
+			__typename?: 'DiscussionReply';
+			id?: string | null;
+			content?: string | null;
+			created_at?: string | null;
+			updated_at?: string | null;
+			author?: {
+				__typename?: 'Profile';
+				id?: string | null;
+				username?: string | null;
+				avatar_url?: string | null;
+			} | null;
+		}> | null;
+	} | null;
+};
 
 export type CreateDiscussionPostMutationVariables = Types.Exact<{
-  challenge_id: Types.Scalars['String']['input'];
-  author_id: Types.Scalars['String']['input'];
-  content: Types.Scalars['String']['input'];
+	challenge_id: Types.Scalars['String']['input'];
+	author_id: Types.Scalars['String']['input'];
+	content: Types.Scalars['String']['input'];
 }>;
 
-
-export type CreateDiscussionPostMutation = { __typename?: 'Mutation', createDiscussionPost?: { __typename?: 'DiscussionPost', id?: string | null, content?: string | null, is_pinned?: boolean | null, is_deleted?: boolean | null, created_at?: string | null, updated_at?: string | null, reply_count?: number | null, last_reply_at?: string | null, author?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null, replies?: Array<{ __typename?: 'DiscussionReply', id?: string | null, content?: string | null, created_at?: string | null, updated_at?: string | null, author?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null }> | null } | null };
+export type CreateDiscussionPostMutation = {
+	__typename?: 'Mutation';
+	createDiscussionPost?: {
+		__typename?: 'DiscussionPost';
+		id?: string | null;
+		content?: string | null;
+		is_pinned?: boolean | null;
+		is_deleted?: boolean | null;
+		created_at?: string | null;
+		updated_at?: string | null;
+		reply_count?: number | null;
+		last_reply_at?: string | null;
+		author?: {
+			__typename?: 'Profile';
+			id?: string | null;
+			username?: string | null;
+			avatar_url?: string | null;
+		} | null;
+		replies?: Array<{
+			__typename?: 'DiscussionReply';
+			id?: string | null;
+			content?: string | null;
+			created_at?: string | null;
+			updated_at?: string | null;
+			author?: {
+				__typename?: 'Profile';
+				id?: string | null;
+				username?: string | null;
+				avatar_url?: string | null;
+			} | null;
+		}> | null;
+	} | null;
+};
 
 export type UpdateDiscussionPostMutationVariables = Types.Exact<{
-  id: Types.Scalars['String']['input'];
-  content?: Types.InputMaybe<Types.Scalars['String']['input']>;
-  is_pinned?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
+	id: Types.Scalars['String']['input'];
+	content?: Types.InputMaybe<Types.Scalars['String']['input']>;
+	is_pinned?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
 }>;
 
-
-export type UpdateDiscussionPostMutation = { __typename?: 'Mutation', updateDiscussionPost?: { __typename?: 'DiscussionPost', id?: string | null, content?: string | null, is_pinned?: boolean | null, is_deleted?: boolean | null, created_at?: string | null, updated_at?: string | null, reply_count?: number | null, last_reply_at?: string | null, author?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null, replies?: Array<{ __typename?: 'DiscussionReply', id?: string | null, content?: string | null, created_at?: string | null, updated_at?: string | null, author?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null }> | null } | null };
+export type UpdateDiscussionPostMutation = {
+	__typename?: 'Mutation';
+	updateDiscussionPost?: {
+		__typename?: 'DiscussionPost';
+		id?: string | null;
+		content?: string | null;
+		is_pinned?: boolean | null;
+		is_deleted?: boolean | null;
+		created_at?: string | null;
+		updated_at?: string | null;
+		reply_count?: number | null;
+		last_reply_at?: string | null;
+		author?: {
+			__typename?: 'Profile';
+			id?: string | null;
+			username?: string | null;
+			avatar_url?: string | null;
+		} | null;
+		replies?: Array<{
+			__typename?: 'DiscussionReply';
+			id?: string | null;
+			content?: string | null;
+			created_at?: string | null;
+			updated_at?: string | null;
+			author?: {
+				__typename?: 'Profile';
+				id?: string | null;
+				username?: string | null;
+				avatar_url?: string | null;
+			} | null;
+		}> | null;
+	} | null;
+};
 
 export type DeleteDiscussionPostMutationVariables = Types.Exact<{
-  id: Types.Scalars['String']['input'];
+	id: Types.Scalars['String']['input'];
 }>;
 
-
-export type DeleteDiscussionPostMutation = { __typename?: 'Mutation', deleteDiscussionPost?: { __typename?: 'DiscussionPost', id?: string | null } | null };
+export type DeleteDiscussionPostMutation = {
+	__typename?: 'Mutation';
+	deleteDiscussionPost?: { __typename?: 'DiscussionPost'; id?: string | null } | null;
+};
 
 export type CreateDiscussionReplyMutationVariables = Types.Exact<{
-  post_id: Types.Scalars['String']['input'];
-  author_id: Types.Scalars['String']['input'];
-  content: Types.Scalars['String']['input'];
-  parent_id?: Types.InputMaybe<Types.Scalars['String']['input']>;
+	post_id: Types.Scalars['String']['input'];
+	author_id: Types.Scalars['String']['input'];
+	content: Types.Scalars['String']['input'];
+	parent_id?: Types.InputMaybe<Types.Scalars['String']['input']>;
 }>;
 
-
-export type CreateDiscussionReplyMutation = { __typename?: 'Mutation', createDiscussionReply?: { __typename?: 'DiscussionReply', id?: string | null, content?: string | null, created_at?: string | null, updated_at?: string | null, author?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null } | null };
+export type CreateDiscussionReplyMutation = {
+	__typename?: 'Mutation';
+	createDiscussionReply?: {
+		__typename?: 'DiscussionReply';
+		id?: string | null;
+		content?: string | null;
+		created_at?: string | null;
+		updated_at?: string | null;
+		author?: {
+			__typename?: 'Profile';
+			id?: string | null;
+			username?: string | null;
+			avatar_url?: string | null;
+		} | null;
+	} | null;
+};
 
 export type DeleteDiscussionReplyMutationVariables = Types.Exact<{
-  id: Types.Scalars['String']['input'];
+	id: Types.Scalars['String']['input'];
 }>;
 
-
-export type DeleteDiscussionReplyMutation = { __typename?: 'Mutation', deleteDiscussionReply?: { __typename?: 'DiscussionReply', id?: string | null } | null };
-
+export type DeleteDiscussionReplyMutation = {
+	__typename?: 'Mutation';
+	deleteDiscussionReply?: { __typename?: 'DiscussionReply'; id?: string | null } | null;
+};
 
 export const DiscussionPostBasicFragmentDoc = `
     fragment DiscussionPostBasic on DiscussionPost {
@@ -139,22 +346,24 @@ ${DiscussionPostBasicFragmentDoc}
 ${DiscussionAuthorFragmentDoc}
 ${DiscussionReplyDetailsFragmentDoc}`;
 
-export const useGetDiscussionPostsQuery = <
-      TData = GetDiscussionPostsQuery,
-      TError = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      variables: GetDiscussionPostsQueryVariables,
-      options?: Omit<UseQueryOptions<GetDiscussionPostsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<GetDiscussionPostsQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<GetDiscussionPostsQuery, TError, TData>(
-      {
-    queryKey: ['GetDiscussionPosts', variables],
-    queryFn: fetcher<GetDiscussionPostsQuery, GetDiscussionPostsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetDiscussionPostsDocument, variables),
-    ...options
-  }
-    )};
+export const useGetDiscussionPostsQuery = <TData = GetDiscussionPostsQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables: GetDiscussionPostsQueryVariables,
+	options?: Omit<UseQueryOptions<GetDiscussionPostsQuery, TError, TData>, 'queryKey'> & {
+		queryKey?: UseQueryOptions<GetDiscussionPostsQuery, TError, TData>['queryKey'];
+	}
+) => {
+	return useQuery<GetDiscussionPostsQuery, TError, TData>({
+		queryKey: ['GetDiscussionPosts', variables],
+		queryFn: fetcher<GetDiscussionPostsQuery, GetDiscussionPostsQueryVariables>(
+			dataSource.endpoint,
+			dataSource.fetchParams || {},
+			GetDiscussionPostsDocument,
+			variables
+		),
+		...options,
+	});
+};
 
 export const GetDiscussionPostDocument = `
     query GetDiscussionPost($id: String!) {
@@ -167,22 +376,24 @@ ${DiscussionPostBasicFragmentDoc}
 ${DiscussionAuthorFragmentDoc}
 ${DiscussionReplyDetailsFragmentDoc}`;
 
-export const useGetDiscussionPostQuery = <
-      TData = GetDiscussionPostQuery,
-      TError = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      variables: GetDiscussionPostQueryVariables,
-      options?: Omit<UseQueryOptions<GetDiscussionPostQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<GetDiscussionPostQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<GetDiscussionPostQuery, TError, TData>(
-      {
-    queryKey: ['GetDiscussionPost', variables],
-    queryFn: fetcher<GetDiscussionPostQuery, GetDiscussionPostQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetDiscussionPostDocument, variables),
-    ...options
-  }
-    )};
+export const useGetDiscussionPostQuery = <TData = GetDiscussionPostQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables: GetDiscussionPostQueryVariables,
+	options?: Omit<UseQueryOptions<GetDiscussionPostQuery, TError, TData>, 'queryKey'> & {
+		queryKey?: UseQueryOptions<GetDiscussionPostQuery, TError, TData>['queryKey'];
+	}
+) => {
+	return useQuery<GetDiscussionPostQuery, TError, TData>({
+		queryKey: ['GetDiscussionPost', variables],
+		queryFn: fetcher<GetDiscussionPostQuery, GetDiscussionPostQueryVariables>(
+			dataSource.endpoint,
+			dataSource.fetchParams || {},
+			GetDiscussionPostDocument,
+			variables
+		),
+		...options,
+	});
+};
 
 export const CreateDiscussionPostDocument = `
     mutation CreateDiscussionPost($challenge_id: String!, $author_id: String!, $content: String!) {
@@ -199,21 +410,32 @@ ${DiscussionPostBasicFragmentDoc}
 ${DiscussionAuthorFragmentDoc}
 ${DiscussionReplyDetailsFragmentDoc}`;
 
-export const useCreateDiscussionPostMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      options?: UseMutationOptions<CreateDiscussionPostMutation, TError, CreateDiscussionPostMutationVariables, TContext>
-    ) => {
-    
-    return useMutation<CreateDiscussionPostMutation, TError, CreateDiscussionPostMutationVariables, TContext>(
-      {
-    mutationKey: ['CreateDiscussionPost'],
-    mutationFn: (variables?: CreateDiscussionPostMutationVariables) => fetcher<CreateDiscussionPostMutation, CreateDiscussionPostMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, CreateDiscussionPostDocument, variables)(),
-    ...options
-  }
-    )};
+export const useCreateDiscussionPostMutation = <TError = unknown, TContext = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	options?: UseMutationOptions<
+		CreateDiscussionPostMutation,
+		TError,
+		CreateDiscussionPostMutationVariables,
+		TContext
+	>
+) => {
+	return useMutation<
+		CreateDiscussionPostMutation,
+		TError,
+		CreateDiscussionPostMutationVariables,
+		TContext
+	>({
+		mutationKey: ['CreateDiscussionPost'],
+		mutationFn: (variables?: CreateDiscussionPostMutationVariables) =>
+			fetcher<CreateDiscussionPostMutation, CreateDiscussionPostMutationVariables>(
+				dataSource.endpoint,
+				dataSource.fetchParams || {},
+				CreateDiscussionPostDocument,
+				variables
+			)(),
+		...options,
+	});
+};
 
 export const UpdateDiscussionPostDocument = `
     mutation UpdateDiscussionPost($id: String!, $content: String, $is_pinned: Boolean) {
@@ -226,21 +448,32 @@ ${DiscussionPostBasicFragmentDoc}
 ${DiscussionAuthorFragmentDoc}
 ${DiscussionReplyDetailsFragmentDoc}`;
 
-export const useUpdateDiscussionPostMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      options?: UseMutationOptions<UpdateDiscussionPostMutation, TError, UpdateDiscussionPostMutationVariables, TContext>
-    ) => {
-    
-    return useMutation<UpdateDiscussionPostMutation, TError, UpdateDiscussionPostMutationVariables, TContext>(
-      {
-    mutationKey: ['UpdateDiscussionPost'],
-    mutationFn: (variables?: UpdateDiscussionPostMutationVariables) => fetcher<UpdateDiscussionPostMutation, UpdateDiscussionPostMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, UpdateDiscussionPostDocument, variables)(),
-    ...options
-  }
-    )};
+export const useUpdateDiscussionPostMutation = <TError = unknown, TContext = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	options?: UseMutationOptions<
+		UpdateDiscussionPostMutation,
+		TError,
+		UpdateDiscussionPostMutationVariables,
+		TContext
+	>
+) => {
+	return useMutation<
+		UpdateDiscussionPostMutation,
+		TError,
+		UpdateDiscussionPostMutationVariables,
+		TContext
+	>({
+		mutationKey: ['UpdateDiscussionPost'],
+		mutationFn: (variables?: UpdateDiscussionPostMutationVariables) =>
+			fetcher<UpdateDiscussionPostMutation, UpdateDiscussionPostMutationVariables>(
+				dataSource.endpoint,
+				dataSource.fetchParams || {},
+				UpdateDiscussionPostDocument,
+				variables
+			)(),
+		...options,
+	});
+};
 
 export const DeleteDiscussionPostDocument = `
     mutation DeleteDiscussionPost($id: String!) {
@@ -250,21 +483,32 @@ export const DeleteDiscussionPostDocument = `
 }
     `;
 
-export const useDeleteDiscussionPostMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      options?: UseMutationOptions<DeleteDiscussionPostMutation, TError, DeleteDiscussionPostMutationVariables, TContext>
-    ) => {
-    
-    return useMutation<DeleteDiscussionPostMutation, TError, DeleteDiscussionPostMutationVariables, TContext>(
-      {
-    mutationKey: ['DeleteDiscussionPost'],
-    mutationFn: (variables?: DeleteDiscussionPostMutationVariables) => fetcher<DeleteDiscussionPostMutation, DeleteDiscussionPostMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, DeleteDiscussionPostDocument, variables)(),
-    ...options
-  }
-    )};
+export const useDeleteDiscussionPostMutation = <TError = unknown, TContext = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	options?: UseMutationOptions<
+		DeleteDiscussionPostMutation,
+		TError,
+		DeleteDiscussionPostMutationVariables,
+		TContext
+	>
+) => {
+	return useMutation<
+		DeleteDiscussionPostMutation,
+		TError,
+		DeleteDiscussionPostMutationVariables,
+		TContext
+	>({
+		mutationKey: ['DeleteDiscussionPost'],
+		mutationFn: (variables?: DeleteDiscussionPostMutationVariables) =>
+			fetcher<DeleteDiscussionPostMutation, DeleteDiscussionPostMutationVariables>(
+				dataSource.endpoint,
+				dataSource.fetchParams || {},
+				DeleteDiscussionPostDocument,
+				variables
+			)(),
+		...options,
+	});
+};
 
 export const CreateDiscussionReplyDocument = `
     mutation CreateDiscussionReply($post_id: String!, $author_id: String!, $content: String!, $parent_id: String) {
@@ -280,21 +524,32 @@ export const CreateDiscussionReplyDocument = `
     ${DiscussionReplyDetailsFragmentDoc}
 ${DiscussionAuthorFragmentDoc}`;
 
-export const useCreateDiscussionReplyMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      options?: UseMutationOptions<CreateDiscussionReplyMutation, TError, CreateDiscussionReplyMutationVariables, TContext>
-    ) => {
-    
-    return useMutation<CreateDiscussionReplyMutation, TError, CreateDiscussionReplyMutationVariables, TContext>(
-      {
-    mutationKey: ['CreateDiscussionReply'],
-    mutationFn: (variables?: CreateDiscussionReplyMutationVariables) => fetcher<CreateDiscussionReplyMutation, CreateDiscussionReplyMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, CreateDiscussionReplyDocument, variables)(),
-    ...options
-  }
-    )};
+export const useCreateDiscussionReplyMutation = <TError = unknown, TContext = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	options?: UseMutationOptions<
+		CreateDiscussionReplyMutation,
+		TError,
+		CreateDiscussionReplyMutationVariables,
+		TContext
+	>
+) => {
+	return useMutation<
+		CreateDiscussionReplyMutation,
+		TError,
+		CreateDiscussionReplyMutationVariables,
+		TContext
+	>({
+		mutationKey: ['CreateDiscussionReply'],
+		mutationFn: (variables?: CreateDiscussionReplyMutationVariables) =>
+			fetcher<CreateDiscussionReplyMutation, CreateDiscussionReplyMutationVariables>(
+				dataSource.endpoint,
+				dataSource.fetchParams || {},
+				CreateDiscussionReplyDocument,
+				variables
+			)(),
+		...options,
+	});
+};
 
 export const DeleteDiscussionReplyDocument = `
     mutation DeleteDiscussionReply($id: String!) {
@@ -304,18 +559,29 @@ export const DeleteDiscussionReplyDocument = `
 }
     `;
 
-export const useDeleteDiscussionReplyMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      options?: UseMutationOptions<DeleteDiscussionReplyMutation, TError, DeleteDiscussionReplyMutationVariables, TContext>
-    ) => {
-    
-    return useMutation<DeleteDiscussionReplyMutation, TError, DeleteDiscussionReplyMutationVariables, TContext>(
-      {
-    mutationKey: ['DeleteDiscussionReply'],
-    mutationFn: (variables?: DeleteDiscussionReplyMutationVariables) => fetcher<DeleteDiscussionReplyMutation, DeleteDiscussionReplyMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, DeleteDiscussionReplyDocument, variables)(),
-    ...options
-  }
-    )};
+export const useDeleteDiscussionReplyMutation = <TError = unknown, TContext = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	options?: UseMutationOptions<
+		DeleteDiscussionReplyMutation,
+		TError,
+		DeleteDiscussionReplyMutationVariables,
+		TContext
+	>
+) => {
+	return useMutation<
+		DeleteDiscussionReplyMutation,
+		TError,
+		DeleteDiscussionReplyMutationVariables,
+		TContext
+	>({
+		mutationKey: ['DeleteDiscussionReply'],
+		mutationFn: (variables?: DeleteDiscussionReplyMutationVariables) =>
+			fetcher<DeleteDiscussionReplyMutation, DeleteDiscussionReplyMutationVariables>(
+				dataSource.endpoint,
+				dataSource.fetchParams || {},
+				DeleteDiscussionReplyDocument,
+				variables
+			)(),
+		...options,
+	});
+};

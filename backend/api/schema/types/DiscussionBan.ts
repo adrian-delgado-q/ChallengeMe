@@ -1,92 +1,92 @@
 import { builder, prisma } from '../../schema-builder';
 
 builder.prismaObject('DiscussionBan', {
-  fields: (t: any) => ({
-    id: t.exposeID('id'),
-    challenge_id: t.exposeString('challenge_id'),
-    user_id: t.exposeString('user_id'),
-    reason: t.exposeString('reason', { nullable: true }),
-    banned_at: t.expose('banned_at', { type: 'Date' }),
-    expires_at: t.expose('expires_at', { type: 'Date', nullable: true }),
-    banned_by_id: t.exposeString('banned_by_id'),
-    is_active: t.exposeBoolean('is_active'),
-    // Relations
-    challenge: t.relation('challenge'),
-    user: t.relation('user'),
-    banned_by: t.relation('banned_by'),
-  }),
+	fields: (t: any) => ({
+		id: t.exposeID('id'),
+		challenge_id: t.exposeString('challenge_id'),
+		user_id: t.exposeString('user_id'),
+		reason: t.exposeString('reason', { nullable: true }),
+		banned_at: t.expose('banned_at', { type: 'Date' }),
+		expires_at: t.expose('expires_at', { type: 'Date', nullable: true }),
+		banned_by_id: t.exposeString('banned_by_id'),
+		is_active: t.exposeBoolean('is_active'),
+		// Relations
+		challenge: t.relation('challenge'),
+		user: t.relation('user'),
+		banned_by: t.relation('banned_by'),
+	}),
 });
 
-builder.queryField('discussionBans', (t) =>
-  t.prismaField({
-    type: ['DiscussionBan'],
-    args: {
-      challenge_id: t.arg.string(),
-      user_id: t.arg.string(),
-      is_active: t.arg.boolean(),
-    },
-    resolve: (query, root, args, ctx, info) => {
-      const where: any = {};
-      if (args.challenge_id) where.challenge_id = args.challenge_id;
-      if (args.user_id) where.user_id = args.user_id;
-      if (args.is_active !== undefined) where.is_active = args.is_active;
-      
-      return prisma.discussionBan.findMany({
-        ...query,
-        where: Object.keys(where).length > 0 ? where : undefined,
-      });
-    },
-  })
+builder.queryField('discussionBans', t =>
+	t.prismaField({
+		type: ['DiscussionBan'],
+		args: {
+			challenge_id: t.arg.string(),
+			user_id: t.arg.string(),
+			is_active: t.arg.boolean(),
+		},
+		resolve: (query, root, args, ctx, info) => {
+			const where: any = {};
+			if (args.challenge_id) where.challenge_id = args.challenge_id;
+			if (args.user_id) where.user_id = args.user_id;
+			if (args.is_active !== undefined) where.is_active = args.is_active;
+
+			return prisma.discussionBan.findMany({
+				...query,
+				where: Object.keys(where).length > 0 ? where : undefined,
+			});
+		},
+	})
 );
 
-builder.mutationFields((t) => ({
-  banFromDiscussion: t.prismaField({
-    type: 'DiscussionBan',
-    args: {
-      challenge_id: t.arg.string({ required: true }),
-      user_id: t.arg.string({ required: true }),
-      reason: t.arg.string(),
-      expires_at: t.arg({ type: 'Date' }),
-      banned_by_id: t.arg.string({ required: true }),
-    },
-    resolve: (query, root, args, ctx, info) => {
-      return prisma.discussionBan.create({
-        ...query,
-        data: {
-          challenge_id: args.challenge_id,
-          user_id: args.user_id,
-          reason: args.reason || undefined,
-          expires_at: args.expires_at || undefined,
-          banned_by_id: args.banned_by_id,
-        },
-      });
-    },
-  }),
+builder.mutationFields(t => ({
+	banFromDiscussion: t.prismaField({
+		type: 'DiscussionBan',
+		args: {
+			challenge_id: t.arg.string({ required: true }),
+			user_id: t.arg.string({ required: true }),
+			reason: t.arg.string(),
+			expires_at: t.arg({ type: 'Date' }),
+			banned_by_id: t.arg.string({ required: true }),
+		},
+		resolve: (query, root, args, ctx, info) => {
+			return prisma.discussionBan.create({
+				...query,
+				data: {
+					challenge_id: args.challenge_id,
+					user_id: args.user_id,
+					reason: args.reason || undefined,
+					expires_at: args.expires_at || undefined,
+					banned_by_id: args.banned_by_id,
+				},
+			});
+		},
+	}),
 
-  unbanFromDiscussion: t.prismaField({
-    type: 'DiscussionBan',
-    args: {
-      id: t.arg.string({ required: true }),
-    },
-    resolve: (query, root, args, ctx, info) => {
-      return prisma.discussionBan.update({
-        ...query,
-        where: { id: args.id },
-        data: { is_active: false },
-      });
-    },
-  }),
+	unbanFromDiscussion: t.prismaField({
+		type: 'DiscussionBan',
+		args: {
+			id: t.arg.string({ required: true }),
+		},
+		resolve: (query, root, args, ctx, info) => {
+			return prisma.discussionBan.update({
+				...query,
+				where: { id: args.id },
+				data: { is_active: false },
+			});
+		},
+	}),
 
-  deleteDiscussionBan: t.prismaField({
-    type: 'DiscussionBan',
-    args: {
-      id: t.arg.string({ required: true }),
-    },
-    resolve: (query, root, args, ctx, info) => {
-      return prisma.discussionBan.delete({
-        ...query,
-        where: { id: args.id },
-      });
-    },
-  }),
+	deleteDiscussionBan: t.prismaField({
+		type: 'DiscussionBan',
+		args: {
+			id: t.arg.string({ required: true }),
+		},
+		resolve: (query, root, args, ctx, info) => {
+			return prisma.discussionBan.delete({
+				...query,
+				where: { id: args.id },
+			});
+		},
+	}),
 }));

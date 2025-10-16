@@ -1,45 +1,82 @@
 // THIS FILE IS GENERATED, DO NOT EDIT!
 import type * as Types from '../generated/graphql';
 
-import { useQuery, useMutation, type UseQueryOptions, type UseMutationOptions } from '@tanstack/react-query';
+import {
+	useQuery,
+	useMutation,
+	type UseQueryOptions,
+	type UseMutationOptions,
+} from '@tanstack/react-query';
 
-function fetcher<TData, TVariables>(endpoint: string, requestInit: RequestInit, query: string, variables?: TVariables) {
-  return async (): Promise<TData> => {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      ...requestInit,
-      body: JSON.stringify({ query, variables }),
-    });
+function fetcher<TData, TVariables>(
+	endpoint: string,
+	requestInit: RequestInit,
+	query: string,
+	variables?: TVariables
+) {
+	return async (): Promise<TData> => {
+		const res = await fetch(endpoint, {
+			method: 'POST',
+			...requestInit,
+			body: JSON.stringify({ query, variables }),
+		});
 
-    const json = await res.json();
+		const json = await res.json();
 
-    if (json.errors) {
-      const { message } = json.errors[0];
+		if (json.errors) {
+			const { message } = json.errors[0];
 
-      throw new Error(message);
-    }
+			throw new Error(message);
+		}
 
-    return json.data;
-  }
+		return json.data;
+	};
 }
-export type MilestoneProgressDetailsFragment = { __typename?: 'MilestoneProgress', id?: string | null, milestone_id?: string | null, participant_id?: string | null, current_value?: number | null, is_achieved?: boolean | null, achieved_at?: string | null };
+export type MilestoneProgressDetailsFragment = {
+	__typename?: 'MilestoneProgress';
+	id?: string | null;
+	milestone_id?: string | null;
+	participant_id?: string | null;
+	current_value?: number | null;
+	is_achieved?: boolean | null;
+	achieved_at?: string | null;
+};
 
 export type GetMilestoneProgressQueryVariables = Types.Exact<{
-  milestone_id: Types.Scalars['String']['input'];
-  participant_id: Types.Scalars['String']['input'];
+	milestone_id: Types.Scalars['String']['input'];
+	participant_id: Types.Scalars['String']['input'];
 }>;
 
-
-export type GetMilestoneProgressQuery = { __typename?: 'Query', milestoneProgress?: Array<{ __typename?: 'MilestoneProgress', id?: string | null, milestone_id?: string | null, participant_id?: string | null, current_value?: number | null, is_achieved?: boolean | null, achieved_at?: string | null }> | null };
+export type GetMilestoneProgressQuery = {
+	__typename?: 'Query';
+	milestoneProgress?: Array<{
+		__typename?: 'MilestoneProgress';
+		id?: string | null;
+		milestone_id?: string | null;
+		participant_id?: string | null;
+		current_value?: number | null;
+		is_achieved?: boolean | null;
+		achieved_at?: string | null;
+	}> | null;
+};
 
 export type UpdateMilestoneProgressMutationVariables = Types.Exact<{
-  id: Types.Scalars['String']['input'];
-  current_value?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+	id: Types.Scalars['String']['input'];
+	current_value?: Types.InputMaybe<Types.Scalars['Int']['input']>;
 }>;
 
-
-export type UpdateMilestoneProgressMutation = { __typename?: 'Mutation', updateMilestoneProgress?: { __typename?: 'MilestoneProgress', id?: string | null, milestone_id?: string | null, participant_id?: string | null, current_value?: number | null, is_achieved?: boolean | null, achieved_at?: string | null } | null };
-
+export type UpdateMilestoneProgressMutation = {
+	__typename?: 'Mutation';
+	updateMilestoneProgress?: {
+		__typename?: 'MilestoneProgress';
+		id?: string | null;
+		milestone_id?: string | null;
+		participant_id?: string | null;
+		current_value?: number | null;
+		is_achieved?: boolean | null;
+		achieved_at?: string | null;
+	} | null;
+};
 
 export const MilestoneProgressDetailsFragmentDoc = `
     fragment MilestoneProgressDetails on MilestoneProgress {
@@ -59,22 +96,24 @@ export const GetMilestoneProgressDocument = `
 }
     ${MilestoneProgressDetailsFragmentDoc}`;
 
-export const useGetMilestoneProgressQuery = <
-      TData = GetMilestoneProgressQuery,
-      TError = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      variables: GetMilestoneProgressQueryVariables,
-      options?: Omit<UseQueryOptions<GetMilestoneProgressQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<GetMilestoneProgressQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<GetMilestoneProgressQuery, TError, TData>(
-      {
-    queryKey: ['GetMilestoneProgress', variables],
-    queryFn: fetcher<GetMilestoneProgressQuery, GetMilestoneProgressQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetMilestoneProgressDocument, variables),
-    ...options
-  }
-    )};
+export const useGetMilestoneProgressQuery = <TData = GetMilestoneProgressQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables: GetMilestoneProgressQueryVariables,
+	options?: Omit<UseQueryOptions<GetMilestoneProgressQuery, TError, TData>, 'queryKey'> & {
+		queryKey?: UseQueryOptions<GetMilestoneProgressQuery, TError, TData>['queryKey'];
+	}
+) => {
+	return useQuery<GetMilestoneProgressQuery, TError, TData>({
+		queryKey: ['GetMilestoneProgress', variables],
+		queryFn: fetcher<GetMilestoneProgressQuery, GetMilestoneProgressQueryVariables>(
+			dataSource.endpoint,
+			dataSource.fetchParams || {},
+			GetMilestoneProgressDocument,
+			variables
+		),
+		...options,
+	});
+};
 
 export const UpdateMilestoneProgressDocument = `
     mutation UpdateMilestoneProgress($id: String!, $current_value: Int) {
@@ -84,18 +123,29 @@ export const UpdateMilestoneProgressDocument = `
 }
     ${MilestoneProgressDetailsFragmentDoc}`;
 
-export const useUpdateMilestoneProgressMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      options?: UseMutationOptions<UpdateMilestoneProgressMutation, TError, UpdateMilestoneProgressMutationVariables, TContext>
-    ) => {
-    
-    return useMutation<UpdateMilestoneProgressMutation, TError, UpdateMilestoneProgressMutationVariables, TContext>(
-      {
-    mutationKey: ['UpdateMilestoneProgress'],
-    mutationFn: (variables?: UpdateMilestoneProgressMutationVariables) => fetcher<UpdateMilestoneProgressMutation, UpdateMilestoneProgressMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, UpdateMilestoneProgressDocument, variables)(),
-    ...options
-  }
-    )};
+export const useUpdateMilestoneProgressMutation = <TError = unknown, TContext = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	options?: UseMutationOptions<
+		UpdateMilestoneProgressMutation,
+		TError,
+		UpdateMilestoneProgressMutationVariables,
+		TContext
+	>
+) => {
+	return useMutation<
+		UpdateMilestoneProgressMutation,
+		TError,
+		UpdateMilestoneProgressMutationVariables,
+		TContext
+	>({
+		mutationKey: ['UpdateMilestoneProgress'],
+		mutationFn: (variables?: UpdateMilestoneProgressMutationVariables) =>
+			fetcher<UpdateMilestoneProgressMutation, UpdateMilestoneProgressMutationVariables>(
+				dataSource.endpoint,
+				dataSource.fetchParams || {},
+				UpdateMilestoneProgressDocument,
+				variables
+			)(),
+		...options,
+	});
+};

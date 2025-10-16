@@ -1,123 +1,123 @@
 import { builder, prisma } from '../../schema-builder';
 
 builder.prismaObject('Workout', {
-  fields: (t: any) => ({
-    id: t.exposeID('id'),
-    creator_id: t.exposeString('creator_id'),
-    team_id: t.exposeString('team_id', { nullable: true }),
-    name: t.exposeString('name'),
-    description: t.exposeString('description', { nullable: true }),
-    is_team_workout: t.exposeBoolean('is_team_workout'),
-    created_at: t.expose('created_at', { type: 'Date' }),
-    updated_at: t.expose('updated_at', { type: 'Date' }),
-    generated_by_ai: t.exposeBoolean('generated_by_ai'),
-    ai_model: t.exposeString('ai_model', { nullable: true }),
-    ai_raw_response: t.expose('ai_raw_response', { type: 'JSON', nullable: true }),
-    // Relations
-    creator: t.relation('creator'),
-    team: t.relation('team', { nullable: true }),
-    exercises: t.relation('exercises'),
-    sessions: t.relation('sessions'),
-    comments: t.relation('comments'),
-  }),
+	fields: (t: any) => ({
+		id: t.exposeID('id'),
+		creator_id: t.exposeString('creator_id'),
+		team_id: t.exposeString('team_id', { nullable: true }),
+		name: t.exposeString('name'),
+		description: t.exposeString('description', { nullable: true }),
+		is_team_workout: t.exposeBoolean('is_team_workout'),
+		created_at: t.expose('created_at', { type: 'Date' }),
+		updated_at: t.expose('updated_at', { type: 'Date' }),
+		generated_by_ai: t.exposeBoolean('generated_by_ai'),
+		ai_model: t.exposeString('ai_model', { nullable: true }),
+		ai_raw_response: t.expose('ai_raw_response', { type: 'JSON', nullable: true }),
+		// Relations
+		creator: t.relation('creator'),
+		team: t.relation('team', { nullable: true }),
+		exercises: t.relation('exercises'),
+		sessions: t.relation('sessions'),
+		comments: t.relation('comments'),
+	}),
 });
 
-builder.queryField('workouts', (t) =>
-  t.prismaField({
-    type: ['Workout'],
-    args: {
-      creator_id: t.arg.string(),
-      team_id: t.arg.string(),
-    },
-    resolve: (query, root, args, ctx, info) => {
-      const where: any = {};
-      if (args.creator_id) where.creator_id = args.creator_id;
-      if (args.team_id) where.team_id = args.team_id;
-      
-      return prisma.workout.findMany({
-        ...query,
-        where: Object.keys(where).length > 0 ? where : undefined,
-      });
-    },
-  })
+builder.queryField('workouts', t =>
+	t.prismaField({
+		type: ['Workout'],
+		args: {
+			creator_id: t.arg.string(),
+			team_id: t.arg.string(),
+		},
+		resolve: (query, root, args, ctx, info) => {
+			const where: any = {};
+			if (args.creator_id) where.creator_id = args.creator_id;
+			if (args.team_id) where.team_id = args.team_id;
+
+			return prisma.workout.findMany({
+				...query,
+				where: Object.keys(where).length > 0 ? where : undefined,
+			});
+		},
+	})
 );
 
-builder.queryField('workout', (t) =>
-  t.prismaField({
-    type: 'Workout',
-    args: {
-      id: t.arg.string({ required: true }),
-    },
-    resolve: (query, root, args, ctx, info) => {
-      return prisma.workout.findUniqueOrThrow({
-        ...query,
-        where: { id: args.id },
-      });
-    },
-  })
+builder.queryField('workout', t =>
+	t.prismaField({
+		type: 'Workout',
+		args: {
+			id: t.arg.string({ required: true }),
+		},
+		resolve: (query, root, args, ctx, info) => {
+			return prisma.workout.findUniqueOrThrow({
+				...query,
+				where: { id: args.id },
+			});
+		},
+	})
 );
 
-builder.mutationFields((t) => ({
-  createWorkout: t.prismaField({
-    type: 'Workout',
-    args: {
-      creator_id: t.arg.string({ required: true }),
-      team_id: t.arg.string(),
-      name: t.arg.string({ required: true }),
-      description: t.arg.string(),
-      is_team_workout: t.arg.boolean(),
-      generated_by_ai: t.arg.boolean(),
-      ai_model: t.arg.string(),
-    },
-    resolve: (query, root, args, ctx, info) => {
-      return prisma.workout.create({
-        ...query,
-        data: {
-          creator_id: args.creator_id,
-          team_id: args.team_id || undefined,
-          name: args.name,
-          description: args.description || undefined,
-          is_team_workout: args.is_team_workout || false,
-          generated_by_ai: args.generated_by_ai || false,
-          ai_model: args.ai_model || undefined,
-        },
-      });
-    },
-  }),
+builder.mutationFields(t => ({
+	createWorkout: t.prismaField({
+		type: 'Workout',
+		args: {
+			creator_id: t.arg.string({ required: true }),
+			team_id: t.arg.string(),
+			name: t.arg.string({ required: true }),
+			description: t.arg.string(),
+			is_team_workout: t.arg.boolean(),
+			generated_by_ai: t.arg.boolean(),
+			ai_model: t.arg.string(),
+		},
+		resolve: (query, root, args, ctx, info) => {
+			return prisma.workout.create({
+				...query,
+				data: {
+					creator_id: args.creator_id,
+					team_id: args.team_id || undefined,
+					name: args.name,
+					description: args.description || undefined,
+					is_team_workout: args.is_team_workout || false,
+					generated_by_ai: args.generated_by_ai || false,
+					ai_model: args.ai_model || undefined,
+				},
+			});
+		},
+	}),
 
-  updateWorkout: t.prismaField({
-    type: 'Workout',
-    args: {
-      id: t.arg.string({ required: true }),
-      name: t.arg.string(),
-      description: t.arg.string(),
-      is_team_workout: t.arg.boolean(),
-    },
-    resolve: (query, root, args, ctx, info) => {
-      const { id, ...data } = args;
-      const updateData: any = {};
-      if (data.name !== undefined) updateData.name = data.name;
-      if (data.description !== undefined) updateData.description = data.description;
-      if (data.is_team_workout !== undefined) updateData.is_team_workout = data.is_team_workout;
-      
-      return prisma.workout.update({
-        ...query,
-        where: { id },
-        data: updateData,
-      });
-    },
-  }),
+	updateWorkout: t.prismaField({
+		type: 'Workout',
+		args: {
+			id: t.arg.string({ required: true }),
+			name: t.arg.string(),
+			description: t.arg.string(),
+			is_team_workout: t.arg.boolean(),
+		},
+		resolve: (query, root, args, ctx, info) => {
+			const { id, ...data } = args;
+			const updateData: any = {};
+			if (data.name !== undefined) updateData.name = data.name;
+			if (data.description !== undefined) updateData.description = data.description;
+			if (data.is_team_workout !== undefined) updateData.is_team_workout = data.is_team_workout;
 
-  deleteWorkout: t.prismaField({
-    type: 'Workout',
-    args: {
-      id: t.arg.string({ required: true }),
-    },
-    resolve: (query, root, args, ctx, info) => {
-      return prisma.workout.delete({
-        ...query,
-        where: { id: args.id },
-      });
-    },
-  }),
+			return prisma.workout.update({
+				...query,
+				where: { id },
+				data: updateData,
+			});
+		},
+	}),
+
+	deleteWorkout: t.prismaField({
+		type: 'Workout',
+		args: {
+			id: t.arg.string({ required: true }),
+		},
+		resolve: (query, root, args, ctx, info) => {
+			return prisma.workout.delete({
+				...query,
+				where: { id: args.id },
+			});
+		},
+	}),
 }));

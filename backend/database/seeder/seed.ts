@@ -132,15 +132,69 @@ async function main() {
 	// 1.5 Create Badges
 	console.log('Seeding badges...');
 	const badges_to_create = [
-		{ name: 'First Steps', description: 'Log your first activity.', category: 'Feats', icon_url: 'https://example.com/icons/first_steps.png', xp_bonus: 50 },
-		{ name: 'Marathon Runner', description: 'Complete a full marathon (42.2 km) in a single run.', category: 'Feats', icon_url: 'https://example.com/icons/marathon.png', xp_bonus: 500 },
-		{ name: 'Century Ride', description: 'Complete a 100 km bike ride.', category: 'Feats', icon_url: 'https://example.com/icons/century_ride.png', xp_bonus: 500 },
-		{ name: 'Weekly Warrior', description: 'Log an activity every day for 7 days straight.', category: 'Consistency', icon_url: 'https://example.com/icons/weekly_warrior.png', xp_bonus: 150 },
-		{ name: 'Monthly Mover', description: 'Log an activity every day for 30 days straight.', category: 'Consistency', icon_url: 'https://example.com/icons/monthly_mover.png', xp_bonus: 300 },
-		{ name: 'Running Novice', description: 'Reach Novice tier in Running.', category: 'Mastery', icon_url: 'https://example.com/icons/running_novice.png', xp_bonus: 100 },
-		{ name: 'Weightlifting Adept', description: 'Reach Adept tier in Weightlifting.', category: 'Mastery', icon_url: 'https://example.com/icons/weightlifting_adept.png', xp_bonus: 200 },
-		{ name: 'Challenge Champion', description: 'Finish #1 on a challenge leaderboard.', category: 'Social', icon_url: 'https://example.com/icons/champion.png', xp_bonus: 400 },
-		{ name: 'Team Player', description: 'Join or create a team.', category: 'Social', icon_url: 'https://example.com/icons/team_player.png', xp_bonus: 75 },
+		{
+			name: 'First Steps',
+			description: 'Log your first activity.',
+			category: 'Feats',
+			icon_url: 'https://example.com/icons/first_steps.png',
+			xp_bonus: 50,
+		},
+		{
+			name: 'Marathon Runner',
+			description: 'Complete a full marathon (42.2 km) in a single run.',
+			category: 'Feats',
+			icon_url: 'https://example.com/icons/marathon.png',
+			xp_bonus: 500,
+		},
+		{
+			name: 'Century Ride',
+			description: 'Complete a 100 km bike ride.',
+			category: 'Feats',
+			icon_url: 'https://example.com/icons/century_ride.png',
+			xp_bonus: 500,
+		},
+		{
+			name: 'Weekly Warrior',
+			description: 'Log an activity every day for 7 days straight.',
+			category: 'Consistency',
+			icon_url: 'https://example.com/icons/weekly_warrior.png',
+			xp_bonus: 150,
+		},
+		{
+			name: 'Monthly Mover',
+			description: 'Log an activity every day for 30 days straight.',
+			category: 'Consistency',
+			icon_url: 'https://example.com/icons/monthly_mover.png',
+			xp_bonus: 300,
+		},
+		{
+			name: 'Running Novice',
+			description: 'Reach Novice tier in Running.',
+			category: 'Mastery',
+			icon_url: 'https://example.com/icons/running_novice.png',
+			xp_bonus: 100,
+		},
+		{
+			name: 'Weightlifting Adept',
+			description: 'Reach Adept tier in Weightlifting.',
+			category: 'Mastery',
+			icon_url: 'https://example.com/icons/weightlifting_adept.png',
+			xp_bonus: 200,
+		},
+		{
+			name: 'Challenge Champion',
+			description: 'Finish #1 on a challenge leaderboard.',
+			category: 'Social',
+			icon_url: 'https://example.com/icons/champion.png',
+			xp_bonus: 400,
+		},
+		{
+			name: 'Team Player',
+			description: 'Join or create a team.',
+			category: 'Social',
+			icon_url: 'https://example.com/icons/team_player.png',
+			xp_bonus: 75,
+		},
 	];
 
 	for (const badge_data of badges_to_create) {
@@ -306,9 +360,11 @@ async function main() {
 
 	// 8. Create Activities
 	for (const challenge of challenges) {
-		const challenge_participants: ChallengeParticipant[] = await prisma.challengeParticipant.findMany({
-			where: { challenge_id: challenge.id },
-		});
+		const challenge_participants: ChallengeParticipant[] = await prisma.challengeParticipant.findMany(
+			{
+				where: { challenge_id: challenge.id },
+			}
+		);
 
 		console.log('The challenge has the followingg properties: ', { ...challenge });
 
@@ -545,7 +601,13 @@ async function main() {
 						profile_id: user.id,
 						activity_type_id: activity_type.id,
 						total_value: faker.number.float({ min: 0, max: 1000 }),
-						mastery_tier: faker.helpers.arrayElement(['NOVICE', 'ADEPT', 'EXPERT', 'MASTER', 'GRANDMASTER']),
+						mastery_tier: faker.helpers.arrayElement([
+							'NOVICE',
+							'ADEPT',
+							'EXPERT',
+							'MASTER',
+							'GRANDMASTER',
+						]),
 					},
 				});
 			}
@@ -575,7 +637,13 @@ async function main() {
 			await prisma.xPLog.create({
 				data: {
 					profile_id: user.id,
-					source_type: faker.helpers.arrayElement(['COMMENT', 'CHALLENGE_COMPLETION', 'MILESTONE_COMPLETION', 'STREAK', 'BADGE_REWARD']),
+					source_type: faker.helpers.arrayElement([
+						'COMMENT',
+						'CHALLENGE_COMPLETION',
+						'MILESTONE_COMPLETION',
+						'STREAK',
+						'BADGE_REWARD',
+					]),
 					points: faker.number.int({ min: 5, max: 50 }),
 					description: faker.lorem.sentence(),
 				},
@@ -590,10 +658,10 @@ async function main() {
 			const badge_count = faker.number.int({ min: 0, max: 3 });
 			const badges_to_award = faker.helpers.arrayElements(all_badges, badge_count);
 			// Remove duplicates to avoid constraint violations
-			const unique_badges = [...new Set(badges_to_award.map(b => b.id))].map(id => 
-				badges_to_award.find(b => b.id === id)!
+			const unique_badges = [...new Set(badges_to_award.map(b => b.id))].map(
+				id => badges_to_award.find(b => b.id === id)!
 			);
-			
+
 			for (const badge of unique_badges) {
 				try {
 					await prisma.earnedBadge.upsert({
@@ -610,7 +678,10 @@ async function main() {
 						},
 					});
 				} catch (error) {
-					console.error(`Error creating earned badge for user ${user.username} and badge ${badge.name}:`, error);
+					console.error(
+						`Error creating earned badge for user ${user.username} and badge ${badge.name}:`,
+						error
+					);
 				}
 			}
 		}
