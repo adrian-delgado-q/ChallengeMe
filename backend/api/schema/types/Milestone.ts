@@ -33,6 +33,21 @@ builder.queryField('milestones', (t) =>
   })
 );
 
+builder.queryField('milestone', (t) =>
+  t.prismaField({
+    type: 'Milestone',
+    args: {
+      id: t.arg.string({ required: true }),
+    },
+    resolve: (query, root, args, ctx, info) => {
+      return prisma.milestone.findUniqueOrThrow({
+        ...query,
+        where: { id: args.id },
+      });
+    },
+  })
+);
+
 builder.mutationFields((t) => ({
   createMilestone: t.prismaField({
     type: 'Milestone',

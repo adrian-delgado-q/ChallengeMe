@@ -46,6 +46,21 @@ builder.queryField('activities', (t) =>
   })
 );
 
+builder.queryField('activity', (t) =>
+  t.prismaField({
+    type: 'Activity',
+    args: {
+      id: t.arg.string({ required: true }),
+    },
+    resolve: (query, root, args, ctx, info) => {
+      return prisma.activity.findUniqueOrThrow({
+        ...query,
+        where: { id: args.id },
+      });
+    },
+  })
+);
+
 builder.mutationFields((t) => ({
   createActivity: t.prismaField({
     type: 'Activity',

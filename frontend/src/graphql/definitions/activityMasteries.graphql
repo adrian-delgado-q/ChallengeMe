@@ -1,0 +1,44 @@
+# src/graphql/definitions/activityMasteries.graphql
+
+# Fragments
+
+fragment ActivityMasteryBasic on ActivityMastery {
+    id
+    total_value
+    mastery_tier
+    created_at
+    updated_at
+}
+
+fragment ActivityMasteryWithRelations on ActivityMastery {
+    ...ActivityMasteryBasic
+    profile {
+        id
+        username
+    }
+    activity_type {
+        id
+        name
+        category
+    }
+}
+
+# Queries
+
+query GetActivityMastery(
+    $profile_id: String!
+    $activity_type_id: String!
+) {
+    activityMastery(
+        profile_id: $profile_id
+        activity_type_id: $activity_type_id
+    ) {
+        ...ActivityMasteryWithRelations
+    }
+}
+
+query GetActivityMasteries($profile_id: String!) {
+    activityMasteries(profile_id: $profile_id) {
+        ...ActivityMasteryWithRelations
+    }
+}

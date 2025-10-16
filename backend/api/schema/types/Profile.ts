@@ -7,6 +7,11 @@ builder.prismaObject('Profile', {
     avatar_url: t.exposeString('avatar_url', { nullable: true }),
     created_at: t.expose('created_at', { type: 'Date' }),
     updated_at: t.expose('updated_at', { type: 'Date' }),
+    // Gamification fields
+    xp: t.exposeInt('xp'),
+    level: t.exposeInt('level'),
+    total_points: t.exposeInt('total_points'),
+    active_title: t.exposeString('active_title', { nullable: true }),
     // Relations
     activities: t.relation('activities'),
     challenge_entries: t.relation('challenge_entries'),
@@ -24,6 +29,10 @@ builder.prismaObject('Profile', {
     created_workouts: t.relation('created_workouts'),
     workout_sessions: t.relation('workout_sessions'),
     workout_comment: t.relation('workout_comment'),
+    // Gamification relations
+    activity_masteries: t.relation('activity_masteries'),
+    earned_badges: t.relation('earned_badges'),
+    xp_logs: t.relation('xp_logs'),
   }),
 });
 
@@ -84,15 +93,17 @@ builder.mutationFields((t) => ({
     type: 'Profile',
     args: {
       id: t.arg.string({ required: true }),
-      username: t.arg.string(),
-      avatar_url: t.arg.string(),
+      username: t.arg.string({ required: false }),
+      avatar_url: t.arg.string({ required: false }),
+      active_title: t.arg.string({ required: false }),
     },
     resolve: (query, root, args, ctx, info) => {
       const { id, ...data } = args;
       const updateData: any = {};
       if (data.username !== undefined) updateData.username = data.username;
       if (data.avatar_url !== undefined) updateData.avatar_url = data.avatar_url;
-      
+      if (data.active_title !== undefined) updateData.active_title = data.active_title;
+
       return prisma.profile.update({
         ...query,
         where: { id },

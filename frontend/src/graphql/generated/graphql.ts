@@ -13,6 +13,7 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   Date: { input: string; output: string; }
+  JSON: { input: any; output: any; }
 };
 
 export type Activity = {
@@ -34,6 +35,19 @@ export type Activity = {
   workout_session_id?: Maybe<Scalars['String']['output']>;
 };
 
+export type ActivityMastery = {
+  __typename?: 'ActivityMastery';
+  activity_type?: Maybe<ActivityType>;
+  activity_type_id?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['Date']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  mastery_tier?: Maybe<MasteryTier>;
+  profile?: Maybe<Profile>;
+  profile_id?: Maybe<Scalars['String']['output']>;
+  total_value?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Date']['output']>;
+};
+
 export type ActivityType = {
   __typename?: 'ActivityType';
   activities?: Maybe<Array<Activity>>;
@@ -48,6 +62,18 @@ export type ActivityType = {
   unit?: Maybe<Scalars['String']['output']>;
   unit_label?: Maybe<Scalars['String']['output']>;
   workout_exercises?: Maybe<Array<WorkoutExercise>>;
+};
+
+export type Badge = {
+  __typename?: 'Badge';
+  category?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['Date']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  earned_by?: Maybe<Array<EarnedBadge>>;
+  icon_url?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  xp_bonus?: Maybe<Scalars['Int']['output']>;
 };
 
 export type Challenge = {
@@ -185,6 +211,23 @@ export type DiscussionReply = {
   updated_at?: Maybe<Scalars['Date']['output']>;
 };
 
+export type EarnedBadge = {
+  __typename?: 'EarnedBadge';
+  badge?: Maybe<Badge>;
+  badge_id?: Maybe<Scalars['String']['output']>;
+  earned_at?: Maybe<Scalars['Date']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  profile?: Maybe<Profile>;
+  profile_id?: Maybe<Scalars['String']['output']>;
+};
+
+export type MasteryTier =
+  | 'ADEPT'
+  | 'EXPERT'
+  | 'GRANDMASTER'
+  | 'MASTER'
+  | 'NOVICE';
+
 export type Milestone = {
   __typename?: 'Milestone';
   activity_type?: Maybe<ActivityType>;
@@ -220,13 +263,17 @@ export type ModeratorRole =
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addDiscussionModerator?: Maybe<DiscussionModerator>;
+  addExerciseToWorkout?: Maybe<WorkoutExercise>;
+  banFromDiscussion?: Maybe<DiscussionBan>;
+  completeWorkoutSession?: Maybe<WorkoutSession>;
   createActivity?: Maybe<Activity>;
   createActivityType?: Maybe<ActivityType>;
+  createBadge?: Maybe<Badge>;
   createChallenge?: Maybe<Challenge>;
   createChallengeActivityType?: Maybe<ChallengeActivityType>;
   createChallengeParticipant?: Maybe<ChallengeParticipant>;
   createComment?: Maybe<Comment>;
-  createDiscussionBan?: Maybe<DiscussionBan>;
   createDiscussionModerator?: Maybe<DiscussionModerator>;
   createDiscussionPost?: Maybe<DiscussionPost>;
   createDiscussionReply?: Maybe<DiscussionReply>;
@@ -242,6 +289,7 @@ export type Mutation = {
   createWorkoutSession?: Maybe<WorkoutSession>;
   deleteActivity?: Maybe<Activity>;
   deleteActivityType?: Maybe<ActivityType>;
+  deleteBadge?: Maybe<Badge>;
   deleteChallenge?: Maybe<Challenge>;
   deleteChallengeActivityType?: Maybe<ChallengeActivityType>;
   deleteChallengeParticipant?: Maybe<ChallengeParticipant>;
@@ -260,11 +308,16 @@ export type Mutation = {
   deleteWorkoutComment?: Maybe<WorkoutComment>;
   deleteWorkoutExercise?: Maybe<WorkoutExercise>;
   deleteWorkoutSession?: Maybe<WorkoutSession>;
+  logWorkoutActivity?: Maybe<Activity>;
+  removeDiscussionModerator?: Maybe<DiscussionModerator>;
+  removeExerciseFromWorkout?: Maybe<WorkoutExercise>;
+  startWorkoutSession?: Maybe<WorkoutSession>;
+  unbanFromDiscussion?: Maybe<DiscussionBan>;
   updateActivity?: Maybe<Activity>;
   updateActivityType?: Maybe<ActivityType>;
+  updateBadge?: Maybe<Badge>;
   updateChallenge?: Maybe<Challenge>;
   updateComment?: Maybe<Comment>;
-  updateDiscussionBan?: Maybe<DiscussionBan>;
   updateDiscussionModerator?: Maybe<DiscussionModerator>;
   updateDiscussionPost?: Maybe<DiscussionPost>;
   updateDiscussionReply?: Maybe<DiscussionReply>;
@@ -278,6 +331,40 @@ export type Mutation = {
   updateWorkoutComment?: Maybe<WorkoutComment>;
   updateWorkoutExercise?: Maybe<WorkoutExercise>;
   updateWorkoutSession?: Maybe<WorkoutSession>;
+};
+
+
+export type MutationAddDiscussionModeratorArgs = {
+  challenge_id: Scalars['String']['input'];
+  granted_by_id: Scalars['String']['input'];
+  role?: InputMaybe<Scalars['String']['input']>;
+  user_id: Scalars['String']['input'];
+};
+
+
+export type MutationAddExerciseToWorkoutArgs = {
+  activity_type_id: Scalars['String']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
+  order_index: Scalars['Int']['input'];
+  reps?: InputMaybe<Scalars['Int']['input']>;
+  rest_time?: InputMaybe<Scalars['Int']['input']>;
+  sets?: InputMaybe<Scalars['Int']['input']>;
+  workout_id: Scalars['String']['input'];
+};
+
+
+export type MutationBanFromDiscussionArgs = {
+  banned_by_id: Scalars['String']['input'];
+  challenge_id: Scalars['String']['input'];
+  expires_at?: InputMaybe<Scalars['Date']['input']>;
+  reason?: InputMaybe<Scalars['String']['input']>;
+  user_id: Scalars['String']['input'];
+};
+
+
+export type MutationCompleteWorkoutSessionArgs = {
+  id: Scalars['String']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -300,6 +387,15 @@ export type MutationCreateActivityTypeArgs = {
   name: Scalars['String']['input'];
   unit: Scalars['String']['input'];
   unit_label: Scalars['String']['input'];
+};
+
+
+export type MutationCreateBadgeArgs = {
+  category: Scalars['String']['input'];
+  description: Scalars['String']['input'];
+  icon_url?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  xp_bonus?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -337,15 +433,6 @@ export type MutationCreateCommentArgs = {
   author_id: Scalars['String']['input'];
   content?: InputMaybe<Scalars['String']['input']>;
   post_id: Scalars['String']['input'];
-};
-
-
-export type MutationCreateDiscussionBanArgs = {
-  banned_by_id: Scalars['String']['input'];
-  challenge_id: Scalars['String']['input'];
-  expires_at?: InputMaybe<Scalars['Date']['input']>;
-  reason?: InputMaybe<Scalars['String']['input']>;
-  user_id: Scalars['String']['input'];
 };
 
 
@@ -473,6 +560,11 @@ export type MutationDeleteActivityTypeArgs = {
 };
 
 
+export type MutationDeleteBadgeArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type MutationDeleteChallengeArgs = {
   id: Scalars['String']['input'];
 };
@@ -563,6 +655,36 @@ export type MutationDeleteWorkoutSessionArgs = {
 };
 
 
+export type MutationLogWorkoutActivityArgs = {
+  activity_type_id: Scalars['String']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
+  session_id: Scalars['String']['input'];
+  value: Scalars['Float']['input'];
+};
+
+
+export type MutationRemoveDiscussionModeratorArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type MutationRemoveExerciseFromWorkoutArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type MutationStartWorkoutSessionArgs = {
+  profile_id: Scalars['String']['input'];
+  session_date?: InputMaybe<Scalars['Date']['input']>;
+  workout_id: Scalars['String']['input'];
+};
+
+
+export type MutationUnbanFromDiscussionArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type MutationUpdateActivityArgs = {
   date?: InputMaybe<Scalars['Date']['input']>;
   id: Scalars['String']['input'];
@@ -579,6 +701,16 @@ export type MutationUpdateActivityTypeArgs = {
   name?: InputMaybe<Scalars['String']['input']>;
   unit?: InputMaybe<Scalars['String']['input']>;
   unit_label?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type MutationUpdateBadgeArgs = {
+  category?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  icon_url?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  xp_bonus?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -599,14 +731,6 @@ export type MutationUpdateChallengeArgs = {
 export type MutationUpdateCommentArgs = {
   content?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
-};
-
-
-export type MutationUpdateDiscussionBanArgs = {
-  expires_at?: InputMaybe<Scalars['Date']['input']>;
-  id: Scalars['String']['input'];
-  is_active?: InputMaybe<Scalars['Boolean']['input']>;
-  reason?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -653,6 +777,7 @@ export type MutationUpdatePostArgs = {
 
 
 export type MutationUpdateProfileArgs = {
+  active_title?: InputMaybe<Scalars['String']['input']>;
   avatar_url?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
   username?: InputMaybe<Scalars['String']['input']>;
@@ -726,7 +851,9 @@ export type Post = {
 
 export type Profile = {
   __typename?: 'Profile';
+  active_title?: Maybe<Scalars['String']['output']>;
   activities?: Maybe<Array<Activity>>;
+  activity_masteries?: Maybe<Array<ActivityMastery>>;
   avatar_url?: Maybe<Scalars['String']['output']>;
   banned_users?: Maybe<Array<DiscussionBan>>;
   challenge_entries?: Maybe<Array<ChallengeParticipant>>;
@@ -738,22 +865,32 @@ export type Profile = {
   discussion_bans?: Maybe<Array<DiscussionBan>>;
   discussion_posts?: Maybe<Array<DiscussionPost>>;
   discussion_replies?: Maybe<Array<DiscussionReply>>;
+  earned_badges?: Maybe<Array<EarnedBadge>>;
   granted_moderators?: Maybe<Array<DiscussionModerator>>;
   id?: Maybe<Scalars['ID']['output']>;
+  level?: Maybe<Scalars['Int']['output']>;
   moderator_roles?: Maybe<Array<DiscussionModerator>>;
   posts?: Maybe<Array<Post>>;
   team_memberships?: Maybe<Array<TeamMembership>>;
+  total_points?: Maybe<Scalars['Int']['output']>;
   updated_at?: Maybe<Scalars['Date']['output']>;
   username?: Maybe<Scalars['String']['output']>;
   workout_comment?: Maybe<Array<WorkoutComment>>;
   workout_sessions?: Maybe<Array<WorkoutSession>>;
+  xp?: Maybe<Scalars['Int']['output']>;
+  xp_logs?: Maybe<Array<XpLog>>;
 };
 
 export type Query = {
   __typename?: 'Query';
   activities?: Maybe<Array<Activity>>;
+  activity?: Maybe<Activity>;
+  activityMasteries?: Maybe<Array<ActivityMastery>>;
+  activityMastery?: Maybe<ActivityMastery>;
   activityType?: Maybe<ActivityType>;
   activityTypes?: Maybe<Array<ActivityType>>;
+  badge?: Maybe<Badge>;
+  badges?: Maybe<Array<Badge>>;
   challenge?: Maybe<Challenge>;
   challengeActivityTypes?: Maybe<Array<ChallengeActivityType>>;
   challengeParticipants?: Maybe<Array<ChallengeParticipant>>;
@@ -761,8 +898,11 @@ export type Query = {
   comments?: Maybe<Array<Comment>>;
   discussionBans?: Maybe<Array<DiscussionBan>>;
   discussionModerators?: Maybe<Array<DiscussionModerator>>;
+  discussionPost?: Maybe<DiscussionPost>;
   discussionPosts?: Maybe<Array<DiscussionPost>>;
   discussionReplies?: Maybe<Array<DiscussionReply>>;
+  earnedBadges?: Maybe<Array<EarnedBadge>>;
+  milestone?: Maybe<Milestone>;
   milestoneProgress?: Maybe<Array<MilestoneProgress>>;
   milestones?: Maybe<Array<Milestone>>;
   ok?: Maybe<Scalars['Boolean']['output']>;
@@ -776,8 +916,10 @@ export type Query = {
   workout?: Maybe<Workout>;
   workoutComments?: Maybe<Array<WorkoutComment>>;
   workoutExercises?: Maybe<Array<WorkoutExercise>>;
+  workoutSession?: Maybe<WorkoutSession>;
   workoutSessions?: Maybe<Array<WorkoutSession>>;
   workouts?: Maybe<Array<Workout>>;
+  xpLogs?: Maybe<Array<XpLog>>;
 };
 
 
@@ -789,6 +931,22 @@ export type QueryActivitiesArgs = {
 };
 
 
+export type QueryActivityArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryActivityMasteriesArgs = {
+  profile_id: Scalars['String']['input'];
+};
+
+
+export type QueryActivityMasteryArgs = {
+  activity_type_id: Scalars['String']['input'];
+  profile_id: Scalars['String']['input'];
+};
+
+
 export type QueryActivityTypeArgs = {
   id: Scalars['String']['input'];
 };
@@ -797,6 +955,11 @@ export type QueryActivityTypeArgs = {
 export type QueryActivityTypesArgs = {
   category?: InputMaybe<Scalars['String']['input']>;
   is_active?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+
+export type QueryBadgeArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -843,6 +1006,11 @@ export type QueryDiscussionModeratorsArgs = {
 };
 
 
+export type QueryDiscussionPostArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type QueryDiscussionPostsArgs = {
   author_id?: InputMaybe<Scalars['String']['input']>;
   challenge_id?: InputMaybe<Scalars['String']['input']>;
@@ -852,6 +1020,17 @@ export type QueryDiscussionPostsArgs = {
 export type QueryDiscussionRepliesArgs = {
   parent_id?: InputMaybe<Scalars['String']['input']>;
   post_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryEarnedBadgesArgs = {
+  badge_id?: InputMaybe<Scalars['String']['input']>;
+  profile_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryMilestoneArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -868,6 +1047,12 @@ export type QueryMilestonesArgs = {
 
 export type QueryPostArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type QueryPostsArgs = {
+  challenge_id?: InputMaybe<Scalars['String']['input']>;
+  profile_id?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -913,6 +1098,11 @@ export type QueryWorkoutExercisesArgs = {
 };
 
 
+export type QueryWorkoutSessionArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type QueryWorkoutSessionsArgs = {
   profile_id?: InputMaybe<Scalars['String']['input']>;
   workout_id?: InputMaybe<Scalars['String']['input']>;
@@ -922,6 +1112,11 @@ export type QueryWorkoutSessionsArgs = {
 export type QueryWorkoutsArgs = {
   creator_id?: InputMaybe<Scalars['String']['input']>;
   team_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryXpLogsArgs = {
+  profile_id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Team = {
@@ -963,6 +1158,7 @@ export type TeamRole =
 export type Workout = {
   __typename?: 'Workout';
   ai_model?: Maybe<Scalars['String']['output']>;
+  ai_raw_response?: Maybe<Scalars['JSON']['output']>;
   comments?: Maybe<Array<WorkoutComment>>;
   created_at?: Maybe<Scalars['Date']['output']>;
   creator?: Maybe<Profile>;
@@ -1016,3 +1212,27 @@ export type WorkoutSession = {
   workout?: Maybe<Workout>;
   workout_id?: Maybe<Scalars['String']['output']>;
 };
+
+export type XpLog = {
+  __typename?: 'XPLog';
+  created_at?: Maybe<Scalars['Date']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  points?: Maybe<Scalars['Int']['output']>;
+  profile?: Maybe<Profile>;
+  profile_id?: Maybe<Scalars['String']['output']>;
+  source_id?: Maybe<Scalars['String']['output']>;
+  source_type?: Maybe<XpSourceType>;
+};
+
+export type XpSourceType =
+  | 'ACTIVITY'
+  | 'ADMIN_ADJUSTMENT'
+  | 'BADGE_REWARD'
+  | 'CHALLENGE_COMPLETION'
+  | 'COMMENT'
+  | 'MILESTONE_COMPLETION'
+  | 'POST_CREATION'
+  | 'STREAK'
+  | 'TEAM_CREATION'
+  | 'WORKOUT_SESSION';

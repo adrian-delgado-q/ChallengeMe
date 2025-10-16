@@ -2,7 +2,7 @@ import SchemaBuilder from '@pothos/core';
 import PrismaPlugin from '@pothos/plugin-prisma';
 import type PrismaTypes from '@pothos/plugin-prisma/generated';
 import { PrismaClient } from '../prisma/prisma-client/client';
-import { DateResolver } from "graphql-scalars";
+import { DateResolver, JSONResolver } from "graphql-scalars";
 import { addPrismaMetrics } from './metrics/prismaMetrics';
 
 
@@ -18,6 +18,10 @@ export const builder = new SchemaBuilder<{
       Input: Date;  // The type used in arguments and input objects
       Output: Date; // The type for resolver return values
     };
+    JSON: {
+      Input: any;
+      Output: any;
+    };
   }
 }>({
   plugins: [PrismaPlugin],
@@ -27,23 +31,7 @@ export const builder = new SchemaBuilder<{
 });
 
 builder.addScalarType("Date", DateResolver, {});
-
-// Add Prisma enums
-builder.enumType('TeamRole', {
-  values: ['ADMIN', 'MEMBER'] as const,
-});
-
-builder.enumType('ChallengeParticipantType', {
-  values: ['INDIVIDUAL', 'TEAM'] as const,
-});
-
-builder.enumType('ChallengeStatus', {
-  values: ['ACTIVE', 'CLOSED', 'CANCELLED'] as const,
-});
-
-builder.enumType('ModeratorRole', {
-  values: ['MODERATOR', 'ADMIN'] as const,
-});
+builder.addScalarType("JSON", JSONResolver, {});
 
 builder.queryType({
   fields: (t) => ({

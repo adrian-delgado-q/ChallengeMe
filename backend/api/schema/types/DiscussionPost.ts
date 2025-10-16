@@ -43,6 +43,21 @@ builder.queryField('discussionPosts', (t) =>
   })
 );
 
+builder.queryField('discussionPost', (t) =>
+  t.prismaField({
+    type: 'DiscussionPost',
+    args: {
+      id: t.arg.string({ required: true }),
+    },
+    resolve: (query, root, args, ctx, info) => {
+      return prisma.discussionPost.findUniqueOrThrow({
+        ...query,
+        where: { id: args.id },
+      });
+    },
+  })
+);
+
 builder.mutationFields((t) => ({
   createDiscussionPost: t.prismaField({
     type: 'DiscussionPost',

@@ -40,7 +40,7 @@ builder.queryField('discussionBans', (t) =>
 );
 
 builder.mutationFields((t) => ({
-  createDiscussionBan: t.prismaField({
+  banFromDiscussion: t.prismaField({
     type: 'DiscussionBan',
     args: {
       challenge_id: t.arg.string({ required: true }),
@@ -63,25 +63,16 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  updateDiscussionBan: t.prismaField({
+  unbanFromDiscussion: t.prismaField({
     type: 'DiscussionBan',
     args: {
       id: t.arg.string({ required: true }),
-      reason: t.arg.string(),
-      expires_at: t.arg({ type: 'Date' }),
-      is_active: t.arg.boolean(),
     },
     resolve: (query, root, args, ctx, info) => {
-      const { id, ...data } = args;
-      const updateData: any = {};
-      if (data.reason !== undefined) updateData.reason = data.reason;
-      if (data.expires_at !== undefined) updateData.expires_at = data.expires_at;
-      if (data.is_active !== undefined) updateData.is_active = data.is_active;
-      
       return prisma.discussionBan.update({
         ...query,
-        where: { id },
-        data: updateData,
+        where: { id: args.id },
+        data: { is_active: false },
       });
     },
   }),

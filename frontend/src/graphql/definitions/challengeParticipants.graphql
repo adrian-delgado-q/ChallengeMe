@@ -2,10 +2,19 @@
 
 fragment ChallengeParticipantDetails on ChallengeParticipant {
     id
-    challenge_id
     user_id
     team_id
     joined_at
+    team {
+        id
+        name
+        avatar_url
+    }
+    user {
+        id
+        username
+        avatar_url
+    }
 }
 
 query GetChallengeParticipants($challenge_id: String, $user_id: String, $team_id: String) {

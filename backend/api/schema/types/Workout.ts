@@ -12,6 +12,7 @@ builder.prismaObject('Workout', {
     updated_at: t.expose('updated_at', { type: 'Date' }),
     generated_by_ai: t.exposeBoolean('generated_by_ai'),
     ai_model: t.exposeString('ai_model', { nullable: true }),
+    ai_raw_response: t.expose('ai_raw_response', { type: 'JSON', nullable: true }),
     // Relations
     creator: t.relation('creator'),
     team: t.relation('team', { nullable: true }),

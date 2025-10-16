@@ -10,6 +10,12 @@ CREATE TYPE "ChallengeStatus" AS ENUM ('ACTIVE', 'CLOSED', 'CANCELLED');
 -- CreateEnum
 CREATE TYPE "ModeratorRole" AS ENUM ('MODERATOR', 'ADMIN');
 
+-- CreateEnum
+CREATE TYPE "XPSourceType" AS ENUM ('ACTIVITY', 'COMMENT', 'CHALLENGE_COMPLETION', 'MILESTONE_COMPLETION', 'WORKOUT_SESSION', 'STREAK', 'BADGE_REWARD', 'ADMIN_ADJUSTMENT', 'TEAM_CREATION', 'POST_CREATION');
+
+-- CreateEnum
+CREATE TYPE "MasteryTier" AS ENUM ('NOVICE', 'ADEPT', 'EXPERT', 'MASTER', 'GRANDMASTER');
+
 -- CreateTable
 CREATE TABLE "schema_migrations" (
     "version" VARCHAR NOT NULL,
@@ -24,6 +30,10 @@ CREATE TABLE "profiles" (
     "avatar_url" TEXT,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL,
+    "xp" INTEGER NOT NULL DEFAULT 0,
+    "level" INTEGER NOT NULL DEFAULT 1,
+    "total_points" INTEGER NOT NULL DEFAULT 0,
+    "active_title" TEXT,
 
     CONSTRAINT "profiles_pkey" PRIMARY KEY ("id")
 );
@@ -293,6 +303,55 @@ CREATE TABLE "workout_comments" (
     CONSTRAINT "workout_comments_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "xp_logs" (
+    "id" UUID NOT NULL,
+    "profile_id" UUID NOT NULL,
+    "source_type" "XPSourceType" NOT NULL,
+    "source_id" TEXT,
+    "points" INTEGER NOT NULL,
+    "description" TEXT,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "xp_logs_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "activity_masteries" (
+    "id" UUID NOT NULL,
+    "profile_id" UUID NOT NULL,
+    "activity_type_id" UUID NOT NULL,
+    "total_value" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "mastery_tier" "MasteryTier" NOT NULL DEFAULT 'NOVICE',
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
+
+    CONSTRAINT "activity_masteries_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "badges" (
+    "id" UUID NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "category" TEXT NOT NULL,
+    "icon_url" TEXT,
+    "xp_bonus" INTEGER NOT NULL DEFAULT 150,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "badges_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "earned_badges" (
+    "id" UUID NOT NULL,
+    "profile_id" UUID NOT NULL,
+    "badge_id" UUID NOT NULL,
+    "earned_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "earned_badges_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "profiles_username_key" ON "profiles"("username");
 
@@ -355,6 +414,15 @@ CREATE UNIQUE INDEX "discussion_bans_challenge_id_user_id_is_active_key" ON "dis
 
 -- CreateIndex
 CREATE UNIQUE INDEX "workout_exercises_workout_id_order_index_key" ON "workout_exercises"("workout_id", "order_index");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "activity_masteries_profile_id_activity_type_id_key" ON "activity_masteries"("profile_id", "activity_type_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "badges_name_key" ON "badges"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "earned_badges_profile_id_badge_id_key" ON "earned_badges"("profile_id", "badge_id");
 
 -- AddForeignKey
 ALTER TABLE "teams" ADD CONSTRAINT "teams_creator_id_fkey" FOREIGN KEY ("creator_id") REFERENCES "profiles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -481,3 +549,18 @@ ALTER TABLE "workout_comments" ADD CONSTRAINT "workout_comments_author_id_fkey" 
 
 -- AddForeignKey
 ALTER TABLE "workout_comments" ADD CONSTRAINT "workout_comments_workout_id_fkey" FOREIGN KEY ("workout_id") REFERENCES "workouts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "xp_logs" ADD CONSTRAINT "xp_logs_profile_id_fkey" FOREIGN KEY ("profile_id") REFERENCES "profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "activity_masteries" ADD CONSTRAINT "activity_masteries_profile_id_fkey" FOREIGN KEY ("profile_id") REFERENCES "profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "activity_masteries" ADD CONSTRAINT "activity_masteries_activity_type_id_fkey" FOREIGN KEY ("activity_type_id") REFERENCES "activity_types"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "earned_badges" ADD CONSTRAINT "earned_badges_profile_id_fkey" FOREIGN KEY ("profile_id") REFERENCES "profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "earned_badges" ADD CONSTRAINT "earned_badges_badge_id_fkey" FOREIGN KEY ("badge_id") REFERENCES "badges"("id") ON DELETE CASCADE ON UPDATE CASCADE;

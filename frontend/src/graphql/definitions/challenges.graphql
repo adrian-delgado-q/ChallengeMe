@@ -1,4 +1,5 @@
 # src/graphql/challenges.graphql
+#import ChallengeParticipantDetails from "./challengeParticipants.graphql"
 
 # Fragments
 
@@ -31,23 +32,6 @@ fragment ChallengeActivityType on ChallengeActivityType {
         unit
         unit_label
         description
-    }
-}
-
-fragment ChallengeParticipantDetails on ChallengeParticipant {
-    id
-    user_id
-    team_id
-    joined_at
-    team {
-        id
-        name
-        avatar_url
-    }
-    user {
-        id
-        username
-        avatar_url
     }
 }
 
@@ -123,11 +107,7 @@ query GetPublicChallenges {
     }
 }
 
-query GetChallengeParticipants($challenge_id: String!) {
-    challengeParticipants(challenge_id: $challenge_id) {
-        ...ChallengeParticipantDetails
-    }
-}
+
 
 query GetUserChallengeParticipation($challenge_id: String!, $user_id: String!) {
     challengeParticipants(challenge_id: $challenge_id, user_id: $user_id) {
@@ -242,33 +222,7 @@ mutation RemoveChallengeParticipant($id: String!) {
     }
 }
 
-mutation CreateMilestone(
-    $challenge_id: String!
-    $name: String!
-    $target_value: Float!
-    $activity_type_id: String!
-    $order: Int!
-) {
-    createMilestone(
-        challenge_id: $challenge_id
-        name: $name
-        target_value: $target_value
-        activity_type_id: $activity_type_id
-        order: $order
-    ) {
-        id
-        challenge_id
-        name
-        target_value
-        order
-        activity_type {
-            id
-            name
-            unit
-            unit_label
-        }
-    }
-}
+
 
 mutation AddChallengeActivityType($challenge_id: String!, $activity_type_id: String!) {
     createChallengeActivityType(

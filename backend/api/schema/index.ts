@@ -1,6 +1,7 @@
 import { builder } from '../schema-builder';
 
 // Import all GraphQL types
+import './enums'
 import './types/Profile';
 import './types/Team';
 import './types/TeamMembership';
@@ -21,5 +22,9 @@ import './types/Workout';
 import './types/WorkoutExercise';
 import './types/WorkoutSession';
 import './types/WorkoutComment';
+import './types/XPLog';
+import './types/ActivityMastery';
+import './types/Badge';
+import './types/EarnedBadge';
 
 export const schema = builder.toSchema();

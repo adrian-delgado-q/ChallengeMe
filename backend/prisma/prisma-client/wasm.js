@@ -129,7 +129,11 @@ exports.Prisma.ProfileScalarFieldEnum = {
   username: 'username',
   avatar_url: 'avatar_url',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  xp: 'xp',
+  level: 'level',
+  total_points: 'total_points',
+  active_title: 'active_title'
 };
 
 exports.Prisma.TeamScalarFieldEnum = {
@@ -340,6 +344,43 @@ exports.Prisma.WorkoutCommentScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.XPLogScalarFieldEnum = {
+  id: 'id',
+  profile_id: 'profile_id',
+  source_type: 'source_type',
+  source_id: 'source_id',
+  points: 'points',
+  description: 'description',
+  created_at: 'created_at'
+};
+
+exports.Prisma.ActivityMasteryScalarFieldEnum = {
+  id: 'id',
+  profile_id: 'profile_id',
+  activity_type_id: 'activity_type_id',
+  total_value: 'total_value',
+  mastery_tier: 'mastery_tier',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.BadgeScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  category: 'category',
+  icon_url: 'icon_url',
+  xp_bonus: 'xp_bonus',
+  created_at: 'created_at'
+};
+
+exports.Prisma.EarnedBadgeScalarFieldEnum = {
+  id: 'id',
+  profile_id: 'profile_id',
+  badge_id: 'badge_id',
+  earned_at: 'earned_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -386,6 +427,27 @@ exports.ModeratorRole = exports.$Enums.ModeratorRole = {
   ADMIN: 'ADMIN'
 };
 
+exports.XPSourceType = exports.$Enums.XPSourceType = {
+  ACTIVITY: 'ACTIVITY',
+  COMMENT: 'COMMENT',
+  CHALLENGE_COMPLETION: 'CHALLENGE_COMPLETION',
+  MILESTONE_COMPLETION: 'MILESTONE_COMPLETION',
+  WORKOUT_SESSION: 'WORKOUT_SESSION',
+  STREAK: 'STREAK',
+  BADGE_REWARD: 'BADGE_REWARD',
+  ADMIN_ADJUSTMENT: 'ADMIN_ADJUSTMENT',
+  TEAM_CREATION: 'TEAM_CREATION',
+  POST_CREATION: 'POST_CREATION'
+};
+
+exports.MasteryTier = exports.$Enums.MasteryTier = {
+  NOVICE: 'NOVICE',
+  ADEPT: 'ADEPT',
+  EXPERT: 'EXPERT',
+  MASTER: 'MASTER',
+  GRANDMASTER: 'GRANDMASTER'
+};
+
 exports.Prisma.ModelName = {
   SchemaMigration: 'SchemaMigration',
   Profile: 'Profile',
@@ -407,7 +469,11 @@ exports.Prisma.ModelName = {
   Workout: 'Workout',
   WorkoutExercise: 'WorkoutExercise',
   WorkoutSession: 'WorkoutSession',
-  WorkoutComment: 'WorkoutComment'
+  WorkoutComment: 'WorkoutComment',
+  XPLog: 'XPLog',
+  ActivityMastery: 'ActivityMastery',
+  Badge: 'Badge',
+  EarnedBadge: 'EarnedBadge'
 };
 
 /**

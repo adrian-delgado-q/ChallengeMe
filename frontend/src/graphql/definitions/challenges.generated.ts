@@ -1,6 +1,7 @@
 // THIS FILE IS GENERATED, DO NOT EDIT!
 import type * as Types from '../generated/graphql';
 
+import { ChallengeParticipantDetailsFragmentDoc } from './challengeParticipants.generated';
 import { useQuery, useMutation, type UseQueryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 function fetcher<TData, TVariables>(endpoint: string, requestInit: RequestInit, query: string, variables?: TVariables) {
@@ -27,8 +28,6 @@ export type ChallengeCreatorFragment = { __typename?: 'Profile', id?: string | n
 export type ChallengeMilestoneFragment = { __typename?: 'Milestone', id?: string | null, name?: string | null, target_value?: number | null, order?: number | null, activity_type?: { __typename?: 'ActivityType', id?: string | null, name?: string | null, unit?: string | null, unit_label?: string | null } | null };
 
 export type ChallengeActivityTypeFragment = { __typename?: 'ChallengeActivityType', id?: string | null, activity_type_id?: string | null, activity_type?: { __typename?: 'ActivityType', id?: string | null, name?: string | null, category?: string | null, unit?: string | null, unit_label?: string | null, description?: string | null } | null };
-
-export type ChallengeParticipantDetailsFragment = { __typename?: 'ChallengeParticipant', id?: string | null, user_id?: string | null, team_id?: string | null, joined_at?: string | null, team?: { __typename?: 'Team', id?: string | null, name?: string | null, avatar_url?: string | null } | null, user?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null };
 
 export type ChallengeBasicFragment = { __typename?: 'Challenge', id?: string | null, title?: string | null, description?: string | null, instructions?: string | null, image_url?: string | null, challenge_type?: Types.ChallengeParticipantType | null, max_participants?: number | null, participant_count?: number | null, max_team_size?: number | null, start_date?: string | null, end_date?: string | null, is_public?: boolean | null, access_code?: string | null, status?: Types.ChallengeStatus | null, created_at?: string | null, expires_at?: string | null };
 
@@ -62,13 +61,6 @@ export type GetPublicChallengesQueryVariables = Types.Exact<{ [key: string]: nev
 
 
 export type GetPublicChallengesQuery = { __typename?: 'Query', challenges?: Array<{ __typename?: 'Challenge', id?: string | null, title?: string | null, description?: string | null, instructions?: string | null, image_url?: string | null, challenge_type?: Types.ChallengeParticipantType | null, max_participants?: number | null, participant_count?: number | null, max_team_size?: number | null, start_date?: string | null, end_date?: string | null, is_public?: boolean | null, access_code?: string | null, status?: Types.ChallengeStatus | null, created_at?: string | null, expires_at?: string | null, creator?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null, milestones?: Array<{ __typename?: 'Milestone', id?: string | null, name?: string | null, target_value?: number | null, order?: number | null, activity_type?: { __typename?: 'ActivityType', id?: string | null, name?: string | null, unit?: string | null, unit_label?: string | null } | null }> | null, supported_activities?: Array<{ __typename?: 'ChallengeActivityType', id?: string | null, activity_type_id?: string | null, activity_type?: { __typename?: 'ActivityType', id?: string | null, name?: string | null, category?: string | null, unit?: string | null, unit_label?: string | null, description?: string | null } | null }> | null }> | null };
-
-export type GetChallengeParticipantsQueryVariables = Types.Exact<{
-  challenge_id: Types.Scalars['String']['input'];
-}>;
-
-
-export type GetChallengeParticipantsQuery = { __typename?: 'Query', challengeParticipants?: Array<{ __typename?: 'ChallengeParticipant', id?: string | null, user_id?: string | null, team_id?: string | null, joined_at?: string | null, team?: { __typename?: 'Team', id?: string | null, name?: string | null, avatar_url?: string | null } | null, user?: { __typename?: 'Profile', id?: string | null, username?: string | null, avatar_url?: string | null } | null }> | null };
 
 export type GetUserChallengeParticipationQueryVariables = Types.Exact<{
   challenge_id: Types.Scalars['String']['input'];
@@ -158,17 +150,6 @@ export type RemoveChallengeParticipantMutationVariables = Types.Exact<{
 
 export type RemoveChallengeParticipantMutation = { __typename?: 'Mutation', deleteChallengeParticipant?: { __typename?: 'ChallengeParticipant', id?: string | null } | null };
 
-export type CreateMilestoneMutationVariables = Types.Exact<{
-  challenge_id: Types.Scalars['String']['input'];
-  name: Types.Scalars['String']['input'];
-  target_value: Types.Scalars['Float']['input'];
-  activity_type_id: Types.Scalars['String']['input'];
-  order: Types.Scalars['Int']['input'];
-}>;
-
-
-export type CreateMilestoneMutation = { __typename?: 'Mutation', createMilestone?: { __typename?: 'Milestone', id?: string | null, challenge_id?: string | null, name?: string | null, target_value?: number | null, order?: number | null, activity_type?: { __typename?: 'ActivityType', id?: string | null, name?: string | null, unit?: string | null, unit_label?: string | null } | null } | null };
-
 export type AddChallengeActivityTypeMutationVariables = Types.Exact<{
   challenge_id: Types.Scalars['String']['input'];
   activity_type_id: Types.Scalars['String']['input'];
@@ -178,24 +159,6 @@ export type AddChallengeActivityTypeMutationVariables = Types.Exact<{
 export type AddChallengeActivityTypeMutation = { __typename?: 'Mutation', createChallengeActivityType?: { __typename?: 'ChallengeActivityType', id?: string | null, challenge_id?: string | null, activity_type_id?: string | null, activity_type?: { __typename?: 'ActivityType', id?: string | null, name?: string | null, category?: string | null, unit?: string | null, unit_label?: string | null } | null } | null };
 
 
-export const ChallengeParticipantDetailsFragmentDoc = `
-    fragment ChallengeParticipantDetails on ChallengeParticipant {
-  id
-  user_id
-  team_id
-  joined_at
-  team {
-    id
-    name
-    avatar_url
-  }
-  user {
-    id
-    username
-    avatar_url
-  }
-}
-    `;
 export const ChallengeBasicFragmentDoc = `
     fragment ChallengeBasic on Challenge {
   id
@@ -386,31 +349,6 @@ export const useGetPublicChallengesQuery = <
       {
     queryKey: variables === undefined ? ['GetPublicChallenges'] : ['GetPublicChallenges', variables],
     queryFn: fetcher<GetPublicChallengesQuery, GetPublicChallengesQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetPublicChallengesDocument, variables),
-    ...options
-  }
-    )};
-
-export const GetChallengeParticipantsDocument = `
-    query GetChallengeParticipants($challenge_id: String!) {
-  challengeParticipants(challenge_id: $challenge_id) {
-    ...ChallengeParticipantDetails
-  }
-}
-    ${ChallengeParticipantDetailsFragmentDoc}`;
-
-export const useGetChallengeParticipantsQuery = <
-      TData = GetChallengeParticipantsQuery,
-      TError = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      variables: GetChallengeParticipantsQueryVariables,
-      options?: Omit<UseQueryOptions<GetChallengeParticipantsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<GetChallengeParticipantsQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<GetChallengeParticipantsQuery, TError, TData>(
-      {
-    queryKey: ['GetChallengeParticipants', variables],
-    queryFn: fetcher<GetChallengeParticipantsQuery, GetChallengeParticipantsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetChallengeParticipantsDocument, variables),
     ...options
   }
     )};
@@ -665,46 +603,6 @@ export const useRemoveChallengeParticipantMutation = <
       {
     mutationKey: ['RemoveChallengeParticipant'],
     mutationFn: (variables?: RemoveChallengeParticipantMutationVariables) => fetcher<RemoveChallengeParticipantMutation, RemoveChallengeParticipantMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, RemoveChallengeParticipantDocument, variables)(),
-    ...options
-  }
-    )};
-
-export const CreateMilestoneDocument = `
-    mutation CreateMilestone($challenge_id: String!, $name: String!, $target_value: Float!, $activity_type_id: String!, $order: Int!) {
-  createMilestone(
-    challenge_id: $challenge_id
-    name: $name
-    target_value: $target_value
-    activity_type_id: $activity_type_id
-    order: $order
-  ) {
-    id
-    challenge_id
-    name
-    target_value
-    order
-    activity_type {
-      id
-      name
-      unit
-      unit_label
-    }
-  }
-}
-    `;
-
-export const useCreateMilestoneMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      options?: UseMutationOptions<CreateMilestoneMutation, TError, CreateMilestoneMutationVariables, TContext>
-    ) => {
-    
-    return useMutation<CreateMilestoneMutation, TError, CreateMilestoneMutationVariables, TContext>(
-      {
-    mutationKey: ['CreateMilestone'],
-    mutationFn: (variables?: CreateMilestoneMutationVariables) => fetcher<CreateMilestoneMutation, CreateMilestoneMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, CreateMilestoneDocument, variables)(),
     ...options
   }
     )};

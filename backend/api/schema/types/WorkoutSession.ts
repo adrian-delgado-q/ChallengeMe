@@ -36,7 +36,89 @@ builder.queryField('workoutSessions', (t) =>
   })
 );
 
+builder.queryField('workoutSession', (t) =>
+  t.prismaField({
+    type: 'WorkoutSession',
+    args: {
+      id: t.arg.string({ required: true }),
+    },
+    resolve: (query, root, args, ctx, info) => {
+      return prisma.workoutSession.findUniqueOrThrow({
+        ...query,
+        where: { id: args.id },
+      });
+    },
+  })
+);
+
 builder.mutationFields((t) => ({
+  // Custom mutation expected by frontend
+  startWorkoutSession: t.prismaField({
+    type: 'WorkoutSession',
+    args: {
+      workout_id: t.arg.string({ required: true }),
+      profile_id: t.arg.string({ required: true }),
+      session_date: t.arg({ type: 'Date' }),
+    },
+    resolve: (query, root, args, ctx, info) => {
+      return prisma.workoutSession.create({
+        ...query,
+        data: {
+          workout_id: args.workout_id,
+          profile_id: args.profile_id,
+          session_date: args.session_date || new Date(),
+        },
+      });
+    },
+  }),
+
+  // Custom mutation expected by frontend
+  logWorkoutActivity: t.prismaField({
+    type: 'Activity',
+    args: {
+      session_id: t.arg.string({ required: true }),
+      activity_type_id: t.arg.string({ required: true }),
+      value: t.arg.float({ required: true }),
+      notes: t.arg.string(),
+    },
+    resolve: async (query, root, args, ctx, info) => {
+      // Get session to fetch workout_id and profile_id
+      const session = await prisma.workoutSession.findUniqueOrThrow({
+        where: { id: args.session_id },
+      });
+      
+      return prisma.activity.create({
+        ...query,
+        data: {
+          workout_session_id: args.session_id,
+          activity_type_id: args.activity_type_id,
+          value: args.value,
+          notes: args.notes || undefined,
+          profile_id: session.profile_id,
+          date: session.session_date,
+        },
+      });
+    },
+  }),
+
+  // Custom mutation expected by frontend
+  completeWorkoutSession: t.prismaField({
+    type: 'WorkoutSession',
+    args: {
+      id: t.arg.string({ required: true }),
+      notes: t.arg.string(),
+    },
+    resolve: (query, root, args, ctx, info) => {
+      return prisma.workoutSession.update({
+        ...query,
+        where: { id: args.id },
+        data: {
+          notes: args.notes || undefined,
+        },
+      });
+    },
+  }),
+
   createWorkoutSession: t.prismaField({
     type: 'WorkoutSession',
     args: {

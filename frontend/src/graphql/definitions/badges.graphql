@@ -1,0 +1,73 @@
+# src/graphql/definitions/badges.graphql
+
+# Fragments
+
+fragment BadgeBasic on Badge {
+    id
+    name
+    description
+    category
+    icon_url
+    xp_bonus
+    created_at
+}
+
+# Queries
+
+query GetBadge($id: String!) {
+    badge(id: $id) {
+        ...BadgeBasic
+    }
+}
+
+query GetBadges {
+    badges {
+        ...BadgeBasic
+    }
+}
+
+# Mutations
+
+mutation CreateBadge(
+    $name: String!
+    $description: String!
+    $category: String!
+    $icon_url: String
+    $xp_bonus: Int
+) {
+    createBadge(
+        name: $name
+        description: $description
+        category: $category
+        icon_url: $icon_url
+        xp_bonus: $xp_bonus
+    ) {
+        ...BadgeBasic
+    }
+}
+
+mutation UpdateBadge(
+    $id: String!
+    $name: String
+    $description: String
+    $category: String
+    $icon_url: String
+    $xp_bonus: Int
+) {
+    updateBadge(
+        id: $id
+        name: $name
+        description: $description
+        category: $category
+        icon_url: $icon_url
+        xp_bonus: $xp_bonus
+    ) {
+        ...BadgeBasic
+    }
+}
+
+mutation DeleteBadge($id: String!) {
+    deleteBadge(id: $id) {
+        id
+    }
+}

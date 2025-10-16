@@ -40,7 +40,7 @@ builder.mutationFields((t) => ({
     args: {
       team_id: t.arg.string({ required: true }),
       user_id: t.arg.string({ required: true }),
-      role: t.arg.string(),
+      role: t.arg.string({ required: false }),
       expires_at: t.arg({ type: 'Date' }),
     },
     resolve: (query, root, args, ctx, info) => {
@@ -60,7 +60,7 @@ builder.mutationFields((t) => ({
     type: 'TeamMembership',
     args: {
       id: t.arg.string({ required: true }),
-      role: t.arg.string(),
+      role: t.arg.string({ required: false }),
       expires_at: t.arg({ type: 'Date' }),
     },
     resolve: (query, root, args, ctx, info) => {

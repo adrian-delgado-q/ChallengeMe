@@ -1,0 +1,28 @@
+# src/graphql/definitions/earnedBadges.graphql
+#import BadgeBasic from "./badges.graphql"
+
+# Fragments
+
+fragment EarnedBadgeBasic on EarnedBadge {
+    id
+    earned_at
+}
+
+fragment EarnedBadgeWithRelations on EarnedBadge {
+    ...EarnedBadgeBasic
+    profile {
+        id
+        username
+    }
+    badge {
+        ...BadgeBasic
+    }
+}
+
+# Queries
+
+query GetEarnedBadges($profile_id: String!) {
+    earnedBadges(profile_id: $profile_id) {
+        ...EarnedBadgeWithRelations
+    }
+}

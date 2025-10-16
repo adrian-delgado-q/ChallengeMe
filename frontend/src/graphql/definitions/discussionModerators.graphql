@@ -15,8 +15,8 @@ query GetDiscussionModerators($challenge_id: String!) {
     }
 }
 
-mutation AddDiscussionModerator($challenge_id: String!, $user_id: String!, $role: ModeratorRole) {
-    addDiscussionModerator(challenge_id: $challenge_id, user_id: $user_id, role: $role) {
+mutation AddDiscussionModerator($challenge_id: String!, $user_id: String!, $granted_by_id: String!, $role: String) {
+    addDiscussionModerator(challenge_id: $challenge_id, user_id: $user_id, granted_by_id: $granted_by_id, role: $role) {
         ...DiscussionModeratorDetails
     }
 }

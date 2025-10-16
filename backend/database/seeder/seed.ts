@@ -10,6 +10,10 @@ import {
 	Workout,
 	WorkoutExercise,
 	WorkoutSession,
+	Badge,
+	EarnedBadge,
+	XPLog,
+	ActivityMastery,
 } from '../../prisma/prisma-client/client';
 import { faker } from '@faker-js/faker';
 import activityTypes from './activityTypes';
@@ -22,6 +26,13 @@ const prisma = new PrismaClient();
 async function main() {
 	console.log('Start seeding...');
 
+	const defaultProfileFields = {
+		xp: 0,
+		level: 1,
+		total_points: 0,
+		active_title: null,
+	};
+
 	let users: Profile[] = [
 		{
 			id: '11457ad5-e9bd-4b1f-b9d1-11adbd8a2104',
@@ -29,6 +40,7 @@ async function main() {
 			avatar_url: 'https://cdn.jsdelivr.net/gh/faker-js/assets-person-portrait/male/512/31.jpg',
 			created_at: new Date('2025-10-12T21:37:29.303Z'),
 			updated_at: new Date('2025-10-12T21:37:29.303Z'),
+			...defaultProfileFields,
 		},
 		{
 			id: 'e5b3afba-246c-446b-af30-7f1f614889ba',
@@ -36,6 +48,7 @@ async function main() {
 			avatar_url: 'https://avatars.githubusercontent.com/u/65758055',
 			created_at: new Date('2025-10-12T21:37:29.304Z'),
 			updated_at: new Date('2025-10-12T21:37:29.304Z'),
+			...defaultProfileFields,
 		},
 		{
 			id: 'f17bb1f3-4d9a-4237-9e25-35f72c9144f9',
@@ -43,6 +56,7 @@ async function main() {
 			avatar_url: 'https://avatars.githubusercontent.com/u/80904485',
 			created_at: new Date('2025-10-12T21:37:29.303Z'),
 			updated_at: new Date('2025-10-12T21:37:29.303Z'),
+			...defaultProfileFields,
 		},
 		{
 			id: '19a550d4-adf6-4aff-ac16-ff12bca6d41f',
@@ -50,6 +64,7 @@ async function main() {
 			avatar_url: 'https://avatars.githubusercontent.com/u/11715011',
 			created_at: new Date('2025-10-12T21:37:29.303Z'),
 			updated_at: new Date('2025-10-12T21:37:29.303Z'),
+			...defaultProfileFields,
 		},
 		{
 			id: '1d78e5ab-b908-4df9-8f95-bbe527048a1e',
@@ -57,6 +72,7 @@ async function main() {
 			avatar_url: 'https://cdn.jsdelivr.net/gh/faker-js/assets-person-portrait/male/512/31.jpg',
 			created_at: new Date('2025-10-12T21:37:29.303Z'),
 			updated_at: new Date('2025-10-12T21:37:29.303Z'),
+			...defaultProfileFields,
 		},
 		{
 			id: '81c8f7bd-0988-4538-a4c9-374345d5eed0',
@@ -64,6 +80,7 @@ async function main() {
 			avatar_url: 'https://avatars.githubusercontent.com/u/27516265',
 			created_at: new Date('2025-10-12T21:37:29.303Z'),
 			updated_at: new Date('2025-10-12T21:37:29.303Z'),
+			...defaultProfileFields,
 		},
 		{
 			id: '7886a175-30e3-4977-a1e4-a9be5ecfbfc3',
@@ -71,6 +88,7 @@ async function main() {
 			avatar_url: 'https://cdn.jsdelivr.net/gh/faker-js/assets-person-portrait/male/512/55.jpg',
 			created_at: new Date('2025-10-12T21:37:29.303Z'),
 			updated_at: new Date('2025-10-12T21:37:29.303Z'),
+			...defaultProfileFields,
 		},
 		{
 			id: '49bc61ac-1cfb-4c0b-bf03-988d83448587',
@@ -78,6 +96,7 @@ async function main() {
 			avatar_url: 'https://avatars.githubusercontent.com/u/18041784',
 			created_at: new Date('2025-10-12T21:37:29.303Z'),
 			updated_at: new Date('2025-10-12T21:37:29.303Z'),
+			...defaultProfileFields,
 		},
 		{
 			id: 'ca89fa35-5338-4472-a32f-4d7419c30f9b',
@@ -85,6 +104,7 @@ async function main() {
 			avatar_url: 'https://cdn.jsdelivr.net/gh/faker-js/assets-person-portrait/male/512/67.jpg',
 			created_at: new Date('2025-10-12T21:37:29.303Z'),
 			updated_at: new Date('2025-10-12T21:37:29.303Z'),
+			...defaultProfileFields,
 		},
 		{
 			id: '98ecfa5d-41c8-41b0-91ad-0acbbfccb6af',
@@ -92,6 +112,7 @@ async function main() {
 			avatar_url: 'https://cdn.jsdelivr.net/gh/faker-js/assets-person-portrait/male/512/59.jpg',
 			created_at: new Date('2025-10-12T21:37:29.303Z'),
 			updated_at: new Date('2025-10-12T21:37:29.303Z'),
+			...defaultProfileFields,
 		},
 	];
 	for (const user of users) {
@@ -107,6 +128,34 @@ async function main() {
 	}
 
 	console.log(`${users.length} users created.`);
+
+	// 1.5 Create Badges
+	console.log('Seeding badges...');
+	const badges_to_create = [
+		{ name: 'First Steps', description: 'Log your first activity.', category: 'Feats', icon_url: 'https://example.com/icons/first_steps.png', xp_bonus: 50 },
+		{ name: 'Marathon Runner', description: 'Complete a full marathon (42.2 km) in a single run.', category: 'Feats', icon_url: 'https://example.com/icons/marathon.png', xp_bonus: 500 },
+		{ name: 'Century Ride', description: 'Complete a 100 km bike ride.', category: 'Feats', icon_url: 'https://example.com/icons/century_ride.png', xp_bonus: 500 },
+		{ name: 'Weekly Warrior', description: 'Log an activity every day for 7 days straight.', category: 'Consistency', icon_url: 'https://example.com/icons/weekly_warrior.png', xp_bonus: 150 },
+		{ name: 'Monthly Mover', description: 'Log an activity every day for 30 days straight.', category: 'Consistency', icon_url: 'https://example.com/icons/monthly_mover.png', xp_bonus: 300 },
+		{ name: 'Running Novice', description: 'Reach Novice tier in Running.', category: 'Mastery', icon_url: 'https://example.com/icons/running_novice.png', xp_bonus: 100 },
+		{ name: 'Weightlifting Adept', description: 'Reach Adept tier in Weightlifting.', category: 'Mastery', icon_url: 'https://example.com/icons/weightlifting_adept.png', xp_bonus: 200 },
+		{ name: 'Challenge Champion', description: 'Finish #1 on a challenge leaderboard.', category: 'Social', icon_url: 'https://example.com/icons/champion.png', xp_bonus: 400 },
+		{ name: 'Team Player', description: 'Join or create a team.', category: 'Social', icon_url: 'https://example.com/icons/team_player.png', xp_bonus: 75 },
+	];
+
+	for (const badge_data of badges_to_create) {
+		try {
+			await prisma.badge.upsert({
+				where: { name: badge_data.name },
+				update: badge_data,
+				create: badge_data,
+			});
+		} catch (error) {
+			console.error(`Error creating badge ${badge_data.name}:`, error);
+		}
+	}
+	const badges = await prisma.badge.findMany();
+	console.log(`${badges.length} badges created.`);
 
 	// 2. Create ActivityTypes
 	console.log('Seeding activity types...');
@@ -484,6 +533,88 @@ async function main() {
 			}
 		}
 		console.log('Workout comments created.');
+
+		// 15. Create ActivityMastery
+		console.log('Creating activity masteries...');
+		for (const user of users) {
+			const mastery_count = faker.number.int({ min: 1, max: 5 });
+			const activity_types_for_mastery = faker.helpers.arrayElements(db_activity_types, mastery_count);
+			for (const activity_type of activity_types_for_mastery) {
+				await prisma.activityMastery.create({
+					data: {
+						profile_id: user.id,
+						activity_type_id: activity_type.id,
+						total_value: faker.number.float({ min: 0, max: 1000 }),
+						mastery_tier: faker.helpers.arrayElement(['NOVICE', 'ADEPT', 'EXPERT', 'MASTER', 'GRANDMASTER']),
+					},
+				});
+			}
+		}
+		console.log('Activity masteries created.');
+
+		// 16. Create XPLogs
+		console.log('Creating XP logs...');
+		const activities = await prisma.activity.findMany();
+		for (const activity of activities) {
+			if (activity.profile_id) {
+				await prisma.xPLog.create({
+					data: {
+						profile_id: activity.profile_id,
+						source_type: 'ACTIVITY',
+						source_id: activity.id,
+						points: faker.number.int({ min: 10, max: 100 }),
+						description: `Completed activity ${activity.id}`,
+					},
+				});
+			}
+		}
+
+		const xp_log_count = faker.number.int({ min: 10, max: 20 });
+		for (let i = 0; i < xp_log_count; i++) {
+			const user = faker.helpers.arrayElement(users) as Profile;
+			await prisma.xPLog.create({
+				data: {
+					profile_id: user.id,
+					source_type: faker.helpers.arrayElement(['COMMENT', 'CHALLENGE_COMPLETION', 'MILESTONE_COMPLETION', 'STREAK', 'BADGE_REWARD']),
+					points: faker.number.int({ min: 5, max: 50 }),
+					description: faker.lorem.sentence(),
+				},
+			});
+		}
+		console.log('XP logs created.');
+
+		// 17. Create EarnedBadges
+		console.log('Creating earned badges...');
+		const all_badges = await prisma.badge.findMany();
+		for (const user of users) {
+			const badge_count = faker.number.int({ min: 0, max: 3 });
+			const badges_to_award = faker.helpers.arrayElements(all_badges, badge_count);
+			// Remove duplicates to avoid constraint violations
+			const unique_badges = [...new Set(badges_to_award.map(b => b.id))].map(id => 
+				badges_to_award.find(b => b.id === id)!
+			);
+			
+			for (const badge of unique_badges) {
+				try {
+					await prisma.earnedBadge.upsert({
+						where: {
+							profile_id_badge_id: {
+								profile_id: user.id,
+								badge_id: badge.id,
+							},
+						},
+						update: {}, // No updates needed if it already exists
+						create: {
+							profile_id: user.id,
+							badge_id: badge.id,
+						},
+					});
+				} catch (error) {
+					console.error(`Error creating earned badge for user ${user.username} and badge ${badge.name}:`, error);
+				}
+			}
+		}
+		console.log('Earned badges created.');
 
 		console.log('Seeding finished.');
 	}

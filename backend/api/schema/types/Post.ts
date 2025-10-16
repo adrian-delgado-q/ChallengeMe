@@ -20,8 +20,20 @@ builder.prismaObject('Post', {
 builder.queryField('posts', (t) =>
   t.prismaField({
     type: ['Post'],
+    args: {
+      challenge_id: t.arg.string(),
+      profile_id: t.arg.string(),
+    },
     resolve: (query, root, args, ctx, info) => {
-      return prisma.post.findMany({ ...query });
+      const where: any = {};
+      if (args.challenge_id) where.challenge_id = args.challenge_id;
+      if (args.profile_id) where.profile_id = args.profile_id;
+      
+      return prisma.post.findMany({
+        ...query,
+        where: Object.keys(where).length > 0 ? where : undefined,
+        orderBy: { created_at: 'desc' },
+      });
     },
   })
 );

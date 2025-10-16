@@ -33,6 +33,48 @@ builder.queryField('workoutExercises', (t) =>
 );
 
 builder.mutationFields((t) => ({
+  // Custom mutation expected by frontend
+  addExerciseToWorkout: t.prismaField({
+    type: 'WorkoutExercise',
+    args: {
+      workout_id: t.arg.string({ required: true }),
+      activity_type_id: t.arg.string({ required: true }),
+      order_index: t.arg.int({ required: true }),
+      sets: t.arg.int(),
+      reps: t.arg.int(),
+      rest_time: t.arg.int(),
+      notes: t.arg.string(),
+    },
+    resolve: (query, root, args, ctx, info) => {
+      return prisma.workoutExercise.create({
+        ...query,
+        data: {
+          workout_id: args.workout_id,
+          activity_type_id: args.activity_type_id,
+          order_index: args.order_index,
+          sets: args.sets || undefined,
+          reps: args.reps || undefined,
+          rest_time: args.rest_time || undefined,
+          notes: args.notes || undefined,
+        },
+      });
+    },
+  }),
+
+  // Custom mutation expected by frontend
+  removeExerciseFromWorkout: t.prismaField({
+    type: 'WorkoutExercise',
+    args: {
+      id: t.arg.string({ required: true }),
+    },
+    resolve: (query, root, args, ctx, info) => {
+      return prisma.workoutExercise.delete({
+        ...query,
+        where: { id: args.id },
+      });
+    },
+  }),
+
   createWorkoutExercise: t.prismaField({
     type: 'WorkoutExercise',
     args: {

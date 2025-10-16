@@ -451,6 +451,7 @@ model XPLog {
 
   profile Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
 
+  @@index([source_type, source_id])
   @@map("xp_logs")
 }
 

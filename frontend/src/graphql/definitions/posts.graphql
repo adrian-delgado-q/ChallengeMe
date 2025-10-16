@@ -1,21 +1,7 @@
 # src/graphql/definitions/posts.graphql
+#import CommentDetails from "./comments.graphql"
 
 # Fragments
-
-fragment Author on Profile {
-    id
-    username
-    avatar_url
-}
-
-fragment CommentDetails on Comment {
-    id
-    content
-    created_at
-    author {
-        ...Author
-    }
-}
 
 fragment PostBasic on Post {
     id
@@ -27,7 +13,9 @@ fragment PostBasic on Post {
 fragment PostWithRelations on Post {
     ...PostBasic
     Profile {
-        ...Author
+        id
+        username
+        avatar_url
     }
     comments {
         ...CommentDetails

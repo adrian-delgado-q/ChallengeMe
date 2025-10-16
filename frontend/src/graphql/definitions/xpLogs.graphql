@@ -1,0 +1,29 @@
+# src/graphql/definitions/xpLogs.graphql
+
+# Fragments
+
+fragment XPLogBasic on XPLog {
+    id
+    source_type
+    source_id
+    points
+    description
+    created_at
+}
+
+fragment XPLogWithProfile on XPLog {
+    ...XPLogBasic
+    profile {
+        id
+        username
+        avatar_url
+    }
+}
+
+# Queries
+
+query GetXPLogs($profile_id: String!) {
+    xpLogs(profile_id: $profile_id) {
+        ...XPLogWithProfile
+    }
+}

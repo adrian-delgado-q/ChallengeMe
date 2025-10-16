@@ -36,12 +36,48 @@ builder.queryField('discussionModerators', (t) =>
 );
 
 builder.mutationFields((t) => ({
+  // Custom mutation expected by frontend
+  addDiscussionModerator: t.prismaField({
+    type: 'DiscussionModerator',
+    args: {
+      challenge_id: t.arg.string({ required: true }),
+      user_id: t.arg.string({ required: true }),
+      role: t.arg.string({ required: false }),
+      granted_by_id: t.arg.string({ required: true }),
+    },
+    resolve: (query, root, args, ctx, info) => {
+      return prisma.discussionModerator.create({
+        ...query,
+        data: {
+          challenge_id: args.challenge_id,
+          user_id: args.user_id,
+          role: (args.role as any) || 'MODERATOR',
+          granted_by_id: args.granted_by_id,
+        },
+      });
+    },
+  }),
+
+  // Custom mutation expected by frontend
+  removeDiscussionModerator: t.prismaField({
+    type: 'DiscussionModerator',
+    args: {
+      id: t.arg.string({ required: true }),
+    },
+    resolve: (query, root, args, ctx, info) => {
+      return prisma.discussionModerator.delete({
+        ...query,
+        where: { id: args.id },
+      });
+    },
+  }),
+
   createDiscussionModerator: t.prismaField({
     type: 'DiscussionModerator',
     args: {
       challenge_id: t.arg.string({ required: true }),
       user_id: t.arg.string({ required: true }),
-      role: t.arg.string(),
+      role: t.arg.string({ required: false }),
       granted_by_id: t.arg.string({ required: true }),
     },
     resolve: (query, root, args, ctx, info) => {

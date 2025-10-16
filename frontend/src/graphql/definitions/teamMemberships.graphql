@@ -29,7 +29,7 @@ query GetTeamMemberships($team_id: String, $user_id: String) {
 mutation CreateTeamMembership(
     $team_id: String!
     $user_id: String!
-    $role: TeamRole
+    $role: String
     $expires_at: Date
 ) {
     createTeamMembership(
@@ -44,7 +44,7 @@ mutation CreateTeamMembership(
 
 mutation UpdateTeamMembership(
     $id: String!
-    $role: TeamRole
+    $role: String
     $expires_at: Date
 ) {
     updateTeamMembership(

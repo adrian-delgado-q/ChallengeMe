@@ -20,12 +20,14 @@ query GetDiscussionBans($challenge_id: String!) {
 mutation BanFromDiscussion(
     $challenge_id: String!
     $user_id: String!
+    $banned_by_id: String!
     $reason: String
     $expires_at: Date
 ) {
     banFromDiscussion(
         challenge_id: $challenge_id
         user_id: $user_id
+        banned_by_id: $banned_by_id
         reason: $reason
         expires_at: $expires_at
     ) {
