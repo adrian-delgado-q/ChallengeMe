@@ -26,5 +26,8 @@ import './types/XPLog';
 import './types/ActivityMastery';
 import './types/Badge';
 import './types/EarnedBadge';
+import './types/Notification';
+import './types/NotificationPreference';
+import './types/PushSubscription';
 
 export const schema = builder.toSchema();

@@ -381,6 +381,35 @@ exports.Prisma.EarnedBadgeScalarFieldEnum = {
   earned_at: 'earned_at'
 };
 
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  profile_id: 'profile_id',
+  content: 'content',
+  read_at: 'read_at',
+  created_at: 'created_at'
+};
+
+exports.Prisma.NotificationPreferenceScalarFieldEnum = {
+  id: 'id',
+  profile_id: 'profile_id',
+  challenge_invites: 'challenge_invites',
+  challenge_updates: 'challenge_updates',
+  social_mentions: 'social_mentions',
+  social_replies: 'social_replies',
+  team_invites: 'team_invites',
+  gamification_milestone: 'gamification_milestone',
+  re_engagement_reminders: 're_engagement_reminders'
+};
+
+exports.Prisma.PushSubscriptionScalarFieldEnum = {
+  id: 'id',
+  profile_id: 'profile_id',
+  endpoint: 'endpoint',
+  p256dh: 'p256dh',
+  auth: 'auth',
+  created_at: 'created_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -388,6 +417,10 @@ exports.Prisma.SortOrder = {
 
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -473,7 +506,10 @@ exports.Prisma.ModelName = {
   XPLog: 'XPLog',
   ActivityMastery: 'ActivityMastery',
   Badge: 'Badge',
-  EarnedBadge: 'EarnedBadge'
+  EarnedBadge: 'EarnedBadge',
+  Notification: 'Notification',
+  NotificationPreference: 'NotificationPreference',
+  PushSubscription: 'PushSubscription'
 };
 
 /**

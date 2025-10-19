@@ -94,6 +94,11 @@ model Profile {
   earned_badges      EarnedBadge[]
   xp_logs            XPLog[]
 
+  // --- NEW NOTIFICATION RELATIONS ---
+  notifications           Notification[]
+  notification_preference NotificationPreference?
+  push_subscriptions      PushSubscription[]
+
   @@map("profiles")
 }
 
@@ -499,4 +504,54 @@ model EarnedBadge {
 
   @@unique([profile_id, badge_id])
   @@map("earned_badges")
+}
+
+// --- NOTIFICATION MODELS ---
+
+// 1. The central table to store notifications for in-app display.
+model Notification {
+  id         String    @id @default(uuid()) @db.Uuid
+  profile_id String    @db.Uuid
+  content    Json      // A structured object with text, links, and metadata
+  read_at    DateTime? @db.Timestamptz(6)
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+
+  profile Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+
+  @@index([profile_id, created_at(sort: Desc)])
+  @@map("notifications")
+}
+
+// 2. User-configurable settings for notification channels.
+model NotificationPreference {
+  id         String @id @default(uuid()) @db.Uuid
+  profile_id String @unique @db.Uuid
+
+  // Granular controls per notification type
+  challenge_invites      Boolean @default(true)
+  challenge_updates      Boolean @default(true) // e.g., starts, ends soon
+  social_mentions        Boolean @default(true)
+  social_replies         Boolean @default(true)
+  team_invites           Boolean @default(true)
+  gamification_milestone Boolean @default(true) // e.g., level up, badge earned
+  re_engagement_reminders Boolean @default(true)
+
+  profile Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+
+  @@map("notification_preferences")
+}
+
+// 3. Stores push notification subscription tokens for users.
+model PushSubscription {
+  id         String   @id @default(uuid()) @db.Uuid
+  profile_id String   @db.Uuid
+  endpoint   String   // The unique endpoint URL from the push service
+  p256dh     String
+  auth       String
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  profile Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+
+  @@unique([profile_id, endpoint])
+  @@map("push_subscriptions")
 }
