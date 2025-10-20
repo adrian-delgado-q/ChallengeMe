@@ -1,0 +1,98 @@
+# Ensure you import fragments from profile.graphql and workout.graphql
+# in the files where you use these operations.
+
+fragment WorkoutProgramItemFields on WorkoutProgramItem {
+  id
+  order
+  day_label
+  workout {
+    ...WorkoutFields # Assumes WorkoutFields is defined in workout.graphql
+  }
+}
+
+fragment WorkoutProgramFields on WorkoutProgram {
+  id
+  creator_id
+  name
+  description
+  image_url
+  visibility
+  created_at
+  creator {
+    ...ProfileFields # Assumes ProfileFields is in profile.graphql
+  }
+  workouts {
+    ...WorkoutProgramItemFields
+  }
+}
+
+query WorkoutProgram($id: String!) {
+  workoutProgram(id: $id) {
+    ...WorkoutProgramFields
+  }
+}
+
+# You will need to add other queries, e.g., workoutProgramsByCreator
+
+mutation AddWorkoutToProgram(
+  $programId: String!
+  $workoutId: String!
+  $order: Int!
+  $day_label: String
+) {
+  addWorkoutToProgram(
+    programId: $programId
+    workoutId: $workoutId
+    order: $order
+    day_label: $day_label
+  ) {
+    id
+    order
+  }
+}
+
+mutation CreateWorkoutProgram(
+  $name: String!
+  $description: String
+  $image_url: String
+  $visibility: String
+) {
+  createWorkoutProgram(
+    name: $name
+    description: $description
+    image_url: $image_url
+    visibility: $visibility
+  ) {
+    ...WorkoutProgramFields
+  }
+}
+
+mutation UpdateWorkoutProgram(
+  $id: String!
+  $name: String
+  $description: String
+  $image_url: String
+  $visibility: String
+) {
+  updateWorkoutProgram(
+    id: $id
+    name: $name
+    description: $description
+    image_url: $image_url
+    visibility: $visibility
+  ) {
+    ...WorkoutProgramFields
+  }
+}
+
+mutation DeleteWorkoutProgram($id: String!) {
+  deleteWorkoutProgram(id: $id) {
+    id
+  }
+}
+
+mutation RemoveWorkoutFromProgram($programId: String!, $workoutId: String!) {
+  removeWorkoutFromProgram(programId: $programId, workoutId: $workoutId) {
+    id
+  }
+}

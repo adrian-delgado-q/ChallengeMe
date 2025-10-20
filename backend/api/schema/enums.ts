@@ -34,3 +34,7 @@ export const XPSourceType = builder.enumType('XPSourceType', {
 export const MasteryTier = builder.enumType('MasteryTier', {
 	values: ['NOVICE', 'ADEPT', 'EXPERT', 'MASTER', 'GRANDMASTER'] as const,
 });
+
+export const ContentVisibility = builder.enumType('ContentVisibility', {
+	values: ['PUBLIC', 'PRIVATE', 'UNLISTED', 'FOLLOWERS_ONLY'],
+});

@@ -10,11 +10,47 @@ fragment ProfileBasic on Profile {
     updated_at
 }
 
+fragment ProfileFields on Profile {
+    ...ProfileBasic
+    # Notification relations
+    notifications(limit: 10, offset: 0) {
+      ...NotificationFields
+    }
+    notification_preference {
+      ...NotificationPreferenceFields
+    }
+    # push_subscriptions are likely not needed on the main profile query
+
+    # Workout ecosystem relations
+    created_programs {
+      id
+      name
+      image_url
+      visibility
+    }
+    followers {
+      id
+      follower {
+        id
+        username
+        avatar_url
+      }
+    }
+    following {
+      id
+      following {
+        id
+        username
+        avatar_url
+      }
+    }
+}
+
 # Queries
 
 query GetProfile($id: String!) {
     profile(id: $id) {
-        ...ProfileBasic
+        ...ProfileFields
     }
 }
 

@@ -1,0 +1,41 @@
+fragment NotificationPreferenceFields on NotificationPreference {
+  id
+  profile_id
+  challenge_invites
+  challenge_updates
+  social_mentions
+  social_replies
+  team_invites
+  gamification_milestone
+  re_engagement_reminders
+}
+
+query NotificationPreference($profile_id: String!) {
+  notificationPreference(profile_id: $profile_id) {
+    ...NotificationPreferenceFields
+  }
+}
+
+mutation UpdateNotificationPreference(
+  $profile_id: String!
+  $challenge_invites: Boolean
+  $challenge_updates: Boolean
+  $social_mentions: Boolean
+  $social_replies: Boolean
+  $team_invites: Boolean
+  $gamification_milestone: Boolean
+  $re_engagement_reminders: Boolean
+) {
+  updateNotificationPreference(
+    profile_id: $profile_id
+    challenge_invites: $challenge_invites
+    challenge_updates: $challenge_updates
+    social_mentions: $social_mentions
+    social_replies: $social_replies
+    team_invites: $team_invites
+    gamification_milestone: $gamification_milestone
+    re_engagement_reminders: $re_engagement_reminders
+  ) {
+    ...NotificationPreferenceFields
+  }
+}

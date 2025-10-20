@@ -1,0 +1,35 @@
+fragment PushSubscriptionFields on PushSubscription {
+  id
+  profile_id
+  endpoint
+  p256dh
+  auth
+}
+
+query PushSubscriptions($profile_id: String!) {
+  pushSubscriptions(profile_id: $profile_id) {
+    ...PushSubscriptionFields
+  }
+}
+
+mutation CreatePushSubscription(
+  $profile_id: String!
+  $endpoint: String!
+  $p256dh: String!
+  $auth: String!
+) {
+  createPushSubscription(
+    profile_id: $profile_id
+    endpoint: $endpoint
+    p256dh: $p256dh
+    auth: $auth
+  ) {
+    ...PushSubscriptionFields
+  }
+}
+
+mutation DeletePushSubscription($id: String!) {
+  deletePushSubscription(id: $id) {
+    ...PushSubscriptionFields
+  }
+}

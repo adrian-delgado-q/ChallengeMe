@@ -12,6 +12,15 @@ fragment WorkoutDetails on Workout {
     generated_by_ai
     ai_model
     ai_raw_response
+    # New workout ecosystem fields
+    visibility
+    est_duration_mins
+    difficulty
+    tags
+    program_items {
+        id
+        program_id
+    }
 }
 
 query GetWorkout($id: String!) {
@@ -27,32 +36,50 @@ query GetWorkouts($creator_id: String, $team_id: String) {
 }
 
 mutation CreateWorkout(
-    $creator_id: String!
-    $name: String!
-    $description: String
-    $team_id: String
-    $is_team_workout: Boolean
+    $creator_id: String!,
+    $name: String!,
+    $description: String,
+    $team_id: String,
+    $is_team_workout: Boolean,
+    # New workout ecosystem args
+    $visibility: String, # Maps to ContentVisibility enum
+    $est_duration_mins: Int,
+    $difficulty: String,
+    $tags: [String!]
 ) {
     createWorkout(
-        creator_id: $creator_id
-        name: $name
-        description: $description
-        team_id: $team_id
-        is_team_workout: $is_team_workout
+        creator_id: $creator_id,
+        name: $name,
+        description: $description,
+        team_id: $team_id,
+        is_team_workout: $is_team_workout,
+        visibility: $visibility,
+        est_duration_mins: $est_duration_mins,
+        difficulty: $difficulty,
+        tags: $tags
     ) {
         ...WorkoutDetails
     }
 }
 
 mutation UpdateWorkout(
-    $id: String!
-    $name: String
-    $description: String
+    $id: String!,
+    $name: String,
+    $description: String,
+    # New workout ecosystem args
+    $visibility: String, # Maps to ContentVisibility enum
+    $est_duration_mins: Int,
+    $difficulty: String,
+    $tags: [String!]
 ) {
     updateWorkout(
-        id: $id
-        name: $name
-        description: $description
+        id: $id,
+        name: $name,
+        description: $description,
+        visibility: $visibility,
+        est_duration_mins: $est_duration_mins,
+        difficulty: $difficulty,
+        tags: $tags
     ) {
         ...WorkoutDetails
     }

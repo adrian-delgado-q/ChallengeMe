@@ -1,0 +1,21 @@
+mutation FollowUser($userIdToFollow: String!) {
+  followUser(userIdToFollow: $userIdToFollow) {
+    id
+    follower_id
+    following_id
+  }
+}
+
+mutation UnfollowUser($userIdToUnfollow: String!) {
+  unfollowUser(userIdToUnfollow: $userIdToUnfollow) {
+    id
+    follower_id
+    following_id
+  }
+}
+
+mutation CreateAIWorkout($prompt: String!) {
+  createAIWorkout(prompt: $prompt) {
+    ...WorkoutFields # Assumes WorkoutFields is in workout.graphql
+  }
+}

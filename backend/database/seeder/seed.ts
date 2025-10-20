@@ -14,6 +14,8 @@ import {
 	EarnedBadge,
 	XPLog,
 	ActivityMastery,
+	WorkoutProgram,
+	ContentVisibility,
 } from '../../prisma/prisma-client/client';
 import { faker } from '@faker-js/faker';
 import activityTypes from './activityTypes';
@@ -686,6 +688,71 @@ async function main() {
 			}
 		}
 		console.log('Earned badges created.');
+
+		// 18. Create UserFollows
+		console.log('Creating user follows...');
+		for (const user of users) {
+			const users_to_follow = faker.helpers
+				.arrayElements(users, faker.number.int({ min: 0, max: 3 }))
+				.filter(u => u.id !== user.id); // A user cannot follow themselves
+
+			for (const user_to_follow of users_to_follow) {
+				try {
+					await prisma.userFollow.create({
+						data: {
+							follower_id: user.id,
+							following_id: user_to_follow.id,
+						},
+					});
+				} catch (e) {
+					// Ignore unique constraint errors if a follow relationship already exists
+				}
+			}
+		}
+		console.log('User follows created.');
+
+		// 19. Create WorkoutPrograms
+		console.log('Creating workout programs...');
+		const workout_programs: WorkoutProgram[] = [];
+		for (let i = 0; i < 4; i++) {
+			const creator = faker.helpers.arrayElement(users) as Profile;
+			const program = await prisma.workoutProgram.create({
+				data: {
+					creator_id: creator.id,
+					name: faker.lorem.words(3) + ' Program',
+					description: faker.lorem.paragraph(),
+					image_url: faker.image.url(),
+					visibility: faker.helpers.arrayElement([
+						'PUBLIC',
+						'PRIVATE',
+						'FOLLOWERS_ONLY',
+					] as ContentVisibility[]),
+				},
+			});
+			workout_programs.push(program);
+		}
+		console.log(`${workout_programs.length} workout programs created.`);
+
+		// 20. Create WorkoutProgramItems
+		console.log('Creating workout program items...');
+		for (const program of workout_programs) {
+			const workouts_to_add = faker.helpers.arrayElements(
+				workouts,
+				faker.number.int({ min: 2, max: 5 })
+			);
+			let order = 1;
+			for (const workout of workouts_to_add) {
+				await prisma.workoutProgramItem.create({
+					data: {
+						program_id: program.id,
+						workout_id: workout.id,
+						order: order++,
+						day_label: `Day ${order - 1}`,
+					},
+				});
+			}
+		}
+		console.log('Workout program items created.');
 
 		console.log('Seeding finished.');
 	}

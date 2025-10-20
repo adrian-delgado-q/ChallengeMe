@@ -1,0 +1,25 @@
+fragment NotificationFields on Notification {
+  id
+  profile_id
+  content # This is a JSON scalar, you may need to 'as' it in queries
+  read_at
+  created_at
+}
+
+query Notifications($profile_id: String!) {
+  notifications(profile_id: $profile_id) {
+    ...NotificationFields
+  }
+}
+
+mutation MarkNotificationAsRead($id: String!) {
+  markNotificationAsRead(id: $id) {
+    ...NotificationFields
+  }
+}
+
+mutation MarkAllNotificationsAsRead($profile_id: String!) {
+  markAllNotificationsAsRead(profile_id: $profile_id) {
+    count # Returns a batch payload, not a notification
+  }
+}

@@ -33,6 +33,10 @@ builder.prismaObject('Profile', {
 		activity_masteries: t.relation('activity_masteries'),
 		earned_badges: t.relation('earned_badges'),
 		xp_logs: t.relation('xp_logs'),
+		// New relations
+		created_programs: t.relation('created_programs'),
+		following: t.relation('following'),
+		followers: t.relation('followers'),
 	}),
 });
 
@@ -121,6 +125,42 @@ builder.mutationFields(t => ({
 			return prisma.profile.delete({
 				...query,
 				where: { id: args.id },
+			});
+		},
+	}),
+
+	followUser: t.prismaField({
+		type: 'UserFollow',
+		args: {
+			followingId: t.arg.string({ required: true }),
+		},
+		resolve: (query, root, args, ctx, info) => {
+			// const { userId } = ctx; // TODO: Get from context
+			const userId = '11457ad5-e9bd-4b1f-b9d1-11adbd8a2104';
+			return prisma.userFollow.create({
+				data: {
+					follower_id: userId,
+					following_id: args.followingId,
+				},
+			});
+		},
+	}),
+
+	unfollowUser: t.prismaField({
+		type: 'UserFollow',
+		args: {
+			followingId: t.arg.string({ required: true }),
+		},
+		resolve: (query, root, args, ctx, info) => {
+			// const { userId } = ctx; // TODO: Get from context
+			const userId = '11457ad5-e9bd-4b1f-b9d1-11adbd8a2104';
+			return prisma.userFollow.delete({
+				where: {
+					follower_id_following_id: {
+						follower_id: userId,
+						following_id: args.followingId,
+					},
+				},
 			});
 		},
 	}),

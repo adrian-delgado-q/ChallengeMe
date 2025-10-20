@@ -54,6 +54,13 @@ enum MasteryTier {
   GRANDMASTER
 }
 
+enum ContentVisibility {
+  PUBLIC
+  PRIVATE
+  UNLISTED
+  FOLLOWERS_ONLY
+}
+
 model SchemaMigration {
   version String @id @db.VarChar
 
@@ -98,6 +105,11 @@ model Profile {
   notifications           Notification[]
   notification_preference NotificationPreference?
   push_subscriptions      PushSubscription[]
+
+  // --- NEW WORKOUT ECOSYSTEM RELATIONS ---
+  created_programs WorkoutProgram[] @relation("CreatedWorkoutPrograms")
+  following        UserFollow[]     @relation("Following")
+  followers        UserFollow[]     @relation("Followers")
 
   @@map("profiles")
 }
@@ -374,25 +386,31 @@ model DiscussionBan {
 }
 
 model Workout {
-  id              String   @id @default(uuid()) @db.Uuid
-  creator_id      String   @db.Uuid
-  team_id         String?  @db.Uuid
-  name            String
-  description     String?
-  is_team_workout Boolean  @default(false)
-  created_at      DateTime @default(now()) @db.Timestamptz(6)
-  updated_at      DateTime @updatedAt @db.Timestamptz(6)
-
+  id                String            @id @default(uuid()) @db.Uuid
+  creator_id        String            @db.Uuid
+  team_id           String?           @db.Uuid
+  name              String
+  description       String?
+  is_team_workout   Boolean           @default(false)
+  created_at        DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime          @updatedAt @db.Timestamptz(6)
   // AI Generation Fields
-  generated_by_ai Boolean @default(false)
-  ai_model        String?
-  ai_raw_response Json?
-
-  creator   Profile           @relation("workout_creator", fields: [creator_id], references: [id])
-  team      Team?             @relation("TeamWorkouts", fields: [team_id], references: [id])
-  exercises WorkoutExercise[]
-  sessions  WorkoutSession[]
-  comments  WorkoutComment[]
+  generated_by_ai   Boolean           @default(false)
+  ai_model          String?
+  ai_raw_response   Json?
+  // --- NEW VISIBILITY & DISCOVERY FIELDS ---
+  visibility        ContentVisibility @default(PRIVATE)
+  est_duration_mins Int? // e.g., 30
+  difficulty        String? // e.g., "Intermediate"
+  tags              String[] // e.g., ["HIIT", "Dumbbells"]
+  creator           Profile           @relation("workout_creator", fields: [creator_id], references: [id])
+  team              Team?             @relation("TeamWorkouts", fields: [team_id], references: [id])
+  exercises         WorkoutExercise[]
+  sessions          WorkoutSession[]
+  comments          WorkoutComment[]
+  // --- NEW RELATION ---
+  // Used to link this workout to one or more programs
+  program_items     WorkoutProgramItem[]
 
   @@map("workouts")
 }
@@ -554,4 +572,42 @@ model PushSubscription {
 
   @@unique([profile_id, endpoint])
   @@map("push_subscriptions")
+}
+
+model WorkoutProgram {
+  id          String            @id @default(uuid()) @db.Uuid
+  creator_id  String            @db.Uuid
+  name        String
+  description String?
+  image_url   String?
+  visibility  ContentVisibility @default(PRIVATE)
+  created_at  DateTime          @default(now()) @db.Timestamptz(6)
+  creator     Profile           @relation("CreatedWorkoutPrograms", fields: [creator_id], references: [id])
+  workouts    WorkoutProgramItem[]
+
+  @@map("workout_programs")
+}
+
+model WorkoutProgramItem {
+  id         String       @id @default(uuid()) @db.Uuid
+  program_id String       @db.Uuid
+  workout_id String       @db.Uuid
+  order      Int // e.g., Day 1, Day 2
+  day_label  String? // e.g., "Week 1: Leg Day"
+  program    WorkoutProgram @relation(fields: [program_id], references: [id], onDelete: Cascade)
+  workout    Workout      @relation(fields: [workout_id], references: [id], onDelete: Cascade)
+
+  @@unique([program_id, order])
+  @@map("workout_program_items")
+}
+
+model UserFollow {
+  id           String @id @default(uuid()) @db.Uuid
+  follower_id  String @db.Uuid // The user who is doing the following
+  following_id String @db.Uuid // The creator who is being followed
+  follower     Profile  @relation("Following", fields: [follower_id], references: [id], onDelete: Cascade)
+  following    Profile  @relation("Followers", fields: [following_id], references: [id], onDelete: Cascade)
+
+  @@unique([follower_id, following_id])
+  @@map("user_follows")
 }
